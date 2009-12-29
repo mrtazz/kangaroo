@@ -1,0 +1,10 @@
+All data integration on the Android plattform is done via
+so called ``content providers''. These providers are the
+only way to transfer data between applications, since there
+is no shared space which all applications could use.
+
+However the content provider for the calendar data is
+working, but not specified in the official developers
+documentation. That means that the API could change at
+any time, which has to be considered at the application
+design.
