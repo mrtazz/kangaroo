@@ -1,0 +1,35 @@
+\section{Routing API}
+
+\subsection{Classes}
+
+\begin{itemize}
+
+	\item RouteParameter\newline
+	\item Place\newline
+	\item Vehicle\newline
+	\item AmenitySelector\newline
+	\item Limits\newline
+
+\end{itemize}
+
+\subsection{Methods}
+
+\begin{itemize}
+
+	\item RouteParameter routeTo(Place destination, Vehicle vehicle)\newline
+	
+	Starting from the current position route to the place definied by destination. The parameter of the fastest route that can be used by the vehicle specified by vehicle will be returned.	
+	
+	\item RouteParameter routeFromTo(Place start, Place destination, Vehicle vehicle)\newline
+	
+	Starting from the place definied by start route to the Place definied by destination. The parameter of the fastest route that can be used by the vehicle specified by vehicle will be returned.
+	
+	\item Place getNearestAmenity(Place position, AmenitySelector selector, Limits limits)\newline
+
+	Starting from the place definied by position find a number of nearest amenity nodes, that fullfil the selection conditions defined by selector und limits. 
+	
+	\item LocationListener getLocationListener()\newline
+	
+	
+
+\end{itemize}

@@ -1,0 +1,32 @@
+\section{test case for the routing interface and the underlying routing engine}
+
+In order to test the performance and reliability of the routing engine that is working behind the routing interface, we definied a simple test case, that tries to cover all routing tasks, that the routing engine may be faced with when being in "all-day" use.\newline
+
+Consider the following calendar items
+\begin{enumerate}
+	\item an appointment fixed at a specific time and latitude/longitude
+	\item a task that needs a special type of amenity (e.g. post box, cash point) and that already has been fixed in space and time at a time after the appointment in (1).
+\end{enumerate}
+
+Starting at a point that is in time and space far from the appointment in (1), we make some movements in space which are not necessarily straight in the appointments direction, while time is increasing linearly. At a certain point, the movement turns into a straight movement towards the appointments meeting point. Note that for the movement a single type of vehicle is assumed and it is restricted to an area in space, that is completely covered by the given map file.\newline
+
+Given this movement, the routing engine will be used to periodically perform a set of tasks to give answers to the following questions
+\begin{enumerate}
+	\item Is there any need to start moving straight to the next appointment? Is there even not enought time to get there anymore?\newline
+	Starting from the current position in space, the fastest route to the next\footnote{the one which is in time the next looking from the current time} appointments position in space is calculated. The routing engine will account for the restrictions that are given by the specified vehicle. The time needed to follow this route with the given vehicle is compared to the time that is left until the next appointments meeting time.
+	
+	\item Is there a way to improve the scheduling by bringing forward any\footnote{in principle there is no need to restrict this question on only one task} task that already has been fixed but was formerly variable in space and time?\newline 
+	A future task is selected. Starting from the current position in space, the map is searched for the nearest amenities needed to fullfil the selected task. Given this list of amenities, every\footnote{a more or less intelligent filter should be applied to reduce the list to a minimal number of amenities} single amenity is selected and the following calculations are performed: the fastest route from the current position in space to the selected amenity and the fastest route from this amenity to the next appointments position in space is calculated. Using the sum of the time needed to follow these consecutive routes with the given vehicle and the time needed to fullfil the task is compared to  the time that is left until the next appointments meeting time.
+\end{enumerate}
+
+In order to ensure a reproducible  test case, there are some parameters to be fixed. These are
+\begin{itemize}
+	\item The map file that contains the geographical data.
+	\item The vehicle that is used and hence the infratructure that can be used to get to the destinations.
+	\item The position in space and time of the appointment in (1), namely time, latitude and longitude.
+	\item The type of amenity, that the already fixed task in (2) is based on.
+	\item The duration that this task needs to be fullfilled.
+	\item The parameters of the movement previous to the appointment in (1), particularly the starting point in time and space of the movement.
+\end{itemize}
+	
+	
