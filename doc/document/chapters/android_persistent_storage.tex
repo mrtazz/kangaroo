@@ -2,3 +2,10 @@ For persistent database storage, the Android API contains
 support for SQLite databases. Any application can create
 an SQLite object, which is stored on the device under
 ``/data/data/package\_name/databases''
+
+Unfortunately, up to Android version 2.1, the installed
+support for SQLite is 2.5.9. This means that it is not
+possible to benefit from the support for $R^*$-Trees,
+which was included in SQLite 2.6. This would have meant
+a very comfortable way of storing location data and
+retrieving positions in vincinity of a given point.
