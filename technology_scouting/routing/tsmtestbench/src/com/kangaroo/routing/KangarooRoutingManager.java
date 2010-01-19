@@ -4,7 +4,12 @@ import java.net.URI;
 
 import org.openstreetmap.osm.data.Selector;
 import org.openstreetmap.osm.data.searching.NearestStreetSelector;
+import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 import org.openstreetmap.osmosis.core.domain.v0_6.Way;
+
+import com.kangaroo.statuschange.StatusChange;
+import com.kangaroo.statuschange.StatusListener;
+import com.kangaroo.statuschange.JobDoneStatusChange;
 
 import android.location.Location;
 import android.location.LocationListener;
@@ -32,28 +37,33 @@ public class KangarooRoutingManager {
 	/**
 	 * 
 	 */
-	private StatusListener routingManagerStatusListener = null;
+	private StatusListener statusListener = null;
 	
 	
 	/**
 	 * 
-	 * @param msg
-	 * @param done
-	 * @param id
 	 */
-	private void publishStatus(String msg, boolean done, int id) {
-		if (routingManagerStatusListener != null)
-			routingManagerStatusListener.onRoutingManagerStatusChanged(new StatusChange(msg, done, id));
+	private Place homePlace = null;
+	
+	
+	/**
+	 * 
+	 * @param listener
+	 */
+	public void setStatusListener(StatusListener listener) {
+		statusListener = listener;
 	}
-		
+	
 	
 	/**
 	 * 
 	 * @param status
 	 */
 	private void publishStatus(StatusChange status) {
-		if (routingManagerStatusListener != null)
-			routingManagerStatusListener.onRoutingManagerStatusChanged(status);
+		if (statusListener != null) {
+			status.message = routingEngine.getJobMessage(status.jobID);
+			statusListener.onStatusChanged(status);
+		}
 	}
 	
 	
@@ -106,104 +116,14 @@ public class KangarooRoutingManager {
 	 */
 	private StatusListener routingEngineStatusListener = new StatusListener() {
 		@Override
-		public void onRoutingManagerStatusChanged(StatusChange status) {
-			Message msg = Message.obtain();
-			msg.obj = status;
-			routingEngineStatusChangedHandler.sendMessage(msg);
+		public void onStatusChanged(StatusChange status) {
+			publishStatus(status);
+			if (status instanceof JobDoneStatusChange && status.jobID == KangarooRoutingEngine.JOBID_GET_NEAREST_NODE
+					&& homePlace.isNode() == false)
+				homePlace.setNode((Node)status.result);
+			allowLocationUpdates = !status.busy;
 		}		
 	};
-	
-	
-	/**
-	 * 
-	 */
-	private Handler routingEngineStatusChangedHandler = new Handler() {
-		@Override
-		public void handleMessage(Message msg) {
-			onRoutingEngineStatusChanged((StatusChange)msg.obj);
-		}		
-	};
-	
-	
-	/**
-	 * 
-	 */
-	public KangarooRoutingManager() {
-		
-	}
-	
-	
-	/**
-	 * 
-	 * @param listener
-	 */
-	public void setStatusListener(StatusListener listener) {
-		routingManagerStatusListener = listener;
-	}
-		
-	
-	/**
-	 * 
-	 * @author Andreas Walz
-	 *
-	 */
-	private class RunnableInitRoutingEngine implements Runnable {
-		@Override
-		public void run() {
-			routingEngine.init();
-		}		
-	}
-	
-	
-	/**
-	 * 
-	 * @author Andreas Walz
-	 *
-	 */
-	private class RunnableGetNearestNode implements Runnable {
-		
-		private Place place;
-		private Selector selector;
-		private Limits limits;
-		
-		public RunnableGetNearestNode(Place place, Selector selector, Limits limits) {
-			super();
-			this.place = place;
-			this.selector = selector;
-			this.limits = limits;
-		}
-
-		@Override
-		public void run() {
-			Message msg = Message.obtain();
-			msg.obj = routingEngine.getNearestNode(place, selector, limits);
-			runnableGetNearestNodeHandler.sendMessage(msg);
-		}		
-	}
-	
-	
-	/**
-	 * 
-	 */
-	private Handler runnableGetNearestNodeHandler = new Handler() {
-		@Override
-		public void handleMessage(Message msg) {
-			if (msg.obj != null)
-				onRunnableGetNearestNodeDone((Place)msg.obj);
-			else
-				onRunnableGetNearestNodeDone(null);
-		}
-	};
-	
-	
-	
-	private void onRunnableGetNearestNodeDone(Place place) {
-		publishStatus(place.getNode().toString(), true, KangarooRoutingEngine.LOOKING_FOR_NEAREST_NODE_ID);
-		Way way = ((TSMKangarooRoutingEngine)routingEngine).getWayForNode(place.getNode());
-		if (way != null)
-			Log.v("MyTag", way.toString());
-		allowLocationUpdates = true;
-	}
 	
 	
 	/**
@@ -211,15 +131,15 @@ public class KangarooRoutingManager {
 	 * 
 	 */
 	public void init() throws Exception {
-		if (routingEngine != null)
-			return;
+		if (routingEngine != null && routingEngine.initialized())
+			throw new Exception("already initialized.");
 		if (routingDataSource == null)
 			throw new Exception("no routingDataSource specified.");
 		
-		routingEngine = new TSMKangarooRoutingEngine(routingDataSource);	
-		routingEngine.setStatusListener(routingEngineStatusListener);		
-	
-		(new Thread(new RunnableInitRoutingEngine())).start();
+		routingEngine = new TSMKangarooRoutingEngine();
+		routingEngine.setDataSource(routingDataSource);
+		routingEngine.setStatusListener(routingEngineStatusListener);	
+		routingEngine.init();
 	}
 	
 	
@@ -229,7 +149,7 @@ public class KangarooRoutingManager {
 	public void shutdown() {
 		if (routingEngine != null)
 			routingEngine.shutdown();
-		routingManagerStatusListener = null;
+		statusListener = null;
 		routingEngine = null;
 	}
 	
@@ -240,19 +160,18 @@ public class KangarooRoutingManager {
 	 */
 	private void onLocationChanged(Location location) {
 		if (allowLocationUpdates) {
-			(new Thread(new RunnableGetNearestNode(new Place(location), 
-					new NearestStreetSelector(), null))).start();
+			try {
+				if (homePlace == null)
+					homePlace = new Place(48.1216952, 7.8571635);
+				if (!homePlace.isNode()) {
+					routingEngine.getNearestNode(homePlace, new NearestStreetSelector(), null);
+				} else {
+					routingEngine.routeFromTo(new Place(location.getLatitude(), location.getLongitude()), 
+							homePlace, new Car());
+				}				
+			} catch (Exception e) {
+			}
 		}
-	}
-	
-	
-	/**
-	 * 
-	 * @param status
-	 */
-	private void onRoutingEngineStatusChanged(StatusChange status) {
-		allowLocationUpdates = status.operationFinished;
-		publishStatus(status);	
 	}
 	
 	
@@ -274,6 +193,14 @@ public class KangarooRoutingManager {
 	}
 	
 	
+	
+	
+	
+	
+	
+	public void routeFromTo(Place start, Place destination, Vehicle vehicle) throws Exception {
+		routingEngine.routeFromTo(start, destination, vehicle);
+	}
 	
 	
 	

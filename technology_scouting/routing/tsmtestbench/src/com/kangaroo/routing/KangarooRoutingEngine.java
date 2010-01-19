@@ -6,6 +6,9 @@ package com.kangaroo.routing;
 import java.net.URI;
 
 import org.openstreetmap.osm.data.Selector;
+import org.openstreetmap.osmosis.core.domain.v0_6.Node;
+
+import com.kangaroo.statuschange.StatusListener;
 
 import android.location.LocationListener;
 
@@ -21,32 +24,37 @@ public interface KangarooRoutingEngine {
 	/**
 	 * 
 	 */
-	public final static int INITIALIZING_ROUTING_ENGINE_ID = 1;
-	public final static String INITIALIZING_ROUTING_ENGINE_MSG = 
-		"initializing routing engine...";
-	public final static String INITIALIZING_ROUTING_ENGINE_DONE =
-		INITIALIZING_ROUTING_ENGINE_MSG + "done";
-	public final static String INITIALIZING_ROUTING_ENGINE_FAILED =
-		INITIALIZING_ROUTING_ENGINE_MSG + "failed";
-
+	public final static int JOBID_INIT_ROUTING_ENGINE = 1;
 	
 	/**
 	 * 
 	 */
-	public final static int LOOKING_FOR_NEAREST_NODE_ID = 2;
-	public final static String LOOKING_FOR_NEAREST_NODE_MSG = 
-		"looking for nearest node...";
-	public final static String LOOKING_FOR_NEAREST_NODE_DONE =
-		LOOKING_FOR_NEAREST_NODE_MSG + "done";
-	public final static String LOOKING_FOR_NEAREST_NODE_FAILED =
-		LOOKING_FOR_NEAREST_NODE_MSG + "failed";
+	public final static int JOBID_GET_NEAREST_NODE = 2;
+	
+	/**
+	 * 
+	 */
+	public final static int JOBID_GET_WAYS_FOR_NODE = 3;
+	
+	/**
+	 * 
+	 */
+	public final static int JOBID_ROUTE_FROMTO = 4;
+
+	
+	/**
+	 * 
+	 * @param jobID
+	 */
+	public String getJobMessage(int jobID);
 	
 	
 	/**
 	 * set the data source URI where data is initially read from
 	 * @param aDataSource
+	 * @throws Exception 
 	 */
-	public void setDataSource(URI aDataSource);
+	public void setDataSource(URI aDataSource) throws Exception;
 		
 	
 	/**
@@ -60,29 +68,33 @@ public interface KangarooRoutingEngine {
 	/**
 	 * Initialize the routing engine
 	 * @throws Exception 
-	 * @throws Exception 
 	 */
-	public void init();
+	public void init() throws Exception;
+	
+	
+	/**
+	 * returns true if the routing engine is initialized
+	 * and ready to accept routing jobs
+	 * @return
+	 */
+	public boolean initialized();
 	
 	
 	/**
 	 * stop the routing engine and release all used resources
 	 * @throws Exception 
 	 */
-	public void shutdown();
+	public void shutdown();	
 	
 	
 	/**
 	 * 
 	 * @param start
 	 * @param destination
-	 * 			place to route to
 	 * @param vehicle
-	 * 			the vehicle that is to be used to follow the route
-	 * @return a RouteParameter object containing the parameter of the fastest 
-	 * route. null if there is no route compatible with the specified vehicle
+	 * @throws Exception 
 	 */
-	public RouteParameter routeFromTo(Place start, Place destination, Vehicle vehicle);
+	public void routeFromTo(Place start, Place destination, Vehicle vehicle) throws Exception;
 	
 
 	/**
@@ -90,10 +102,18 @@ public interface KangarooRoutingEngine {
 	 * @param position
 	 * @param selector
 	 * @param limits
-	 * @return
+	 * @throws Exception 
 	 */
-	public Place getNearestNode(Place position, Selector selector, Limits limits);
+	public void getNearestNode(Place position, Selector selector, Limits limits) throws Exception;
 		
+	
+	/**
+	 * 
+	 * @param node
+	 * @throws Exception 
+	 */
+	public void getWaysForNode(Node node) throws Exception;
+	
 	
 	/**
 	 * return a string describing the routing engine and its data source

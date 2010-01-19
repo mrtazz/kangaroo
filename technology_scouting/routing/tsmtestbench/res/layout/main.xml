@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    >
-<TextView  
-	android:id="@+id/textview" 
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" android:scrollbars="vertical"/>
-</LinearLayout>
+
+
+<AbsoluteLayout android:id="@+id/AbsoluteLayout01" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Close App" android:id="@+id/close" android:layout_x="3dip" android:layout_y="3dip"></Button>
+
+
+
+
+
+
+<RelativeLayout android:id="@+id/RelativeLayout01" android:layout_x="8dip" android:layout_y="250dip" android:layout_width="300dip" android:layout_height="170dip"><ScrollView android:id="@+id/ScrollView01" android:layout_height="fill_parent" android:layout_width="fill_parent" android:scrollbars="vertical"><TextView android:text="@+id/TextView01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/outputTextView"></TextView>
+</ScrollView></RelativeLayout>
+
+<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_x="90dip" android:layout_y="16dip" android:id="@+id/busyTextView"></TextView>
+<RelativeLayout android:id="@+id/RelativeLayout02" android:layout_x="8dip" android:layout_y="55dip" android:layout_width="300dip" android:layout_height="190dip"><ScrollView android:id="@+id/ScrollView02" android:layout_height="fill_parent" android:layout_width="fill_parent" android:scrollbars="vertical"><TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/statusTextView" android:text="statusTextView"></TextView></ScrollView></RelativeLayout>
+
+<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/clear" android:text="Clear" android:layout_y="3dip" android:layout_x="265dip"></Button>
+</AbsoluteLayout>
