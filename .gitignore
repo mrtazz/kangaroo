@@ -1,0 +1,15 @@
+!.gitignore
+*.undo
+*.orig
+*.db
+*.aux
+*.bbl
+*.blg
+*.idx
+*.log
+*.out
+*.pdf
+*.toc
+.DS_Store
+*.apk
+*.swp
