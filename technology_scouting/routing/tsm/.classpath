@@ -3,6 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry kind="lib" path="/Users/andreaswalz/Documents/Uni/Informatik/Teamprojekt - WS0910/repository/master/kangaroo/technology_scouting/routing/tsm/lib/traveling_salesman-1.0.3-RC1.jar"/>
+	<classpathentry kind="lib" path="traveling_salesman-1.0.3-RC1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
