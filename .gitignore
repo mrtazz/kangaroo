@@ -1,4 +1,5 @@
 !.gitignore
+.*
 *.undo
 *.orig
 *.db
@@ -13,3 +14,5 @@
 .DS_Store
 *.apk
 *.swp
+*.dex
+*.class
