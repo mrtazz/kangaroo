@@ -13,6 +13,8 @@
 *.toc
 .DS_Store
 *.apk
+*.ap_
 *.swp
 *.dex
 *.class
+technology_scouting/calender_api/AndroidQuickCalendar/bin/net/*
