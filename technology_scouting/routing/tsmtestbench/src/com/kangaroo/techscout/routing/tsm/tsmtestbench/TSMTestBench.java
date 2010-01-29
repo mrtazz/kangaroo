@@ -7,6 +7,7 @@ import java.io.PrintStream;
 import java.net.URI;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import org.openstreetmap.osm.data.MemoryDataSet;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
@@ -124,17 +125,77 @@ public class TSMTestBench extends Activity implements StatusListener {
         outputTextView.setText("");
         statusTextView.setText("");
         
-        routingManager = new KangarooRoutingManager();
         
+        
+        /* ------------------------         
+        long time = System.currentTimeMillis();
+        Log.v("MyTag", "start random generator...");
+        Vector<Double> doubles = new Vector<Double>();
+        Vector<Long> longs = new Vector<Long>();
+        Vector<Integer> ints = new Vector<Integer>();
+        for (int i = 0; i < 30000 * 4; i++) {
+        	doubles.add(new Double(Math.random() * 1000000));
+        	longs.add(new Long((new Double(Math.random() * 1000000)).longValue()));
+        	ints.add(new Integer((new Double(Math.random() * 1000000)).intValue()));
+        }
+        time = System.currentTimeMillis() - time;
+        Log.v("MyTag", "...done in " + time + " ms");
+        
+        time = System.currentTimeMillis();
+        Log.v("MyTag", "start double calculation...");
+        Iterator<Double> doubles_itr = doubles.iterator();
+        while(doubles_itr.hasNext()) {
+        	double d1 = doubles_itr.next().doubleValue();
+        	double d2 = doubles_itr.next().doubleValue();
+        	double d3 = doubles_itr.next().doubleValue();
+        	double d4 = doubles_itr.next().doubleValue();        	
+        	if ((d1 - d2) * (d1 - d2) + (d3 - d4) * (d3 - d4) == 0)
+        		System.out.println();
+        }
+        time = System.currentTimeMillis() - time;
+        Log.v("MyTag", "...done in " + time + " ms");
+        
+        time = System.currentTimeMillis();
+        Log.v("MyTag", "start long calculation...");
+        Iterator<Long> longs_itr = longs.iterator();
+        while(longs_itr.hasNext()) {
+        	long l1 = longs_itr.next().longValue();
+        	long l2 = longs_itr.next().longValue();
+        	long l3 = longs_itr.next().longValue();
+        	long l4 = longs_itr.next().longValue();
+        	if ((l1 - l2) * (l1 - l2) + (l3 - l4) * (l3 - l4) == 0)
+        		System.out.println();
+        }
+        time = System.currentTimeMillis() - time;
+        Log.v("MyTag", "...done in " + time + " ms");
+        
+        time = System.currentTimeMillis();
+        Log.v("MyTag", "start int calculation...");
+        Iterator<Integer> ints_itr = ints.iterator();
+        while(ints_itr.hasNext()) {
+        	int i1 = ints_itr.next().intValue();
+        	int i2 = ints_itr.next().intValue();
+        	int i3 = ints_itr.next().intValue();
+        	int i4 = ints_itr.next().intValue();
+        	if ((i1 - i2) * (i1 - i2) + (i3 - i4) * (i3 - i4) == 0)
+        		System.out.println();
+        }
+        time = System.currentTimeMillis() - time;
+        Log.v("MyTag", "...done in " + time + " ms");
+         ------------------------ */
+        
+        
+        
+        
+        routingManager = new KangarooRoutingManager(this);        
      
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         
         showDialog(DIALOG_READFILE_ID);
         
-        
-
         vehicle.setMaxSpeed(50);
-        /*
+        
+        
         simulator = new MovementSimulator();
         simulator.setVehicle(vehicle);
         
@@ -146,19 +207,6 @@ public class TSMTestBench extends Activity implements StatusListener {
         
         // Burgstra§e
         simulator.setDestinationPoint(new Place(48.124448, 7.846498), 40000);      
-		
-        
-        simulator.requestLocationUpdates("gps", 0, 0, listener);      
-        
-        
-        try {
-        	new Thread(simulator).start();
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			Log.e("MovementSimulator", e.toString());
-		}
-		*/
 		
     }
     
@@ -207,14 +255,17 @@ public class TSMTestBench extends Activity implements StatusListener {
 							
 							LocationListener listener = routingManager.getLocationListener();
 							
-							locationManager.requestLocationUpdates("gps", 0, 0, listener);
-					        /*
+							//locationManager.requestLocationUpdates("gps", 0, 0, listener);
+					        
+							simulator.requestLocationUpdates("gps", 0, 0, listener);
+							
 					        try {
 					        	new Thread(simulator).start();
 							} catch (Exception e) {
 								Log.e("MovementSimulator", e.toString());
 							}
-							*/
+							
+							
 							/*
 							Location location = new Location("gps");
 							location.setLatitude(48.1216952);
@@ -324,9 +375,12 @@ public class TSMTestBench extends Activity implements StatusListener {
 				statusStringBuffer.append(" (" + Long.toString(jobTime) + "ms)");	
 			}									
 			
-			//outputStringBuffer = new StringBuffer();
+			//outputStringBuffer = new StringBuffer();		
 			
 			if (status.result != null) {
+			
+				Log.v("MyTag", "status.result = " + status.result.toString());
+				
 				if (status.result instanceof Route) {
 					
 					Route route = (Route)status.result;
@@ -374,6 +428,8 @@ public class TSMTestBench extends Activity implements StatusListener {
 					outputStringBuffer.append(wayNames.toString());
 				}
 				
+			} else {
+				Log.v("MyTag", "status.result = null");
 			}
 			
 			if (status.jobID == KangarooRoutingEngine.JOBID_INIT_ROUTING_ENGINE && progressDialog != null) {
@@ -382,12 +438,22 @@ public class TSMTestBench extends Activity implements StatusListener {
 			}
 		} else if (status instanceof JobFailedStatusChange) {
 			statusStringBuffer.append(" failed!\n");
+			
+			if (status.jobID == KangarooRoutingEngine.JOBID_INIT_ROUTING_ENGINE && progressDialog != null) {
+				progressDialog.dismiss();				
+			}
+			
+			Exception e = (Exception)status.result;
+			outputStringBuffer.append(e.toString());
+			
+			Log.v("MyTag", e.toString());
+			
+			e.printStackTrace();
 		}
 			
 		outputTextView.setText(outputStringBuffer.toString());
 		statusTextView.setText(statusStringBuffer.toString());	
 	}
-	
 	
 	
 		

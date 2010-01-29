@@ -10,6 +10,7 @@ import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 
 import com.kangaroo.statuschange.StatusListener;
 
+import android.content.Context;
 import android.location.LocationListener;
 
 /**
@@ -120,5 +121,12 @@ public interface KangarooRoutingEngine {
 	 * @return
 	 */
 	public String getInfo();
+	
+	
+	/**
+	 * 
+	 * @param context
+	 */
+	public void setContext(Context context);
 
 }

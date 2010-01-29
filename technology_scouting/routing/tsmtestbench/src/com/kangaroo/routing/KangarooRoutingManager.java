@@ -7,10 +7,12 @@ import org.openstreetmap.osm.data.searching.NearestStreetSelector;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 import org.openstreetmap.osmosis.core.domain.v0_6.Way;
 
+import com.kangaroo.osm.data.searching.LogNearestStreetSelector;
 import com.kangaroo.statuschange.StatusChange;
 import com.kangaroo.statuschange.StatusListener;
 import com.kangaroo.statuschange.JobDoneStatusChange;
 
+import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
@@ -25,52 +27,19 @@ public class KangarooRoutingManager {
 	/**
 	 * 
 	 */
-	private KangarooRoutingEngine routingEngine = null;
+	private boolean allowLocationUpdates = false;
 	
 	
 	/**
 	 * 
 	 */
-	private URI routingDataSource = null;
-	
-	
-	/**
-	 * 
-	 */
-	private StatusListener statusListener = null;
+	private Context context;
 	
 	
 	/**
 	 * 
 	 */
 	private Place homePlace = null;
-	
-	
-	/**
-	 * 
-	 * @param listener
-	 */
-	public void setStatusListener(StatusListener listener) {
-		statusListener = listener;
-	}
-	
-	
-	/**
-	 * 
-	 * @param status
-	 */
-	private void publishStatus(StatusChange status) {
-		if (statusListener != null) {
-			status.message = routingEngine.getJobMessage(status.jobID);
-			statusListener.onStatusChanged(status);
-		}
-	}
-	
-	
-	/**
-	 * 
-	 */
-	private boolean allowLocationUpdates = false;
 	
 	
 	/**
@@ -114,6 +83,18 @@ public class KangarooRoutingManager {
 	/**
 	 * 
 	 */
+	private URI routingDataSource = null;
+	
+	
+	/**
+	 * 
+	 */
+	private KangarooRoutingEngine routingEngine = null;
+	
+	
+	/**
+	 * 
+	 */
 	private StatusListener routingEngineStatusListener = new StatusListener() {
 		@Override
 		public void onStatusChanged(StatusChange status) {
@@ -124,6 +105,31 @@ public class KangarooRoutingManager {
 			allowLocationUpdates = !status.busy;
 		}		
 	};
+	
+	
+	/**
+	 * 
+	 */
+	private StatusListener statusListener = null;
+	
+	
+	/**
+	 * 
+	 * @param context
+	 */
+	public KangarooRoutingManager(Context context) {
+		super();
+		this.context = context;
+	}
+	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public LocationListener getLocationListener() {
+		return locationListener;
+	}
 	
 	
 	/**
@@ -139,18 +145,8 @@ public class KangarooRoutingManager {
 		routingEngine = new TSMKangarooRoutingEngine();
 		routingEngine.setDataSource(routingDataSource);
 		routingEngine.setStatusListener(routingEngineStatusListener);	
+		routingEngine.setContext(context);
 		routingEngine.init();
-	}
-	
-	
-	/**
-	 * shutdown the routing manager including its routing engine
-	 */
-	public void shutdown() {
-		if (routingEngine != null)
-			routingEngine.shutdown();
-		statusListener = null;
-		routingEngine = null;
 	}
 	
 	
@@ -177,6 +173,23 @@ public class KangarooRoutingManager {
 	
 	/**
 	 * 
+	 * @param status
+	 */
+	private void publishStatus(StatusChange status) {
+		if (statusListener != null) {
+			status.message = routingEngine.getJobMessage(status.jobID);
+			statusListener.onStatusChanged(status);
+		}
+	}
+	
+	
+	public void routeFromTo(Place start, Place destination, Vehicle vehicle) throws Exception {
+		routingEngine.routeFromTo(start, destination, vehicle);
+	}
+	
+	
+	/**
+	 * 
 	 * @param dataSource
 	 */
 	public void setRoutingDataSource(URI dataSource) {
@@ -186,20 +199,21 @@ public class KangarooRoutingManager {
 	
 	/**
 	 * 
-	 * @return
+	 * @param listener
 	 */
-	public LocationListener getLocationListener() {
-		return locationListener;
+	public void setStatusListener(StatusListener listener) {
+		statusListener = listener;
 	}
+		
 	
-	
-	
-	
-	
-	
-	
-	public void routeFromTo(Place start, Place destination, Vehicle vehicle) throws Exception {
-		routingEngine.routeFromTo(start, destination, vehicle);
+	/**
+	 * shutdown the routing manager including its routing engine
+	 */
+	public void shutdown() {
+		if (routingEngine != null)
+			routingEngine.shutdown();
+		statusListener = null;
+		routingEngine = null;
 	}
 	
 	

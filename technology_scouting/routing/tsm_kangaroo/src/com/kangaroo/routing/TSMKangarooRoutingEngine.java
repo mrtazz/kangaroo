@@ -20,6 +20,7 @@ import org.openstreetmap.travelingsalesman.routing.Route;
 import org.openstreetmap.travelingsalesman.routing.describers.SimpleRouteDescriber;
 import org.openstreetmap.travelingsalesman.routing.routers.MultiTargetDijkstraRouter;
 
+import com.kangaroo.osm.data.searching.LogNearestStreetSelector;
 import com.kangaroo.statuschange.JobDoneStatusChange;
 import com.kangaroo.statuschange.JobFailedStatusChange;
 import com.kangaroo.statuschange.JobStartedStatusChange;
@@ -27,9 +28,11 @@ import com.kangaroo.statuschange.StatusChange;
 import com.kangaroo.statuschange.StatusListener;
 import com.kangaroo.statuschange.SubJobDoneStatusChange;
 import com.kangaroo.statuschange.SubJobStartedStatusChange;
+import com.kangaroo.tsm.osm.data.KangarooTSMMemoryDataSet;
 import com.kangaroo.tsm.osm.io.FileLoader;
 import com.kangaroo.tsm.osm.io.KangarooTSMFileLoader;
 
+import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Handler;
@@ -68,6 +71,12 @@ public class TSMKangarooRoutingEngine implements KangarooRoutingEngine {
 	
 	
 	/**
+	 * 
+	 */
+	private Context context = null;
+	
+	
+	/**
 	 * the status listener to inform about status changes
 	 * and job results
 	 */
@@ -86,12 +95,12 @@ public class TSMKangarooRoutingEngine implements KangarooRoutingEngine {
 		}
 	};
 	
-	
-	@Override
+		
 	/**
 	 * set the status listener that will be informed about changes in
 	 * the routing engine's status and job results
 	 */
+	@Override
 	public void setStatusListener(StatusListener listener) {
 		statusListener = listener;
 	}
@@ -208,7 +217,13 @@ public class TSMKangarooRoutingEngine implements KangarooRoutingEngine {
 					}
 					
 					IRouter router = new MultiTargetDijkstraRouter();
+						Log.v("MyTag", "route from " + startNode.getId() + " to " + destinationNode.getId());
+					
 					Route route = router.route(map, startNode, destinationNode, vehicle);	
+						if (route != null)
+							Log.v("MyTag", "Route = " + route.toString());
+						else
+							Log.v("MyTag", "Route = null");
 					listener.onStatusChanged(new JobDoneStatusChange(KangarooRoutingEngine.JOBID_ROUTE_FROMTO, route));
 				} catch (Exception exception) {
 					listener.onStatusChanged(new JobFailedStatusChange(KangarooRoutingEngine.JOBID_ROUTE_FROMTO, exception));
@@ -243,17 +258,22 @@ public class TSMKangarooRoutingEngine implements KangarooRoutingEngine {
 	 */
 	private class RunnableFileLoader implements Runnable {
 		private StatusListener listener;
+		private Context context;
 		
-		public RunnableFileLoader(StatusListener listener) {
+		public RunnableFileLoader(StatusListener listener, Context context) {
 			super();
 			this.listener = listener;
+			this.context = context;
 		}
 
 		@Override
 		public void run() {
 			listener.onStatusChanged(new JobStartedStatusChange(KangarooRoutingEngine.JOBID_INIT_ROUTING_ENGINE));
 			try {				
-				IDataSet map = (new KangarooTSMFileLoader(new File(dataSource.getPath()))).parseOsmKangarooTSM();
+				KangarooTSMFileLoader fileLoader = new KangarooTSMFileLoader(new File(dataSource.getPath())); 
+				//IDataSet map = fileLoader.parseOsmKangarooTSM();
+				IDataSet map = fileLoader.readOsmDatabase("/sdcard/map-em.db");
+				((KangarooTSMMemoryDataSet)map).openDatabase("/sdcard/map-em.db");
 				listener.onStatusChanged(new JobDoneStatusChange(KangarooRoutingEngine.JOBID_INIT_ROUTING_ENGINE, map));
 			} catch (Exception exception) {
 				listener.onStatusChanged(new JobFailedStatusChange(KangarooRoutingEngine.JOBID_INIT_ROUTING_ENGINE, exception));
@@ -273,7 +293,7 @@ public class TSMKangarooRoutingEngine implements KangarooRoutingEngine {
 		if (dataSource.getScheme() == null || !dataSource.getScheme().startsWith("file")) 
 			throw new Exception("scheme for data source not supported.");
 		
-		RunnableFileLoader job = new RunnableFileLoader(workingThreadStatusListener);
+		RunnableFileLoader job = new RunnableFileLoader(workingThreadStatusListener, this.context);
 		Thread worker = new Thread(job);
 		worker.setName("TSMKangarooRoutingEngine.init()");
 		worker.start();
@@ -309,6 +329,8 @@ public class TSMKangarooRoutingEngine implements KangarooRoutingEngine {
 		 * the garbage collector to collect the listener object
 		 */
 		statusListener = null;
+		
+		((KangarooTSMMemoryDataSet)map).closeDatabase();
 	}
 
 
@@ -375,6 +397,12 @@ public class TSMKangarooRoutingEngine implements KangarooRoutingEngine {
 			return "unknown job";
 		}
 		
+	}
+
+
+	@Override
+	public void setContext(Context context) {
+		this.context = context;		
 	}
 
 

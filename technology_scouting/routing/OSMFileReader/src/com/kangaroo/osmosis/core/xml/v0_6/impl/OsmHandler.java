@@ -4,8 +4,6 @@ package com.kangaroo.osmosis.core.xml.v0_6.impl;
  * This file was modified for the kangaroo project to meet demands.
  * - a statement was added to switch strings 'localName' and 'qName'
  *   in the startElement() method if necessary. 
- * - the formerly used OsmElementProcessor was exchanged with the
- *   KangarooOsmElementProcessor.
  * 
  * Former package definition was
  * package com.bretth.osmosis.core.xml.v0_6.impl;
@@ -17,7 +15,7 @@ import java.util.logging.Logger;
 import org.openstreetmap.osmosis.core.OsmosisRuntimeException;
 import org.openstreetmap.osmosis.core.task.v0_6.Sink;
 import org.openstreetmap.osmosis.core.xml.common.ElementProcessor;
-//import org.openstreetmap.osmosis.core.xml.v0_6.impl.OsmElementProcessor;
+import org.openstreetmap.osmosis.core.xml.v0_6.impl.OsmElementProcessor;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
@@ -66,8 +64,7 @@ public class OsmHandler extends DefaultHandler {
 	 *            date will be used thus saving parsing time.
 	 */
 	public OsmHandler(Sink osmSink, boolean enableDateParsing) {
-		/* this was formerly 'new OsmElementProcessor(' */
-		osmElementProcessor = new KangarooOsmElementProcessor(null, osmSink, enableDateParsing, true);
+		osmElementProcessor = new OsmElementProcessor(null, osmSink, enableDateParsing, true);
 	}
 	
 	
