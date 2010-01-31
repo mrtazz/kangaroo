@@ -1,17 +1,19 @@
 /**
- * 
+ *
  */
 package com.example.kangaroo.calendar_interface;
 
 import java.util.Date;
 /**
  * @author mrtazz
+ * 
+ * class representing calendar events with basic data
  *
  */
 public class CalendarEvent {
 
 	/**
-	 * simple event data 
+	 * simple event data
 	 */
 	/** the event id */
 	private String id;
@@ -31,10 +33,10 @@ public class CalendarEvent {
 	private Boolean wasTask;
 	/** whether or not the event was a link before */
 	private Boolean taskLink;
-	
+
 	/**
 	 * @brief Constructor for event object
-	 * 
+	 *
 	 * @param id
 	 * @param title
 	 * @param location
@@ -184,6 +186,6 @@ public class CalendarEvent {
 	public void setTaskLink(Boolean taskLink) {
 		this.taskLink = taskLink;
 	}
-	
-	
+
+
 }
