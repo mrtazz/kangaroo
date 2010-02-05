@@ -61,19 +61,14 @@ public class ActivityBuildPlan extends Activity
 	            // we know will be running in our own process (and thus won't be
 	            // supporting component replacement by other applications).
 	            
-	        	//bindService(new Intent(ActivityBuildPlan.this, 
-	            //        ServiceRoute.class), mConnection, Context.BIND_AUTO_CREATE);
-	        	serviceRouteBound = myServiceFactory.getServiceRoute(ActivityBuildPlan.this);
+	        	 Intent i = new Intent();
+	     	    i.setClassName( "com.android.kangaroo", "com.android.kangaroo.ServiceRoute" );
 	        	
-	        	try 
-	        	{
-					Thread.sleep(1000);
-				} 
-	        	catch (InterruptedException e) 
-	        	{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+	     	    //bindService(new Intent(ActivityBuildPlan.this, ServiceRoute.class), mConnection, Context.BIND_AUTO_CREATE);
+	        	bindService(i, mConnection, Context.BIND_AUTO_CREATE);
+	        	//serviceRouteBound = myServiceFactory.getServiceRoute(ActivityBuildPlan.this);
+	        	
+	        	while(serviceRouteBound == null);
 	        	
 	        	mIsBound = true;
 	            if(serviceRouteBound != null)

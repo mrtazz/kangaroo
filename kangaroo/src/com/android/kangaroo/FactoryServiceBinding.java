@@ -66,7 +66,9 @@ public class FactoryServiceBinding extends Activity
 	
 	public ServiceRoute getServiceRoute(Activity self)
 	{
-		bindService(new Intent(FactoryServiceBinding.this, ServiceRoute.class), serviceRouteCon, Context.BIND_AUTO_CREATE);
+	    Intent i = new Intent();
+	    i.setClassName( "com.android.kangaroo", "com.android.kangaroo.ServiceRoute" );
+		bindService(i, serviceRouteCon, Context.BIND_AUTO_CREATE);
 		//while(myServiceRoute == null);
 		return myServiceRoute;
 	}
