@@ -26,14 +26,17 @@ public class CalendarLibrary {
 	/** db cursor to get data from the content provider*/
 	private Cursor contentCursor;
 	/** which calendar information do you want today? */
-	private String[] calendarFields = {"_id", "name", "displayname", "color", "selected", "timezone"};
+	private String[] calendarFields = {"_id", "name", "displayname",
+									   "color", "selected", "timezone"};
 	/** the dictionary containing calendar objects */
 	private HashMap<String, Calendar> dictCalendars;
 
 	/** object constructor */
 	public CalendarLibrary()
 	{
-		contentCursor = contentResolver.query(Uri.parse(contentUri),calendarFields, null, null, null);
+		contentCursor = contentResolver.query(Uri.parse(contentUri),
+											  calendarFields, null,
+											  null, null);
 	}
 
     /**
