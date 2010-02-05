@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content">
+
+<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="bind" android:id="@+id/bind"></Button>
+<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="unbind" android:id="@+id/unbind"></Button><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="hello kangaroo" android:id="@+id/text"></TextView>
+
+</LinearLayout>
