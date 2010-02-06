@@ -33,6 +33,10 @@ public class CalendarEvent {
 	private Boolean wasTask;
 	/** whether or not the event was a link before */
 	private Boolean taskLink;
+	/** all day event */
+	private Boolean allDay;
+	/** description */
+	private String description;
 
 	/**
 	 * @brief Constructor for event object
@@ -46,10 +50,13 @@ public class CalendarEvent {
 	 * @param endDate
 	 * @param wasTask
 	 * @param taskLink
+	 * @param allDay
+	 * @param description
 	 */
 	public CalendarEvent(String id, String title, String location,
 			Float locationLongitude, Float locationLatitude, Date startDate,
-			Date endDate, Boolean wasTask, Boolean taskLink) {
+			Date endDate, Boolean wasTask, Boolean taskLink, Boolean allDay,
+			String description) {
 		this.id = id;
 		this.title = title;
 		this.location = location;
@@ -59,6 +66,8 @@ public class CalendarEvent {
 		this.endDate = endDate;
 		this.wasTask = wasTask;
 		this.taskLink = taskLink;
+		this.allDay = allDay;
+		this.description = description;
 	}
 
 	/**
@@ -185,6 +194,34 @@ public class CalendarEvent {
 	 */
 	public void setTaskLink(Boolean taskLink) {
 		this.taskLink = taskLink;
+	}
+
+	/**
+	 * @return the allDay
+	 */
+	public Boolean getAllDay() {
+		return allDay;
+	}
+
+	/**
+	 * @param allDay the allDay to set
+	 */
+	public void setAllDay(Boolean allDay) {
+		this.allDay = allDay;
+	}
+
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 
