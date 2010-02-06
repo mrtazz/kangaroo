@@ -37,6 +37,10 @@ public class CalendarEvent {
 	private Boolean allDay;
 	/** description */
 	private String description;
+	/** calendar */
+	private int calendar;
+	/** timezone */
+	private String timezone;
 
 	/**
 	 * @brief Constructor for event object
@@ -56,7 +60,7 @@ public class CalendarEvent {
 	public CalendarEvent(String id, String title, String location,
 			Float locationLongitude, Float locationLatitude, Date startDate,
 			Date endDate, Boolean wasTask, Boolean taskLink, Boolean allDay,
-			String description) {
+			String description, int calendar, String timezone) {
 		this.id = id;
 		this.title = title;
 		this.location = location;
@@ -68,6 +72,8 @@ public class CalendarEvent {
 		this.taskLink = taskLink;
 		this.allDay = allDay;
 		this.description = description;
+		this.calendar = calendar;
+		this.timezone = timezone;
 	}
 
 	/**
@@ -222,6 +228,34 @@ public class CalendarEvent {
 	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	/**
+	 * @return the calendar
+	 */
+	public int getCalendar() {
+		return calendar;
+	}
+
+	/**
+	 * @param calendar the calendar to set
+	 */
+	public void setCalendar(int calendar) {
+		this.calendar = calendar;
+	}
+
+	/**
+	 * @return the timezone
+	 */
+	public String getTimezone() {
+		return timezone;
+	}
+
+	/**
+	 * @param timezone the timezone to set
+	 */
+	public void setTimezone(String timezone) {
+		this.timezone = timezone;
 	}
 
 
