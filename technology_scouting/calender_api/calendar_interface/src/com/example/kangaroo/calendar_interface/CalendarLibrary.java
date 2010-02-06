@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 
@@ -142,5 +143,30 @@ public class CalendarLibrary {
 	        }
 
 		return events;
+    }
+
+
+    /**
+     * @brief update method to enter events to backend
+     * @param event object to add to backend
+     */
+    public void addEventToBackend(CalendarEvent event)
+    {
+    	ContentValues values = new ContentValues();
+    	/** build values */
+    	values.put("calendar_id", event.getCalendar());
+    	values.put("eventTimezone", event.getTimezone());
+    	values.put("title", event.getTitle());
+    	values.put("allDay", event.getAllDay());
+    	values.put("dtstart", event.getStartDate().getTime());
+    	values.put("dtend", event.getEndDate().getTime());
+    	values.put("description", event.getDescription());
+    	values.put("eventLocation", event.getLocation());
+    	values.put("transparency", 0);
+    	values.put("visibility", 0);
+    	values.put("hasAlarm", 0);
+
+    	/** enter into content provider backend */
+    	contentResolver.insert(eventsURI, values);
     }
 }
