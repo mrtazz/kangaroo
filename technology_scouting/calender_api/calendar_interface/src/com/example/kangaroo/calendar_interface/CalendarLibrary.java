@@ -3,9 +3,11 @@
  */
 package com.example.kangaroo.calendar_interface;
 
+import java.util.Date;
 import java.util.HashMap;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.database.Cursor;
 import android.net.Uri;
 
@@ -19,6 +21,9 @@ public class CalendarLibrary {
 	/** content provider URIs should not be changed */
 	final private String contentCalendarUri = "content://calendar/calendars";
 	final private String contentEventsUri = "content://calendar/events";
+	/** URI objects for the provider URIs */
+	final private Uri calendarURI = Uri.parse(contentCalendarUri);
+	final private Uri eventsURI = Uri.parse(contentEventsUri);
 	/** the content resolver object */
 	private ContentResolver contentResolver;
 	/** db cursor to get data from the content provider*/
@@ -36,11 +41,8 @@ public class CalendarLibrary {
 	/** object constructor */
 	public CalendarLibrary()
 	{
-		calendarCursor = contentResolver.query(Uri.parse(contentCalendarUri),
-											  calendarFields, null,
-											  null, null);
-		eventsCursor = contentResolver.query(Uri.parse(contentEventsUri),
-				  							 eventsFields, null, null, null);
+		calendarCursor = contentResolver.query(calendarURI, calendarFields,
+											   null, null, null);
 	}
 
     /**
@@ -106,7 +108,36 @@ public class CalendarLibrary {
         return events;
     }
 
+    /**
+     * @brief method for getting events for a specific calendar
+     * @param id for the calendar to get events from
+     * @return HashMap with events
+     */
+    public HashMap<String, CalendarEvent> getEventsFromProvider(String id)
+    {
+    	HashMap<String, CalendarEvent> events = new HashMap<String, CalendarEvent>();
+    	String selection = "calendar_id=?";
+    	String[] selection_args = {id};
 
+		eventsCursor = contentResolver.query(eventsURI, eventsFields,
+										 	 selection, selection_args, null);
 
+		 while (eventsCursor.moveToNext())
+	        {
+				final String eventid = eventsCursor.getString(0);
+				final String title = eventsCursor.getString(1);
+				final Boolean allDay = Boolean.parseBoolean(eventsCursor.getString(2));
+				final Date dtstart = new Date(Long.parseLong(eventsCursor.getString(3)));
+				final Date dtend = new Date(Long.parseLong(eventsCursor.getString(4)));
+				final String description = eventsCursor.getString(5);
+				final String eventLocation = eventsCursor.getString(6);
 
+	            CalendarEvent event = new CalendarEvent(eventid, title, eventLocation,
+	            										null, null, dtstart, dtend,
+	            										null, null, allDay, description);
+	            events.put(calendarCursor.getString(1),event);
+	        }
+
+		return events;
+    }
 }
