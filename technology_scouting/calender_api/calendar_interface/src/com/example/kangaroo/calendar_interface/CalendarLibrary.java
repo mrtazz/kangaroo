@@ -87,15 +87,15 @@ public class CalendarLibrary {
     /**
      * @brief method to get all events from specified calendar
      *
-     * @param name of the calendar
+     * @param calendarName of the calendar
      *
      * @return CalendarEvent[] with all events from calendar
      */
-    public CalendarEvent[] getEvents(String name)
+    public HashMap<String, CalendarEvent> getEvents(String calendarName)
     {
         // initialize data variables
-        CalendarEvent[] events;
-        Calendar cal = dictCalendars.get(name);
+        HashMap<String, CalendarEvent> events;
+        Calendar cal = dictCalendars.get(calendarName);
         // get all events from calendar
         events = cal.getEvents();
         // return

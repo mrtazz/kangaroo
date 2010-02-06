@@ -3,6 +3,8 @@
  */
 package com.example.kangaroo.calendar_interface;
 
+import java.util.HashMap;
+
 import com.example.kangaroo.calendar_interface.CalendarEvent;
 
 /**
@@ -23,7 +25,7 @@ public class Calendar {
 	/** used timezone */
 	private String timeZone;
 	/** array of the events contained in the calendar */
-	private CalendarEvent[] events;
+	private HashMap<String, CalendarEvent> events;
 
 	/**
 	 * @param name
@@ -32,7 +34,8 @@ public class Calendar {
 	 * @param events
 	 */
 	public Calendar(String name, String displayName, String timeZone,
-			CalendarEvent[] events) {
+					HashMap<String, CalendarEvent> events)
+	{
 		this.name = name;
 		this.displayName = displayName;
 		this.timeZone = timeZone;
@@ -84,14 +87,14 @@ public class Calendar {
 	/**
 	 * @return the events
 	 */
-	public CalendarEvent[] getEvents() {
+	public HashMap<String, CalendarEvent> getEvents() {
 		return events;
 	}
 
 	/**
 	 * @param events the events to set
 	 */
-	public void setEvents(CalendarEvent[] events) {
+	public void setEvents(HashMap<String, CalendarEvent> events) {
 		this.events = events;
 	}
 
