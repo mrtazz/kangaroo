@@ -3,10 +3,7 @@
  */
 package com.example.kangaroo.calendar_interface;
 
-import java.security.KeyStore.Entry;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
