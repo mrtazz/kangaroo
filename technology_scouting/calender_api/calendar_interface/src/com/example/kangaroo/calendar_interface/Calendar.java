@@ -94,4 +94,21 @@ public class Calendar {
 	public void setEvents(CalendarEvent[] events) {
 		this.events = events;
 	}
+
+	/**
+	 * @param event to add
+	 */
+	public void addEvent(CalendarEvent event)
+	{
+		this.events.put(event.getId(), event);
+	}
+
+	/**
+	 * @param id of the event
+	 * @return
+	 */
+	public CalendarEvent getEvent(String id)
+	{
+		return events.get(id);
+	}
 }
