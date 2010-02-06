@@ -16,24 +16,31 @@ import android.net.Uri;
  */
 public class CalendarLibrary {
 
-	/** content provider URI should not be changed */
-	final private String contentUri = "content://calendar/calendars";
+	/** content provider URIs should not be changed */
+	final private String contentCalendarUri = "content://calendar/calendars";
+	final private String contentEventsUri = "content://calendar/events";
 	/** the content resolver object */
 	private ContentResolver contentResolver;
 	/** db cursor to get data from the content provider*/
-	private Cursor contentCursor;
+	private Cursor calendarCursor;
+	private Cursor eventsCursor;
 	/** which calendar information do you want today? */
 	private String[] calendarFields = {"_id", "name", "displayname",
 									   "color", "selected", "timezone"};
+	private String[] eventsFields = {"_id", "title", "allDay", "dtstart",
+									 "dtend", "description", "eventLocation",
+									 "calendar_id"};
 	/** the dictionary containing calendar objects */
 	private HashMap<String, Calendar> dictCalendars;
 
 	/** object constructor */
 	public CalendarLibrary()
 	{
-		contentCursor = contentResolver.query(Uri.parse(contentUri),
+		calendarCursor = contentResolver.query(Uri.parse(contentCalendarUri),
 											  calendarFields, null,
 											  null, null);
+		eventsCursor = contentResolver.query(Uri.parse(contentEventsUri),
+				  							 eventsFields, null, null, null);
 	}
 
     /**
@@ -45,13 +52,13 @@ public class CalendarLibrary {
 	public int readCalendars()
 	{
         // read calendars from db cursor
-        while (contentCursor.moveToNext())
+        while (calendarCursor.moveToNext())
         {
-            Calendar cal = new Calendar(contentCursor.getString(1),
-                                        contentCursor.getString(2),
-                                        contentCursor.getString(5),
+            Calendar cal = new Calendar(calendarCursor.getString(1),
+                                        calendarCursor.getString(2),
+                                        calendarCursor.getString(5),
                                         null);
-            dictCalendars.put(contentCursor.getString(1),cal);
+            dictCalendars.put(calendarCursor.getString(1),cal);
         }
 
         return 0;
