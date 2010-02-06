@@ -34,7 +34,7 @@ public class CalendarLibrary {
 									   "color", "selected", "timezone"};
 	private String[] eventsFields = {"_id", "title", "allDay", "dtstart",
 									 "dtend", "description", "eventLocation",
-									 "calendar_id"};
+									 "calendar_id", "eventTimezone"};
 	/** the dictionary containing calendar objects */
 	private HashMap<String, Calendar> dictCalendars;
 
@@ -131,10 +131,13 @@ public class CalendarLibrary {
 				final Date dtend = new Date(Long.parseLong(eventsCursor.getString(4)));
 				final String description = eventsCursor.getString(5);
 				final String eventLocation = eventsCursor.getString(6);
+				final int calendar = Integer.parseInt(eventsCursor.getString(7));
+				final String timezone = eventsCursor.getString(8);
 
 	            CalendarEvent event = new CalendarEvent(eventid, title, eventLocation,
 	            										null, null, dtstart, dtend,
-	            										null, null, allDay, description);
+	            										null, null, allDay, description,
+	            										calendar,timezone);
 	            events.put(calendarCursor.getString(1),event);
 	        }
 
