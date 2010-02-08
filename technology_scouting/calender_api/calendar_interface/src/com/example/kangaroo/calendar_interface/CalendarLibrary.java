@@ -7,8 +7,8 @@ import java.util.Date;
 import java.util.HashMap;
 
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
@@ -40,10 +40,13 @@ public class CalendarLibrary {
 	private HashMap<String, Calendar> dictCalendars;
 
 	/** object constructor */
-	public CalendarLibrary()
+	public CalendarLibrary(Context ctx)
 	{
+		contentResolver = ctx.getContentResolver();
 		calendarCursor = contentResolver.query(calendarURI, calendarFields,
 											   null, null, null);
+		dictCalendars = new HashMap<String, Calendar>();
+		readCalendars();
 	}
 
     /**
@@ -52,7 +55,7 @@ public class CalendarLibrary {
      *
      * @return 0 is okay everything else is wrong
      */
-	public int readCalendars()
+	public void readCalendars()
 	{
         // read calendars from db cursor
         while (calendarCursor.moveToNext())
@@ -63,8 +66,6 @@ public class CalendarLibrary {
                                         null);
             dictCalendars.put(calendarCursor.getString(1),cal);
         }
-
-        return 0;
 	}
 
     /**
@@ -84,7 +85,7 @@ public class CalendarLibrary {
      *
      * @return String[] with all calendar names
      */
-    public String[] getAvailableCalendars()
+    public String[] getAllCalendarNames()
     {
     	// create array from dictionary keys
     	String[] ret = dictCalendars.keySet().toArray(new String[0]);
@@ -114,7 +115,7 @@ public class CalendarLibrary {
      * @param id for the calendar to get events from
      * @return HashMap with events
      */
-    public HashMap<String, CalendarEvent> getEventsFromProvider(String id)
+    public HashMap<String, CalendarEvent> getEventsFromBackend(String id)
     {
     	HashMap<String, CalendarEvent> events = new HashMap<String, CalendarEvent>();
     	String selection = "calendar_id=?";
@@ -139,7 +140,7 @@ public class CalendarLibrary {
 	            										null, null, dtstart, dtend,
 	            										null, null, allDay, description,
 	            										calendar,timezone);
-	            events.put(calendarCursor.getString(1),event);
+	            events.put(title,event);
 	        }
 
 		return events;
