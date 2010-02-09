@@ -1,6 +1,6 @@
 package com.kangaroo.system;
 
-import com.kangaroo.AlertUserInteraction;
+import com.kangaroo.gui.AlertUserInteraction;
 import com.kangaroo.system.ServiceCallTick;
 
 import android.app.AlarmManager;
