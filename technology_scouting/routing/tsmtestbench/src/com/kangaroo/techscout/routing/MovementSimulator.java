@@ -10,7 +10,7 @@ import java.util.List;
 import org.openstreetmap.osm.data.IDataSet;
 
 import com.kangaroo.routing.Place;
-import com.kangaroo.routing.Vehicle;
+import com.mobiletsm.routing.Vehicle;
 
 import android.location.Location;
 import android.location.LocationListener;

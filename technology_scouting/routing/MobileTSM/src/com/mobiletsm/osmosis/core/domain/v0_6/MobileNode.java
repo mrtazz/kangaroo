@@ -1,15 +1,4 @@
-/**
- * 
- */
-package com.kangaroo.osmosis.core.domain.v0_6;
-
-/*
- * This file was modified for the kangaroo project to meet demands.
- * 
- * Former package definition was
- * package com.bretth.osmosis.core.xml.v0_6;
- * 
- */
+package com.mobiletsm.osmosis.core.domain.v0_6;
 
 import java.util.Collection;
 import java.util.Date;
@@ -22,32 +11,28 @@ import org.openstreetmap.osmosis.core.domain.v0_6.Tag;
 import org.openstreetmap.osmosis.core.store.StoreClassRegister;
 import org.openstreetmap.osmosis.core.store.StoreReader;
 
-/**
- * @author andreaswalz
- *
- */
-public class KangarooOSMNode extends Node {
+public class MobileNode extends Node {
 
-	public KangarooOSMNode(CommonEntityData entityData, double latitude,
+	public MobileNode(CommonEntityData entityData, double latitude,
 			double longitude) {
 		super(entityData, latitude, longitude);
 		// TODO Auto-generated constructor stub
 	}
 
-	public KangarooOSMNode(long id, int version, Date timestamp, OsmUser user,
+	public MobileNode(long id, int version, Date timestamp, OsmUser user,
 			long changesetId, Collection<Tag> tags, double latitude,
 			double longitude) {
 		super(id, version, timestamp, user, changesetId, tags, latitude, longitude);
 		// TODO Auto-generated constructor stub
 	}
 
-	public KangarooOSMNode(long id, int version, Date timestamp, OsmUser user,
+	public MobileNode(long id, int version, Date timestamp, OsmUser user,
 			long changesetId, double latitude, double longitude) {
 		super(id, version, timestamp, user, changesetId, latitude, longitude);
 		// TODO Auto-generated constructor stub
 	}
 
-	public KangarooOSMNode(long id, int version,
+	public MobileNode(long id, int version,
 			TimestampContainer timestampContainer, OsmUser user,
 			long changesetId, Collection<Tag> tags, double latitude,
 			double longitude) {
@@ -56,28 +41,21 @@ public class KangarooOSMNode extends Node {
 		// TODO Auto-generated constructor stub
 	}
 
-	public KangarooOSMNode(long id, int version,
+	public MobileNode(long id, int version,
 			TimestampContainer timestampContainer, OsmUser user,
 			long changesetId, double latitude, double longitude) {
 		super(id, version, timestampContainer, user, changesetId, latitude, longitude);
 		// TODO Auto-generated constructor stub
 	}
 
-	public KangarooOSMNode(StoreReader sr, StoreClassRegister scr) {
+	public MobileNode(StoreReader sr, StoreClassRegister scr) {
 		super(sr, scr);
 		// TODO Auto-generated constructor stub
 	}
 	
 	
-	/**
-	 * 
-	 */
-	public long long_lat = 0;
+	public MobileNode(long id, double lat, double lon) {
+		super(id, 0, (Date)null, null, 0, lat, lon);
+	}
 
-	
-	/**
-	 * 
-	 */
-	public long long_lon = 0;
-	
 }

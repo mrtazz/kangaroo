@@ -19,7 +19,7 @@ public class Place {
 	/**
 	 * 
 	 */
-	private Node node = null;
+	private long osmNodeId = -1;
 	
 	/**
 	 * 
@@ -41,9 +41,9 @@ public class Place {
 	 * create a place using an openstreetmap node
 	 * @param aNode
 	 */
-	public Place(Node aNode) {
+	public Place(Node node) {
 		super();
-		setNode(aNode);
+		setFromOsmNode(node);
 	}
 	
 	
@@ -72,8 +72,17 @@ public class Place {
 	 * return the openstreetmap node specifying the place
 	 * @return
 	 */
-	public Node getNode() {
-		return node;
+	public long getOsmNodeId() {
+		return osmNodeId;
+	}
+	
+	
+	/**
+	 * 
+	 * @param id
+	 */
+	public void setOsmNodeId(long id) {
+		osmNodeId = id;
 	}
 	
 	
@@ -81,19 +90,20 @@ public class Place {
 	 * fix the place by specifying an openstreetmap node
 	 * @param aNode the object representing the openstreetmap node
 	 */
-	public void setNode(Node aNode) {
-		node = aNode;
-		latitude = node.getLatitude();
-		longitude = node.getLongitude();
+	public void setFromOsmNode(Node aNode) {
+		setCoordinates(aNode.getLatitude(), aNode.getLongitude());
+		osmNodeId = aNode.getId();
 	}
+	
+	
 	
 	
 	/**
 	 * Returns true, if the place is specified by an openstreetmap node
 	 * @return
 	 */
-	public boolean isNode() {
-		return (node != null);
+	public boolean isOsmNode() {
+		return (osmNodeId != -1);
 	}
 	
 	
@@ -104,7 +114,7 @@ public class Place {
 	 * @param lon
 	 */
 	public void setCoordinates(double lat, double lon) {
-		node = null;
+		osmNodeId = -1;
 		latitude = lat;
 		longitude = lon;
 	}

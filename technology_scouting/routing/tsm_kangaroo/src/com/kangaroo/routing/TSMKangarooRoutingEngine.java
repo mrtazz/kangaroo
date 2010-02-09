@@ -19,8 +19,8 @@ import org.openstreetmap.travelingsalesman.routing.IRouter;
 import org.openstreetmap.travelingsalesman.routing.Route;
 import org.openstreetmap.travelingsalesman.routing.describers.SimpleRouteDescriber;
 import org.openstreetmap.travelingsalesman.routing.routers.MultiTargetDijkstraRouter;
+import org.openstreetmap.travelingsalesman.routing.routers.TurnRestrictedAStar;
 
-import com.kangaroo.osm.data.searching.LogNearestStreetSelector;
 import com.kangaroo.statuschange.JobDoneStatusChange;
 import com.kangaroo.statuschange.JobFailedStatusChange;
 import com.kangaroo.statuschange.JobStartedStatusChange;
@@ -31,6 +31,8 @@ import com.kangaroo.statuschange.SubJobStartedStatusChange;
 import com.kangaroo.tsm.osm.data.KangarooTSMMemoryDataSet;
 import com.kangaroo.tsm.osm.io.FileLoader;
 import com.kangaroo.tsm.osm.io.KangarooTSMFileLoader;
+import com.mobiletsm.osm.POINodeSelector;
+import com.mobiletsm.routing.Vehicle;
 
 import android.content.Context;
 import android.location.Location;
@@ -43,44 +45,13 @@ import android.util.Log;
  * @author Andreas Walz
  *
  */
-public class TSMKangarooRoutingEngine implements KangarooRoutingEngine {
-	
-	
-	/**
-	 * the data source URI where the openstreetmap routing 
-	 * data is initially read from
-	 */
-	private URI dataSource = null;
-	
-	
-	@Override
-	/**
-	 * set data source URI
-	 */
-	public void setDataSource(URI aDataSource) throws Exception {
-		if (map != null)
-			throw new Exception("cannot change data source after initialization.");
-		dataSource = aDataSource;		
-	}
+public class TSMKangarooRoutingEngine extends KangarooRoutingEngine {
 	
 	
 	/**
 	 * the dataset containing all openstreetmap routing data
 	 */
 	private IDataSet map = null;
-	
-	
-	/**
-	 * 
-	 */
-	private Context context = null;
-	
-	
-	/**
-	 * the status listener to inform about status changes
-	 * and job results
-	 */
-	private StatusListener statusListener = null;
 	
 	
 	/**
@@ -94,16 +65,6 @@ public class TSMKangarooRoutingEngine implements KangarooRoutingEngine {
 			publishStatus(status);
 		}
 	};
-	
-		
-	/**
-	 * set the status listener that will be informed about changes in
-	 * the routing engine's status and job results
-	 */
-	@Override
-	public void setStatusListener(StatusListener listener) {
-		statusListener = listener;
-	}
 	
 	
 	/**
@@ -140,15 +101,15 @@ public class TSMKangarooRoutingEngine implements KangarooRoutingEngine {
 		
 		@Override
 		public void run() {
-			listener.onStatusChanged(new JobStartedStatusChange(KangarooRoutingEngine.JOBID_GET_NEAREST_NODE));
+			listener.onStatusChanged(new JobStartedStatusChange(KangarooRoutingEngine.JOBID_GET_NEAREST_POI_NODE));
 			try {
 				Node node;
 				synchronized(map) {
 					node = map.getNearestNode(new LatLon(place.getLatitude(), place.getLongitude()), selector);
 				}
-				listener.onStatusChanged(new JobDoneStatusChange(KangarooRoutingEngine.JOBID_GET_NEAREST_NODE, node));
+				listener.onStatusChanged(new JobDoneStatusChange(KangarooRoutingEngine.JOBID_GET_NEAREST_POI_NODE, node));
 			} catch (Exception exception) {
-				listener.onStatusChanged(new JobFailedStatusChange(KangarooRoutingEngine.JOBID_GET_NEAREST_NODE, exception));
+				listener.onStatusChanged(new JobFailedStatusChange(KangarooRoutingEngine.JOBID_GET_NEAREST_POI_NODE, exception));
 			}					
 		}		
 	}
@@ -158,13 +119,14 @@ public class TSMKangarooRoutingEngine implements KangarooRoutingEngine {
 	/**
 	 * 
 	 */
-	public void getNearestNode(Place place, Selector selector, Limits limits) throws Exception {		
-		if (!initialized())
-			throw new Exception("not initialized.");
-		
+	public void getNearestPOINode(Place place, POINodeSelector selector, Limits limits) {		
+		if (!initialized()) {
+			throw new RuntimeException("TSMKangarooRoutingEngine.getNearestPOINode(): " +
+					"routing engine not initialized");
+		}		
 		RunnableGetNearestNode job = new RunnableGetNearestNode(workingThreadStatusListener, map, place, selector, limits);
 		Thread worker = new Thread(job);
-		worker.setName("TSMKangarooRoutingEngine.getNearestNode()");
+		worker.setName("TSMKangarooRoutingEngine.getNearestPOINode()");
 		worker.start();
 	}
 	
@@ -198,22 +160,22 @@ public class TSMKangarooRoutingEngine implements KangarooRoutingEngine {
 				Node startNode;
 				Node destinationNode;				
 				try {
-					if (start.isNode()) {
-						startNode = start.getNode();
+					if (start.isOsmNode()) {
+						startNode = map.getNodeByID(start.getOsmNodeId());
 					} else {
-						listener.onStatusChanged(new SubJobStartedStatusChange(KangarooRoutingEngine.JOBID_GET_NEAREST_NODE));
+						listener.onStatusChanged(new SubJobStartedStatusChange(KangarooRoutingEngine.JOBID_GET_NEAREST_POI_NODE));
 						startNode = map.getNearestNode(new LatLon(start.getLatitude(), start.getLongitude()), 
 								new NearestStreetSelector());
-						listener.onStatusChanged(new SubJobDoneStatusChange(KangarooRoutingEngine.JOBID_GET_NEAREST_NODE, startNode));
+						listener.onStatusChanged(new SubJobDoneStatusChange(KangarooRoutingEngine.JOBID_GET_NEAREST_POI_NODE, startNode));
 					}
 
-					if (destination.isNode()) {
-						destinationNode = destination.getNode();
+					if (destination.isOsmNode()) {
+						destinationNode = map.getNodeByID(destination.getOsmNodeId());
 					} else {
-						listener.onStatusChanged(new SubJobStartedStatusChange(KangarooRoutingEngine.JOBID_GET_NEAREST_NODE));
+						listener.onStatusChanged(new SubJobStartedStatusChange(KangarooRoutingEngine.JOBID_GET_NEAREST_POI_NODE));
 						destinationNode = map.getNearestNode(new LatLon(destination.getLatitude(), destination.getLongitude()), 
 								new NearestStreetSelector());
-						listener.onStatusChanged(new SubJobDoneStatusChange(KangarooRoutingEngine.JOBID_GET_NEAREST_NODE));
+						listener.onStatusChanged(new SubJobDoneStatusChange(KangarooRoutingEngine.JOBID_GET_NEAREST_POI_NODE));
 					}
 					
 					IRouter router = new MultiTargetDijkstraRouter();
@@ -240,9 +202,11 @@ public class TSMKangarooRoutingEngine implements KangarooRoutingEngine {
 	/**
 	 * 
 	 */
-	public void routeFromTo(Place start, Place destination, Vehicle vehicle) throws Exception {
-		if (!initialized())
-			throw new Exception("not initialized.");
+	public void routeFromTo(Place start, Place destination, Vehicle vehicle) {
+		if (!initialized()) {
+			throw new RuntimeException("TSMKangarooRoutingEngine.routeFromTo(): " +
+			"routing engine not initialized");
+		}
 		
 		RunnableRouter job = new RunnableRouter(workingThreadStatusListener, map, start, destination, vehicle);
 		Thread worker = new Thread(job);
@@ -258,12 +222,10 @@ public class TSMKangarooRoutingEngine implements KangarooRoutingEngine {
 	 */
 	private class RunnableFileLoader implements Runnable {
 		private StatusListener listener;
-		private Context context;
 		
-		public RunnableFileLoader(StatusListener listener, Context context) {
+		public RunnableFileLoader(StatusListener listener) {
 			super();
 			this.listener = listener;
-			this.context = context;
 		}
 
 		@Override
@@ -287,16 +249,17 @@ public class TSMKangarooRoutingEngine implements KangarooRoutingEngine {
 	 * initialize the routing engine and load data from given data
 	 * source
 	 */
-	public void init() throws Exception {		
+	public boolean init() {		
 		if (initialized())
-			throw new Exception("already initialized.");
+			return false;
 		if (dataSource.getScheme() == null || !dataSource.getScheme().startsWith("file")) 
-			throw new Exception("scheme for data source not supported.");
-		
-		RunnableFileLoader job = new RunnableFileLoader(workingThreadStatusListener, this.context);
+			return false;
+				
+		RunnableFileLoader job = new RunnableFileLoader(workingThreadStatusListener);
 		Thread worker = new Thread(job);
 		worker.setName("TSMKangarooRoutingEngine.init()");
 		worker.start();
+		return true;
 	}
 	
 
@@ -334,75 +297,10 @@ public class TSMKangarooRoutingEngine implements KangarooRoutingEngine {
 	}
 
 
-	/**
-	 * 
-	 * @author Andreas Walz
-	 *
-	 */
-	private class RunnableGetWaysForNode implements Runnable {
-		private StatusListener listener;
-		private IDataSet map;
-		private Node node;
-				
-		public RunnableGetWaysForNode(StatusListener listener, IDataSet map,
-				Node node) {
-			super();
-			this.listener = listener;
-			this.map = map;
-			this.node = node;
-		}
-
-		@Override
-		public void run() {
-			listener.onStatusChanged(new JobStartedStatusChange(KangarooRoutingEngine.JOBID_GET_WAYS_FOR_NODE));
-			try {
-				Iterator<Way> wayitr;
-				synchronized(map) {
-					wayitr = map.getWaysForNode(node.getId());
-				}
-				listener.onStatusChanged(new JobDoneStatusChange(KangarooRoutingEngine.JOBID_GET_WAYS_FOR_NODE, wayitr));
-			} catch (Exception exception) {
-				listener.onStatusChanged(new JobFailedStatusChange(KangarooRoutingEngine.JOBID_GET_WAYS_FOR_NODE, exception));
-			}					
-		}		
-	}
-	
-
 	@Override
-	/**
-	 * 
-	 */
-	public void getWaysForNode(Node node) throws Exception {
-		if (!initialized())
-			throw new Exception("not initialized.");
+	public void getNearestStreetNode(Place center) {
+		// TODO Auto-generated method stub
 		
-		RunnableGetWaysForNode job = new RunnableGetWaysForNode(workingThreadStatusListener, map, node);
-		Thread worker = new Thread(job);
-		worker.setName("TSMKangarooRoutingEngine.getWaysForNode()");
-		worker.start();
-	}
-
-
-	@Override
-	public String getJobMessage(int jobID) {
-		if (jobID == KangarooRoutingEngine.JOBID_INIT_ROUTING_ENGINE) {
-			return "initializing routing engine...";
-		} else if (jobID == KangarooRoutingEngine.JOBID_GET_NEAREST_NODE) {
-			return "looking for nearest node...";
-		} else if (jobID == KangarooRoutingEngine.JOBID_GET_WAYS_FOR_NODE) {
-			return "looking for ways for node...";
-		} else if (jobID == KangarooRoutingEngine.JOBID_ROUTE_FROMTO) {
-			return "routing...";
-		} else {
-			return "unknown job";
-		}
-		
-	}
-
-
-	@Override
-	public void setContext(Context context) {
-		this.context = context;		
 	}
 
 

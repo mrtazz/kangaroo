@@ -17,12 +17,10 @@ import org.openstreetmap.travelingsalesman.routing.Route;
 import org.openstreetmap.travelingsalesman.routing.Route.RoutingStep;
 import org.openstreetmap.travelingsalesman.routing.describers.SimpleRouteDescriber;
 
-import com.kangaroo.routing.Car;
 import com.kangaroo.routing.KangarooRoutingEngine;
 import com.kangaroo.routing.KangarooRoutingManager;
 import com.kangaroo.routing.Place;
 import com.kangaroo.routing.TSMKangarooRoutingEngine;
-import com.kangaroo.routing.Vehicle;
 import com.kangaroo.statuschange.JobDoneStatusChange;
 import com.kangaroo.statuschange.JobFailedStatusChange;
 import com.kangaroo.statuschange.JobStartedStatusChange;
@@ -32,6 +30,9 @@ import com.kangaroo.statuschange.SubJobDoneStatusChange;
 import com.kangaroo.statuschange.SubJobStartedStatusChange;
 import com.kangaroo.techscout.routing.MovementSimulator;
 import com.kangaroo.tsm.osm.io.FileLoader;
+import com.mobiletsm.osm.OsmHelper;
+import com.mobiletsm.routing.AllStreetVehicle;
+import com.mobiletsm.routing.Vehicle;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -67,7 +68,7 @@ public class TSMTestBench extends Activity implements StatusListener {
 	
 	private KangarooRoutingManager routingManager = null;
 	private LocationManager locationManager = null;
-    private Vehicle vehicle = new Car();
+    private Vehicle vehicle = new AllStreetVehicle();
 	
 	MovementSimulator simulator = null;
 	
@@ -187,7 +188,7 @@ public class TSMTestBench extends Activity implements StatusListener {
         
         
         
-        routingManager = new KangarooRoutingManager(this);        
+        routingManager = new KangarooRoutingManager();        
      
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         
@@ -226,7 +227,7 @@ public class TSMTestBench extends Activity implements StatusListener {
 						public void onClick(DialogInterface dialog, int which) {							
 							dialog.cancel();							
 							try {								
-					        	routingManager.setRoutingDataSource(new URI("file:/sdcard/map-em.osm"));
+					        	routingManager.setRoutingDataSource(new URI("file:/sdcard/map.db"));
 					        	routingManager.setStatusListener(routingManagerStatusListener);
 					        	routingManager.init();					        	
 							} catch (Exception e) {								
@@ -387,7 +388,7 @@ public class TSMTestBench extends Activity implements StatusListener {
 					
 					outputStringBuffer = new StringBuffer();
 					outputStringBuffer.append(String.format("dist = %.0f m\nupdate #%d\n", 
-							route.distanceInMeters(), ++update));					
+							OsmHelper.getRouteLength(route)/*route.distanceInMeters()*/, ++update));					
 					
 					List<RoutingStep> steps = route.getRoutingSteps();
 					

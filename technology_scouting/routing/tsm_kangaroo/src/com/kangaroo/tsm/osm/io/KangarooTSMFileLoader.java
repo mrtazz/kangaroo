@@ -24,9 +24,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.kangaroo.osmosis.core.domain.v0_6.KangarooOSMNode;
-import com.kangaroo.routing.KangarooProjection;
 import com.kangaroo.tsm.osm.data.KangarooTSMMemoryDataSet;
+import com.mobiletsm.osm.OsmHelper;
+import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
 
 /**
  * @author andreaswalz
@@ -66,7 +66,7 @@ public class KangarooTSMFileLoader extends FileLoader {
 			for(nodeCursor.moveToFirst(); !nodeCursor.isAfterLast(); nodeCursor.moveToNext()) {				
 				long nodeId = nodeCursor.getLong(col_id);		
 				Node node = new Node(nodeId, 0, (Date)null, 
-						null, 0, tagUnpacker(nodeCursor.getString(col_tags)), 
+						null, 0, OsmHelper.unpackStringToTags(nodeCursor.getString(col_tags)), 
 						nodeCursor.getDouble(col_lat), nodeCursor.getDouble(col_lon));
 				
 				dataSet.addNode(node);
@@ -86,18 +86,14 @@ public class KangarooTSMFileLoader extends FileLoader {
 			int col_tags= wayCursor.getColumnIndex("tags");
 			int col_way_nodes = wayCursor.getColumnIndex("way_nodes");
 			
-			for (wayCursor.moveToFirst(); !wayCursor.isAfterLast(); wayCursor.moveToNext()) {				
-				long way_id = wayCursor.getLong(col_way_id);				
-				String str = wayCursor.getString(col_way_nodes);
-				List<WayNode> wayNodes = new LinkedList<WayNode>();
-				
-				for (int i = 0; i < str.length(); i+=8) {
-		    		String long_str = str.substring(i, i+8);
-		    		wayNodes.add(new WayNode(Long.decode("0x" + long_str)));  
-		    	}
-				
-				Way way = new Way(way_id, 0, (Date)null, null, 0, tagUnpacker(wayCursor.getString(col_tags)), wayNodes);	
-				dataSet.addWay(way);
+			for (wayCursor.moveToFirst(); !wayCursor.isAfterLast(); wayCursor.moveToNext()) {
+				/*Way way = new MobileWay(
+						wayCursor.getLong(col_way_id), 0, (Date)null, null, 0, 
+						OsmHelper.unpackStringToTags(wayCursor.getString(col_tags)), 
+						OsmHelper.unpackStringToWayNodes(wayCursor.getString(col_way_nodes)));*/
+				Way way = new MobileWay(wayCursor.getLong(col_way_id), wayCursor.getString(col_tags), 
+						wayCursor.getString(col_way_nodes));
+				dataSet.addWay(way);								
 			}			
 		}
 		wayCursor.close();
@@ -106,30 +102,6 @@ public class KangarooTSMFileLoader extends FileLoader {
 		database.close();
 				
 		return dataSet;
-	}
-
-	
-	
-	
-	private Collection<Tag> tagUnpacker(String tags) {
-		Collection<Tag> result = new LinkedList<Tag>();		
-		
-		String tag;
-		
-		while(tags.startsWith("|")) {
-			int index = tags.indexOf("|", 1);			
-			if (index > 1) {
-				tag = tags.substring(0, index);
-				tags = tags.substring(index);
-			} else {
-				tag = tags;
-				tags = "";
-			}			
-			index = tag.indexOf("==");
-			result.add(new Tag(tag.substring(1, index), tag.substring(index + 2)));
-		}
-		
-		return result;
 	}
 	
 }

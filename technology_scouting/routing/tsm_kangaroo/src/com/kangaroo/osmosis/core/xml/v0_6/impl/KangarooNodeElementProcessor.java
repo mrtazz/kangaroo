@@ -26,9 +26,9 @@ import org.openstreetmap.osmosis.core.xml.v0_6.impl.TagElementProcessor;
 import org.openstreetmap.osmosis.core.xml.v0_6.impl.TagListener;
 import org.openstreetmap.osmosis.core.OsmosisRuntimeException;
 
-import android.util.Log;
+import com.mobiletsm.osmosis.core.domain.v0_6.MobileNode;
 
-import com.kangaroo.osmosis.core.domain.v0_6.KangarooOSMNode;
+import android.util.Log;
 
 
 /**
@@ -102,7 +102,7 @@ public class KangarooNodeElementProcessor extends NodeElementProcessor implement
 		user = buildUser(rawUserId, rawUserName);
 		
 		/* this was formerly 'new Node(' */
-		node = new KangarooOSMNode(id, version, timestampContainer, user, changesetId, latitude, longitude);
+		node = new MobileNode(id, version, timestampContainer, user, changesetId, latitude, longitude);
 
 	}
 	
