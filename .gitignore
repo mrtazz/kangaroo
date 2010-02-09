@@ -1,5 +1,4 @@
 !.gitignore
-.*
 *.undo
 *.orig
 *.db
@@ -18,3 +17,4 @@
 *.dex
 *.class
 technology_scouting/calender_api/AndroidQuickCalendar/bin/net/*
+technology_scouting/calender_api/gen/*

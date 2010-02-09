@@ -5,7 +5,7 @@
  * should not be modified by hand.
  */
 
-package com.example.calendar_api;
+package com.example.kangaroo.calendar_interface;
 
 public final class R {
     public static final class attr {
