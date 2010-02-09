@@ -1,8 +1,7 @@
-package com.kangaroo;
+package com.kangaroo.gui;
 
 import com.android.kangaroo.R;
-import com.kangaroo.AlertUserInteraction;
-import com.kangaroo.gui.ActivityBuildPlan;
+import com.kangaroo.gui.AlertUserInteraction;
 
 import android.app.Notification;
 import android.app.NotificationManager;
