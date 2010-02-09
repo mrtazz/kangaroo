@@ -33,6 +33,8 @@ import com.mobiletsm.osm.data.adapters.MDSAndroidDatabaseAdapter;
 import com.mobiletsm.osm.data.providers.DatabaseMDSProvider;
 import com.mobiletsm.osm.data.providers.MobileDataSetProvider;
 import com.mobiletsm.osm.data.searching.POINodeSelector;
+import com.mobiletsm.routing.Limits;
+import com.mobiletsm.routing.Place;
 import com.mobiletsm.routing.Vehicle;
 
 public class MobileRoutingEngine extends KangarooRoutingEngine {
