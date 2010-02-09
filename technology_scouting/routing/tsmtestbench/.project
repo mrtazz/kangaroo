@@ -32,9 +32,14 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>tsm_kangaroo_src</name>
+			<name>src_OldStuff</name>
 			<type>2</type>
-			<location>/Users/andreaswalz/Documents/Uni/Informatik/Teamprojekt - WS0910/repository/master/tsm_kangaroo/src</location>
+			<location>/Users/andreaswalz/Documents/Uni/Informatik/Teamprojekt - WS0910/repository/master/kangaroo/technology_scouting/routing/OldStuff/src</location>
+		</link>
+		<link>
+			<name>src_kangaroo_tsm</name>
+			<type>2</type>
+			<location>/Users/andreaswalz/Documents/Uni/Informatik/Teamprojekt - WS0910/repository/master/kangaroo/technology_scouting/routing/tsm_kangaroo/src</location>
 		</link>
 	</linkedResources>
 </projectDescription>
