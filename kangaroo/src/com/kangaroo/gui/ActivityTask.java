@@ -1,4 +1,6 @@
-package com.android.kangaroo;
+package com.kangaroo.gui;
+
+import com.android.kangaroo.R;
 
 import android.app.Activity;
 import android.os.Bundle;

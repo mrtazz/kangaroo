@@ -1,13 +1,13 @@
-package com.android.kangaroo;
+package com.kangaroo;
 
-import com.android.kangaroo.ServiceRoute;
+import com.kangaroo.CalendarInteraction;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 
-public class ServiceRoute extends Service
+public class CalendarInteraction extends Service
 {
 
     /**
@@ -17,9 +17,9 @@ public class ServiceRoute extends Service
      */
     public class LocalBinder extends Binder 
     {
-        ServiceRoute getService() 
+        CalendarInteraction getService() 
         {
-            return ServiceRoute.this;
+            return CalendarInteraction.this;
         }
     }
     
@@ -38,17 +38,17 @@ public class ServiceRoute extends Service
     @Override
     public void onDestroy() 
     {
-      
+       
     }
 
     // This is the object that receives interactions from clients.
     private final IBinder mBinder = new LocalBinder();
     
     
-    //implement Routing here
+    //implement Calendar stuff here
     public String routingTest(String text)
     {
-    	return "Service Routing responds "+text;
+    	return "Service Calendar responds "+text;
     }
 
 }
