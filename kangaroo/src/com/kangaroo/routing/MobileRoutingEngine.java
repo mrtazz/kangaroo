@@ -15,17 +15,6 @@ import org.openstreetmap.travelingsalesman.routing.IRouter;
 import org.openstreetmap.travelingsalesman.routing.Route;
 import org.openstreetmap.travelingsalesman.routing.routers.MultiTargetDijkstraRouter;
 
-import android.content.Context;
-import android.util.Log;
-
-
-import com.kangaroo.statuschange.JobDoneStatusChange;
-import com.kangaroo.statuschange.JobFailedStatusChange;
-import com.kangaroo.statuschange.JobStartedStatusChange;
-import com.kangaroo.statuschange.StatusChange;
-import com.kangaroo.statuschange.StatusListener;
-import com.kangaroo.statuschange.SubJobDoneStatusChange;
-import com.kangaroo.statuschange.SubJobStartedStatusChange;
 import com.mobiletsm.osm.data.MobileInterfaceDataSet;
 import com.mobiletsm.osm.data.adapters.MDSAndroidDatabaseAdapter;
 import com.mobiletsm.osm.data.providers.DatabaseMDSProvider;
@@ -34,6 +23,13 @@ import com.mobiletsm.osm.data.searching.POINodeSelector;
 import com.mobiletsm.routing.Limits;
 import com.mobiletsm.routing.Place;
 import com.mobiletsm.routing.Vehicle;
+import com.mobiletsm.routing.statuschange.JobDoneStatusChange;
+import com.mobiletsm.routing.statuschange.JobFailedStatusChange;
+import com.mobiletsm.routing.statuschange.JobStartedStatusChange;
+import com.mobiletsm.routing.statuschange.StatusChange;
+import com.mobiletsm.routing.statuschange.StatusListener;
+import com.mobiletsm.routing.statuschange.SubJobDoneStatusChange;
+import com.mobiletsm.routing.statuschange.SubJobStartedStatusChange;
 
 public class MobileRoutingEngine extends KangarooRoutingEngine {
 	

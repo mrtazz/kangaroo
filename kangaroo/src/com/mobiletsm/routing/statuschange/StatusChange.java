@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.kangaroo.statuschange;
+package com.mobiletsm.routing.statuschange;
 
 /**
  * This class represents a change in the status of any engine

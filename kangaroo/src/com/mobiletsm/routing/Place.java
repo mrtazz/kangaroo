@@ -5,7 +5,6 @@ package com.mobiletsm.routing;
 
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 
-import android.location.Location;
 
 /**
  * This class represents an entity that can be used to specify 

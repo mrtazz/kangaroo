@@ -8,14 +8,12 @@ import java.net.URI;
 import org.openstreetmap.osm.data.Selector;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 
-import com.kangaroo.statuschange.StatusListener;
 import com.mobiletsm.osm.data.searching.POINodeSelector;
 import com.mobiletsm.routing.Limits;
 import com.mobiletsm.routing.Place;
 import com.mobiletsm.routing.Vehicle;
+import com.mobiletsm.routing.statuschange.StatusListener;
 
-import android.content.Context;
-import android.location.LocationListener;
 
 /**
  * This defines the interface between the routing 

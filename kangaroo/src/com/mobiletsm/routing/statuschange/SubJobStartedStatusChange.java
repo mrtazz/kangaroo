@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.kangaroo.statuschange;
+package com.mobiletsm.routing.statuschange;
 
 /**
  * @author andreaswalz
