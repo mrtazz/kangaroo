@@ -59,16 +59,6 @@ public class Place {
 	
 	
 	/**
-	 * 
-	 * @param location
-	 */
-	public Place(Location location) {
-		super();
-		setCoordinates(location.getLatitude(), location.getLongitude());
-	}
-	
-	
-	/**
 	 * return the openstreetmap node specifying the place
 	 * @return
 	 */
