@@ -7,25 +7,23 @@
     <application 	android:icon="@drawable/icon" 
     				android:label="@string/app_name">
 		
-		<activity 	android:name="ActivityBuildPlan" 
-					android:icon="@drawable/icon" android:label="kangaroo">
+		<activity 	android:icon="@drawable/icon" android:label="kangaroo" android:name="com.kangaroo.gui.ActivityBuildPlan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 		</activity>
-		<activity android:name="ActivityTask"></activity>
+		<activity android:name="com.kangaroo.gui.ActivityTask"></activity>
 		
 		
-		<service android:name="ServiceCallLocation"></service>
-		<service android:name="ServiceCallTick"></service>
-		<service android:name="ServiceCheckPlan"></service>
-		<service android:name="ServiceOptimizePlan"></service>
+		<service android:name="com.kangaroo.system.ServiceCallLocation"></service>
+		<service android:name="com.kangaroo.system.ServiceCallTick"></service>
+		<service android:name="com.kangaroo.ServiceCheckPlan"></service>
+		<service android:name="com.kangaroo.ServiceOptimizePlan"></service>
 		
-		<receiver android:name=".BroadcastReceiverBootTime" 
- 				  android:enabled="true" 
+		<receiver android:enabled="true" 
  				  android:exported="false"
- 				  android:label="BroadcastReceiverBootTime">
+ 				  android:label="BroadcastReceiverBootTime" android:name="com.kangaroo.system.BroadcastReceiverBootTime">
 	   		<intent-filter>
 	        	  <action android:name="android.intent.action.BOOT_COMPLETED" />
 	    	</intent-filter>

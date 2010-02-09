@@ -1,6 +1,6 @@
-package com.kangaroo;
+package com.kangaroo.calendar;
 
-import com.kangaroo.CalendarInteraction;
+import com.kangaroo.calendar.CalendarInteraction;
 
 import android.app.Service;
 import android.content.Intent;
