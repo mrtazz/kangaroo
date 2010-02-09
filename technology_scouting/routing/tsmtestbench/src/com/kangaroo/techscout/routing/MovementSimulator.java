@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.openstreetmap.osm.data.IDataSet;
 
-import com.kangaroo.routing.Place;
+import com.mobiletsm.routing.Place;
 import com.mobiletsm.routing.Vehicle;
 
 import android.location.Location;

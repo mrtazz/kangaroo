@@ -19,7 +19,6 @@ import org.openstreetmap.travelingsalesman.routing.describers.SimpleRouteDescrib
 
 import com.kangaroo.routing.KangarooRoutingEngine;
 import com.kangaroo.routing.KangarooRoutingManager;
-import com.kangaroo.routing.Place;
 import com.kangaroo.routing.TSMKangarooRoutingEngine;
 import com.kangaroo.statuschange.JobDoneStatusChange;
 import com.kangaroo.statuschange.JobFailedStatusChange;
@@ -32,6 +31,7 @@ import com.kangaroo.techscout.routing.MovementSimulator;
 import com.kangaroo.tsm.osm.io.FileLoader;
 import com.mobiletsm.osm.OsmHelper;
 import com.mobiletsm.routing.AllStreetVehicle;
+import com.mobiletsm.routing.Place;
 import com.mobiletsm.routing.Vehicle;
 
 import android.app.Activity;

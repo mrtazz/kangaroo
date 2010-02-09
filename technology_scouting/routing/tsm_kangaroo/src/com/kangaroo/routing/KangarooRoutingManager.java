@@ -12,6 +12,7 @@ import com.kangaroo.statuschange.StatusListener;
 import com.kangaroo.statuschange.JobDoneStatusChange;
 import com.mobiletsm.routing.AllStreetVehicle;
 import com.mobiletsm.routing.AllWayVehicle;
+import com.mobiletsm.routing.Place;
 import com.mobiletsm.routing.Vehicle;
 
 import android.content.Context;

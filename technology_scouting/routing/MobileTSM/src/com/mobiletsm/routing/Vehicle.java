@@ -26,6 +26,7 @@ public abstract class Vehicle implements IVehicle {
 	 */
 	protected double maxSpeed = 100;
 	
+	
 	/**
 	 * set the maximum speed for this vehicle
 	 * @param	speed	maximum speed in km/s
@@ -33,6 +34,7 @@ public abstract class Vehicle implements IVehicle {
 	public void setMaxSpeed(double speed) {
 		maxSpeed = speed;
 	}
+	
 	
 	/**
 	 * get the maximum speed for this vehicle in km/s

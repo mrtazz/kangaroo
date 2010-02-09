@@ -50,8 +50,11 @@ public class DatabaseMDSProvider implements MobileDataSetProvider {
 	}
 	
 	
-	/*  */
+	/*  */	
 	
+	private boolean routingMapPresent = false;
+	
+
 	private Map<Long, Node> streetNodes = Collections.synchronizedMap(new HashMap<Long, Node>());
 	
 	
