@@ -1,4 +1,4 @@
-package com.mobiletsm.routing;
+package com.mobiletsm.routing.metrics;
 import org.openstreetmap.osm.ConfigurationSection;
 import org.openstreetmap.osm.data.IDataSet;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;

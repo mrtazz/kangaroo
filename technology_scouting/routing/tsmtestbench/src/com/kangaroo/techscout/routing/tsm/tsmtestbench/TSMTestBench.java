@@ -76,7 +76,6 @@ public class TSMTestBench extends Activity implements StatusListener {
 	
 	private static final int DIALOG_LOOK_FOR_NEAREST_NODE_ID = 1; 
 	
-	private static final int DIALOG_ROUTE_FROMTO = 2; 
 	
 	private Handler routingManagerStatusChangedHandler = new Handler() {
 		@Override
@@ -284,36 +283,6 @@ public class TSMTestBench extends Activity implements StatusListener {
 				
 				dialog = builder.create();				
 				break;	
-			
-			case DIALOG_ROUTE_FROMTO:
-				
-				builder.setMessage("Do you want to find a route?")
-					.setCancelable(false)
-					.setPositiveButton("Yes", new DialogInterface.OnClickListener() {						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {							
-							dialog.cancel();
-					        
-					        try {
-								routingManager.routeFromTo(
-										new Place(48.1216952, 7.8571635), 
-										new Place(48.104424, 7.870367), vehicle);
-							} catch (Exception e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
-					})
-					.setNegativeButton("No", new DialogInterface.OnClickListener() {						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {							
-							TSMTestBench.this.finish();							
-						}
-					});
-				
-				dialog = builder.create();				
-				break;		
-			
 			
 			default:
 				dialog = null;

@@ -1,4 +1,4 @@
-package com.mobiletsm.osm.data;
+package com.mobiletsm.osm.data.providers;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -23,7 +23,10 @@ import org.openstreetmap.osmosis.core.domain.v0_6.WayNode;
 import org.openstreetmap.travelingsalesman.routing.IVehicle;
 
 import com.mobiletsm.osm.OsmHelper;
-import com.mobiletsm.osm.POINodeSelector;
+import com.mobiletsm.osm.data.MobileInterfaceDataSet;
+import com.mobiletsm.osm.data.MobileRoutingInterfaceDataSet;
+import com.mobiletsm.osm.data.adapters.MDSDatabaseAdapter;
+import com.mobiletsm.osm.data.searching.POINodeSelector;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileNode;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
 

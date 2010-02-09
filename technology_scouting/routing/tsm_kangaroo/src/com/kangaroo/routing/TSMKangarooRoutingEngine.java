@@ -31,7 +31,7 @@ import com.kangaroo.statuschange.SubJobStartedStatusChange;
 import com.kangaroo.tsm.osm.data.KangarooTSMMemoryDataSet;
 import com.kangaroo.tsm.osm.io.FileLoader;
 import com.kangaroo.tsm.osm.io.KangarooTSMFileLoader;
-import com.mobiletsm.osm.POINodeSelector;
+import com.mobiletsm.osm.data.searching.POINodeSelector;
 import com.mobiletsm.routing.Vehicle;
 
 import android.content.Context;

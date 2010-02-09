@@ -1,4 +1,4 @@
-package com.mobiletsm.osm.data;
+package com.mobiletsm.osm.data.adapters;
 
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -17,6 +17,7 @@ import org.openstreetmap.osmosis.core.domain.v0_6.Way;
 import org.openstreetmap.osmosis.core.domain.v0_6.WayNode;
 
 import com.mobiletsm.osm.OsmHelper;
+import com.mobiletsm.osm.data.MapTile;
 
 public abstract class MDSDatabaseAdapter {
 

@@ -34,14 +34,14 @@ import org.openstreetmap.travelingsalesman.routing.Route;
 import org.openstreetmap.travelingsalesman.routing.routers.MultiTargetDijkstraRouter;
 
 import com.kangaroo.tsm.osm.io.FileLoader;
-import com.mobiletsm.osm.AmenityPOINodeSelector;
-import com.mobiletsm.osm.CombinedSelector;
 import com.mobiletsm.osm.OsmHelper;
-import com.mobiletsm.osm.POINodeSelector;
-import com.mobiletsm.osm.data.DatabaseMDSProvider;
-import com.mobiletsm.osm.data.MDSSQLiteDatabaseAdapter;
 import com.mobiletsm.osm.data.MobileDataSet;
-import com.mobiletsm.osm.data.MobileDataSetProvider;
+import com.mobiletsm.osm.data.adapters.MDSSQLiteDatabaseAdapter;
+import com.mobiletsm.osm.data.providers.DatabaseMDSProvider;
+import com.mobiletsm.osm.data.providers.MobileDataSetProvider;
+import com.mobiletsm.osm.data.searching.AmenityPOINodeSelector;
+import com.mobiletsm.osm.data.searching.CombinedSelector;
+import com.mobiletsm.osm.data.searching.POINodeSelector;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
 import com.mobiletsm.routing.AllStreetVehicle;
 
@@ -66,8 +66,8 @@ public class OSMFileReader {
 		//OsmHelper.writeToMobileDatabase(map, "jdbc:sqlite:/Users/andreaswalz/Downloads/map.db");
 		
 		
-		IDataSet routingMap = OsmHelper.simplifyDataSet(map, new AllStreetVehicle(false));
-		OsmHelper.compareRouting(map, routingMap, new AllStreetVehicle(true), System.out);
+		IDataSet routingMap = OsmHelper.simplifyDataSet(map, new AllStreetVehicle());
+		OsmHelper.compareRouting(map, routingMap, new AllStreetVehicle(), System.out);
 		
 		
 		

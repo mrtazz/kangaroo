@@ -42,11 +42,13 @@ import org.openstreetmap.travelingsalesman.routing.routers.TurnRestrictedAStar;
 
 import com.mobiletsm.osm.data.MobileDataSet;
 import com.mobiletsm.osm.data.MobileMemoryDataSet;
+import com.mobiletsm.osm.data.searching.AmenityPOINodeSelector;
+import com.mobiletsm.osm.data.searching.CombinedSelector;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileWayNode;
 import com.mobiletsm.routing.AllStreetVehicle;
-import com.mobiletsm.routing.MobileMultiTargetDijkstraRouter;
-import com.mobiletsm.routing.MobileRoutingMetric;
+import com.mobiletsm.routing.metrics.MobileRoutingMetric;
+import com.mobiletsm.routing.routers.MobileMultiTargetDijkstraRouter;
 
 
 

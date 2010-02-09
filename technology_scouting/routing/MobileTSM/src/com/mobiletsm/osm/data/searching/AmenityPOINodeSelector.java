@@ -1,4 +1,4 @@
-package com.mobiletsm.osm;
+package com.mobiletsm.osm.data.searching;
 
 import org.openstreetmap.osm.data.IDataSet;
 import org.openstreetmap.osm.data.NodeHelper;

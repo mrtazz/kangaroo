@@ -11,6 +11,7 @@ import com.kangaroo.statuschange.StatusChange;
 import com.kangaroo.statuschange.StatusListener;
 import com.kangaroo.statuschange.JobDoneStatusChange;
 import com.mobiletsm.routing.AllStreetVehicle;
+import com.mobiletsm.routing.AllWayVehicle;
 import com.mobiletsm.routing.Vehicle;
 
 import android.content.Context;
@@ -40,7 +41,7 @@ public class KangarooRoutingManager {
 	/**
 	 * 
 	 */
-	private Vehicle vehicle = new AllStreetVehicle();
+	private Vehicle vehicle = new AllWayVehicle();
 	
 	
 	/**
@@ -160,11 +161,11 @@ public class KangarooRoutingManager {
 		}
 	}
 	
-	
+	/*
 	public void routeFromTo(Place start, Place destination, Vehicle vehicle) throws Exception {
 		routingEngine.routeFromTo(start, destination, vehicle);
 	}
-	
+	*/
 	
 	/**
 	 * 

@@ -1,4 +1,4 @@
-package com.mobiletsm.routing;
+package com.mobiletsm.routing.routers;
 import org.openstreetmap.travelingsalesman.routing.IRouter;
 
 
@@ -30,6 +30,7 @@ import org.openstreetmap.travelingsalesman.routing.routers.NodeDistanceComparato
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 import org.openstreetmap.osmosis.core.domain.v0_6.Way;
 import org.openstreetmap.osmosis.core.domain.v0_6.WayNode;
+
 
 /**
  * A simple Dijkstra.

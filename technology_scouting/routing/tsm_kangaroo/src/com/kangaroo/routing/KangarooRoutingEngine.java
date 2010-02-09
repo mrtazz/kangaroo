@@ -9,7 +9,7 @@ import org.openstreetmap.osm.data.Selector;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 
 import com.kangaroo.statuschange.StatusListener;
-import com.mobiletsm.osm.POINodeSelector;
+import com.mobiletsm.osm.data.searching.POINodeSelector;
 import com.mobiletsm.routing.Vehicle;
 
 import android.content.Context;
@@ -49,7 +49,12 @@ public abstract class KangarooRoutingEngine {
 	/**
 	 * 
 	 */
-	public final static int JOBID_ROUTE_FROMTO = 4;
+	public final static int JOBID_ROUTE_FROMTO = 4;	
+	
+	/**
+	 * 
+	 */
+	public final static int JOBID_CREATE_DATASET = 5;
 	
 	
 	
@@ -102,6 +107,8 @@ public abstract class KangarooRoutingEngine {
 			return "looking nearest street node...";
 		} else if (jobID == JOBID_ROUTE_FROMTO) {
 			return "routing...";
+		} else if (jobID == JOBID_CREATE_DATASET) {
+			return "creating data set...";
 		} else {
 			return "unknown job";
 		}

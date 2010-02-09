@@ -1,4 +1,4 @@
-package com.mobiletsm.osm;
+package com.mobiletsm.osm.data.searching;
 import org.openstreetmap.osm.data.IDataSet;
 import org.openstreetmap.osm.data.Selector;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;

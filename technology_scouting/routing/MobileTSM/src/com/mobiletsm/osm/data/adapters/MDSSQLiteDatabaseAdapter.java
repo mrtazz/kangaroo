@@ -1,4 +1,4 @@
-package com.mobiletsm.osm.data;
+package com.mobiletsm.osm.data.adapters;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

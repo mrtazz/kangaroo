@@ -19,16 +19,6 @@ import org.openstreetmap.travelingsalesman.routing.IVehicle;
  */
 public class AllStreetVehicle extends Vehicle {
 
-		private boolean log = false;
-
-		public AllStreetVehicle(boolean log) {
-			this();
-			this.log = log;
-		}
-	
-		public AllStreetVehicle() {
-			super();
-		}
 	
 	@Override
 	public boolean isAllowed(IDataSet map, Node node) {		
@@ -44,20 +34,10 @@ public class AllStreetVehicle extends Vehicle {
 
 	
 	@Override
-	public boolean isAllowed(IDataSet map, Way way) {		
-		
-			String name = WayHelper.getTag(way, Tags.TAG_NAME);
-			String ref = WayHelper.getTag(way, Tags.TAG_REF);
-		
+	public boolean isAllowed(IDataSet map, Way way) {
 		boolean hasHighway = WayHelper.getTag(way, Tags.TAG_HIGHWAY) != null;
-		boolean hasName = name != null;
-		boolean hasRef = ref != null;
-		
-			if (log && hasRef && ref.equals("K 5109")) {
-				System.out.println("AllStreetVehicle.isAllowed(wayid:" + way.getId() + ") = " + 
-						(hasHighway && (hasName || hasRef)));
-			}
-		
+		boolean hasName = WayHelper.getTag(way, Tags.TAG_NAME) != null;
+		boolean hasRef = WayHelper.getTag(way, Tags.TAG_REF) != null;		
 		return hasHighway && (hasName || hasRef);		
 	}
 

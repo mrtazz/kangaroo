@@ -27,12 +27,12 @@ import com.kangaroo.statuschange.StatusListener;
 import com.kangaroo.statuschange.SubJobDoneStatusChange;
 import com.kangaroo.statuschange.SubJobStartedStatusChange;
 import com.kangaroo.tsm.osm.data.KangarooTSMMemoryDataSet;
-import com.kangaroo.tsm.osm.data.MDSAndroidDatabaseAdapter;
 import com.kangaroo.tsm.osm.io.KangarooTSMFileLoader;
-import com.mobiletsm.osm.POINodeSelector;
-import com.mobiletsm.osm.data.DatabaseMDSProvider;
-import com.mobiletsm.osm.data.MobileDataSetProvider;
 import com.mobiletsm.osm.data.MobileInterfaceDataSet;
+import com.mobiletsm.osm.data.adapters.MDSAndroidDatabaseAdapter;
+import com.mobiletsm.osm.data.providers.DatabaseMDSProvider;
+import com.mobiletsm.osm.data.providers.MobileDataSetProvider;
+import com.mobiletsm.osm.data.searching.POINodeSelector;
 import com.mobiletsm.routing.Vehicle;
 
 public class MobileRoutingEngine extends KangarooRoutingEngine {
@@ -117,7 +117,9 @@ public class MobileRoutingEngine extends KangarooRoutingEngine {
 							new LatLon(to.getLatitude(), to.getLongitude())).getId();
 					listener.onStatusChanged(new SubJobDoneStatusChange(JOBID_GET_NEAREST_STREET_NODE));
 
+					listener.onStatusChanged(new SubJobStartedStatusChange(JOBID_CREATE_DATASET));
 					MobileInterfaceDataSet routingDataSet = provider.getRoutingDataSet(fromNodeId, toNodeId, null);
+					listener.onStatusChanged(new SubJobDoneStatusChange(JOBID_CREATE_DATASET));
 					
 					IRouter router = new MultiTargetDijkstraRouter();
 					Route route = router.route(routingDataSet, routingDataSet.getNodeByID(toNodeId), 
