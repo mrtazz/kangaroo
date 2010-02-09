@@ -6,9 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -26,160 +23,31 @@ import org.openstreetmap.osm.data.IDataSet;
 import org.openstreetmap.osm.data.MemoryDataSet;
 import org.openstreetmap.osm.data.Selector;
 import org.openstreetmap.osm.data.coordinates.Bounds;
-import org.openstreetmap.osm.data.searching.NearestStreetSelector;
+import org.openstreetmap.osm.data.coordinates.LatLon;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 import org.openstreetmap.osmosis.core.domain.v0_6.Tag;
 import org.openstreetmap.osmosis.core.domain.v0_6.Way;
 import org.openstreetmap.osmosis.core.domain.v0_6.WayNode;
+import org.openstreetmap.travelingsalesman.routing.IRouter;
 import org.openstreetmap.travelingsalesman.routing.IVehicle;
+import org.openstreetmap.travelingsalesman.routing.Route;
+import org.openstreetmap.travelingsalesman.routing.routers.MultiTargetDijkstraRouter;
 
 import com.kangaroo.tsm.osm.io.FileLoader;
+import com.mobiletsm.osm.AmenityPOINodeSelector;
+import com.mobiletsm.osm.CombinedSelector;
+import com.mobiletsm.osm.OsmHelper;
+import com.mobiletsm.osm.POINodeSelector;
+import com.mobiletsm.osm.data.DatabaseMDSProvider;
+import com.mobiletsm.osm.data.MDSSQLiteDatabaseAdapter;
+import com.mobiletsm.osm.data.MobileDataSet;
+import com.mobiletsm.osm.data.MobileDataSetProvider;
+import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
+import com.mobiletsm.routing.AllStreetVehicle;
+
 
 
 public class OSMFileReader {
-
-
-	public static String Create_Table_Nodes = 
-		"create table if not exists nodes (node_id integer primary key, lat real not null, lon real not null, tags text, " +
-		"tags_ text, node_ways text, isstreetnode integer not null, amenity integer not null);";
-	
-	public static String Create_Table_Ways =
-		"create table if not exists ways (way_id integer primary key, tags text, tags_ text, way_nodes text);";
-			
-	
-	public static void writeToDatabase(MemoryDataSet map) {
-
-		int wayid = 30589240;
-		
-		System.out.println("writeToDatabase: input: # nodes = " + map.getNodesCount());
-		System.out.println("writeToDatabase: input: # ways = " + map.getWaysCount());
-		
-		try {
-			
-			Class.forName("org.sqlite.JDBC");
-			
-			Connection connection = 
-				DriverManager.getConnection("jdbc:sqlite:/Users/andreaswalz/Downloads/map-em.db");
-						
-			Statement statement = connection.createStatement();
-			PreparedStatement ps;
-		
-			statement.executeUpdate("drop table if exists nodes;");
-			statement.executeUpdate("drop table if exists ways;");
-			statement.executeUpdate(Create_Table_Nodes);
-			statement.executeUpdate(Create_Table_Ways);
-				
-			connection.setAutoCommit(false);
-		
-			/* write nodes to database */
-			ps = connection.prepareStatement(
-					"INSERT INTO nodes (node_id, lat, lon, tags, node_ways, isstreetnode, amenity) " +
-					"VALUES (?, ?, ?, ?, ?, ?, ?);");
-			
-			Selector selector = new NearestStreetSelector();			
-			Iterator<Node> node_itr = map.getNodes(null);
-			while(node_itr.hasNext()) {
-				Node node = node_itr.next();				
-				String tags = OsmHelper.packTagsToString(node.getTags());	//tagPacker(node.getTags());
-				
-				int isstreetnode = 0;
-				if (selector.isAllowed(map, node))
-					isstreetnode = 1;
-				
-				StringBuffer ways_str = new StringBuffer();			
-				Iterator<Way> ways = map.getWaysForNode(node.getId());
-				while(ways.hasNext()) {
-					Way way = ways.next();
-					
-					String longString = Long.toHexString(way.getId());
-					for (int i = 8; i > longString.length(); i--)
-						ways_str.append("0");					
-					ways_str.append(longString);								
-				}				
-				
-				ps.setLong(1, node.getId());
-				ps.setDouble(2, node.getLatitude());
-				ps.setDouble(3, node.getLongitude());
-				ps.setString(4, tags);
-				ps.setString(5, ways_str.toString());
-				ps.setInt(6, isstreetnode);
-				ps.setInt(7, 0);
-				ps.execute();
-			}
-			
-			
-			/* write ways to database */
-			ps = connection.prepareStatement(
-				"INSERT INTO ways (way_id, tags, way_nodes) VALUES (?, ?, ?);");	
-			
-			Iterator<Way> way_itr = map.getWays(Bounds.WORLD);
-			while(way_itr.hasNext()) {
-				Way way = way_itr.next();
-				
-				String tags = OsmHelper.packTagsToString(way.getTags());
-				String wayNodes = OsmHelper.packLongsToString(OsmHelper.getWayNodes(way));
-								
-				if (way.getId() == wayid) {
-					System.out.println("writeToDatabase: tags = " + way.getTags().toString());
-					System.out.println("writeToDatabase: wayNodes = " + OsmHelper.getWayNodes(way).toString());
-					System.out.println("writeToDatabase: packed-tags = " + tags);
-					System.out.println("writeToDatabase: packed-wayNodes = " + wayNodes);
-				}
-				
-				ps.setLong(1, way.getId());
-				ps.setString(2, tags);
-				ps.setString(3, wayNodes);
-				ps.execute();
-			}
-			
-		    connection.setAutoCommit(true);
-		    			
-			/*
-		    ResultSet rs = statement.executeQuery("select * from ways where way_id = " + wayid + ";");
-		    while (rs.next()) {
-		    	String str = rs.getString("way_nodes");
-		    			    	
-		    	for (int i = 0; i < str.length(); i+=8) {
-		    		String long_str = str.substring(i, i+8);
-		    		System.out.print(Long.decode("0x" + long_str) + ", ");
-		    	}
-		    	
-		    	String str_tags = rs.getString("tags");
-		    	System.out.println("\n" + str_tags);
-		    	
-		    	Collection<Tag> tags = tagUnpacker(str_tags);
-		    	Iterator<Tag> tag_itr = tags.iterator();
-		    	while(tag_itr.hasNext()) {
-		    		Tag tag = tag_itr.next();
-		    		System.out.println(tag.getKey() + " = " + tag.getValue());
-		    	}
-		    }
-		    rs.close();
-		    		    
-		    rs = statement.executeQuery("SELECT * FROM nodes;");
-		    int i = 0;
-		    while(rs.next())
-		    	i++;
-		    System.out.println("writeToDatabase: # nodes written = " + i);
-		    rs = statement.executeQuery("SELECT * FROM ways;");
-		    i = 0;
-		    while(rs.next())
-		    	i++;
-		    System.out.println("writeToDatabase: # ways written = " + i);
-		    */
-		     
-		    
-		    connection.close();		    
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
 	
 	
 	/**
@@ -187,22 +55,67 @@ public class OSMFileReader {
 	 */
 	public static void main(String[] args) {
 	
+		
 		// load map file
 		File mapFile = new File("/Users/andreaswalz/Downloads/map.osm");		
-		MemoryDataSet map = (new FileLoader(mapFile)).parseOsm();		
+		IDataSet map = (new FileLoader(mapFile)).parseOsm();		
 		
-		System.out.println("FileLoader: output: # nodes = " + map.getNodesCount());
-		System.out.println("FileLoader: output: # ways = " + map.getWaysCount());
+		System.out.println("FileLoader: output: # nodes = " + OsmHelper.getNumberOfNodes(map));
+		System.out.println("FileLoader: output: # ways = " + OsmHelper.getNumberOfWays(map));	
 		
-		MemoryDataSet routingMap = OsmHelper.compressForRouting(map);
-		writeToDatabase(routingMap);		
+		//OsmHelper.writeToMobileDatabase(map, "jdbc:sqlite:/Users/andreaswalz/Downloads/map.db");
+		
+		
+		IDataSet routingMap = OsmHelper.simplifyDataSet(map, new AllStreetVehicle(false));
+		OsmHelper.compareRouting(map, routingMap, new AllStreetVehicle(true), System.out);
+		
+		
+		
+		
+		/*
+		IVehicle vehicle = new AllStreetVehicle();
+
+		MobileDataSetProvider provider = new DatabaseMDSProvider();		
+		provider.open("jdbc:sqlite:/Users/andreaswalz/Downloads/map.db", new MDSSQLiteDatabaseAdapter());	
+
+		long fromNodeId = 251508943;
+		long toNodeId = 251509130;
+
+		MobileDataSet routingMap = provider.getRoutingDataSet(fromNodeId, toNodeId, null);			
+		
+		System.out.println("# nodes = " + routingMap.getNodesCount());
+		System.out.println("# ways  = " + routingMap.getWaysCount());
+		
+		IRouter router = new MultiTargetDijkstraRouter();
+		Node fromNode = routingMap.getNodeByID(fromNodeId);
+		Node toNode = routingMap.getNodeByID(toNodeId);	
+		
+		Route route = router.route(routingMap, toNode, fromNode, vehicle);
+		OsmHelper.followRouteOnMap(routingMap, route, vehicle, System.out);
+		
+		System.out.println("OsmHelper.getRouteLengthOnMap(routingMap, route) = " + OsmHelper.getRouteLengthOnMap(routingMap, route) + "m");
+		System.out.println("OsmHelper.getRoute(route) = " + OsmHelper.getRouteLength(route) + "m");
+		*/
+		
+		//provider.close();	
+		
+		
+		
+		/*
+		Way way = routingMap.getWaysByID(20195279);
+		System.out.println(OsmHelper.packTagsToString(way.getTags()));
+		System.out.println(OsmHelper.packWayNodesToString(way));
+		*/
+		
+		
 	}
 	
 	
 	
-	public static void getBuckets(MemoryDataSet map) throws Exception {
-		final double bucketSize_lat = 0.008;
-		final double bucketSize_lon = 0.008;
+	
+	public static void getBuckets(IDataSet map) throws Exception {
+		final double bucketSize_lat = 0.1;
+		final double bucketSize_lon = 0.1;
 		
 		Buckets buckets = new Buckets(map, bucketSize_lat, bucketSize_lon);
 		
@@ -244,7 +157,7 @@ public class OSMFileReader {
 		System.out.println("max # nodes = " + maxNodes);
 		System.out.println("max # ways = " + maxWays);
 		
-		buckets.drawBucketMatrix(System.out);
+		//buckets.drawBucketMatrix(System.out);
 	}
 	
 	
@@ -264,23 +177,6 @@ public class OSMFileReader {
 	
 	public static String escape(String input) {
 		return input.replaceAll("'", "''");		
-	}
-	
-	/*
-	public static String tagPacker(Collection<Tag> tags) {
-		return OsmHelper.packTagsToString(tags);
-	}
-	*/
-
-	/*
-	public static Collection<Tag> tagUnpacker(String tags) {
-		return OsmHelper.unpackStringToTags(tags);
-	}
-	*/
-	
-	
-	public static boolean isEdge(Way way) {
-		return false;
 	}
 	
 }

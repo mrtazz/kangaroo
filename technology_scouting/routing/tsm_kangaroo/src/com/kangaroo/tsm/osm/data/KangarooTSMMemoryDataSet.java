@@ -17,9 +17,6 @@ import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 import org.openstreetmap.osmosis.core.domain.v0_6.Way;
 import org.openstreetmap.osmosis.core.domain.v0_6.WayNode;
 
-import com.kangaroo.osmosis.core.domain.v0_6.KangarooOSMNode;
-import com.kangaroo.routing.KangarooProjection;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;

@@ -7,10 +7,11 @@ import org.openstreetmap.osm.data.searching.NearestStreetSelector;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 import org.openstreetmap.osmosis.core.domain.v0_6.Way;
 
-import com.kangaroo.osm.data.searching.LogNearestStreetSelector;
 import com.kangaroo.statuschange.StatusChange;
 import com.kangaroo.statuschange.StatusListener;
 import com.kangaroo.statuschange.JobDoneStatusChange;
+import com.mobiletsm.routing.AllStreetVehicle;
+import com.mobiletsm.routing.Vehicle;
 
 import android.content.Context;
 import android.location.Location;
@@ -33,13 +34,13 @@ public class KangarooRoutingManager {
 	/**
 	 * 
 	 */
-	private Context context;
+	private Place home = new Place(48.1216952, 7.8571635);
 	
 	
 	/**
 	 * 
 	 */
-	private Place homePlace = null;
+	private Vehicle vehicle = new AllStreetVehicle();
 	
 	
 	/**
@@ -99,9 +100,6 @@ public class KangarooRoutingManager {
 		@Override
 		public void onStatusChanged(StatusChange status) {
 			publishStatus(status);
-			if (status instanceof JobDoneStatusChange && status.jobID == KangarooRoutingEngine.JOBID_GET_NEAREST_NODE
-					&& homePlace.isNode() == false)
-				homePlace.setNode((Node)status.result);
 			allowLocationUpdates = !status.busy;
 		}		
 	};
@@ -111,16 +109,6 @@ public class KangarooRoutingManager {
 	 * 
 	 */
 	private StatusListener statusListener = null;
-	
-	
-	/**
-	 * 
-	 * @param context
-	 */
-	public KangarooRoutingManager(Context context) {
-		super();
-		this.context = context;
-	}
 	
 	
 	/**
@@ -142,10 +130,9 @@ public class KangarooRoutingManager {
 		if (routingDataSource == null)
 			throw new Exception("no routingDataSource specified.");
 		
-		routingEngine = new TSMKangarooRoutingEngine();
+		routingEngine = new MobileRoutingEngine();
 		routingEngine.setDataSource(routingDataSource);
 		routingEngine.setStatusListener(routingEngineStatusListener);	
-		routingEngine.setContext(context);
 		routingEngine.init();
 	}
 	
@@ -156,17 +143,8 @@ public class KangarooRoutingManager {
 	 */
 	private void onLocationChanged(Location location) {
 		if (allowLocationUpdates) {
-			try {
-				if (homePlace == null)
-					homePlace = new Place(48.1216952, 7.8571635);
-				if (!homePlace.isNode()) {
-					routingEngine.getNearestNode(homePlace, new NearestStreetSelector(), null);
-				} else {
-					routingEngine.routeFromTo(new Place(location.getLatitude(), location.getLongitude()), 
-							homePlace, new Car());
-				}				
-			} catch (Exception e) {
-			}
+			routingEngine.routeFromTo(new Place(location.getLatitude(), 
+					location.getLongitude()), home, vehicle);
 		}
 	}
 	

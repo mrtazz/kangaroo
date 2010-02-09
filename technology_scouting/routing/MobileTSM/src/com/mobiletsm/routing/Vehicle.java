@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.kangaroo.routing;
+package com.mobiletsm.routing;
 
 import org.openstreetmap.osm.ConfigurationSection;
 import org.openstreetmap.osm.data.IDataSet;
@@ -9,6 +9,8 @@ import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 import org.openstreetmap.osmosis.core.domain.v0_6.Relation;
 import org.openstreetmap.osmosis.core.domain.v0_6.Way;
 import org.openstreetmap.travelingsalesman.routing.IVehicle;
+
+
 
 /**
  * This class represents a type of vehicle that is used 
@@ -38,36 +40,21 @@ public abstract class Vehicle implements IVehicle {
 	public double getMaxSpeed() {
 		return maxSpeed;
 	}
+	
 
-	@Override
-	public boolean isAllowed(IDataSet arg0, Node arg1) {
-		return false;
-	}
+	/* methods to be implemented by a vehicle */
+	
+	public abstract boolean isAllowed(IDataSet arg0, Node arg1);
 
-	@Override
-	public boolean isAllowed(IDataSet arg0, Way arg1) {
-		return false;
-	}
+	public abstract boolean isAllowed(IDataSet arg0, Way arg1);
 
-	@Override
-	public boolean isOneway(IDataSet arg0, Way arg1) {
-		return false;
-	}
+	public abstract boolean isOneway(IDataSet arg0, Way arg1);
 
-	@Override
-	public boolean isReverseOneway(IDataSet arg0, Way arg1) {
-		return false;
-	}
+	public abstract boolean isReverseOneway(IDataSet arg0, Way arg1);
 
-	@Override
-	public boolean isAllowed(IDataSet arg0, Relation arg1) {
-		return false;
-	}
+	public abstract boolean isAllowed(IDataSet arg0, Relation arg1);
 
-	@Override
-	public ConfigurationSection getSettings() {
-		return null;
-	}
+	public abstract ConfigurationSection getSettings();
 	
 	
 
