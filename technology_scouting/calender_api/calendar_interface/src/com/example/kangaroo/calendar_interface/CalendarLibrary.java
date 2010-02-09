@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -151,10 +152,10 @@ public class CalendarLibrary {
      * @brief update method to enter events to backend
      * @param event object to add to backend
      */
-    public void addEventToBackend(CalendarEvent event)
+    public void UpdateIfNotInsertEventToBackend(CalendarEvent event)
     {
+    	/** build event values */
     	ContentValues values = new ContentValues();
-    	/** build values */
     	values.put("calendar_id", event.getCalendar());
     	values.put("eventTimezone", event.getTimezone());
     	values.put("title", event.getTitle());
@@ -167,7 +168,17 @@ public class CalendarLibrary {
     	values.put("visibility", 0);
     	values.put("hasAlarm", 0);
 
-    	/** enter into content provider backend */
-    	contentResolver.insert(eventsURI, values);
+    	/** update if not insert */
+    	if ((contentResolver.query(eventsURI, eventsFields,
+    							   "Events._id="+event.getId(), null, null)) != null)
+    	{
+    		Uri uri = ContentUris.withAppendedId(eventsURI, Long.parseLong(event.getId()));
+    		contentResolver.update(uri, values, null, null);
+    	}
+    	else
+    	{
+	    	/** enter into content provider backend */
+	    	contentResolver.insert(eventsURI, values);
+    	}
     }
 }
