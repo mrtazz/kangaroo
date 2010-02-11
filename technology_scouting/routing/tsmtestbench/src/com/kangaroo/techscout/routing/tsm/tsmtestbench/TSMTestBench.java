@@ -18,21 +18,13 @@ import org.openstreetmap.travelingsalesman.routing.Route.RoutingStep;
 import org.openstreetmap.travelingsalesman.routing.describers.SimpleRouteDescriber;
 
 import com.kangaroo.routing.KangarooRoutingEngine;
-import com.kangaroo.routing.KangarooRoutingManager;
-import com.kangaroo.routing.TSMKangarooRoutingEngine;
-import com.kangaroo.statuschange.JobDoneStatusChange;
-import com.kangaroo.statuschange.JobFailedStatusChange;
-import com.kangaroo.statuschange.JobStartedStatusChange;
-import com.kangaroo.statuschange.StatusChange;
-import com.kangaroo.statuschange.StatusListener;
-import com.kangaroo.statuschange.SubJobDoneStatusChange;
-import com.kangaroo.statuschange.SubJobStartedStatusChange;
+import com.kangaroo.techscout.routing.KangarooRoutingManager;
 import com.kangaroo.techscout.routing.MovementSimulator;
-import com.kangaroo.tsm.osm.io.FileLoader;
 import com.mobiletsm.osm.OsmHelper;
 import com.mobiletsm.routing.AllStreetVehicle;
 import com.mobiletsm.routing.Place;
 import com.mobiletsm.routing.Vehicle;
+import com.mobiletsm.routing.statuschange.*;
 
 import android.app.Activity;
 import android.app.AlertDialog;
