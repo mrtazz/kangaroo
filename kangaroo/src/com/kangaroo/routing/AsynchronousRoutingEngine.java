@@ -22,7 +22,7 @@ import com.mobiletsm.routing.statuschange.StatusListener;
  * @author Andreas Walz
  *
  */
-public abstract class KangarooRoutingEngine {
+public abstract class AsynchronousRoutingEngine {
 	
 	
 	protected URI dataSource = null;

@@ -31,7 +31,7 @@ import com.mobiletsm.routing.statuschange.StatusListener;
 import com.mobiletsm.routing.statuschange.SubJobDoneStatusChange;
 import com.mobiletsm.routing.statuschange.SubJobStartedStatusChange;
 
-public class MobileRoutingEngine extends KangarooRoutingEngine {
+public class AsynchronousMobileRoutingEngine extends AsynchronousRoutingEngine {
 	
 	
 	/**

@@ -28,11 +28,37 @@ public class MDSSQLiteDatabaseAdapter extends MDSDatabaseAdapter {
 
 	
 	private Connection connection = null;
+		
+	
+	@Override
+	public boolean open(String source) {
+		try {
+			if (!isOpen()) {
+				Class.forName("org.sqlite.JDBC");
+				connection = DriverManager.getConnection(source);
+				return true;
+			} else {
+				return false;
+			}
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	
+	@Override
+	public boolean isOpen() {
+		try {
+			return (connection != null && !connection.isClosed());
+		} catch (SQLException e) {
+			return false;
+		}
+	}
 	
 	
 	@Override
 	public void close() {
-		if (connection != null) {
+		if (isOpen()) {
 			try {
 				connection.close();
 			} catch (SQLException e) {
@@ -177,18 +203,7 @@ public class MDSSQLiteDatabaseAdapter extends MDSDatabaseAdapter {
 			e.printStackTrace();
 		}
 	}
-	
-	
-	@Override
-	public boolean open(String source) {
-		try {
-			Class.forName("org.sqlite.JDBC");
-			connection = DriverManager.getConnection(source);
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-	}
+
 
 
 	@Override

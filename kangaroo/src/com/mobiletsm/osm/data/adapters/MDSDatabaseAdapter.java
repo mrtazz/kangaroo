@@ -112,6 +112,9 @@ public abstract class MDSDatabaseAdapter {
 	public abstract boolean open(String source);
 	
 	
+	public abstract boolean isOpen();
+	
+	
 	public abstract void close();
 	
 	

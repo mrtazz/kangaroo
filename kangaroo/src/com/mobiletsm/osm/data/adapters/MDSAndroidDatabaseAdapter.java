@@ -1,5 +1,6 @@
 package com.mobiletsm.osm.data.adapters;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
@@ -16,12 +17,33 @@ import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
 
 public class MDSAndroidDatabaseAdapter extends MDSDatabaseAdapter {
 
-	SQLiteDatabase database = null;
+	SQLiteDatabase database = null;	
+	
+	
+	@Override
+	public boolean open(String source) {
+		try {
+			if (!isOpen()) {
+				database = SQLiteDatabase.openOrCreateDatabase(source, null);
+				return isOpen();
+			} else {
+				return false;
+			}
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	
+	@Override
+	public boolean isOpen() {
+		return (database != null && database.isOpen());
+	}
 	
 	
 	@Override
 	public void close() {
-		if (database != null) {
+		if (isOpen()) {
 			database.close();
 		}
 	}
@@ -200,16 +222,6 @@ public class MDSAndroidDatabaseAdapter extends MDSDatabaseAdapter {
 		}
 		cursor.close();
 	}
-	
-	
-	@Override
-	public boolean open(String source) {
-		try {
-			database = SQLiteDatabase.openOrCreateDatabase(source, null);
-			return database.isOpen();
-		} catch (Exception e) {
-			return false;
-		}
-	}
+
 
 }
