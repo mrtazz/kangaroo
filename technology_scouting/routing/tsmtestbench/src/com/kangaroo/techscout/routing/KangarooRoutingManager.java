@@ -7,7 +7,6 @@ import org.openstreetmap.osm.data.searching.NearestStreetSelector;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 import org.openstreetmap.osmosis.core.domain.v0_6.Way;
 
-
 import com.kangaroo.routing.KangarooRoutingEngine;
 import com.kangaroo.routing.MobileRoutingEngine;
 import com.mobiletsm.routing.AllStreetVehicle;

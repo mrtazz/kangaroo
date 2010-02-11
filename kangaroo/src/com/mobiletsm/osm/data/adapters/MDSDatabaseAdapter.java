@@ -97,6 +97,16 @@ public abstract class MDSDatabaseAdapter {
 	}
 	
 	
+	protected String SQL_loadNodes(long nodeId1, long nodeId2, boolean loadTags) {
+		String tags = "";
+		if (loadTags)
+			tags = ",tags";
+		String sql = String.format("SELECT id,lat,lon%s FROM nodes WHERE id=%d OR id=%d;", tags, nodeId1, nodeId2);
+		sqlLog(sql);
+		return sql;		
+	}
+	
+	
 	/* methods to be implemented by MDSDatabaseAdapters */
 	
 	public abstract boolean open(String source);
@@ -123,8 +133,10 @@ public abstract class MDSDatabaseAdapter {
 	public abstract void loadRoutingStreetNodesIncluding(long nodeId1, long nodeId2);
 	
 	
+	public abstract void loadNodes(long nodeId1, long nodeId2, boolean loadTags);
+	
+	
 	/*  */	
-
 	
 	protected Set<MapTile> mapTiles = null;
 

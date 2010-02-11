@@ -191,4 +191,11 @@ public class MDSSQLiteDatabaseAdapter extends MDSDatabaseAdapter {
 	}
 
 
+	@Override
+	public void loadNodes(long nodeId1, long nodeId2, boolean loadTags) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 }

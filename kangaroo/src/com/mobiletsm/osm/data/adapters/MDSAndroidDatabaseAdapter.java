@@ -171,6 +171,38 @@ public class MDSAndroidDatabaseAdapter extends MDSDatabaseAdapter {
 
 	
 	@Override
+	public void loadNodes(long nodeId1, long nodeId2, boolean loadTags) {
+		Cursor cursor = database.rawQuery(SQL_loadNodes(nodeId1, nodeId2, loadTags), null);
+		if (cursor.getCount() > 0) {
+			int col_id = cursor.getColumnIndex("id");
+			int col_lat = cursor.getColumnIndex("lat");
+			int col_lon = cursor.getColumnIndex("lon");
+			int col_tags = -1;
+			if (loadTags)
+				col_tags = cursor.getColumnIndex("tags");
+			
+			for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {	
+				long id = cursor.getLong(col_id);
+				double lat = cursor.getDouble(col_lat);
+				double lon = cursor.getDouble(col_lon);
+				Node node = new MobileNode(id, lat, lon);
+
+				String tags = null;
+				if (loadTags) {
+					tags = cursor.getString(col_tags);
+					node.getTags().addAll(OsmHelper.unpackStringToTags(tags));
+				}
+				
+				if (!streetNodes.containsKey(node.getId())) {
+					streetNodes.put(node.getId(), node);
+				}
+			}			
+		}
+		cursor.close();
+	}
+	
+	
+	@Override
 	public boolean open(String source) {
 		try {
 			database = SQLiteDatabase.openOrCreateDatabase(source, null);

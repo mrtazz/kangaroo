@@ -99,7 +99,15 @@ public class DatabaseMDSProvider implements MobileDataSetProvider {
 		if (vehicle != null)
 			throw new RuntimeException("getRoutingDataSet: vehicle not yet supported");		
 		
-		dbAdapter.loadRoutingStreetNodesIncluding(fromNodeId, toNodeId);
+		if (!routingMapPresent) {
+			dbAdapter.loadRoutingStreetNodesIncluding(fromNodeId, toNodeId);
+			dbAdapter.loadReducedWays();
+		} else {
+			dbAdapter.loadNodes(fromNodeId, toNodeId, false);
+		}			
+			
+		routingMapPresent = true;
+		
 		dbAdapter.loadCompleteWaysForNodes(fromNodeId, toNodeId);
 		//TODO: set distToPre in new complete ways
 		
@@ -107,7 +115,6 @@ public class DatabaseMDSProvider implements MobileDataSetProvider {
 		long toWayId = getWayForNode(toNodeId);		
 		
 		dbAdapter.loadAllStreetNodesForWays(fromWayId, toWayId);
-		dbAdapter.loadReducedWays();
 		
 		MobileRoutingInterfaceDataSet dataSet = new MobileRoutingInterfaceDataSet(fromWayId, toWayId, vehicle);
 		dataSet.setMaps(streetNodes, completeWays, reducedWays, waysForNodes);		
