@@ -106,6 +106,14 @@ public class Place {
 
 	
 	/**
+	 * returns true if this place is an openstreetmap street node
+	 * @return
+	 */
+	public boolean isOsmStreetNode() {
+		return isOsmStreetNode;
+	}
+	
+	/**
 	 * returns the latitude of this place
 	 * 
 	 * @return

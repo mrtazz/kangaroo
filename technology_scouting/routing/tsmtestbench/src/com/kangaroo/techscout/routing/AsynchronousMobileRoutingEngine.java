@@ -103,12 +103,12 @@ public class AsynchronousMobileRoutingEngine extends AsynchronousRoutingEngine {
 					
 					/*  */
 					listener.onStatusChanged(new SubJobStartedStatusChange(JOBID_GET_NEAREST_STREET_NODE));
-					fromNodeId = provider.getNearestStreetNode(from).getId();
+					fromNodeId = provider.getNearestStreetNode(from, true).getId();
 					listener.onStatusChanged(new SubJobDoneStatusChange(JOBID_GET_NEAREST_STREET_NODE));
 										
 					/*  */				
 					listener.onStatusChanged(new SubJobStartedStatusChange(JOBID_GET_NEAREST_STREET_NODE));
-					toNodeId = provider.getNearestStreetNode(to).getId();
+					toNodeId = provider.getNearestStreetNode(to, true).getId();
 					listener.onStatusChanged(new SubJobDoneStatusChange(JOBID_GET_NEAREST_STREET_NODE));
 
 					listener.onStatusChanged(new SubJobStartedStatusChange(JOBID_CREATE_DATASET));

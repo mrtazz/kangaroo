@@ -55,29 +55,38 @@ public class OSMFileReader {
 	 */
 	public static void main(String[] args) {
 	
-		
+		/*
 		// load map file
 		File mapFile = new File("/Users/andreaswalz/Downloads/map.osm");		
 		IDataSet map = (new FileLoader(mapFile)).parseOsm();		
-		
 		System.out.println("FileLoader: output: # nodes = " + OsmHelper.getNumberOfNodes(map));
 		System.out.println("FileLoader: output: # ways = " + OsmHelper.getNumberOfWays(map));	
-		
-		//OsmHelper.writeToMobileDatabase(map, "jdbc:sqlite:/Users/andreaswalz/Downloads/map.db");
-		
-		
-		IDataSet routingMap = OsmHelper.simplifyDataSet(map, new AllStreetVehicle());
-		OsmHelper.compareRouting(map, routingMap, new AllStreetVehicle(), System.out);
-		
-		
+		*/
 		
 		
 		/*
+		// write map to a mobile database
+		OsmHelper.writeToMobileDatabase(map, "jdbc:sqlite:/Users/andreaswalz/Downloads/map.db");
+		*/
+		
+		
+		/*
+		// compare routing on two maps
+		IDataSet routingMap = OsmHelper.simplifyDataSet(map, new AllStreetVehicle());
+		OsmHelper.compareRouting(map, routingMap, new AllStreetVehicle(), System.out);
+		*/
+		
+		
+		
+		
 		IVehicle vehicle = new AllStreetVehicle();
 
-		MobileDataSetProvider provider = new DatabaseMDSProvider();		
-		provider.open("jdbc:sqlite:/Users/andreaswalz/Downloads/map.db", new MDSSQLiteDatabaseAdapter());	
-
+		MobileDataSetProvider provider = new DatabaseMDSProvider(new MDSSQLiteDatabaseAdapter());		
+		provider.open("jdbc:sqlite:/Users/andreaswalz/Downloads/map.db");	
+		
+		
+		/*
+		// check routing
 		long fromNodeId = 251508943;
 		long toNodeId = 251509130;
 
@@ -97,7 +106,7 @@ public class OSMFileReader {
 		System.out.println("OsmHelper.getRoute(route) = " + OsmHelper.getRouteLength(route) + "m");
 		*/
 		
-		//provider.close();	
+		provider.close();	
 		
 		
 		

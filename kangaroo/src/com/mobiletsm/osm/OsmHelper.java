@@ -925,7 +925,7 @@ public class OsmHelper {
 				dist = Double.valueOf(wayNodes.substring(1, index));
 				wayNodes = wayNodes.substring(index + 1);
 			} else {
-				dist = 2;
+				dist = 0;
 			}			
 			String long_str = wayNodes.substring(0, 8);
 			wayNodes = wayNodes.substring(8);

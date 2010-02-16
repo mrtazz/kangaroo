@@ -88,7 +88,23 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 	}
 	
 	
-	public Node getNearestStreetNode(Place center) {		
+	public Node getNearestStreetNode(Place center) {
+		return getNearestStreetNode(center, false);
+	}
+	
+	
+	public Node getNearestStreetNode(Place center, boolean updateCenter) {		
+		/* do not search the database if given place is already a street node */
+		if (center.isOsmStreetNode()) {
+			long nodeId = center.getOsmNodeId();			
+			if (!streetNodes.containsKey(nodeId)) {
+				adapter.loadNodes(nodeId, -1, false);
+			}			
+			Node node = streetNodes.get(nodeId);
+			return node; 
+		}
+		
+		/* get the street node near the given center */
 		adapter.loadAllStreetNodesAround(center, 300);
 				
 		double minDist = Double.MAX_VALUE;
@@ -101,10 +117,14 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 			}
 		}
 		
-		if (minDistNode != null)
+		if (minDistNode != null) {
+			if (updateCenter) {
+				center.update(minDistNode, true);
+			}
 			return minDistNode;
-		else
+		} else {
 			return null;
+		}
 	}
 	
 
