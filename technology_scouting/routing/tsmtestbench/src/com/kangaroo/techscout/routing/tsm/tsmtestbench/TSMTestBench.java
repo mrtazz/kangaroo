@@ -17,7 +17,7 @@ import org.openstreetmap.travelingsalesman.routing.Route;
 import org.openstreetmap.travelingsalesman.routing.Route.RoutingStep;
 import org.openstreetmap.travelingsalesman.routing.describers.SimpleRouteDescriber;
 
-import com.kangaroo.routing.AsynchronousRoutingEngine;
+import com.kangaroo.techscout.routing.AsynchronousRoutingEngine;
 import com.kangaroo.techscout.routing.KangarooRoutingManager;
 import com.kangaroo.techscout.routing.MovementSimulator;
 import com.mobiletsm.osm.OsmHelper;

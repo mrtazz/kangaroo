@@ -29,6 +29,7 @@ import com.mobiletsm.osm.data.adapters.MDSDatabaseAdapter;
 import com.mobiletsm.osm.data.searching.POINodeSelector;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileNode;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
+import com.mobiletsm.routing.Place;
 
 public class DatabaseMDSProvider extends MobileDataSetProvider {
 
@@ -87,14 +88,13 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 	}
 	
 	
-	public Node getNearestStreetNode(LatLon center) {		
-		adapter.loadAllStreetNodesAround(center);
+	public Node getNearestStreetNode(Place center) {		
+		adapter.loadAllStreetNodesAround(center, 300);
 				
 		double minDist = Double.MAX_VALUE;
 		Node minDistNode = null;
 		for (Node node : streetNodes.values()) {
-			LatLon nodePos = new LatLon(node.getLatitude(), node.getLongitude());
-			double dist = center.distance(nodePos);
+			double dist = center.distanceTo(node.getLatitude(), node.getLongitude());
 			if (dist < minDist) {
 				minDist = dist;
 				minDistNode = node;
@@ -110,14 +110,15 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 
 	public MobileInterfaceDataSet getRoutingDataSet(long fromNodeId, long toNodeId, IVehicle vehicle) {
 		
-		if (vehicle != null)
-			throw new RuntimeException("getRoutingDataSet: vehicle not yet supported");		
+		if (vehicle != null) {
+			throw new UnsupportedOperationException("getRoutingDataSet(): vehicle not yet supported by DatabaseMDSProvider");
+		}
 		
+		adapter.loadNodes(fromNodeId, toNodeId, false);
+
 		if (!routingMapPresent) {
-			adapter.loadRoutingStreetNodesIncluding(fromNodeId, toNodeId);
+			adapter.loadRoutingStreetNodes();
 			adapter.loadReducedWays();
-		} else {
-			adapter.loadNodes(fromNodeId, toNodeId, false);
 		}			
 			
 		routingMapPresent = true;

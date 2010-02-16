@@ -23,6 +23,7 @@ import org.openstreetmap.osmosis.core.domain.v0_6.WayNode;
 import com.mobiletsm.osm.OsmHelper;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileNode;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
+import com.mobiletsm.routing.Place;
 
 public class MDSSQLiteDatabaseAdapter extends MDSDatabaseAdapter {
 
@@ -70,10 +71,10 @@ public class MDSSQLiteDatabaseAdapter extends MDSDatabaseAdapter {
 	
 
 	@Override
-	public void loadAllStreetNodesAround(LatLon center) {
+	public void loadAllStreetNodesAround(Place center, double radius) {
 		try {
 			Statement statement = connection.createStatement();			
-			String sql = SQL_loadAllStreetNodesAround(center);			
+			String sql = SQL_loadAllStreetNodesAround(center, 0);			
 			ResultSet rs = statement.executeQuery(sql);			
 			while(rs.next()) {
 				long id = rs.getLong("id");
@@ -184,10 +185,10 @@ public class MDSSQLiteDatabaseAdapter extends MDSDatabaseAdapter {
 
 	
 	@Override
-	public void loadRoutingStreetNodesIncluding(long nodeId1, long nodeId2) {
+	public void loadRoutingStreetNodes() {
 		try {
 			Statement statement = connection.createStatement();
-			ResultSet rs = statement.executeQuery(SQL_loadRoutingStreetNodesIncluding(nodeId1, nodeId2));			
+			ResultSet rs = statement.executeQuery(SQL_loadRoutingStreetNodes());			
 			while(rs.next()) {
 				long id = rs.getLong("id");
 				double lat = rs.getDouble("lat");
@@ -211,6 +212,7 @@ public class MDSSQLiteDatabaseAdapter extends MDSDatabaseAdapter {
 		// TODO Auto-generated method stub
 		
 	}
+
 
 
 }

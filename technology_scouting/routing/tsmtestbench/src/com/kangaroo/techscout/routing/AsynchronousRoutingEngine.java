@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.kangaroo.routing;
+package com.kangaroo.techscout.routing;
 
 import java.net.URI;
 

@@ -8,6 +8,7 @@ import org.openstreetmap.travelingsalesman.routing.IVehicle;
 import com.mobiletsm.osm.data.MobileInterfaceDataSet;
 import com.mobiletsm.osm.data.adapters.MDSDatabaseAdapter;
 import com.mobiletsm.osm.data.searching.POINodeSelector;
+import com.mobiletsm.routing.Place;
 
 
 public abstract class MobileDataSetProvider {
@@ -34,7 +35,7 @@ public abstract class MobileDataSetProvider {
 	public abstract boolean isStreetNode(long nodeId);
 	
 	
-	public abstract Node getNearestStreetNode(LatLon center);
+	public abstract Node getNearestStreetNode(Place center);
 	
 
 	public abstract MobileInterfaceDataSet getCompleteDataSet();

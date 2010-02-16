@@ -1,4 +1,4 @@
-package com.kangaroo.routing;
+package com.kangaroo.techscout.routing;
 
 import java.io.File;
 import java.net.URI;
@@ -103,14 +103,12 @@ public class AsynchronousMobileRoutingEngine extends AsynchronousRoutingEngine {
 					
 					/*  */
 					listener.onStatusChanged(new SubJobStartedStatusChange(JOBID_GET_NEAREST_STREET_NODE));
-					fromNodeId = provider.getNearestStreetNode(
-							new LatLon(from.getLatitude(), from.getLongitude())).getId();
+					fromNodeId = provider.getNearestStreetNode(from).getId();
 					listener.onStatusChanged(new SubJobDoneStatusChange(JOBID_GET_NEAREST_STREET_NODE));
 										
 					/*  */				
 					listener.onStatusChanged(new SubJobStartedStatusChange(JOBID_GET_NEAREST_STREET_NODE));
-					toNodeId = provider.getNearestStreetNode(
-							new LatLon(to.getLatitude(), to.getLongitude())).getId();
+					toNodeId = provider.getNearestStreetNode(to).getId();
 					listener.onStatusChanged(new SubJobDoneStatusChange(JOBID_GET_NEAREST_STREET_NODE));
 
 					listener.onStatusChanged(new SubJobStartedStatusChange(JOBID_CREATE_DATASET));
@@ -167,7 +165,7 @@ public class AsynchronousMobileRoutingEngine extends AsynchronousRoutingEngine {
 			listener.onStatusChanged(new JobStartedStatusChange(JOBID_INIT_ROUTING_ENGINE));
 			synchronized (provider) {
 				try {
-					provider.open(source.getPath(), new MDSAndroidDatabaseAdapter());
+					provider.open(source.getPath());
 					listener.onStatusChanged(new JobDoneStatusChange(JOBID_INIT_ROUTING_ENGINE));
 				} catch (Exception exception) {
 					listener.onStatusChanged(new JobFailedStatusChange(JOBID_INIT_ROUTING_ENGINE, exception));
@@ -188,7 +186,7 @@ public class AsynchronousMobileRoutingEngine extends AsynchronousRoutingEngine {
 		if (dataSource.getScheme() == null || !dataSource.getScheme().startsWith("file")) 
 			throw new RuntimeException("scheme for data source not supported.");
 		
-		dsProvider = new DatabaseMDSProvider();
+		dsProvider = new DatabaseMDSProvider(new MDSAndroidDatabaseAdapter());
 		RunnableInitializer job = new RunnableInitializer(workingThreadStatusListener, dsProvider, dataSource);
 		Thread worker = new Thread(job);
 		worker.setName("MobileRoutingEngine.init()");
@@ -252,8 +250,7 @@ public class AsynchronousMobileRoutingEngine extends AsynchronousRoutingEngine {
 			listener.onStatusChanged(new JobStartedStatusChange(JOBID_GET_NEAREST_STREET_NODE));
 			synchronized (provider) {
 				try {
-					Long nodeId = provider.getNearestStreetNode(
-							new LatLon(center.getLatitude(), center.getLongitude())).getId();
+					Long nodeId = provider.getNearestStreetNode(center).getId();
 					listener.onStatusChanged(new JobDoneStatusChange(JOBID_GET_NEAREST_STREET_NODE, nodeId));
 				} catch (Exception exception) {
 					listener.onStatusChanged(new JobFailedStatusChange(JOBID_GET_NEAREST_STREET_NODE, exception));

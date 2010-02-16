@@ -41,8 +41,8 @@ public class MobileRoutingEngine implements RoutingEngine {
 	
 	@Override
 	public RouteParameter routeFromTo(Place from, Place to, Vehicle vehicle) {
-		long fromNodeId = provider.getNearestStreetNode(new LatLon(from.getLatitude(), from.getLongitude())).getId();
-		long toNodeId = provider.getNearestStreetNode(new LatLon(to.getLatitude(), to.getLongitude())).getId();
+		long fromNodeId = provider.getNearestStreetNode(from).getId();
+		long toNodeId = provider.getNearestStreetNode(to).getId();
 		
 		MobileInterfaceDataSet routingDataSet = provider.getRoutingDataSet(fromNodeId, toNodeId, null);		
 		
