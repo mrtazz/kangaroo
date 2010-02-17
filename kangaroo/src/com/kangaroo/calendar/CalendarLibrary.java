@@ -181,4 +181,27 @@ public class CalendarLibrary {
 	    	contentResolver.insert(eventsURI, values);
     	}
     }
+
+    /**
+     * @brief method to delete a given event from backend
+     * @param event to delete
+     * @return 0 on success, -1 on error
+     */
+    public int deleteEventFromBackend(CalendarEvent event)
+    {
+    	/** check if event exists */
+    	if ((contentResolver.query(eventsURI, eventsFields,
+				   "Events._id="+event.getId(), null, null)) != null)
+    	{
+    		Uri uri = ContentUris.withAppendedId(eventsURI, Long.parseLong(event.getId()));
+    		contentResolver.delete(uri, null, null);
+    		/** success */
+    		return 0;
+    	}
+    	else
+    	{
+    		/** no such event */
+    		return -1;
+    	}
+    }
 }
