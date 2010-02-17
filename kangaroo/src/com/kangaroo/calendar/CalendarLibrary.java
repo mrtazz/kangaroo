@@ -152,7 +152,7 @@ public class CalendarLibrary {
      * @brief update method to enter events to backend
      * @param event object to add to backend
      */
-    public void UpdateIfNotInsertEventToBackend(CalendarEvent event)
+    public void updateIfNotInsertEventToBackend(CalendarEvent event)
     {
     	/** build event values */
     	ContentValues values = new ContentValues();
