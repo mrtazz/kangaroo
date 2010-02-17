@@ -3,6 +3,7 @@
  */
 package com.mobiletsm.routing;
 
+import org.openstreetmap.osm.data.coordinates.LatLon;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 
 
@@ -16,20 +17,29 @@ import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 public class Place {
 	
 	/**
-	 * 
+	 * id of corresponding open street map node 
 	 */
-	private long osmNodeId = -1;
+	protected long osmNodeId;
+	
 	
 	/**
-	 * 
+	 * true if corresponding open street map node is a street node
 	 */
-	private double latitude = 0;
+	protected boolean isOsmStreetNode;
+	
 	
 	/**
-	 * 
+	 * latitude 
 	 */
-	private double longitude = 0;
+	protected double latitude;
+	
+	
+	/**
+	 * longitude
+	 */
+	protected double longitude;
 		
+	
 	/**
 	 * additional field that can be used to specify an extra time 
 	 */
@@ -37,28 +47,47 @@ public class Place {
 	
 	
 	/**
-	 * create a place using an openstreetmap node
-	 * @param aNode
+	 * creates a new place object taking its parameters from an open street map node
+	 * 
+	 * @param node
+	 * @param isOsmStreetNode
 	 */
+	public Place(Node node, boolean isOsmStreetNode) {
+		super();
+		update(node, isOsmStreetNode);
+	}
+	
+	
+	public Place(double latitude, double longitude) {
+		super();
+		update(latitude, longitude);
+	}
+	
+	
 	public Place(Node node) {
-		super();
-		setFromOsmNode(node);
+		this(node, false);
+	}
+	
+		
+	public void update(Node node, boolean isOsmStreetNode) {
+		this.latitude = node.getLatitude();
+		this.longitude = node.getLongitude();
+		this.osmNodeId = node.getId();
+		this.isOsmStreetNode = isOsmStreetNode;	
 	}
 	
 	
-	/**
-	 * create a place using its coordinates
-	 * @param lat
-	 * @param lon
-	 */
-	public Place(double lat, double lon) {
-		super();
-		setCoordinates(lat, lon);
+	public void update(double latitude, double longitude) {
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.osmNodeId = -1;
+		this.isOsmStreetNode = false;		
 	}
 	
-	
+		
 	/**
-	 * return the openstreetmap node specifying the place
+	 * returns the open street map node id
+	 * 
 	 * @return
 	 */
 	public long getOsmNodeId() {
@@ -67,49 +96,17 @@ public class Place {
 	
 	
 	/**
+	 * returns true if this place is an open street map node
 	 * 
-	 * @param id
-	 */
-	public void setOsmNodeId(long id) {
-		osmNodeId = id;
-	}
-	
-	
-	/**
-	 * fix the place by specifying an openstreetmap node
-	 * @param aNode the object representing the openstreetmap node
-	 */
-	public void setFromOsmNode(Node aNode) {
-		setCoordinates(aNode.getLatitude(), aNode.getLongitude());
-		osmNodeId = aNode.getId();
-	}
-	
-	
-	
-	
-	/**
-	 * Returns true, if the place is specified by an openstreetmap node
 	 * @return
 	 */
 	public boolean isOsmNode() {
 		return (osmNodeId != -1);
 	}
-	
-	
-	/**
-	 * Set coordinates of the place. An openstreetmap node 
-	 * reference will be deleted
-	 * @param lat
-	 * @param lon
-	 */
-	public void setCoordinates(double lat, double lon) {
-		osmNodeId = -1;
-		latitude = lat;
-		longitude = lon;
-	}
-	
+
 	
 	/**
+	 * returns the latitude of this place
 	 * 
 	 * @return
 	 */
@@ -119,6 +116,7 @@ public class Place {
 	
 	
 	/**
+	 * returns the longitude of this place
 	 * 
 	 * @return
 	 */
@@ -128,8 +126,19 @@ public class Place {
 	
 	
 	/**
-	 * calculate the distance in meters between this place and an
-	 * other target place
+	 * returns the position of this place as an LatLon object
+	 * 
+	 * @return
+	 */
+	public LatLon getLatLon() {
+		return new LatLon(getLatitude(), getLongitude());
+	}
+	
+	
+	/**
+	 * returns the (approximate) distance in meters between this place
+	 * and the one given by the parameter place
+	 * 
 	 * @param place target place
 	 * @return distance between this place and the place specified by place
 	 */
@@ -139,8 +148,9 @@ public class Place {
 	
 	
 	/**
-	 * calculate the distance in meters between this place an the 
-	 * position specified by latitude lat and longitude lon
+	 * returns the (approximate) distance in meters between this place an the 
+	 * position on earth specified by latitude lat and longitude lon
+	 * 
 	 * @param lat
 	 * @param lon
 	 * @return
@@ -148,10 +158,11 @@ public class Place {
 	public double distanceTo(double lat, double lon) {		
 		return Place.distance(latitude, longitude, lat, lon);
 	}
-	
-	
+		
 	
 	/**
+	 * returns the (approximate) distance between the two positions on earth
+	 * given by (lat1, lon1) and (lat2, lon2)
 	 * 
 	 * @param lat1
 	 * @param lon1
@@ -171,11 +182,12 @@ public class Place {
 				Math.pow((lat1 - lat2) * latScaleFactor, 2) + 
 				Math.pow((lon1 - lon2) * lonScaleFactor, 2));
 	}
-	
-	
+		
 	
 	/**
-	 * check if this place lies within the bounding box given by the parameters
+	 * returns true if latitude and longitude of this place are within the
+	 * intervals (aMinLat, aMaxLat) and (aMinLon, aMaxLon)
+	 * 
 	 * @param aMinLat
 	 * @param aMaxLat
 	 * @param aMinLon

@@ -29,24 +29,39 @@ import com.mobiletsm.osm.data.adapters.MDSDatabaseAdapter;
 import com.mobiletsm.osm.data.searching.POINodeSelector;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileNode;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
+import com.mobiletsm.routing.Place;
 
-public class DatabaseMDSProvider implements MobileDataSetProvider {
+public class DatabaseMDSProvider extends MobileDataSetProvider {
 
 	/* database connection stuff */
 	
-	private MDSDatabaseAdapter dbAdapter;
-	
+	public DatabaseMDSProvider(MDSDatabaseAdapter adapter) {
+		super(adapter);
+	}
 
-	public boolean open(String source, MDSDatabaseAdapter adapter) {
-		dbAdapter = adapter;
-		dbAdapter.setMaps(streetNodes, completeWays, reducedWays, waysForNodes);
-		return dbAdapter.open(source);
+	
+	@Override
+	public boolean open(String source) {
+		if (!isOpen()) {
+			adapter.setMaps(streetNodes, completeWays, reducedWays,	waysForNodes);
+			return adapter.open(source);
+		} else {
+			return false;
+		}
 	}
 	
 	
+	@Override
+	public boolean isOpen() {
+		return (adapter != null && adapter.isOpen());
+	}
+	
+	
+	@Override
 	public void close() {
-		if (dbAdapter != null)
-			dbAdapter.close();
+		if (isOpen()) {
+			adapter.close();
+		}
 	}
 	
 	
@@ -73,14 +88,13 @@ public class DatabaseMDSProvider implements MobileDataSetProvider {
 	}
 	
 	
-	public Node getNearestStreetNode(LatLon center) {		
-		dbAdapter.loadAllStreetNodesAround(center);
+	public Node getNearestStreetNode(Place center) {		
+		adapter.loadAllStreetNodesAround(center, 300);
 				
 		double minDist = Double.MAX_VALUE;
 		Node minDistNode = null;
 		for (Node node : streetNodes.values()) {
-			LatLon nodePos = new LatLon(node.getLatitude(), node.getLongitude());
-			double dist = center.distance(nodePos);
+			double dist = center.distanceTo(node.getLatitude(), node.getLongitude());
 			if (dist < minDist) {
 				minDist = dist;
 				minDistNode = node;
@@ -96,25 +110,26 @@ public class DatabaseMDSProvider implements MobileDataSetProvider {
 
 	public MobileInterfaceDataSet getRoutingDataSet(long fromNodeId, long toNodeId, IVehicle vehicle) {
 		
-		if (vehicle != null)
-			throw new RuntimeException("getRoutingDataSet: vehicle not yet supported");		
+		if (vehicle != null) {
+			throw new UnsupportedOperationException("getRoutingDataSet(): vehicle not yet supported by DatabaseMDSProvider");
+		}
 		
+		adapter.loadNodes(fromNodeId, toNodeId, false);
+
 		if (!routingMapPresent) {
-			dbAdapter.loadRoutingStreetNodesIncluding(fromNodeId, toNodeId);
-			dbAdapter.loadReducedWays();
-		} else {
-			dbAdapter.loadNodes(fromNodeId, toNodeId, false);
+			adapter.loadRoutingStreetNodes();
+			adapter.loadReducedWays();
 		}			
 			
 		routingMapPresent = true;
 		
-		dbAdapter.loadCompleteWaysForNodes(fromNodeId, toNodeId);
+		adapter.loadCompleteWaysForNodes(fromNodeId, toNodeId);
 		//TODO: set distToPre in new complete ways
 		
 		long fromWayId = getWayForNode(fromNodeId);		
 		long toWayId = getWayForNode(toNodeId);		
 		
-		dbAdapter.loadAllStreetNodesForWays(fromWayId, toWayId);
+		adapter.loadAllStreetNodesForWays(fromWayId, toWayId);
 		
 		MobileRoutingInterfaceDataSet dataSet = new MobileRoutingInterfaceDataSet(fromWayId, toWayId, vehicle);
 		dataSet.setMaps(streetNodes, completeWays, reducedWays, waysForNodes);		

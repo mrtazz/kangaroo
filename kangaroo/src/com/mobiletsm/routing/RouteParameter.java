@@ -26,10 +26,14 @@ public class RouteParameter {
 	private Route route;
 	
 	
+	private boolean noRouteFound;
+	
+	
 	public RouteParameter(double length, double durationOfTravel, Route route) {
 		this.length = length;
 		this.durationOfTravel = durationOfTravel;
 		this.route = route;
+		this.noRouteFound = (route == null);
 	}
 	
 	
@@ -55,6 +59,11 @@ public class RouteParameter {
 	
 	public Route getRoute() {
 		return route;
+	}
+	
+	
+	public boolean getNoRouteFound() {
+		return noRouteFound;
 	}
 	
 }

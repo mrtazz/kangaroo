@@ -17,7 +17,7 @@ import org.openstreetmap.travelingsalesman.routing.Route;
 import org.openstreetmap.travelingsalesman.routing.Route.RoutingStep;
 import org.openstreetmap.travelingsalesman.routing.describers.SimpleRouteDescriber;
 
-import com.kangaroo.routing.KangarooRoutingEngine;
+import com.kangaroo.techscout.routing.AsynchronousRoutingEngine;
 import com.kangaroo.techscout.routing.KangarooRoutingManager;
 import com.kangaroo.techscout.routing.MovementSimulator;
 import com.mobiletsm.osm.OsmHelper;
@@ -322,7 +322,7 @@ public class TSMTestBench extends Activity implements StatusListener {
 			
 			statusStringBuffer.append("> " + status.message);
 			
-			if (status.jobID == KangarooRoutingEngine.JOBID_INIT_ROUTING_ENGINE) 
+			if (status.jobID == AsynchronousRoutingEngine.JOBID_INIT_ROUTING_ENGINE) 
 				progressDialog = ProgressDialog.show(this, "Please wait", status.message, true, false);
 			
 		} else if (status instanceof JobDoneStatusChange) {
@@ -394,14 +394,14 @@ public class TSMTestBench extends Activity implements StatusListener {
 				Log.v("MyTag", "status.result = null");
 			}
 			
-			if (status.jobID == KangarooRoutingEngine.JOBID_INIT_ROUTING_ENGINE && progressDialog != null) {
+			if (status.jobID == AsynchronousRoutingEngine.JOBID_INIT_ROUTING_ENGINE && progressDialog != null) {
 				progressDialog.dismiss();
 				onRoutingEngineReady();
 			}
 		} else if (status instanceof JobFailedStatusChange) {
 			statusStringBuffer.append(" failed!\n");
 			
-			if (status.jobID == KangarooRoutingEngine.JOBID_INIT_ROUTING_ENGINE && progressDialog != null) {
+			if (status.jobID == AsynchronousRoutingEngine.JOBID_INIT_ROUTING_ENGINE && progressDialog != null) {
 				progressDialog.dismiss();				
 			}
 			

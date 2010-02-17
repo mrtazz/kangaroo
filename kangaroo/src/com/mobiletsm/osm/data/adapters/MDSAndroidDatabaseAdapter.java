@@ -1,7 +1,9 @@
 package com.mobiletsm.osm.data.adapters;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.openstreetmap.osm.data.coordinates.LatLon;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
@@ -13,23 +15,45 @@ import android.database.sqlite.SQLiteDatabase;
 import com.mobiletsm.osm.OsmHelper;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileNode;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
+import com.mobiletsm.routing.Place;
 
 public class MDSAndroidDatabaseAdapter extends MDSDatabaseAdapter {
 
-	SQLiteDatabase database = null;
+	SQLiteDatabase database = null;	
+	
+	
+	@Override
+	public boolean open(String source) {
+		try {
+			if (!isOpen()) {
+				database = SQLiteDatabase.openOrCreateDatabase(source, null);
+				return isOpen();
+			} else {
+				return false;
+			}
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	
+	@Override
+	public boolean isOpen() {
+		return (database != null && database.isOpen());
+	}
 	
 	
 	@Override
 	public void close() {
-		if (database != null) {
+		if (isOpen()) {
 			database.close();
 		}
 	}
 	
-
+	
 	@Override
-	public void loadAllStreetNodesAround(LatLon center) {
-		Cursor cursor = database.rawQuery(SQL_loadAllStreetNodesAround(center), null);
+	public void loadAllStreetNodesAround(Place center, double radius) {
+		Cursor cursor = database.rawQuery(SQL_loadAllStreetNodesAround(center, radius), null);		
 		if (cursor.getCount() > 0) {
 			int col_id = cursor.getColumnIndex("id");
 			int col_lat = cursor.getColumnIndex("lat");
@@ -149,8 +173,8 @@ public class MDSAndroidDatabaseAdapter extends MDSDatabaseAdapter {
 
 	
 	@Override
-	public void loadRoutingStreetNodesIncluding(long nodeId1, long nodeId2) {
-		Cursor cursor = database.rawQuery(SQL_loadRoutingStreetNodesIncluding(nodeId1, nodeId2), null);
+	public void loadRoutingStreetNodes() {
+		Cursor cursor = database.rawQuery(SQL_loadRoutingStreetNodes(), null);
 		if (cursor.getCount() > 0) {
 			int col_id = cursor.getColumnIndex("id");
 			int col_lat = cursor.getColumnIndex("lat");
@@ -200,16 +224,6 @@ public class MDSAndroidDatabaseAdapter extends MDSDatabaseAdapter {
 		}
 		cursor.close();
 	}
-	
-	
-	@Override
-	public boolean open(String source) {
-		try {
-			database = SQLiteDatabase.openOrCreateDatabase(source, null);
-			return database.isOpen();
-		} catch (Exception e) {
-			return false;
-		}
-	}
+
 
 }
