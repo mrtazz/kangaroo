@@ -1,0 +1,63 @@
+The following gives a brief overview of already existing open source routing engines that may be used in our project:
+
+\begin{enumerate}
+
+	\item \textbf{Gosmore}
+	
+		Gosmore is a routing and navigation software for mobile devices. It consequently also consists of a very efficient routing engine to operate on data coming originally from Openstreetmap, but which is reorganized and compressed in a very smart way in advance. For this, data is ordered in a way that tries to minimize the probablity of a cache-miss and the number of comparisons needed when searching the local map for special map elements.
+		Gosmore is based on C/C++, very compact and makes extensive use of pointers and indirect memory access. Documentation of its source code is poor and thus it is not easy to comprehend and retrace its code.
+	
+	\item \textbf{OSMAndroid}
+	
+		OSMAndroid is a map viewer and routing engine for Android using precompiled Openstreetmap data. It uses a special OSMAndroidConverter to parse the bulky Openstreetmap XML file and to compress it to an extremely small 	proprietary data structure, maintaining only map elements needed for routing. Its very slight data model results in little and fast data access operations and very efficient routing operations.
+		OSMAndroid's source code has rare comments and follows a sometimes confusing design pattern, but is because of its compactness understandable with not to much effort.
+	
+	\item \textbf{Traveling Salesman}
+	
+		Traveling Salesman is a Java based navigation and routing framework using Openstreetmap data as its input. It has a consistent modular architecture and allows to assemble a specific navigation software nearly ''just-as-you-like''. Traveling Salesman comes with ready-to-use implementations for every module. These modules are by default designed to keep every map element and not to filter irrelevant\footnote{irrelevant in the sense that the result of any operation that may be performed does not depend on the elements presence or absence} ones. This results in a maximum generality at the cost of performance and memory space.
+		Traveling Salesman is up to now still in beta stadium.
+
+\end{enumerate}
+
+Since the target platform is a mobile one and resources will be limited, handling of available device resources is a crucial issue in the decision for a routing engine. Nevertheless it is not the only thing to think of in this context. Other issues to account for are for example the portability to our target platform and the flexibility for future adaptions and extensions.\newline
+
+When trying to assign priorities to these aspects just mentioned before, one will be faced with the question whether to aim for a maximum of flexibility or for a maximum of performance, since these two features are contradictory in many ways. Traveling Salesman is situated near the end of the scale where focus is set on a maximum of flexibility, while Gosmore and OSMAndroid can be found near the other end.\newline
+
+As an integral part of the abstraction of the applications structure, the routing interface is designed in a way, that makes it independent of the decision for any routing engine, even if it was influenced by it. This means, that although a final decision had to be made within the scope of our project, there is still the chance to choose another engine as part of future work.\newline
+
+Eventually we decided to base the routing engine on the Traveling Salesman project, maintaining compatibility to its modular architecture. This decision was forced by the following reasons
+
+\begin{itemize}
+	\item Java based source code
+	
+		Traveling Salesman is completely based on Java and does not use any external libraries. Its precompiled project library can easily be integrated in the Android Environment and Android projects.
+	
+	\item fulfills need for adaptions and extensions
+	
+	\item maximum generality and flexibilty
+	
+	\item exchangeable components
+	
+	\item performance improvements 
+	
+\end{itemize}
+
+Unfortunately when being forced to make this decision, we did not know about the OSMAndroid routing engine.\newline
+
+The following chapter will give a short introduction in the structure of Traveling Salesman.
+
+\subsubsection{Traveling Salesman}
+
+
+\subsubsection{Adaptions and extensions to Traveling Salesman}
+
+Coming up with the decision for using Traveling Salesman, there were several issues to work on:
+
+\begin{enumerate}
+	\item data storage modules
+	
+		The data storage modules (datasets in Traveling Salesman's terminology) that come with the project do not have their focus on efficency and performance as needed for a mobile application.
+		
+		On Android's mobile platform, there are two contradictory goals for the data storage architecture. Since Android limits the heap space for an application to (at this time) 16 megabytes, the map area that can be cached in memory 
+
+\end{enumerate}

@@ -1,33 +1,32 @@
-\subsubsection{Classes}
+\subsubsection{Classes and interfaces}
 
 \begin{itemize}
 
-	\item RouteParameter\newline
-	\item Place\newline
-	\item Vehicle\newline
-	\item AmenitySelector\newline
-	\item Limits\newline
+	\item \texttt{RoutingEngine}
+	\item \texttt{RouteParameter}
+	\item \texttt{Place}
+	\item \texttt{Vehicle}
+	\item \texttt{Limits}
 
 \end{itemize}
 
-\subsubsection{Methods}
+\subsubsection{Methods of \texttt{RoutingEngine}}
 
 \begin{itemize}
-
-	\item RouteParameter routeTo(Place destination, Vehicle vehicle)\newline
 	
-	Starting from the current position route to the place definied by destination. The parameter of the fastest route that can be used by the vehicle specified by vehicle will be returned.	
+	\item \texttt{RouteParameter routeFromTo(Place from, Place to, Vehicle vehicle);}\newline
 	
-	\item RouteParameter routeFromTo(Place start, Place destination, Vehicle vehicle)\newline
+	Starting from the place definied by \texttt{from} route to the place definied by \texttt{to}. The properties of the shortest route that can be used by the vehicle specified by vehicle will be returned.
 	
-	Starting from the place definied by start route to the Place definied by destination. The parameter of the fastest route that can be used by the vehicle specified by vehicle will be returned.
+	\item \texttt{Place getNearestPOINode(Place center, POINodeSelector selector, Limits limits);}\newline	
 	
-	\item Place getNearestAmenity(Place position, AmenitySelector selector, Limits limits)\newline
-
-	Starting from the place definied by position find a number of nearest amenity nodes, that fullfil the selection conditions defined by selector und limits. 
+	\item \texttt{Place getNearestStreetNode(Place center);}\newline
 	
-	\item LocationListener getLocationListener()\newline
+	\item \texttt{boolean init(String source);}\newline
 	
+	\item \texttt{boolean initialized();}\newline
+	
+	\item \texttt{void shutdown();}\newline	
 	
 
 \end{itemize}
