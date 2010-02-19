@@ -1,8 +1,8 @@
 One essential feature of our application is its capability to not only consider calendar items for itself but to put them in their geographical context and to account for local traffic facilities. This implies the need for a set of data representing these facilites and an engine to operate on the data.\newline
 
-From a very abstract and general perspective, this set of data can be split into two categories, namely a dynamic and a static one. As static, in these terms, one should label all facilities which do not depend on any schedule and may in principle by used at any time (for example streets and highways). Dynamic facilities are the ones, that have a more or less fixed schedule constraining their usage.\newline
+From a very abstract and general perspective, this set of data can be divided into two categories, namely a dynamic and a static one. As static, in these terms, one should label all facilities which do not depend on any schedule and may in principle by used at any time (for example streets and highways). Dynamic facilities are the ones, that have a more or less fixed schedule constraining their usage.\newline
 
-In this project we will only consider static facilities, since also accounting for dynamic ones will yield to a much more complex application structure. Besides this aspect, it is a big issue to collect data about dynamic traffic facilities.\newline
+In this project we will only consider static facilities, since also accounting for dynamic ones requires routing algorithms that go far beyond standard algorithms resulting in a more complex application structure and a much more complex routing engine. Besides this aspect, it is a big issue to gather scheduling data about dynamic traffic facilities as there would be a number of carriers with different interfaces to include. However, the user might notably benefit from the abolishment of this constraint. It might be part of future work to include this feature.\newline
  
 As potential sources for static traffic facility data, one finds basically two options
 
@@ -10,10 +10,12 @@ As potential sources for static traffic facility data, one finds basically two o
  
 	\item \textbf{Google Maps}
 	
+		Google Maps is an online navigation and routing service. Its map material has high quality but in some areas lacks actuality. Its main drawback may anyway be found in the absence of a free simple-to-use offline interface. 
+	
 	\item \textbf{Openstreetmap}
 	
-		Openstreetmap is an open database for a world wide map. Everyone is free to add, change and remove map items. Consequently its map material varies over a hugh scale in both quality and actuality. 
+		Openstreetmap is a free and open database for a world wide map. Everyone is free to add, change and remove map items. Consequently its map material varies over a hugh scale in both quality, density and actuality. It can be used online and offline by downloading an Openstreetmap XML file of a rectangular map area. This file contains every map item contained in this area.
   
 \end{itemize} 
 
-For our project, Openstreetmap seems to be the one to choose.
+Besides the two options given above there are of course lots of other providers, but either not free of charge or not very popular. Consequently, Openstreetmap seems to be the one to choose for our project.
