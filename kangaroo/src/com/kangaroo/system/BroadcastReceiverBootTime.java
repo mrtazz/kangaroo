@@ -6,6 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+/**
+ * 
+ * @author alex
+ *
+ */
 public class BroadcastReceiverBootTime extends BroadcastReceiver 
 {
 	 public static final String TAG = "BroadcastReceiverBootTime";
@@ -18,7 +23,10 @@ public class BroadcastReceiverBootTime extends BroadcastReceiver
 		  {
 			  ComponentName comp = new ComponentName(context.getPackageName(), ServiceCallTick.class.getName());
 			  ComponentName service = context.startService(new Intent().setComponent(comp));
-			  if (null == service)
+			  ComponentName comp2 = new ComponentName(context.getPackageName(), ServiceCallLocation.class.getName());
+			  ComponentName service2 = context.startService(new Intent().setComponent(comp2));
+			  
+			  if (service == null || service2 == null)
 			  {
 				    // something really wrong here
 				    Log.e(TAG, "Could not start service " + comp.toString());
@@ -26,9 +34,8 @@ public class BroadcastReceiverBootTime extends BroadcastReceiver
 		  } 
 		  else 
 		  {
-			  Log.e(TAG, "Received unexpected intent " + intent.toString());   
+			  Log.e(TAG, "Received unexpected intent " + intent.toString());
 		  }
 	 }
 
 }
-

@@ -1,13 +1,13 @@
 package com.kangaroo.system;
 
-import com.kangaroo.gui.AlertUserInteraction;
 import com.kangaroo.system.ServiceCallTick;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Binder;
 import android.os.IBinder;
-import android.os.Looper;
 import android.os.Parcel;
 import android.os.RemoteException;
 import android.os.SystemClock;
@@ -21,8 +21,9 @@ import android.os.SystemClock;
 public class ServiceCallTick extends android.app.Service
 {
 	private PendingIntent mAlarmSender = null;
-	private int callIntervall = 10;
-	private AlertUserInteraction myAlertService; 
+	private int callIntervall;
+	private SharedPreferences prefsPrivate = null;
+	private String preferencesName = "Kagaroo_ServiceCallTick_Pref";
 	
 	/**
 	 * This method is part of the Service-interface. It is called when an instance of the service
@@ -32,49 +33,35 @@ public class ServiceCallTick extends android.app.Service
     @Override
     public void onCreate() 
     {
-        	myAlertService = new AlertUserInteraction(this);
-        	mAlarmSender = PendingIntent.getService(ServiceCallTick.this, 0, new Intent(ServiceCallTick.this, ServiceCallTick.class), 0);
-        	 // call us again every callIntervall seconds
-            long firstTime = SystemClock.elapsedRealtime();
-            AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
-            am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstTime, callIntervall*1000, mAlarmSender);
-            
-        Thread thr = new Thread(null, mTask, "ServiceCallTick Worker Thread");
-        thr.start();
+    	System.out.println("ServiceCallTick onCreate called");	
+    	prefsPrivate = getSharedPreferences(preferencesName, MODE_PRIVATE);
+    	callIntervall = prefsPrivate.getInt("callIntervall", 60);
+    	mAlarmSender = PendingIntent.getService(ServiceCallTick.this, 0, new Intent(ServiceCallTick.this, ServiceCallTick.class), 0);
+    	startScheduled();
     }
-
+	  
     /**
-     * When the Service is called by the AlarmManager, this function is executed in a new thread. 
-     * (so that we don't disturb the GUI or other things running in the main thread)
+     * Call this when the service is terminated. (part of the Service interface)
      */
-    Runnable mTask = new Runnable() 
+	@Override
+    public void onDestroy() 
     {
-        public void run() 
-        {
-            //TODO add work here
-        	Looper.prepare();
-        	myAlertService.showToast("text");
-        	
-        	//TODO remove sleep-cycle
-            long endTime = System.currentTimeMillis() + 5*1000;
-            while (System.currentTimeMillis() < endTime) 
-            {
-                synchronized (mBinder) 
-                {
-                    try 
-                    {
-                        mBinder.wait(endTime - System.currentTimeMillis());
-                    } 
-                    catch (Exception e) 
-                    {}
-                }
-            }
-
-            // Done with our work...  stop this instance of the service!
-            ServiceCallTick.this.stopSelf();
-        }
-    };
+		//safe our internal state for next time
+		Editor prefsPrivateEditor = prefsPrivate.edit();
+		prefsPrivateEditor.putInt("callIntervall", callIntervall);
+		prefsPrivateEditor.commit();
+    }
     
+   /**
+    * This is called when some ones sends a intent to us. 
+    */
+    @Override
+	public void onStart(Intent intent, int startId)
+	{
+    	Intent callIntent = new Intent(ServiceCallTick.this, ServiceRecurringTask.class);
+    	callIntent.putExtra("isLocation", false);
+    	startService(callIntent);
+	}
     
     /**
      * return the callIntervall variable. callIntervall specifies, that the service should be called every x seconds.
@@ -92,8 +79,27 @@ public class ServiceCallTick extends android.app.Service
 	public void setCallIntervall(int callIntervall) 
 	{
 		this.callIntervall = callIntervall;
+		//safe our internal state for next time
+		Editor prefsPrivateEditor = prefsPrivate.edit();
+		prefsPrivateEditor.putInt("callIntervall", callIntervall);
+		prefsPrivateEditor.commit();
+		
+		startScheduled();
 	}
 
+	/**
+	 * Register the Service with the AlarmManager. Its onStartCommand() Method will be called
+	 * every callIntervall seconds.
+	 */
+	public void startScheduled()
+	{
+		System.out.println("ServiceCallTick startScheduled called"); 
+		// call us again every callIntervall seconds
+        long firstTime = SystemClock.elapsedRealtime();
+        AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
+        am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstTime, callIntervall*1000, mAlarmSender);
+	}
+	
 	/**
 	 * remove the service from the AlarmManager. If this is called, the service will no longer be started periodically.
 	 */
@@ -106,16 +112,7 @@ public class ServiceCallTick extends android.app.Service
        	 	am.cancel(mAlarmSender);
     	}   
     }
-	
-    /**
-     * Call this when the service is terminated. (part of the Service interface)
-     */
-	@Override
-    public void onDestroy() 
-    {
-
-    }
-    
+	  
 	/**
 	 * Return this object to interact with the service.
 	 */
