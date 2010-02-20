@@ -119,8 +119,19 @@ public class CalendarLibrary {
     public HashMap<String, CalendarEvent> getEventsFromBackend(String id)
     {
     	HashMap<String, CalendarEvent> events = new HashMap<String, CalendarEvent>();
-    	String selection = "calendar_id=?";
-    	String[] selection_args = {id};
+    	String selection;
+    	String[] selection_args = new String[1];
+    	/** get all events if no calendar is given */
+    	if (id == null)
+    	{
+    		selection_args = null;
+    		selection = null;
+    	}
+    	else
+    	{
+    		 selection = "calendar_id=?";
+    		 selection_args[0] = id;
+    	}
 
 		eventsCursor = contentResolver.query(eventsURI, eventsFields,
 										 	 selection, selection_args, null);
