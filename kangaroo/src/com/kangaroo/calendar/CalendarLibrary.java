@@ -215,4 +215,59 @@ public class CalendarLibrary {
     		return -1;
     	}
     }
+    
+    public HashMap<String,CalendarEvent> getTodaysEvents(String id)
+    {
+    	/** calculate the needed dates */
+    	Date today = new Date();
+    	Date beginning = new Date(today.getYear(), today.getMonth(),
+    							  today.getDate(), 0, 0);
+    	Date end = new Date(today.getYear(), today.getMonth(),
+				  			today.getDate(), 23, 59);
+    	
+    	/** get the events */
+    	HashMap<String, CalendarEvent> events = new HashMap<String, CalendarEvent>();
+    	String selection;
+    	String[] selection_args;
+    	/** get all events if no calendar is given */
+    	if (id == null)
+    	{
+    		selection = "dtstart>? AND dtend<?";
+    		selection_args = new String[2];
+    		selection_args[0] = String.valueOf(beginning.getTime());
+    		selection_args[1] = String.valueOf(end.getTime());
+    	}
+    	else
+    	{
+    		selection = "calendar_id=? AND dtstart>? AND dtend<?";
+    		selection_args = new String[3];
+    		selection_args[0] = id;
+    		selection_args[1] = String.valueOf(beginning.getTime());
+    		selection_args[2] = String.valueOf(end.getTime());
+    	}
+
+		eventsCursor = contentResolver.query(eventsURI, eventsFields,
+										 	 selection, selection_args, null);
+
+		 while (eventsCursor.moveToNext())
+	        {
+				final String eventid = eventsCursor.getString(0);
+				final String title = eventsCursor.getString(1);
+				final Boolean allDay = Boolean.parseBoolean(eventsCursor.getString(2));
+				final Date dtstart = new Date(Long.parseLong(eventsCursor.getString(3)));
+				final Date dtend = new Date(Long.parseLong(eventsCursor.getString(4)));
+				final String description = eventsCursor.getString(5);
+				final String eventLocation = eventsCursor.getString(6);
+				final int calendar = Integer.parseInt(eventsCursor.getString(7));
+				final String timezone = eventsCursor.getString(8);
+
+	            CalendarEvent event = new CalendarEvent(eventid, title, eventLocation,
+	            										null, null, dtstart, dtend,
+	            										null, null, allDay, description,
+	            										calendar,timezone);
+	            events.put(title,event);
+	        }
+    	return events;
+    }
+    
 }
