@@ -32,9 +32,9 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>tsm_kangaroo_src</name>
+			<name>src_kangaroo</name>
 			<type>2</type>
-			<location>/Users/andreaswalz/Documents/Uni/Informatik/Teamprojekt - WS0910/repository/master/tsm_kangaroo/src</location>
+			<location>/Users/andreaswalz/Documents/Uni/Informatik/Teamprojekt - WS0910/repository/master/kangaroo/kangaroo/src</location>
 		</link>
 	</linkedResources>
 </projectDescription>

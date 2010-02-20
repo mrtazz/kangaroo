@@ -8,41 +8,49 @@ import org.openstreetmap.travelingsalesman.routing.IVehicle;
 import com.mobiletsm.osm.data.MobileInterfaceDataSet;
 import com.mobiletsm.osm.data.adapters.MDSDatabaseAdapter;
 import com.mobiletsm.osm.data.searching.POINodeSelector;
+import com.mobiletsm.routing.Place;
 
-public interface MobileDataSetProvider {
 
-	
-	public boolean open(String source, MDSDatabaseAdapter adapter);
-	
-	
-	/**
-	 * close connection to data source
-	 */
-	public void close();
-	
-	
-	//public Node getNodeById(long id);
+public abstract class MobileDataSetProvider {
 
 	
-	public boolean isStreetNode(long nodeId);
+	protected MDSDatabaseAdapter adapter;
 	
 	
-	public Node getNearestStreetNode(LatLon center);
+	public MobileDataSetProvider(MDSDatabaseAdapter adapter) {
+		super();
+		this.adapter = adapter;
+	}
+	
+	
+	public abstract boolean open(String source);
+	
+	
+	public abstract boolean isOpen();
+	
+	
+	public abstract void close();
+
+	
+	public abstract boolean isStreetNode(long nodeId);
+	
+	
+	public abstract Node getNearestStreetNode(Place center);
 	
 
-	public MobileInterfaceDataSet getCompleteDataSet();
+	public abstract MobileInterfaceDataSet getCompleteDataSet();
 	
 	
-	public MobileInterfaceDataSet getRoutingDataSet(long fromNodeId, long toNodeId, IVehicle vehicle);
+	public abstract MobileInterfaceDataSet getRoutingDataSet(long fromNodeId, long toNodeId, IVehicle vehicle);
 	
 	
-	public MobileInterfaceDataSet updateRoutingDataSet(long fromNodeId, long toNodeId, IVehicle vehicle);
+	public abstract MobileInterfaceDataSet updateRoutingDataSet(long fromNodeId, long toNodeId, IVehicle vehicle);
 	
 	
-	public MobileInterfaceDataSet getPOINodeDataSet(LatLon center, POINodeSelector selector);
+	public abstract MobileInterfaceDataSet getPOINodeDataSet(LatLon center, POINodeSelector selector);
 	
 	
-	public MobileInterfaceDataSet updatePOINodeDataSet(LatLon center, POINodeSelector selector);
+	public abstract MobileInterfaceDataSet updatePOINodeDataSet(LatLon center, POINodeSelector selector);
 	
 	
 }

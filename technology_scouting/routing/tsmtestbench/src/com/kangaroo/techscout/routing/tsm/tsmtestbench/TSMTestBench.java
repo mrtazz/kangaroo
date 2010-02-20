@@ -17,22 +17,14 @@ import org.openstreetmap.travelingsalesman.routing.Route;
 import org.openstreetmap.travelingsalesman.routing.Route.RoutingStep;
 import org.openstreetmap.travelingsalesman.routing.describers.SimpleRouteDescriber;
 
-import com.kangaroo.routing.KangarooRoutingEngine;
-import com.kangaroo.routing.KangarooRoutingManager;
-import com.kangaroo.routing.TSMKangarooRoutingEngine;
-import com.kangaroo.statuschange.JobDoneStatusChange;
-import com.kangaroo.statuschange.JobFailedStatusChange;
-import com.kangaroo.statuschange.JobStartedStatusChange;
-import com.kangaroo.statuschange.StatusChange;
-import com.kangaroo.statuschange.StatusListener;
-import com.kangaroo.statuschange.SubJobDoneStatusChange;
-import com.kangaroo.statuschange.SubJobStartedStatusChange;
+import com.kangaroo.techscout.routing.AsynchronousRoutingEngine;
+import com.kangaroo.techscout.routing.KangarooRoutingManager;
 import com.kangaroo.techscout.routing.MovementSimulator;
-import com.kangaroo.tsm.osm.io.FileLoader;
 import com.mobiletsm.osm.OsmHelper;
 import com.mobiletsm.routing.AllStreetVehicle;
 import com.mobiletsm.routing.Place;
 import com.mobiletsm.routing.Vehicle;
+import com.mobiletsm.routing.statuschange.*;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -330,7 +322,7 @@ public class TSMTestBench extends Activity implements StatusListener {
 			
 			statusStringBuffer.append("> " + status.message);
 			
-			if (status.jobID == KangarooRoutingEngine.JOBID_INIT_ROUTING_ENGINE) 
+			if (status.jobID == AsynchronousRoutingEngine.JOBID_INIT_ROUTING_ENGINE) 
 				progressDialog = ProgressDialog.show(this, "Please wait", status.message, true, false);
 			
 		} else if (status instanceof JobDoneStatusChange) {
@@ -402,14 +394,14 @@ public class TSMTestBench extends Activity implements StatusListener {
 				Log.v("MyTag", "status.result = null");
 			}
 			
-			if (status.jobID == KangarooRoutingEngine.JOBID_INIT_ROUTING_ENGINE && progressDialog != null) {
+			if (status.jobID == AsynchronousRoutingEngine.JOBID_INIT_ROUTING_ENGINE && progressDialog != null) {
 				progressDialog.dismiss();
 				onRoutingEngineReady();
 			}
 		} else if (status instanceof JobFailedStatusChange) {
 			statusStringBuffer.append(" failed!\n");
 			
-			if (status.jobID == KangarooRoutingEngine.JOBID_INIT_ROUTING_ENGINE && progressDialog != null) {
+			if (status.jobID == AsynchronousRoutingEngine.JOBID_INIT_ROUTING_ENGINE && progressDialog != null) {
 				progressDialog.dismiss();				
 			}
 			

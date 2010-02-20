@@ -18,6 +18,7 @@ import org.openstreetmap.osmosis.core.domain.v0_6.WayNode;
 
 import com.mobiletsm.osm.OsmHelper;
 import com.mobiletsm.osm.data.MapTile;
+import com.mobiletsm.routing.Place;
 
 public abstract class MDSDatabaseAdapter {
 
@@ -27,11 +28,18 @@ public abstract class MDSDatabaseAdapter {
 	}
 	
 	
-	protected String SQL_loadAllStreetNodesAround(LatLon center) {
-		double size = 0.001;		
+	protected String SQL_loadAllStreetNodesAround(Place center, double radius) {
+		// earth radius
+		final double earthRadius = 6378140;
+		
+		// scale factor between root-squared-lat-lon distance and distance in meters
+		double scaleFactor = 2 * Math.PI * (earthRadius * Math.cos(Math.toRadians(center.getLatitude()))) / 360;
+		
 		String sql = String.format(Locale.US, "SELECT id,lat,lon FROM nodes WHERE stnd<=-1 AND " +
-				"lat>=%.3f AND lat<=%.3f AND lon>=%.3f AND lon<=%.3f;",
-				center.lat() - size, center.lat() + size, center.lon() - size, center.lon() + size);
+				"((lat-%f)*(lat-%f) + (lon-%f)*(lon-%f)) < %f;",
+				center.getLatitude(), center.getLatitude(), 
+				center.getLongitude(), center.getLongitude(),
+				Math.pow(radius / scaleFactor, 2));
 		sqlLog(sql);
 		return sql;
 	}
@@ -90,10 +98,20 @@ public abstract class MDSDatabaseAdapter {
 	}
 
 	
-	protected String SQL_loadRoutingStreetNodesIncluding(long nodeId1, long nodeId2) {
-		String sql = String.format("SELECT id,lat,lon FROM nodes WHERE stnd=-1 OR id=%d OR id=%d;", nodeId1, nodeId2);
+	protected String SQL_loadRoutingStreetNodes() {
+		String sql = "SELECT id,lat,lon FROM nodes WHERE stnd=-1;";
 		sqlLog(sql);
 		return sql;
+	}
+	
+	
+	protected String SQL_loadNodes(long nodeId1, long nodeId2, boolean loadTags) {
+		String tags = "";
+		if (loadTags)
+			tags = ",tags";
+		String sql = String.format("SELECT id,lat,lon%s FROM nodes WHERE id=%d OR id=%d;", tags, nodeId1, nodeId2);
+		sqlLog(sql);
+		return sql;		
 	}
 	
 	
@@ -102,10 +120,13 @@ public abstract class MDSDatabaseAdapter {
 	public abstract boolean open(String source);
 	
 	
+	public abstract boolean isOpen();
+	
+	
 	public abstract void close();
 	
 	
-	public abstract void loadAllStreetNodesAround(LatLon center);
+	public abstract void loadAllStreetNodesAround(Place center, double radius);
 	
 	
 	public abstract void loadAllStreetNodesForWays(long fromWayId, long toWayId);
@@ -120,11 +141,13 @@ public abstract class MDSDatabaseAdapter {
 	public abstract void loadCompleteWay(long wayId);
 	
 	
-	public abstract void loadRoutingStreetNodesIncluding(long nodeId1, long nodeId2);
+	public abstract void loadRoutingStreetNodes();
+	
+	
+	public abstract void loadNodes(long nodeId1, long nodeId2, boolean loadTags);
 	
 	
 	/*  */	
-
 	
 	protected Set<MapTile> mapTiles = null;
 

@@ -7,7 +7,7 @@ import com.mobiletsm.osm.data.searching.POINodeSelector;
 public interface RoutingEngine {
 	
 	
-	public boolean init();
+	public boolean init(String source);
 	
 	
 	public boolean initialized();
