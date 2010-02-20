@@ -15,7 +15,7 @@ import android.net.Uri;
 
 /**
  * @author mrtazz
- * Library for accessing calendar data via the content provider
+ * @brief Library for accessing calendar data via the content provider
  *
  */
 public class CalendarLibrary {
