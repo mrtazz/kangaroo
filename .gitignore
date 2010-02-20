@@ -18,4 +18,4 @@
 *.class
 technology_scouting/calender_api/AndroidQuickCalendar/bin/net/*
 technology_scouting/calender_api/gen/*
-*/R.java
+*R.java
