@@ -4,5 +4,5 @@
   android:layout_width="wrap_content"
   android:layout_height="wrap_content">
 <TextView android:text="@+id/TextView01" android:id="@+id/DayTitle" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-<ListView android:id="@+id/EventList" android:layout_width="wrap_content" android:layout_height="wrap_content"></ListView>
+<ListView android:id="@android:id/list" android:layout_width="wrap_content" android:layout_height="wrap_content"></ListView>
 </LinearLayout>

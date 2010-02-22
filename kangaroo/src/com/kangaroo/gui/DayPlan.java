@@ -11,6 +11,7 @@ import com.kangaroo.calendar.CalendarEvent;
 import com.kangaroo.calendar.CalendarLibrary;
 
 import android.app.Activity;
+import android.app.ListActivity;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -20,28 +21,28 @@ import android.widget.TextView;
  * @author mrtazz
  *
  */
-public class DayPlan extends Activity {
+public class DayPlan extends ListActivity {
 
+	  private ArrayList<CalendarEvent> eventlist = null;
+	  private CalendarAdapter calendarAdapter;
+	
 	  @Override
 	  public void onCreate(Bundle savedInstanceState) 
 	  {
 	        super.onCreate(savedInstanceState);
 	        setContentView(R.layout.dayplan);
-	        ArrayList<String> eventList;
-	        ArrayAdapter<String> eventListAdapter;
 	        CalendarLibrary cl = new CalendarLibrary(this);
-	        HashMap<String, CalendarEvent> events;
 	        TextView tv = (TextView)findViewById(R.id.DayTitle);
-	        ListView lv = (ListView)findViewById(R.id.EventList);
-	        
 	        tv.setText("Today");
-	        events = cl.getTodaysEvents("1");
-	        eventList = new ArrayList<String>(events.keySet());
+	        eventlist = new ArrayList<CalendarEvent>(cl.getTodaysEvents("1").values());
 		    // Bind the ListView to an ArrayList of strings.
-		  	eventListAdapter = new ArrayAdapter<String>(getApplicationContext(), 
-		  	                             		android.R.layout.simple_list_item_1,
-		  	                             		eventList);
-		  	lv.setAdapter(eventListAdapter);	        
+	        calendarAdapter = new CalendarAdapter(this, R.layout.row, eventlist);
+	        calendarAdapter.notifyDataSetChanged();
+	        for (int i=0; i < eventlist.size();i++)
+	        {
+	        	calendarAdapter.add(eventlist.get(i));
+	        }
+	        calendarAdapter.notifyDataSetChanged();
 	  } 
 
 }
