@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 
 import org.openstreetmap.osm.data.Selector;
 import org.openstreetmap.osm.data.coordinates.LatLon;
@@ -29,6 +30,7 @@ import com.mobiletsm.osm.data.adapters.MDSDatabaseAdapter;
 import com.mobiletsm.osm.data.searching.POINodeSelector;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileNode;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
+import com.mobiletsm.osmosis.core.domain.v0_6.MobileWayNode;
 import com.mobiletsm.routing.Place;
 
 public class DatabaseMDSProvider extends MobileDataSetProvider {
@@ -88,23 +90,100 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 	}
 	
 	
-	public Node getNearestStreetNode(Place center) {		
-		adapter.loadAllStreetNodesAround(center, 300);
+	public Node getNearestStreetNode(Place center) {
+		return getNearestStreetNode(center, false);
+	}
+	
+	
+	/* node cache */
+	private final double defaultRadiusToLoad = 300;
+	private Vector<Node> cache = null;
+	private Place cacheCenter = null;
+	private double cacheRadius = 0;		
+	private Place lastQueryPos = null;	
+	
+	public Node getNearestStreetNode(Place center, boolean updateCenter) {		
+		/* do not search the database if given place is already a street node */
+		if (center.isOsmStreetNode()) {
+			long nodeId = center.getOsmNodeId();			
+			if (!streetNodes.containsKey(nodeId)) {
+				adapter.loadNodes(nodeId, -1, false);
+			}			
+			Node node = streetNodes.get(nodeId);
+			return node; 
+		}
 				
+		/* recalculate cache radius depending on distance moved since last query */
+		double newRadius = cacheRadius;
+		if (lastQueryPos != null) {
+			newRadius = 3 * lastQueryPos.distanceTo(center);
+			if (cacheRadius > newRadius)
+				newRadius = cacheRadius;
+		}
+		lastQueryPos = center;
+		
 		double minDist = Double.MAX_VALUE;
-		Node minDistNode = null;
+        Node minDistNode = null;   
+       
+        if (cache != null) {
+        	
+        	double distToCenter = cacheCenter.distanceTo(center);
+        	
+        	/* if position is still within circle */
+        	if (distToCenter < cacheRadius) {
+        		
+        		Iterator<Node> nodes = cache.iterator();            	
+            	while(nodes.hasNext()) {    	        	
+    	        	Node node = nodes.next();    	        	
+    	        	double dist = center.distanceTo(node.getLatitude(), node.getLongitude());
+    	            if (dist < minDist) {
+    	                minDist = dist;
+    	                minDistNode = node;
+    	            }	           
+    	        }
+            	
+            	/* if there is definitely no node outside the circle
+            	 * that is closer than the one we found inside */
+            	if (minDist + distToCenter < cacheRadius) {
+        			if (updateCenter) {
+        				center.update(minDistNode, true);
+        			}
+            		return minDistNode;
+            	}
+        	}        	
+        }         		        
+        
+        if (newRadius > 0) {
+        	cacheRadius = newRadius;
+        	cacheCenter = center;
+	        cache = new Vector<Node>();
+        }
+        
+		
+		/* get the street node near the given center */
+		double radiusToLoad = cacheRadius;
+		if (radiusToLoad == 0)
+			radiusToLoad = defaultRadiusToLoad;
+        adapter.loadAllStreetNodesAround(center, radiusToLoad);
+				
 		for (Node node : streetNodes.values()) {
 			double dist = center.distanceTo(node.getLatitude(), node.getLongitude());
+            if (cacheRadius > 0 && dist < cacheRadius)
+            	cache.add(node);
 			if (dist < minDist) {
 				minDist = dist;
 				minDistNode = node;
 			}
 		}
 		
-		if (minDistNode != null)
+		if (minDistNode != null) {
+			if (updateCenter) {
+				center.update(minDistNode, true);
+			}
 			return minDistNode;
-		else
+		} else {
 			return null;
+		}
 	}
 	
 
@@ -124,19 +203,41 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 		routingMapPresent = true;
 		
 		adapter.loadCompleteWaysForNodes(fromNodeId, toNodeId);
-		//TODO: set distToPre in new complete ways
 		
 		long fromWayId = getWayForNode(fromNodeId);		
 		long toWayId = getWayForNode(toNodeId);		
 		
 		adapter.loadAllStreetNodesForWays(fromWayId, toWayId);
 		
+		setWayNodeDistances(fromWayId);
+		setWayNodeDistances(toWayId);
+
 		MobileRoutingInterfaceDataSet dataSet = new MobileRoutingInterfaceDataSet(fromWayId, toWayId, vehicle);
 		dataSet.setMaps(streetNodes, completeWays, reducedWays, waysForNodes);		
 		
 		return dataSet;
 	}
 
+	
+	
+	private void setWayNodeDistances(long wayId) {
+		if (wayId == -1) 
+			return;		
+		Way way = completeWays.get(wayId);
+		List<WayNode> wayNodes = way.getWayNodes();		
+		Node last = null;
+		for (int i = 0; i < wayNodes.size(); i++) {
+			MobileWayNode wayNode = (MobileWayNode)wayNodes.get(i);
+			Node current = streetNodes.get(wayNode.getNodeId());
+			if (last != null) {
+				double dist = Place.distance(current.getLatitude(), current.getLongitude(), 
+						last.getLatitude(), last.getLongitude());
+				wayNode.setDistanceToPredecessor(dist);
+			}
+			last = current;
+		}		
+	}
+	
 	
 	
 	private long getWayForNode(long nodeId) {

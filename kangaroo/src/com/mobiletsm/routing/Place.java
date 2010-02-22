@@ -68,6 +68,15 @@ public class Place {
 		this(node, false);
 	}
 	
+	
+	public Place(Place place) {
+		super();
+		this.latitude = place.latitude;
+		this.longitude = place.longitude;
+		this.osmNodeId = place.osmNodeId;
+		this.isOsmStreetNode = place.isOsmStreetNode;
+	}
+	
 		
 	public void update(Node node, boolean isOsmStreetNode) {
 		this.latitude = node.getLatitude();
@@ -104,6 +113,14 @@ public class Place {
 		return (osmNodeId != -1);
 	}
 
+	
+	/**
+	 * returns true if this place is an openstreetmap street node
+	 * @return
+	 */
+	public boolean isOsmStreetNode() {
+		return isOsmStreetNode;
+	}
 	
 	/**
 	 * returns the latitude of this place

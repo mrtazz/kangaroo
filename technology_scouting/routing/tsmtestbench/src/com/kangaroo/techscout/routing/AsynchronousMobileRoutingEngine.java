@@ -15,6 +15,7 @@ import org.openstreetmap.travelingsalesman.routing.IRouter;
 import org.openstreetmap.travelingsalesman.routing.Route;
 import org.openstreetmap.travelingsalesman.routing.routers.MultiTargetDijkstraRouter;
 
+import com.mobiletsm.osm.OsmHelper;
 import com.mobiletsm.osm.data.MobileInterfaceDataSet;
 import com.mobiletsm.osm.data.adapters.MDSAndroidDatabaseAdapter;
 import com.mobiletsm.osm.data.providers.DatabaseMDSProvider;
@@ -23,6 +24,8 @@ import com.mobiletsm.osm.data.searching.POINodeSelector;
 import com.mobiletsm.routing.Limits;
 import com.mobiletsm.routing.Place;
 import com.mobiletsm.routing.Vehicle;
+import com.mobiletsm.routing.metrics.MobileRoutingMetric;
+import com.mobiletsm.routing.routers.MobileMultiTargetDijkstraRouter;
 import com.mobiletsm.routing.statuschange.JobDoneStatusChange;
 import com.mobiletsm.routing.statuschange.JobFailedStatusChange;
 import com.mobiletsm.routing.statuschange.JobStartedStatusChange;
@@ -103,22 +106,29 @@ public class AsynchronousMobileRoutingEngine extends AsynchronousRoutingEngine {
 					
 					/*  */
 					listener.onStatusChanged(new SubJobStartedStatusChange(JOBID_GET_NEAREST_STREET_NODE));
-					fromNodeId = provider.getNearestStreetNode(from).getId();
+					fromNodeId = provider.getNearestStreetNode(from, true).getId();
 					listener.onStatusChanged(new SubJobDoneStatusChange(JOBID_GET_NEAREST_STREET_NODE));
 										
 					/*  */				
 					listener.onStatusChanged(new SubJobStartedStatusChange(JOBID_GET_NEAREST_STREET_NODE));
-					toNodeId = provider.getNearestStreetNode(to).getId();
+					toNodeId = provider.getNearestStreetNode(to, true).getId();
 					listener.onStatusChanged(new SubJobDoneStatusChange(JOBID_GET_NEAREST_STREET_NODE));
 
 					listener.onStatusChanged(new SubJobStartedStatusChange(JOBID_CREATE_DATASET));
 					MobileInterfaceDataSet routingDataSet = provider.getRoutingDataSet(fromNodeId, toNodeId, null);
 					listener.onStatusChanged(new SubJobDoneStatusChange(JOBID_CREATE_DATASET));
-					
-					IRouter router = new MultiTargetDijkstraRouter();
+				
+					IRouter router = new MobileMultiTargetDijkstraRouter();
+					router.setMetric(new MobileRoutingMetric());
 					Route route = router.route(routingDataSet, routingDataSet.getNodeByID(toNodeId), 
 							routingDataSet.getNodeByID(fromNodeId), vehicle);						
-						
+
+					if (route != null) {
+						System.out.println("route from nodeid:" + fromNodeId + 
+								" to nodeid:" + toNodeId + ", dist = " + 
+								OsmHelper.getRouteLength(route));
+					}
+					
 					listener.onStatusChanged(new JobDoneStatusChange(JOBID_ROUTE_FROMTO, route));
 				} catch (Exception exception) {
 					listener.onStatusChanged(new JobFailedStatusChange(JOBID_ROUTE_FROMTO, exception));

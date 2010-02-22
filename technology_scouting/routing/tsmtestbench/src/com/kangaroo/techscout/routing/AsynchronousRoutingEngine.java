@@ -104,7 +104,7 @@ public abstract class AsynchronousRoutingEngine {
 		} else if (jobID == JOBID_GET_NEAREST_POI_NODE) {
 			return "looking for points of interest...";
 		} else if (jobID == JOBID_GET_NEAREST_STREET_NODE) {
-			return "looking nearest street node...";
+			return "looking for nearest street node...";
 		} else if (jobID == JOBID_ROUTE_FROMTO) {
 			return "routing...";
 		} else if (jobID == JOBID_CREATE_DATASET) {

@@ -58,14 +58,14 @@ public abstract class MDSDatabaseAdapter {
 				ids.add(wayNode.getNodeId());
 		}		
 		if (ids.size() > 0) {		
-			StringBuffer sql = new StringBuffer("SELECT id,lat,lon FROM nodes WHERE ");			
+			StringBuffer sql = new StringBuffer("SELECT id,lat,lon FROM nodes WHERE id IN (");			
 			Iterator<Long> id_itr = ids.iterator();
 			while (id_itr.hasNext()) {
-				sql.append("id=" + id_itr.next());
+				sql.append(id_itr.next());
 				if (id_itr.hasNext())
-					sql.append(" OR ");
+					sql.append(", ");
 				else
-					sql.append(";");
+					sql.append(");");
 			}
 			
 			sqlLog(sql.toString());
