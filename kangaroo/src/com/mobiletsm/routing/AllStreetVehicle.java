@@ -37,8 +37,22 @@ public class AllStreetVehicle extends Vehicle {
 	public boolean isAllowed(IDataSet map, Way way) {
 		boolean hasHighway = WayHelper.getTag(way, Tags.TAG_HIGHWAY) != null;
 		boolean hasName = WayHelper.getTag(way, Tags.TAG_NAME) != null;
-		boolean hasRef = WayHelper.getTag(way, Tags.TAG_REF) != null;		
-		return hasHighway && (hasName || hasRef);		
+		boolean hasRef = WayHelper.getTag(way, Tags.TAG_REF) != null;
+		boolean isRoundabout = false; 
+		
+		String junction = WayHelper.getTag(way, Tags.TAG_JUNCTION);
+		if (junction != null && junction.equals("roundabout")) {
+			isRoundabout = true;
+		}
+		/*
+		if (way.getId() == 17743035) {
+			System.out.println("AllStreetVehicle.isAllowed(): hasHighway = " + hasHighway);
+			System.out.println("AllStreetVehicle.isAllowed(): hasName = " + hasName);
+			System.out.println("AllStreetVehicle.isAllowed(): hasRef = " + hasRef);
+			System.out.println("AllStreetVehicle.isAllowed(): isRoundabout = " + isRoundabout);
+		}
+		*/
+		return hasHighway && (hasName || hasRef || isRoundabout);		
 	}
 
 	

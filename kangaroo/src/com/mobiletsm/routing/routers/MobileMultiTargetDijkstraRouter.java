@@ -195,7 +195,14 @@ public class MobileMultiTargetDijkstraRouter implements IRouter {
 	     */
 	    public Route route(final IDataSet aMap, final Collection<Node> aTargetNodes, final Node aStartingPoint, final IVehicle aSelector) {
 
-	        LOG.log(Level.INFO,  "MultiTargetDijkstraRouter starting...");
+	    	if (aTargetNodes.size() == 1) {
+	    		Node target = aTargetNodes.iterator().next();
+	    		if (aStartingPoint.getId() == target.getId()) {
+	    			return null;
+	    		}
+	    	}
+	    	
+	    	LOG.log(Level.INFO,  "MultiTargetDijkstraRouter starting...");
 	        
 	        Map<Long, Double> bestDistancesFrom = new HashMap<Long, Double>(); // nodeID->best Metric of a route to the targetNodes from this node so far
 	        Map<Long, RoutingStep> bestStepsFrom = new HashMap<Long, RoutingStep>(); // routing-steps taken to reach what is in bestDistances

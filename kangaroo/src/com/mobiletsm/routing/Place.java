@@ -68,6 +68,15 @@ public class Place {
 		this(node, false);
 	}
 	
+	
+	public Place(Place place) {
+		super();
+		this.latitude = place.latitude;
+		this.longitude = place.longitude;
+		this.osmNodeId = place.osmNodeId;
+		this.isOsmStreetNode = place.isOsmStreetNode;
+	}
+	
 		
 	public void update(Node node, boolean isOsmStreetNode) {
 		this.latitude = node.getLatitude();

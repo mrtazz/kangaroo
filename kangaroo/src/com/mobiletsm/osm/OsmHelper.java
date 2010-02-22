@@ -390,33 +390,48 @@ public class OsmHelper {
 			if (!vehicle.isAllowed(map, startNode) ||
 					!vehicle.isAllowed(map, endNode) ||
 					!vehicle.isAllowed(map, way)) {
-				if (output != null)
+				if (output != null) {
 					output.println("followRouteOnMap: ERROR: element not allowed by vehicle");
+					output.println("followRouteOnMap: " + routingStepToString(way, startNode, endNode));
+					output.println("followRouteOnMap: isAllowed(nodeid:" + startNode.getId() + ") = " + 
+							vehicle.isAllowed(map, startNode));
+					output.println("followRouteOnMap: isAllowed(wayid:" + way.getId() + ") = " + 
+							vehicle.isAllowed(map, way));
+					output.println("followRouteOnMap: isAllowed(nodeid:" + endNode.getId() + ") = " + 
+							vehicle.isAllowed(map, endNode));
+				}
 				return false;
 			}				
 
 			if (output != null) {
-				String wayName = WayHelper.getTag(way, "name");
-				String wayRef = WayHelper.getTag(way, "ref");
-				if (wayName == null && wayRef == null) 
-					wayName = "";
-				else if (wayName == null && wayRef != null)
-					wayName = "(" + wayRef + ")";
-				else
-					wayName = "(" + wayName + ")";
-				output.println(String.format("followRouteOnMap: %d ---wayid:%d---> %d %s", 
-						startNode.getId(), way.getId(), endNode.getId(), wayName));
+				output.println("followRouteOnMap: " + routingStepToString(way, startNode, endNode));
 			}
 
 		}
 		
 		/* following the route on the map was successful */
-		if (output != null)
-			output.println("followRouteOnMap: END");		
+		if (output != null) {
+			output.println("followRouteOnMap: END");
+			output.println("followRouteOnMap: getRouteLengthOnMap() = " + OsmHelper.getRouteLengthOnMap(map, route));
+		}
 		return true;
 	}
 	
 
+	private static String routingStepToString(Way way, Node startNode, Node endNode) {
+		String wayName = WayHelper.getTag(way, "name");
+		String wayRef = WayHelper.getTag(way, "ref");
+		if (wayName == null && wayRef == null) 
+			wayName = "";
+		else if (wayName == null && wayRef != null)
+			wayName = "(" + wayRef + ")";
+		else
+			wayName = "(" + wayName + ")";
+		return String.format("%d ---wayid:%d---> %d %s", 
+				startNode.getId(), way.getId(), endNode.getId(), wayName);
+	}
+	
+	
 	public static String getAndRemoveTag(Collection<Tag> tags, String key) {
 		for (Tag tag : tags) {
 			if (tag.getKey().equals(key)) {
@@ -1194,21 +1209,19 @@ public class OsmHelper {
 				ps.setLong(1, way.getId());				
 				/* set name if available */
 				String name = getAndRemoveTag(tags, "name");
-				if (name != null)
-					ps.setString(2, name);
+				if (name == null) name = "";
+				ps.setString(2, name);
 				/* set tag flags */
 				int tagFlags = getAndRemoveTagFlags(tags);
 				ps.setInt(5, tagFlags);
 				/* set highway */
 				String highway = getAndRemoveTag(tags, "highway");
-				if (highway != null)
-					ps.setString(4, highway);
+				if (highway == null) highway = "";
+				ps.setString(4, highway);
 				/* set tags */
 				String tagString = packTagsToString(tags);				
-				if (tagString != null && tagString.length() > 0)
-					tagString = "";
-				ps.setString(3, tagString);
-				
+				if (tagString == null) tagString = "";
+				ps.setString(3, tagString);				
 					
 				/* set way nodes */
 				String wayNodeString = packLongsToString(getWayNodeIds(way));
@@ -1217,7 +1230,6 @@ public class OsmHelper {
 				/* set reduced list of way nodes */
 				MobileWay newWay = new MobileWay(way.getId());
 				double length = 0;
-				boolean hasIntermediateWayNodes = false;
 				WayNode lastWayNode = null;
 				for (WayNode wayNode : way.getWayNodes()) {
 					if (lastWayNode != null) {
@@ -1226,20 +1238,13 @@ public class OsmHelper {
 						if (!intermediateWayNodes.contains(wayNode.getNodeId())) {
 							newWay.addWayNode(wayNode.getNodeId(), length);
 							length = 0;
-						} else {
-							hasIntermediateWayNodes = true;
 						}
 					} else {
 						newWay.addWayNode(wayNode.getNodeId(), 0);
 					}
 					lastWayNode = wayNode;
-				}
-				if (hasIntermediateWayNodes) {
-					ps.setString(7, OsmHelper.packWayNodesToString(newWay));
-				} else {
-					ps.setString(7, wayNodeString);
-				}
-				
+				}	
+				ps.setString(7, OsmHelper.packWayNodesToString(newWay));					
 				ps.execute();
 			}
 			
@@ -1257,12 +1262,12 @@ public class OsmHelper {
 		    while(rs.next()) i++;
 		    System.out.println("writeToMobileDatabase: # ways written = " + i);
 		    		    
-		    /*
-		    rs = statement.executeQuery("SELECT * FROM nodes WHERE id=251508931;");
+		    
+		    rs = statement.executeQuery("SELECT * FROM ways WHERE id=17744176;");
 		    while(rs.next()) {
-		    	System.out.println("writeToMobileDatabase: nodeid:251508931: stnd = " + rs.getInt("stnd"));		    	
+		    	System.out.println("writeToMobileDatabase: wayid:17744176: wn_red = " + rs.getString("wn_red"));		    	
 		    }
-		    */
+		    
 		    
 		    connection.setAutoCommit(true);
 			connection.close();
