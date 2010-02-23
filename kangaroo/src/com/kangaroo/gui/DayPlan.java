@@ -4,18 +4,14 @@
 package com.kangaroo.gui;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+
+import android.app.ListActivity;
+import android.os.Bundle;
+import android.widget.TextView;
 
 import com.android.kangaroo.R;
 import com.kangaroo.calendar.CalendarEvent;
 import com.kangaroo.calendar.CalendarLibrary;
-
-import android.app.Activity;
-import android.app.ListActivity;
-import android.os.Bundle;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
 
 /**
  * @author mrtazz
@@ -38,7 +34,8 @@ public class DayPlan extends ListActivity {
 		    // Bind the ListView to an ArrayList of strings.
 	        calendarAdapter = new CalendarAdapter(this, R.layout.row, eventlist);
 	        calendarAdapter.notifyDataSetChanged();
-	        for (int i=0; i < eventlist.size();i++)
+	        int size = eventlist.size();
+	        for (int i=0; i < size;i++)
 	        {
 	        	calendarAdapter.add(eventlist.get(i));
 	        }
