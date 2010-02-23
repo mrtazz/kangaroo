@@ -1,4 +1,4 @@
-In our project's scope, the routing engine is ought to be used and thus its output is required to give answer to the following to questions:
+In our project's scope, the routing engine is ought to be used and thus its output is required to give answer to the following two questions:
 
 \begin{enumerate}
 
@@ -8,7 +8,7 @@ In our project's scope, the routing engine is ought to be used and thus its outp
 	
 	\item Where, looking from a specfic location, is (are) the next point(s) of interest providing a specific type of service?
 	
-		Finding a statisfying answer to that question is in priciple very easy. One has to scan the local area around the given center for facilities that match the criteria and give a list of the nearest ones.
+		Finding a statisfying answer to that question is in principle very easy. One has to scan the local area around the given center for facilities that match the criteria and give a list of the nearest ones.
 
 \end{enumerate}
 
@@ -35,43 +35,89 @@ Having defined the information we are aiming for when triggering an operation of
 
 Since the target platform is a mobile one and resources will be limited, handling of available device resources is a crucial issue in the decision for a routing engine. Nevertheless it is not the only thing to think of in this context. In addition to the output requirements mentioned at the beginning of this chapter, there are other issues to account for. Some of them are for example the portability to our target platform and the flexibility for future adaptions and extensions.\newline
 
-When trying to assign priorities to these aspects just mentioned before, one will be faced with the question whether to aim for a maximum of flexibility or for a maximum of performance, since these two features are contradictory in many ways. Traveling Salesman is situated near the end of the scale where focus is set on a maximum of flexibility, while Gosmore and OSMAndroid can be found near the other end.\newline
+When trying to assign priorities to these aspects just mentioned before, one will be faced with the question whether to aim for a maximum of flexibility or for a maximum of performance, since these two features are contradictory in many ways. Traveling Salesman is situated near the end of the scale where focus is set on a maximum of flexibility, while Gosmore and OSMAndroid can be found near the other end. Balancing these priorities was dynamically done during technology scouting and therefore the next chapter will give considerations and results on this aspect in greater detail.\newline
 
-As an integral part of the abstraction of the applications structure, the routing interface is designed in a way, that makes it independent of the decision for any routing engine, even if it was influenced by it. This means, that although a final decision had to be made within the scope of our project, there is still the chance to choose another engine as part of future work.\newline
+Anyhow, as an integral part of the abstraction of the application's structure, the routing interface is designed in a way, that makes it independent of the decision for any routing engine, even if its design was influenced by it. This means, that although a final decision had to be made within the scope of our project, there is still the chance to choose another engine as part of future work.\newline
 
-\subsubsection{Technology scouting}
+\subsubsection{Technology scouting - general part}
 
-Before focusing on a single routing engine, we analyzed the given options with respect to our definitions. Unfortunately when doing the technology scouting, we did not know about the OSMAndroid routing engine and thus had no chance to consider it in the decision for one routing engine.\newline
+Before focusing on a single routing engine, we analyzed the given options of routing engines with respect to our definitions. Unfortunately when doing the technology scouting, we did not know about the OSMAndroid routing engine and thus had no chance to consider it in the decision for a routing engine. Although its analysis has been done when a final decision already had been made and the technology scouting phase had been finished, the reasons for us not to change this decision afterwards will be given in this chapter.\newline
 
-With the two options left at this stage, Gosmore and Traveling Salesman, the Traveling Salesman project has the considerable advantage of being based on Java, in contrast to Gosmore, which is effectively a C/C++ library.\newline
+With the two options given at the beginning of the technology scouting phase, Gosmore and Traveling Salesman, the Traveling Salesman project had the considerable advantage of being based on Java, in contrast to Gosmore, which is effectively a C/C++ library. This fact gave rise to put first focus on Traveling Salesman to identify its drawbacks and opportunities.\newline
 
+As our analysis revealed that Traveling Salesman is the most promising option\footnote{remember the only alternative was Gosmore}, a discussion of this analysis will be given in a later chapter in greater detail. At this point, we will give a rough overview of the analysis of Gosmore, Traveling Salesman and OSMAndroid, including considerations of a proprietary development at the best combining advantages and opportunities of existing projects.\newline
 
+\begin{itemize}
 
-[...]
+	\item \textbf{Gosmore}
+	
+		
+	
+	\item \textbf{OSMAndroid}
+	
+		
+	
+	\item \textbf{Traveling Salesman (TSM)}
+	
+		First integration of Traveling Salesman's library into an Android project was rather simple, just as one would expect. It was integrated into a first application which was designed to use TSM to read an Openstreetmap XML file stored on the SD card of the mobile device and to output the file's summarized content. Compiling and running this application was possible without any errors but revealed three initial problems:
+		
+		\begin{itemize}
+		
+			\item Traveling Salesman uses a proprietary \texttt{FileLoader} class to read the Openstreetmap XML file and to initialize a  \texttt{MemoryDataSet} object holding all data from the XML file. This  \texttt{FileLoader} in turn uses the java built-in  \texttt{SAXParser}\footnote{ \texttt{javax.xml.parsers.SAXParser}} class and an extension of the  \texttt{DefaultHandler}\footnote{\texttt{org.xml.sax.helpers.DefaultHandler}} class which seem to be implemented slightly different in Android's java library. A permutation in the parameters of the method  \texttt{startElement(...)} yielded a complete discapability of reading the XML file, but could be overcome by re-permutating its parameters.
+			
+			\item After having fixed the problem given in the previous clause, Traveling Salesman did its first job on both the emulator and a physical mobile device. With minor additions to our application, we were able to perfom a \texttt{getNearestNode(...)} query on a tiny data set, showing that we will get into big trouble concerning performance, if no adaptions were applied. However, we were able to show that improving Traveling Salesman's performance in a way satisfying our requirements is in principle possible and an issue one will be able to deal with (chapter \ref{sec:techscout_routing_specific} will give details).	
+
+			\item memory usage	
+		
+		\end{itemize}
+
+	\item \textbf{proprietary development}
+
+\end{itemize}
 
 Eventually we decided to base the routing engine on the Traveling Salesman project, maintaining compatibility to its modular architecture. This decision was forced by the following reasons
 
 \begin{itemize}
 	\item Java based source code
 	
-		Traveling Salesman is completely based on Java and does not use any external libraries. Its precompiled project library can easily be integrated in the Android Environment and Android projects.
+		Traveling Salesman is completely based on Java and does not use any external libraries. Its precompiled project library can easily be integrated in the Android environment and Android projects following the standard design approach and thus requiring zero investment in any abnormality with respect to this standard.
 	
 	\item adaptions and extensions may be implemented without touching its inner structure
 	
-	\item maximum generality and flexibilty
+		Traveling Salesman's modular architecture supports easy exchange of any of its components. Given the imperative need of an adapted data storage management system to improve utilization of resources, we could easily come up with a re-design of this component without the need of adapting other components. The same applies to modifications of both the routing algorithm and its routing metric which can each be modified independently of the other.
 	
-	\item exchangeable components
+	\item maximum generality and flexibilty, exchangeable components
+	
+		Keeping compatibility to Traveling Salesman's modular architecture will offer the chance for easy maintenance or even upgrades. One may consequently benefit from future modifications made to the original Traveling Salesman project.
 	
 	\item performance improvements
+	
+		Early progress made with improving its performance gave rise to the assumption, that the advantages given in the clauses before will doubtlessly outweight the loss of performance and advantages provided by other solutions.
+		
+	\item "flexibility before performance"
+	
+		Last but not least, ...
 	
 \end{itemize}
 
 
-
-The following chapter will give a short introduction in the structure of Traveling Salesman.
+The following chapter will give a more detailed introduction in the structure of Traveling Salesman.
 
 \subsubsection{Traveling Salesman}
 
+As already mentioned, Traveling Salesman is designed following a modular architecture. Every essential or optional type of module is defined by a java interface with basic methods to provide its desired functionality.
+
+
+\subsubsection{Technology scouting - specific part}
+\label{sec:techscout_routing_specific}
+
+ 
+
+- changes applied to the XML parser
+
+- test system (mainly map file) used to make first progress with performance
+
+[...]
 
 \subsubsection{Adaptions and extensions to Traveling Salesman}
 
@@ -80,7 +126,7 @@ Coming up with the decision for using Traveling Salesman, there were several iss
 \begin{enumerate}
 	\item data storage modules
 	
-		The data storage modules (datasets in Traveling Salesman's terminology) that come with the project do not have their focus on efficency and performance as needed for a mobile application.
+		The data storage modules (datasets in Traveling Salesman's terminology) that come with the project do not have their focus on efficency and performance as needed for a mobile application. There are several different types of data set modules with different
 		
 		On Android's mobile platform, there are two contradictory goals for the data storage architecture. Since Android limits the heap space for an application to (at this time) 16 megabytes, the map area that can be cached in memory 
 

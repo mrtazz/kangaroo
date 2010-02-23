@@ -1,8 +1,8 @@
 One essential feature of our application is its capability to not only consider calendar items for itself but to put them in their geographical context and to account for local traffic facilities. This implies the need for a set of data representing these facilites and an engine to operate on the data.\newline
 
-From a very abstract and general perspective, this set of data can be divided into two categories, namely a dynamic and a static one. As static, in these terms, one should label all facilities which do not depend on any schedule and may in principle by used at any time (for example streets and highways). Dynamic facilities are the ones, that have a more or less fixed schedule constraining their usage.\newline
+From a very abstract and general perspective, this set of data can be divided into two categories, namely a dynamic and a static one. As static, in these terms, one should label all facilities which do not depend on any schedule and may in principle by used at any time (for example streets and highways). Dynamic facilities are the ones, that have a more or less fixed schedule constraining their usage (for example tramways and public bus service).\newline
 
-In this project we will only consider static facilities, since also accounting for dynamic ones requires routing algorithms that go far beyond standard algorithms resulting in a more complex application structure and a much more complex routing engine. Besides this aspect, it is a big issue to gather scheduling data about dynamic traffic facilities as there would be a number of carriers with different interfaces to include. However, the user might notably benefit from the abolishment of this constraint. It might be part of future work to include this feature.\newline
+In this project we will only consider static facilities, since also accounting for dynamic ones requires routing algorithms that go far beyond standard algorithms resulting in a more complex application structure and a much more complex routing engine. Besides this aspect, it is a big issue to gather scheduling data about dynamic traffic facilities as there would be a number of carriers with different interfaces to include. However, the user might notably benefit from the abolishment of this restriction. It might be part of future work to include this feature.\newline
  
 As potential sources for static traffic facility data, one finds basically two options
 
@@ -14,7 +14,7 @@ As potential sources for static traffic facility data, one finds basically two o
 	
 	\item \textbf{Openstreetmap}
 	
-		Openstreetmap is a free and open database for a world wide map. Everyone is free to add, change and remove map items. Consequently its map material varies over a hugh scale in both quality, density and actuality. It can be used online and offline by downloading an Openstreetmap XML file of a rectangular map area. This file contains every map item contained in this area.
+		Openstreetmap is a free and open database for a world wide map. Everyone is free to add, change and remove map items. Consequently its map material varies over a hugh scale in quality, density and actuality. It can be used online and offline by downloading an Openstreetmap XML file of a rectangular map area. This file contains every map item of this area.
   
 \end{itemize} 
 
