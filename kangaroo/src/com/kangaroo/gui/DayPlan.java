@@ -33,13 +33,8 @@ public class DayPlan extends ListActivity {
 	        eventlist = new ArrayList<CalendarEvent>(cl.getTodaysEvents("1").values());
 		    // Bind the ListView to an ArrayList of strings.
 	        calendarAdapter = new CalendarAdapter(this, R.layout.row, eventlist);
-	        calendarAdapter.notifyDataSetChanged();
-	        int size = eventlist.size();
-	        for (int i=0; i < size;i++)
-	        {
-	        	calendarAdapter.add(eventlist.get(i));
-	        }
-	        calendarAdapter.notifyDataSetChanged();
+	        setListAdapter(this.calendarAdapter);
+	        calendarAdapter.setNotifyOnChange(true);
 	  } 
 
 }
