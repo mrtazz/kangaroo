@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.kangaroo.calendar.CalendarEvent;
 import com.android.kangaroo.R;
+import com.kangaroo.calendar.CalendarEvent;
 
 /**
  * @author mrtazz
@@ -53,8 +53,10 @@ public class CalendarAdapter extends ArrayAdapter<CalendarEvent>{
 				TextView location = (TextView) v.findViewById(R.id.eventlocation);
 				
 				/* fill views */
-				start.setText(ce.getStartDate().toString());
-				end.setText(ce.getEndDate().toString());
+				start.setText(ce.getStartDate().getHours()+":"
+							  +ce.getStartDate().getMinutes());
+				end.setText(ce.getEndDate().getHours()+":"
+							+ce.getEndDate().getMinutes());
 				title.setText(ce.getTitle());
 				location.setText(ce.getLocation());				
 			}
