@@ -19,6 +19,7 @@ public class ServiceRecurringTask extends Service
 	private PowerManager.WakeLock myWakeLock;
 	private SharedPreferences prefsPrivate = null;
 	private String preferencesName = "Kagaroo_ServiceRecurringTask_Pref";
+	private boolean semaphoreTaskAktive;
 	
 	/**
 	 * Initialize the new Service-object here
@@ -31,6 +32,7 @@ public class ServiceRecurringTask extends Service
 		//variable = prefsPrivate.getInt("variable name", default_value);
 		
 		myPowerManager = (PowerManager) getSystemService(POWER_SERVICE);
+		semaphoreTaskAktive = false;
 	}
 	
 	/**
@@ -59,10 +61,15 @@ public class ServiceRecurringTask extends Service
 	{
 		 myWakeLock = myPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Kangaroo calculation lock");
 		 myWakeLock.acquire();
-
-		currentIntent = intent;
-    	Thread thr = new Thread(null, backgroundTask, "ServiceRecurringTask Worker Thread");
-        thr.start();
+		 
+		 //only one Thread that checks/optimizes the plan is allowed at any time!
+		 if(!semaphoreTaskAktive)
+		 {
+			semaphoreTaskAktive = true;
+			currentIntent = intent;
+	    	Thread thr = new Thread(null, backgroundTask, "ServiceRecurringTask Worker Thread");
+	        thr.start();
+		 }
 	}
 	
 	/**
@@ -90,6 +97,7 @@ public class ServiceRecurringTask extends Service
     		}
     		
     		//it is really important to release the WakeLock after we are done!
+    		semaphoreTaskAktive = false;
    		    myWakeLock.release();	
         }
     };	
