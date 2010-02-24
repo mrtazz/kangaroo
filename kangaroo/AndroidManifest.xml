@@ -5,13 +5,16 @@
       android:versionName="1.0">
     
     <application 	android:icon="@drawable/icon" 
-    				android:label="@string/app_name">
+    				android:label="@string/app_name"
+    				android:debuggable="true">
 		
-		<activity 	android:icon="@drawable/icon" android:label="kangaroo" android:name="com.kangaroo.gui.ActivityBuildPlan">
-            <intent-filter>
+		<activity android:name="com.kangaroo.gui.DayPlan">
+		    <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+		</activity>
+		<activity 	android:icon="@drawable/icon" android:label="kangaroo" android:name="com.kangaroo.gui.ActivityBuildPlan">
 		</activity>
 		<activity android:name="com.kangaroo.gui.ActivityTask"></activity>
 		
@@ -27,12 +30,16 @@
 	   		<intent-filter>
 	        	  <action android:name="android.intent.action.BOOT_COMPLETED" />
 	    	</intent-filter>
-		</receiver>
 		
-	</application>
+</receiver>
+		
+	<service android:name="com.kangaroo.system.ServiceRecurringTask"></service>
+
+</application>
     <uses-sdk android:minSdkVersion="4" />
 	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
 	<uses-permission android:name="android.permission.WRITE_CALENDAR" />
     <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 </manifest> 

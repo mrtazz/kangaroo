@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="com/android/kangaroo/FactoryServiceBinding.java|com/android/kangaroo/temptemp.java|com/kangaroo/temptemp.java" kind="src" path="src"/>
+	<classpathentry excluding="com/android/kangaroo/FactoryServiceBinding.java|com/android/kangaroo/temptemp.java|com/kangaroo/temptemp.java|com/kangaroo/system/BroadcastReceiverCallTick.java" kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="lib" path="traveling_salesman-1.0.3-RC1.jar"/>

@@ -2,6 +2,7 @@ package com.kangaroo.gui;
 
 
 import com.android.kangaroo.R;
+import com.kangaroo.system.ServiceCallLocation;
 import com.kangaroo.system.ServiceCallTick;
 
 import android.app.Activity;
@@ -52,9 +53,11 @@ public class ActivityBuildPlan extends Activity
 	            //am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
 	            //                firstTime, 30*1000, mAlarmSender);
 	            
-	        	ComponentName comp = new ComponentName("com.android.kangaroo", ServiceCallTick.class.getName());
-				service = startService(new Intent().setComponent(comp));
-	            
+	        	ComponentName comp = new ComponentName(getPackageName(), ServiceCallTick.class.getName());
+				ComponentName service = startService(new Intent().setComponent(comp));
+				ComponentName comp2 = new ComponentName(getPackageName(), ServiceCallLocation.class.getName());
+				ComponentName service2 = startService(new Intent().setComponent(comp2));
+				
 				// Tell the user about what we did.
 	            Toast.makeText(ActivityBuildPlan.this, "scheduled service started",
 	                    Toast.LENGTH_LONG).show();

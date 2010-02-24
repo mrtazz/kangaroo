@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -14,7 +15,7 @@ import android.net.Uri;
 
 /**
  * @author mrtazz
- * Library for accessing calendar data via the content provider
+ * @brief Library for accessing calendar data via the content provider
  *
  */
 public class CalendarLibrary {
@@ -118,8 +119,19 @@ public class CalendarLibrary {
     public HashMap<String, CalendarEvent> getEventsFromBackend(String id)
     {
     	HashMap<String, CalendarEvent> events = new HashMap<String, CalendarEvent>();
-    	String selection = "calendar_id=?";
-    	String[] selection_args = {id};
+    	String selection;
+    	String[] selection_args = new String[1];
+    	/** get all events if no calendar is given */
+    	if (id == null)
+    	{
+    		selection_args = null;
+    		selection = null;
+    	}
+    	else
+    	{
+    		 selection = "calendar_id=?";
+    		 selection_args[0] = id;
+    	}
 
 		eventsCursor = contentResolver.query(eventsURI, eventsFields,
 										 	 selection, selection_args, null);
@@ -151,10 +163,10 @@ public class CalendarLibrary {
      * @brief update method to enter events to backend
      * @param event object to add to backend
      */
-    public void addEventToBackend(CalendarEvent event)
+    public void updateIfNotInsertEventToBackend(CalendarEvent event)
     {
+    	/** build event values */
     	ContentValues values = new ContentValues();
-    	/** build values */
     	values.put("calendar_id", event.getCalendar());
     	values.put("eventTimezone", event.getTimezone());
     	values.put("title", event.getTitle());
@@ -167,7 +179,95 @@ public class CalendarLibrary {
     	values.put("visibility", 0);
     	values.put("hasAlarm", 0);
 
-    	/** enter into content provider backend */
-    	contentResolver.insert(eventsURI, values);
+    	/** update if not insert */
+    	if ((contentResolver.query(eventsURI, eventsFields,
+    							   "Events._id="+event.getId(), null, null)) != null)
+    	{
+    		Uri uri = ContentUris.withAppendedId(eventsURI, Long.parseLong(event.getId()));
+    		contentResolver.update(uri, values, null, null);
+    	}
+    	else
+    	{
+	    	/** enter into content provider backend */
+	    	contentResolver.insert(eventsURI, values);
+    	}
     }
+
+    /**
+     * @brief method to delete a given event from backend
+     * @param event to delete
+     * @return 0 on success, -1 on error
+     */
+    public int deleteEventFromBackend(CalendarEvent event)
+    {
+    	/** check if event exists */
+    	if ((contentResolver.query(eventsURI, eventsFields,
+				   "Events._id="+event.getId(), null, null)) != null)
+    	{
+    		Uri uri = ContentUris.withAppendedId(eventsURI, Long.parseLong(event.getId()));
+    		contentResolver.delete(uri, null, null);
+    		/** success */
+    		return 0;
+    	}
+    	else
+    	{
+    		/** no such event */
+    		return -1;
+    	}
+    }
+    
+    public HashMap<String,CalendarEvent> getTodaysEvents(String id)
+    {
+    	/** calculate the needed dates */
+    	Date today = new Date();
+    	Date beginning = new Date(today.getYear(), today.getMonth(),
+    							  today.getDate(), 0, 0);
+    	Date end = new Date(today.getYear(), today.getMonth(),
+				  			today.getDate(), 23, 59);
+    	
+    	/** get the events */
+    	HashMap<String, CalendarEvent> events = new HashMap<String, CalendarEvent>();
+    	String selection;
+    	String[] selection_args;
+    	/** get all events if no calendar is given */
+    	if (id == null)
+    	{
+    		selection = "dtstart>? AND dtend<?";
+    		selection_args = new String[2];
+    		selection_args[0] = String.valueOf(beginning.getTime());
+    		selection_args[1] = String.valueOf(end.getTime());
+    	}
+    	else
+    	{
+    		selection = "calendar_id=? AND dtstart>? AND dtend<?";
+    		selection_args = new String[3];
+    		selection_args[0] = id;
+    		selection_args[1] = String.valueOf(beginning.getTime());
+    		selection_args[2] = String.valueOf(end.getTime());
+    	}
+
+		eventsCursor = contentResolver.query(eventsURI, eventsFields,
+										 	 selection, selection_args, null);
+
+		 while (eventsCursor.moveToNext())
+	        {
+				final String eventid = eventsCursor.getString(0);
+				final String title = eventsCursor.getString(1);
+				final Boolean allDay = Boolean.parseBoolean(eventsCursor.getString(2));
+				final Date dtstart = new Date(Long.parseLong(eventsCursor.getString(3)));
+				final Date dtend = new Date(Long.parseLong(eventsCursor.getString(4)));
+				final String description = eventsCursor.getString(5);
+				final String eventLocation = eventsCursor.getString(6);
+				final int calendar = Integer.parseInt(eventsCursor.getString(7));
+				final String timezone = eventsCursor.getString(8);
+
+	            CalendarEvent event = new CalendarEvent(eventid, title, eventLocation,
+	            										null, null, dtstart, dtend,
+	            										null, null, allDay, description,
+	            										calendar,timezone);
+	            events.put(title,event);
+	        }
+    	return events;
+    }
+    
 }
