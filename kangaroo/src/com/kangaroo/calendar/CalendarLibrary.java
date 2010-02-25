@@ -172,7 +172,7 @@ public class CalendarLibrary {
 	            CalendarEvent event = new CalendarEvent(eventid, title, eventLocation,
 	            										null, null, dtstart, dtend,
 	            										null, null, allDay, description,
-	            										calendar,timezone);
+	            										calendar,timezone, null);
 	            events.put(title,event);
 	        }
 
