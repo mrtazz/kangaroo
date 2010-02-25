@@ -1,5 +1,7 @@
 package com.kangaroo.task;
 
+import java.util.Date;
+
 /**
  * Instances of this class represent TaskConstraints, that require the task to be executed at
  * a certain time of the day.
@@ -8,17 +10,30 @@ package com.kangaroo.task;
  */
 public class TaskConstraintDayTime implements TaskConstraintInterface 
 {
-	private int id;
+	private Date startTime;
+	private Date endTime;
 	
-	public TaskConstraintDayTime(int newId)
+	public TaskConstraintDayTime()
 	{
-		id = newId;
+		
 	}
-	public int getID() 
+	
+	public TaskConstraintDayTime(Date startTime, Date endTime)
 	{
-		return id;
+		this.startTime = startTime;
+		this.endTime = endTime;
 	}
 
+	public Date getStartTime()
+	{
+		return startTime;
+	}
+	
+	public Date getEndTime()
+	{
+		return endTime;
+	}
+	
 	public String getType() 
 	{
 		return "daytime";

@@ -1,9 +1,16 @@
 package com.kangaroo.gui;
 
 
+import java.util.Date;
+
 import com.android.kangaroo.R;
 import com.kangaroo.system.ServiceCallLocation;
 import com.kangaroo.system.ServiceCallTick;
+import com.kangaroo.task.Task;
+import com.kangaroo.task.TaskConstraintAmenity;
+import com.kangaroo.task.TaskConstraintDate;
+import com.kangaroo.task.TaskConstraintInterface;
+import com.kangaroo.task.TaskConstraintLocation;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -64,16 +71,43 @@ public class ActivityBuildPlan extends Activity
 	        }
 	    };
 
+	    private void printTask(Task tt)
+	    {
+	    	System.out.println(tt.getName());
+	    	System.out.println(tt.getDescription());
+	    	TaskConstraintInterface temp[] = tt.getConstraints();
+	    	for(int i=0; i<temp.length; i++)
+	    	{
+	    		System.out.println(temp[i].getType());
+	    	}
+	    	System.out.println("");
+	    	//System.out.println(tt.serialize());
+	    	System.out.println("");
+	    }
+	    
 	    private OnClickListener mStopAlarmListener = new OnClickListener() {
 	        public void onClick(View v) {
 	            // And cancel the alarm.
 	            //AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
 	            //am.cancel(mAlarmSender);
-
-	        	stopService(new Intent().setComponent(service));
+	        	//stopService(new Intent().setComponent(service));
+	        	
+	        	Task myTask = new Task();
+	        	myTask.setName("Name");
+	        	myTask.setDescription("Description");
+	        	myTask.addConstraint(new TaskConstraintLocation(1));
+	        	myTask.addConstraint(new TaskConstraintAmenity(5));
+	        	myTask.addConstraint(new TaskConstraintDate(new Date(110,1,24)));
+	        	printTask(myTask);
+	        	
+	        	String temp = myTask.serialize();
+	        	System.out.println(temp);
+	        	Task myTask2 = Task.deserialize(temp);
+	        	printTask(myTask2);
+	        	System.out.println(myTask2.serialize());
 	        	
 	            // Tell the user about what we did.
-	            Toast.makeText(ActivityBuildPlan.this, "scheduled service stopped",
+	            Toast.makeText(ActivityBuildPlan.this, "done.",
 	                    Toast.LENGTH_LONG).show();
 
 	        }

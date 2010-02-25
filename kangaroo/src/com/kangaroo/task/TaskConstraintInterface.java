@@ -7,6 +7,7 @@ package com.kangaroo.task;
  */
 public interface TaskConstraintInterface 
 {
+	
 	/**
 	 * This method returns the type of this concrete TaskConstraint.
 	 * Depending on the type a different validation method is used the different constraints.
@@ -15,9 +16,4 @@ public interface TaskConstraintInterface
 	 */
 	public String getType();
 	
-	/**
-	 * Each constraint is associated with a unique ID. The IDs are only unique for one Task
-	 * @return int: the unique id of the Constraint
-	 */
-	public int getID();
 }
