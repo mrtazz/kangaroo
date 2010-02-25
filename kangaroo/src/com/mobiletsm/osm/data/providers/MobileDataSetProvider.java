@@ -53,9 +53,6 @@ public abstract class MobileDataSetProvider {
 	
 	
 	public abstract void close();
-
-	
-	public abstract boolean isStreetNode(long nodeId);
 	
 	
 	public abstract Node getNearestStreetNode(Place center);

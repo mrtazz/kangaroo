@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -39,6 +40,7 @@ import com.mobiletsm.osm.data.MobileDataSet;
 import com.mobiletsm.osm.data.adapters.MDSSQLiteDatabaseAdapter;
 import com.mobiletsm.osm.data.providers.DatabaseMDSProvider;
 import com.mobiletsm.osm.data.providers.MobileDataSetProvider;
+import com.mobiletsm.osm.data.searching.Amenity;
 import com.mobiletsm.osm.data.searching.AmenityPOINodeSelector;
 import com.mobiletsm.osm.data.searching.CombinedSelector;
 import com.mobiletsm.osm.data.searching.POINodeSelector;
@@ -57,7 +59,7 @@ public class OSMFileReader {
 	 * @param args
 	 */
 	public static void main(String[] args) {	
-		
+		/*
 		// load map file
 		File mapFile = new File("/Users/andreaswalz/Downloads/map.osm");		
 		IDataSet map = (new FileLoader(mapFile)).parseOsm();
@@ -86,7 +88,22 @@ public class OSMFileReader {
 		check(map, 181732792, 251508961, 1606.1228723916768);
 		check(map, 461773975, 251508961, 1603.5566761878056);
 		check(map, 181732907, 251508961, 1662.1996472615235);
-
+		*/
+		
+		Amenity foo = new Amenity(Amenity.SCHOOL);
+		System.out.println("id = " + foo.getId() + ", type = " + foo.getType());
+		
+		AmenityPOINodeSelector sel1 = new AmenityPOINodeSelector();
+		AmenityPOINodeSelector sel2 = new AmenityPOINodeSelector(foo);
+		
+		Collection<Tag> tags = new Vector<Tag>();
+		tags.add(new Tag("amenity", Amenity.SCHOOL));
+		Node node = new Node(0, 0, (Date)null, null, 0, tags, 0, 0);
+		
+		System.out.println("sel1.isAllowed() = " + sel1.isAllowed(null, node));
+		System.out.println("sel2.isAllowed() = " + sel2.isAllowed(null, node));
+		
+		
 		
 		/*
 		// write map to a mobile database

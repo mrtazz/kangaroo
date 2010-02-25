@@ -82,12 +82,6 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 	
 	
 	private Map<Long, Set<Long>> waysForNodes = Collections.synchronizedMap(new HashMap<Long, Set<Long>>());
-
-	
-	
-	public boolean isStreetNode(long nodeId) {
-		throw new RuntimeException("");
-	}
 	
 	
 	public Node getNearestStreetNode(Place center) {
