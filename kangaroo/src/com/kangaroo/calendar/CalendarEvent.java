@@ -4,6 +4,8 @@
 package com.kangaroo.calendar;
 
 import java.util.Date;
+
+import com.mobiletsm.routing.Place;
 /**
  * @author mrtazz
  * 
@@ -22,9 +24,9 @@ public class CalendarEvent {
 	/** location name */
 	private String location;
 	/** longitude of the event location */
-	private Float locationLongitude;
+	private Double locationLongitude;
 	/** latitude of the event location */
-	private Float locationLatitude;
+	private Double locationLatitude;
 	/** Date when the event starts */
 	private Date startDate;
 	/** Date when the event stops */
@@ -41,6 +43,8 @@ public class CalendarEvent {
 	private int calendar;
 	/** timezone */
 	private String timezone;
+	/** mobileTSM places */
+	private Place place;
 
 	/**
 	 * @brief Constructor for event object
@@ -58,9 +62,9 @@ public class CalendarEvent {
 	 * @param description
 	 */
 	public CalendarEvent(String id, String title, String location,
-			Float locationLongitude, Float locationLatitude, Date startDate,
+			Double locationLongitude, Double locationLatitude, Date startDate,
 			Date endDate, Boolean wasTask, Boolean taskLink, Boolean allDay,
-			String description, int calendar, String timezone) {
+			String description, int calendar, String timezone, Place place) {
 		this.id = id;
 		this.title = title;
 		this.location = location;
@@ -121,28 +125,28 @@ public class CalendarEvent {
 	/**
 	 * @return the locationLongitude
 	 */
-	public Float getLocationLongitude() {
+	public Double getLocationLongitude() {
 		return locationLongitude;
 	}
 
 	/**
 	 * @param locationLongitude the locationLongitude to set
 	 */
-	public void setLocationLongitude(Float locationLongitude) {
+	public void setLocationLongitude(Double locationLongitude) {
 		this.locationLongitude = locationLongitude;
 	}
 
 	/**
 	 * @return the locationLatitude
 	 */
-	public Float getLocationLatitude() {
+	public Double getLocationLatitude() {
 		return locationLatitude;
 	}
 
 	/**
 	 * @param locationLatitude the locationLatitude to set
 	 */
-	public void setLocationLatitude(Float locationLatitude) {
+	public void setLocationLatitude(Double locationLatitude) {
 		this.locationLatitude = locationLatitude;
 	}
 
@@ -256,6 +260,20 @@ public class CalendarEvent {
 	 */
 	public void setTimezone(String timezone) {
 		this.timezone = timezone;
+	}
+
+	/**
+	 * @return the place
+	 */
+	public Place getPlace() {
+		return place;
+	}
+
+	/**
+	 * @param place the place to set
+	 */
+	public void setPlace(Place place) {
+		this.place = place;
 	}
 
 
