@@ -11,13 +11,13 @@
         android:layout_marginRight="6dip">
     	<TextView
             android:id="@+id/eventstarttime"
-            android:layout_width="fill_parent"
+            android:layout_width="50dip"
             android:layout_height="0dip"
             android:layout_weight="1"
             android:gravity="center_vertical"
         />
         <TextView
-            android:layout_width="fill_parent"
+            android:layout_width="50dip"
             android:layout_height="0dip"
             android:layout_weight="1" 
             android:id="@+id/eventendtime"
