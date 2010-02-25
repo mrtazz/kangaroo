@@ -9,14 +9,19 @@
     				android:debuggable="true">
 		
 		<activity android:name="com.kangaroo.gui.DayPlan">
+
+		</activity>
+		
+		<activity 	android:icon="@drawable/icon" android:label="kangaroo" android:name="com.kangaroo.gui.ActivityBuildPlan">
 		    <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 		</activity>
-		<activity 	android:icon="@drawable/icon" android:label="kangaroo" android:name="com.kangaroo.gui.ActivityBuildPlan">
+		
+		<activity android:name="com.kangaroo.gui.ActivityTask">
+		
 		</activity>
-		<activity android:name="com.kangaroo.gui.ActivityTask"></activity>
 		
 		
 		<service android:name="com.kangaroo.system.ServiceCallLocation"></service>

@@ -1,5 +1,7 @@
 package com.kangaroo.task;
 
+import java.util.Date;
+
 /**
  * Instances of this class represent a TaskConstraint, that specifies 
  * in what range of dates the Task has do be completed.
@@ -8,18 +10,35 @@ package com.kangaroo.task;
  */
 public class TaskConstraintDate implements TaskConstraintInterface
 {
-	private int id;
+	Date endDate;
+	Date startDate;
 	
-	public TaskConstraintDate(int newId)
+	public TaskConstraintDate()
 	{
-		id = newId;
+		
 	}
 	
-	public int getID() 
+	public TaskConstraintDate(Date date)
 	{
-		return id;
+		endDate = date;
+	}	
+	
+	public TaskConstraintDate(Date start, Date end)
+	{
+		endDate = end;
+		startDate = start;
 	}
 
+	public Date getEnd()
+	{
+		return endDate;
+	}
+	
+	public Date getStart()
+	{
+		return startDate;
+	}
+	
 	public String getType() 
 	{
 		return "date";
