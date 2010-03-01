@@ -43,8 +43,12 @@ public interface RoutingEngine {
 	 * @param from
 	 * @param to
 	 * @param vehicle
+	 * @param updatePlaces
 	 * @return
 	 */
+	public RouteParameter routeFromTo(Place from, Place to, Vehicle vehicle, boolean updatePlaces);
+	
+	
 	public RouteParameter routeFromTo(Place from, Place to, Vehicle vehicle);
 	
 	

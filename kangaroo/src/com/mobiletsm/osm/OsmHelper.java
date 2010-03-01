@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,6 +48,7 @@ import com.mobiletsm.osm.data.searching.CombinedSelector;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileWayNode;
 import com.mobiletsm.routing.AllStreetVehicle;
+import com.mobiletsm.routing.Vehicle;
 import com.mobiletsm.routing.metrics.MobileRoutingMetric;
 import com.mobiletsm.routing.routers.MobileMultiTargetDijkstraRouter;
 
@@ -1118,6 +1120,7 @@ public class OsmHelper {
 				"wn_red text default null" +		// wn_red . reduced list of way nodes
 			");";
 		
+		// for ways: maxspeed
 		
 		System.out.println("writeToMobileDatabase: input: # nodes = " + getNumberOfNodes(map));
 		System.out.println("writeToMobileDatabase: input: # ways = " + getNumberOfWays(map));
@@ -1321,6 +1324,88 @@ public class OsmHelper {
 		}			
 		
 		return map;
+	}
+
+
+	public static double getMaxSpeed(Way way, Vehicle vehicle) {
+		double defaultSpeed = 50;
+		
+		String maxSpeedStr = WayHelper.getTag(way.getTags(), "maxspeed");
+		
+		if (maxSpeedStr != null) {
+			try {
+				double maxSpeed = Double.parseDouble(maxSpeedStr);
+				return maxSpeed;
+			} catch (NumberFormatException e) {
+				return defaultSpeed;
+			}
+		} else {
+			String highway = WayHelper.getTag(way.getTags(), Tags.TAG_HIGHWAY);
+			
+			if (highway != null) {
+				if (highway.equals("residential"))
+					return 50;
+				else
+					return defaultSpeed;
+			} else {
+				return defaultSpeed;
+			}
+		}		
+	}
+	
+	
+	public static double getDurationOfTravel(Route route, Vehicle vehicle) {
+		double duration = 0;
+		List<RoutingStep> steps = route.getRoutingSteps();
+		Iterator<RoutingStep> steps_itr = steps.iterator();
+		
+		double maxSpeed;
+		double dist;
+		
+		while (steps_itr.hasNext()) {
+			RoutingStep step = steps_itr.next();
+			Way way = step.getWay();
+			
+			maxSpeed = getMaxSpeed(way, vehicle) / 3.6;			
+			
+			if (way instanceof MobileWay)
+				dist = ((MobileWay)way).getPathLength(step.getStartNode().getId(), step.getEndNode().getId());
+			else {
+				dist = step.distanceInMeters();
+			}
+			
+			duration += dist / maxSpeed;
+		}
+		
+		return duration;
+	}
+	
+	
+	public static void printTagHighscore(IDataSet map) {
+		Map<String, Integer> highscore = new HashMap<String, Integer>();
+		Iterator<Node> nodes = map.getNodes(Bounds.WORLD);
+		while (nodes.hasNext()) {
+			updateHighscore(highscore, nodes.next().getTags());
+		}				
+		
+		for (Map.Entry<String, Integer> entry : highscore.entrySet()) {
+			System.out.println("printTagHighscore(): " + entry.getKey() + " = " + entry.getValue());
+		}
+				
+	}
+	
+	
+	public static void updateHighscore(Map<String, Integer> highscore, Collection<Tag> tags) {
+		for (Tag tag : tags) {
+			String key = tag.getKey();
+			Integer score = highscore.get(key);
+			if (score != null) {
+				score++;
+				highscore.put(key, score);
+			} else {
+				highscore.put(key, 1);
+			}
+		}		
 	}
 	
 }

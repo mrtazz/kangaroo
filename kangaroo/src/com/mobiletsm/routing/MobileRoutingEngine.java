@@ -10,6 +10,8 @@ import com.mobiletsm.osm.data.adapters.MDSAndroidDatabaseAdapter;
 import com.mobiletsm.osm.data.providers.DatabaseMDSProvider;
 import com.mobiletsm.osm.data.providers.MobileDataSetProvider;
 import com.mobiletsm.osm.data.searching.POINodeSelector;
+import com.mobiletsm.routing.metrics.MobileRoutingMetric;
+import com.mobiletsm.routing.routers.MobileMultiTargetDijkstraRouter;
 import com.mobiletsm.routing.statuschange.SubJobDoneStatusChange;
 import com.mobiletsm.routing.statuschange.SubJobStartedStatusChange;
 
@@ -41,12 +43,19 @@ public class MobileRoutingEngine implements RoutingEngine {
 	
 	@Override
 	public RouteParameter routeFromTo(Place from, Place to, Vehicle vehicle) {
-		long fromNodeId = provider.getNearestStreetNode(from).getId();
-		long toNodeId = provider.getNearestStreetNode(to).getId();
+		return routeFromTo(from, to, vehicle, false);
+	}
+	
+	
+	@Override
+	public RouteParameter routeFromTo(Place from, Place to, Vehicle vehicle, boolean updatePlaces) {
+		long fromNodeId = provider.getNearestStreetNode(from, updatePlaces).getId();
+		long toNodeId = provider.getNearestStreetNode(to, updatePlaces).getId();
 		
 		MobileInterfaceDataSet routingDataSet = provider.getRoutingDataSet(fromNodeId, toNodeId, null);		
 		
-		IRouter router = new MultiTargetDijkstraRouter();
+		IRouter router = new MobileMultiTargetDijkstraRouter();
+		router.setMetric(new MobileRoutingMetric());
 		Route route = router.route(routingDataSet, routingDataSet.getNodeByID(toNodeId), 
 				routingDataSet.getNodeByID(fromNodeId), vehicle);
 		

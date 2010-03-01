@@ -85,14 +85,14 @@ public class ActiveCalendarPlan implements CalendarPlan {
 	 * @param vehicle
 	 * @return
 	 */
-	public int checkComplianceFor(Date now, Place currentPlace, Vehicle vehicle) {
+	public int checkComplianceWith(Date now, Place currentPlace, Vehicle vehicle) {
 		CalendarEvent nextEvent = this.getNextEvent(now);
 		
 		// TODO: use specific exceptions
 		
 		if (nextEvent != null) {
 			if (routingEngine == null) {
-				throw new RuntimeException("ActiveCalendarPlan.checkComplianceFor(): No RoutingEngine defined");
+				throw new RuntimeException("ActiveCalendarPlan.checkComplianceWith(): No RoutingEngine defined");
 			}
 			
 			Place eventPlace = nextEvent.getPlace();
@@ -107,7 +107,7 @@ public class ActiveCalendarPlan implements CalendarPlan {
 			double timeLeft = (nextEvent.getStartDate().getTime() - now.getTime()) / (1000 * 60);
 			
 			if (route.getNoRouteFound()) {
-				throw new RuntimeException("ActiveCalendarPlan.checkComplianceFor(): No route found");
+				throw new RuntimeException("ActiveCalendarPlan.checkComplianceWith(): No route found");
 			}
 						
 			timeLeft = timeLeft - route.getDurationOfTravel();
@@ -115,7 +115,7 @@ public class ActiveCalendarPlan implements CalendarPlan {
 			return (int)timeLeft;
 			
 		} else {
-			throw new RuntimeException("ActiveCalendarPlan.checkComplianceFor(): Event missing");
+			throw new RuntimeException("ActiveCalendarPlan.checkComplianceWith(): Event missing");
 		}
 	}
 	
