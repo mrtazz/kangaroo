@@ -9,15 +9,21 @@ package com.kangaroo.task;
 public class TaskConstraintPendingTasks implements TaskConstraintInterface
 {
 	private int id;
+	private String dependsOnTask;
 	
-	public TaskConstraintPendingTasks(int newId)
+	public TaskConstraintPendingTasks()
 	{
-		id = newId;
+		
 	}
 	
-	public int getID() 
+	public TaskConstraintPendingTasks(String TaskName)
 	{
-		return id;
+		dependsOnTask = TaskName;
+	}
+	
+	public String getTaskName() 
+	{
+		return dependsOnTask;
 	}
 
 	public String getType() 

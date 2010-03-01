@@ -8,22 +8,32 @@ package com.kangaroo.task;
  */
 public class TaskConstraintAmenity implements TaskConstraintInterface
 {
-	private int id;
+	private int amenityID;
+	private String amenityText;
 	
-	public TaskConstraintAmenity(int newId)
+	public TaskConstraintAmenity()
 	{
-		id = newId;
+		
 	}
 	
-	//TODO implement a data-structure to hold the amenity-type required
-	
-	public int getID() 
+	public TaskConstraintAmenity(int id)
 	{
-		return id;
+		amenityID = id;
 	}
-
+	
 	public String getType() 
 	{
 		return "amenity";
 	}
+	
+	public int getId()
+	{
+		return amenityID;
+	}
+	
+	public String getText()
+	{
+		return amenityText;
+	}
+	
 }

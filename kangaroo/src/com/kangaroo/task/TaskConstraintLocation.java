@@ -8,16 +8,21 @@ package com.kangaroo.task;
  */
 public class TaskConstraintLocation implements TaskConstraintInterface
 {
-	private int id;
+	private long nodeId;
 	
-	public TaskConstraintLocation(int newId)
+	public TaskConstraintLocation()
 	{
-		id = newId;
+		
 	}
 	
-	public int getID() 
+	public TaskConstraintLocation(int nodeID)
 	{
-		return id;
+		this.nodeId = nodeID;
+	}
+	
+	public long getNodeId() 
+	{
+		return nodeId;
 	}
 
 	public String getType() 

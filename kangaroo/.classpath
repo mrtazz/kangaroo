@@ -4,5 +4,7 @@
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="lib" path="traveling_salesman-1.0.3-RC1.jar"/>
+	<classpathentry kind="lib" path="gson-1.4-javadoc.jar"/>
+	<classpathentry kind="lib" path="gson-1.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
