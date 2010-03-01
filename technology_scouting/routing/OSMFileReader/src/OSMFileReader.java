@@ -59,13 +59,16 @@ public class OSMFileReader {
 	 * @param args
 	 */
 	public static void main(String[] args) {	
-		/*
+		
 		// load map file
 		File mapFile = new File("/Users/andreaswalz/Downloads/map.osm");		
 		IDataSet map = (new FileLoader(mapFile)).parseOsm();
 		System.out.println("FileLoader: output: # nodes = " + OsmHelper.getNumberOfNodes(map));
 		System.out.println("FileLoader: output: # ways = " + OsmHelper.getNumberOfWays(map));	
-				
+			
+		OsmHelper.printTagHighscore(map);
+		
+		/*
 		check(map, 251509287, 251508961, 120.49640487214027);
 		check(map, 251509130, 251508961, 331.4961956154394);
 		check(map, 497272644, 251508961, 325.32961429340145);
@@ -90,16 +93,15 @@ public class OSMFileReader {
 		check(map, 181732907, 251508961, 1662.1996472615235);
 		*/
 		
+		/*
+		// test amenity selector
 		Amenity foo = new Amenity(Amenity.SCHOOL);
-		System.out.println("id = " + foo.getId() + ", type = " + foo.getType());
-		
+		System.out.println("id = " + foo.getId() + ", type = " + foo.getType());		
 		AmenityPOINodeSelector sel1 = new AmenityPOINodeSelector();
-		AmenityPOINodeSelector sel2 = new AmenityPOINodeSelector(foo);
-		
+		AmenityPOINodeSelector sel2 = new AmenityPOINodeSelector(foo);		
 		Collection<Tag> tags = new Vector<Tag>();
 		tags.add(new Tag("amenity", Amenity.SCHOOL));
-		Node node = new Node(0, 0, (Date)null, null, 0, tags, 0, 0);
-		
+		Node node = new Node(0, 0, (Date)null, null, 0, tags, 0, 0);		
 		System.out.println("sel1.isAllowed() = " + sel1.isAllowed(null, node));
 		System.out.println("sel2.isAllowed() = " + sel2.isAllowed(null, node));
 		

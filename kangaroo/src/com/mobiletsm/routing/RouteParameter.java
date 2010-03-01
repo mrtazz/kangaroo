@@ -17,33 +17,55 @@ public class RouteParameter {
 	public static double UNDEFINED = -1;
 	
 	
+	/** 
+	 * length of route in meters 
+	 */
 	private double length;
 	
 	
+	/** 
+	 * time it takes to travel the route in minutes
+	 */
 	private double durationOfTravel;
 	
 	
 	private Route route;
 	
 	
+	private Vehicle vehicle;
+	
+	
 	private boolean noRouteFound;
 	
 	
-	public RouteParameter(double length, double durationOfTravel, Route route) {
-		this.length = length;
-		this.durationOfTravel = durationOfTravel;
+	private void update(Route route, Vehicle vehicle) {
 		this.route = route;
+		this.vehicle = vehicle;
 		this.noRouteFound = (route == null);
-	}
-	
-	
-	public RouteParameter(double length) {
-		this(length, UNDEFINED, null);
+
+		if (route != null) {
+			this.length = OsmHelper.getRouteLength(route);
+			if (vehicle != null) {
+				this.durationOfTravel = OsmHelper.getDurationOfTravel(route, vehicle);
+			} else {
+				this.durationOfTravel = UNDEFINED;
+			}
+		} else {
+			this.length = UNDEFINED;
+			this.durationOfTravel = UNDEFINED;
+		}
 	}
 	
 	
 	public RouteParameter(Route route) {
-		this(OsmHelper.getRouteLength(route), UNDEFINED, route);
+		super();
+		update(route, null);
+	}
+	
+	
+	public RouteParameter(Route route, Vehicle vehicle) {
+		super();
+		update(route, vehicle);
 	}
 	
 	
