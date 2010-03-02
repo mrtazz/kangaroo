@@ -2,7 +2,9 @@ package com.kangaroo.calendar;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import com.kangaroo.task.Task;
@@ -46,8 +48,30 @@ public class ActiveCalendarPlan implements CalendarPlan {
 
 	
 	@Override
+	/**
+	 * return the event in the calendar that is next starting from given Date
+	 * @param now
+	 * @return
+	 */
 	public CalendarEvent getNextEvent(Date now) {
-		// TODO Auto-generated method stub
+		
+		/* make sure the events are in correct order */
+		Collections.sort(events, new CalendarEventComparator(CalendarEventComparator.START_DATE));
+		
+		/* return first event in the list if no date is given */
+		if (now == null && events.size() > 0) {
+			return events.get(0);
+		}
+		
+		/* return the first event that has a start date after now */
+		Iterator<CalendarEvent> itr = events.iterator();
+		while (itr.hasNext()) {
+			CalendarEvent event = itr.next();
+			if (event.getStartDate().compareTo(now) > 0)
+				return event;			
+		}
+		
+		/* there are no events or all events are in the past */
 		return null;
 	}
 
@@ -81,30 +105,42 @@ public class ActiveCalendarPlan implements CalendarPlan {
 	/**
 	 * return the number of minutes left to start moving towards the next event
 	 * @param now
-	 * @param currentPlace
+	 * @param here
 	 * @param vehicle
 	 * @return
 	 */
-	public int checkComplianceWith(Date now, Place currentPlace, Vehicle vehicle) {
-		CalendarEvent nextEvent = this.getNextEvent(now);
+	public int checkComplianceWith(Date now, Place here, Vehicle vehicle) {
+		return checkComplianceWith(now, here, null, vehicle);
+	}
+	
+	
+	/**
+	 * return the number of minutes left to start moving towards the given event
+	 * @param now
+	 * @param here
+	 * @param destinationEvent
+	 * @param vehicle
+	 * @return
+	 */
+	public int checkComplianceWith(Date now, Place here, CalendarEvent destinationEvent, Vehicle vehicle) {
+		if (destinationEvent == null) {
+			destinationEvent = this.getNextEvent(now);
+		}
 		
 		// TODO: use specific exceptions
 		
-		if (nextEvent != null) {
+		if (destinationEvent != null) {			
 			if (routingEngine == null) {
 				throw new RuntimeException("ActiveCalendarPlan.checkComplianceWith(): No RoutingEngine defined");
 			}
 			
-			Place eventPlace = nextEvent.getPlace();
-			
-			if (eventPlace == null) {
-				eventPlace = new Place(nextEvent.getLocationLatitude(), nextEvent.getLocationLongitude());
-				nextEvent.setPlace(eventPlace);
-			}
+			setCalendarEventPlace(destinationEvent);
 		
-			RouteParameter route = routingEngine.routeFromTo(currentPlace, eventPlace, vehicle);
+			RouteParameter route = routingEngine.routeFromTo(here, destinationEvent.getPlace(), vehicle, true);
 		
-			double timeLeft = (nextEvent.getStartDate().getTime() - now.getTime()) / (1000 * 60);
+			/* Date.getTime() returns time in milliseconds, so 
+			 * we have to divide by 1000*60 to get minutes */
+			double timeLeft = (destinationEvent.getStartDate().getTime() - now.getTime()) / (1000 * 60);
 			
 			if (route.getNoRouteFound()) {
 				throw new RuntimeException("ActiveCalendarPlan.checkComplianceWith(): No route found");
@@ -120,8 +156,43 @@ public class ActiveCalendarPlan implements CalendarPlan {
 	}
 	
 	
-	public boolean checkConsistency() {
-		throw new UnsupportedOperationException("ActiveCalendarPlan.checkConsistency(): operation not yet supported");
+	/**
+	 * checks if the calendar is self-consistent
+	 * @return
+	 */
+	public CalendarConsistency checkConsistency(Vehicle vehicle) {		
+		if (routingEngine == null) {
+			throw new RuntimeException("ActiveCalendarPlan.checkConsistency(): No RoutingEngine defined");
+		}
+		
+		CalendarConsistency consistency = new CalendarConsistency();
+		
+		Date pos = null;
+		CalendarEvent event = null;
+		CalendarEvent predecessor = null;
+		
+		/* iterate over all CalendarEvents in the calendar and check consistency  */
+		while ((event = getNextEvent(pos)) != null) {
+			if (predecessor != null) {				
+				// TODO: add routing cache (needs hash for CalendarEvents)
+				double timeLeft = checkComplianceWith(predecessor.getEndDate(), predecessor.getPlace(), event, vehicle);									
+				if (timeLeft < 0) {
+					consistency.addCollision(event, predecessor, timeLeft);
+				}
+			}			
+			predecessor = event;
+		}
+		
+		return consistency;
+	}
+		
+	
+	private void setCalendarEventPlace(CalendarEvent event) {
+		Place eventPlace = event.getPlace();		
+		if (eventPlace == null) {
+			eventPlace = new Place(event.getLocationLatitude(), event.getLocationLongitude());
+			event.setPlace(eventPlace);
+		}
 	}
 	
 	

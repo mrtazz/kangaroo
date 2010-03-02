@@ -23,6 +23,7 @@ import com.kangaroo.techscout.routing.MovementSimulator;
 import com.mobiletsm.osm.OsmHelper;
 import com.mobiletsm.routing.AllStreetVehicle;
 import com.mobiletsm.routing.Place;
+import com.mobiletsm.routing.RouteParameter;
 import com.mobiletsm.routing.Vehicle;
 import com.mobiletsm.routing.statuschange.*;
 
@@ -255,8 +256,7 @@ public class TSMTestBench extends Activity implements StatusListener {
 					        	new Thread(simulator).start();
 							} catch (Exception e) {
 								Log.e("MovementSimulator", e.toString());
-							}
-							
+							}							
 							
 							/*
 							Location location = new Location("gps");
@@ -347,9 +347,12 @@ public class TSMTestBench extends Activity implements StatusListener {
 					
 					Route route = (Route)status.result;
 					
+					RouteParameter parameter = new RouteParameter(route, vehicle);
+					double durationOfTravel = parameter.getDurationOfTravel();
+					
 					outputStringBuffer = new StringBuffer();
-					outputStringBuffer.append(String.format("dist = %.0f m\nupdate #%d\n", 
-							OsmHelper.getRouteLength(route)/*route.distanceInMeters()*/, ++update));					
+					outputStringBuffer.append(String.format("dist = %.0f m, time = %.1f min\nupdate #%d\n", 
+						parameter.getLength(), durationOfTravel, ++update));					
 					
 					List<RoutingStep> steps = route.getRoutingSteps();
 					

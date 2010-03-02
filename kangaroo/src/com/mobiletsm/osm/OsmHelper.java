@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-import org.openstreetmap.osm.Tags;
 import org.openstreetmap.osm.data.IDataSet;
 import org.openstreetmap.osm.data.MemoryDataSet;
 import org.openstreetmap.osm.data.Selector;
@@ -48,6 +47,7 @@ import com.mobiletsm.osm.data.searching.CombinedSelector;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileWayNode;
 import com.mobiletsm.routing.AllStreetVehicle;
+import com.mobiletsm.routing.RouteParameter;
 import com.mobiletsm.routing.Vehicle;
 import com.mobiletsm.routing.metrics.MobileRoutingMetric;
 import com.mobiletsm.routing.routers.MobileMultiTargetDijkstraRouter;
@@ -176,8 +176,8 @@ public class OsmHelper {
 		int i2 = 0;
 		
 		System.out.println(fitLength("compareRoutes:", colWidth_) + 
-				fitLength(String.format("OsmHelper.getRouteLength(route1) = %.2fm", getRouteLength(route1)), colWidth) + 
-				fitLength(String.format("OsmHelper.getRouteLength(route2) = %.2fm", getRouteLength(route2)), colWidth));
+				fitLength(String.format("OsmHelper.getRouteLength(route1) = %.2fm", OsmHelper.getRouteLength(route1)), colWidth) + 
+				fitLength(String.format("OsmHelper.getRouteLength(route2) = %.2fm", OsmHelper.getRouteLength(route2)), colWidth));
 		
 		System.out.println(fitLength("compareRoutes:", colWidth_) + 
 				fitLength(String.format("OsmHelper.getRouteLengthOnMap(map1, route1) = %.2fm", getRouteLengthOnMap(map1, route1)), colWidth) + 
@@ -540,23 +540,6 @@ public class OsmHelper {
 		return diff / a;		
 	}
 	
-	
-	public static double getRouteLength(Route route) {
-		double length = 0;
-		List<RoutingStep> steps = route.getRoutingSteps();
-		Iterator<RoutingStep> steps_itr = steps.iterator();
-		while (steps_itr.hasNext()) {
-			RoutingStep step = steps_itr.next();
-			Way way = step.getWay();
-			if (way instanceof MobileWay)
-				length += ((MobileWay)way).getPathLength(step.getStartNode().getId(), step.getEndNode().getId());
-			else {
-				length += step.distanceInMeters();
-			}
-		}
-		return length;
-	}
-
 	
 	public static double getRouteLengthOnMap(IDataSet map, Route route) {
 		double length = 0;
@@ -1098,6 +1081,12 @@ public class OsmHelper {
 	public static long NODES_STND_IS_INTERMEDIATE_STREET_NODE = -2;
 	
 	public static void writeToMobileDatabase(IDataSet map, String database) {
+		
+		/* TODO: 
+		 * - split table 'nodes' in 'street_nodes' and 'poi_nodes' 
+		 * - add column in 'ways' for maxspeed 
+		 */
+		
 		final String createTable_Nodes = 
 			"CREATE TABLE IF NOT EXISTS nodes (" +
 				"id integer primary key," +			// id ..... osm node id
@@ -1120,7 +1109,6 @@ public class OsmHelper {
 				"wn_red text default null" +		// wn_red . reduced list of way nodes
 			");";
 		
-		// for ways: maxspeed
 		
 		System.out.println("writeToMobileDatabase: input: # nodes = " + getNumberOfNodes(map));
 		System.out.println("writeToMobileDatabase: input: # ways = " + getNumberOfWays(map));
@@ -1313,9 +1301,8 @@ public class OsmHelper {
 		/* map nodes and ways */
 		List<Node> nodeCache = new LinkedList<Node>();
 		List<Way> wayCache = new LinkedList<Way>();
-		
-		
-		
+			
+		//TODO: all the work
 		
 		/* check if there are relations in the dataset */
 		Iterator<Relation> relations = map.getRelations(Bounds.WORLD);
@@ -1327,58 +1314,22 @@ public class OsmHelper {
 	}
 
 
-	public static double getMaxSpeed(Way way, Vehicle vehicle) {
-		double defaultSpeed = 50;
-		
-		String maxSpeedStr = WayHelper.getTag(way.getTags(), "maxspeed");
-		
-		if (maxSpeedStr != null) {
-			try {
-				double maxSpeed = Double.parseDouble(maxSpeedStr);
-				return maxSpeed;
-			} catch (NumberFormatException e) {
-				return defaultSpeed;
-			}
-		} else {
-			String highway = WayHelper.getTag(way.getTags(), Tags.TAG_HIGHWAY);
-			
-			if (highway != null) {
-				if (highway.equals("residential"))
-					return 50;
-				else
-					return defaultSpeed;
-			} else {
-				return defaultSpeed;
-			}
-		}		
-	}
-	
-	
-	public static double getDurationOfTravel(Route route, Vehicle vehicle) {
-		double duration = 0;
+	public static double getRouteLength(Route route) {
+		double length = 0;
 		List<RoutingStep> steps = route.getRoutingSteps();
 		Iterator<RoutingStep> steps_itr = steps.iterator();
-		
-		double maxSpeed;
-		double dist;
-		
 		while (steps_itr.hasNext()) {
 			RoutingStep step = steps_itr.next();
 			Way way = step.getWay();
-			
-			maxSpeed = getMaxSpeed(way, vehicle) / 3.6;			
-			
 			if (way instanceof MobileWay)
-				dist = ((MobileWay)way).getPathLength(step.getStartNode().getId(), step.getEndNode().getId());
+				length += ((MobileWay)way).getPathLength(step.getStartNode().getId(), step.getEndNode().getId());
 			else {
-				dist = step.distanceInMeters();
+				length += step.distanceInMeters();
 			}
-			
-			duration += dist / maxSpeed;
 		}
-		
-		return duration;
+		return length;
 	}
+
 	
 	
 	public static void printTagHighscore(IDataSet map) {

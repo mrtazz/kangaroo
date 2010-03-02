@@ -3,7 +3,7 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="lib" path="/Users/andreaswalz/Documents/Uni/Informatik/Teamprojekt - WS0910/repository/master/kangaroo/technology_scouting/routing/tsmtestbench/lib/traveling_salesman-1.0.3-RC1.jar"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry excluding="com/kangaroo/calendar/|com/kangaroo/gui/|com/kangaroo/system/|com/kangaroo/ServiceCheckPlan.java|com/kangaroo/ServiceOptimizePlan.java|com/kangaroo/temptemp.java" kind="src" path="src_kangaroo"/>
+	<classpathentry excluding="com/kangaroo/ServiceCheckPlan.java|com/kangaroo/ServiceOptimizePlan.java|com/kangaroo/gui/|com/kangaroo/system/|com/kangaroo/task/Task.java|com/kangaroo/temptemp.java|com/kangaroo/calendar/" kind="src" path="src_kangaroo"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

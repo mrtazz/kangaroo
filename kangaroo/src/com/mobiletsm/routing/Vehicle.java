@@ -22,14 +22,14 @@ import org.openstreetmap.travelingsalesman.routing.IVehicle;
 public abstract class Vehicle implements IVehicle {
 	
 	/**
-	 * The maximum speed for this vehicle, specified in km/s
+	 * The maximum speed for this vehicle, specified in km/h
 	 */
 	protected double maxSpeed = 100;
 	
 	
 	/**
 	 * set the maximum speed for this vehicle
-	 * @param	speed	maximum speed in km/s
+	 * @param	speed	maximum speed in km/h
 	 */
 	public void setMaxSpeed(double speed) {
 		maxSpeed = speed;
@@ -37,7 +37,7 @@ public abstract class Vehicle implements IVehicle {
 	
 	
 	/**
-	 * get the maximum speed for this vehicle in km/s
+	 * get the maximum speed for this vehicle in km/h
 	 */
 	public double getMaxSpeed() {
 		return maxSpeed;
