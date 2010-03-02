@@ -22,6 +22,7 @@ import com.kangaroo.techscout.routing.KangarooRoutingManager;
 import com.kangaroo.techscout.routing.MovementSimulator;
 import com.mobiletsm.osm.OsmHelper;
 import com.mobiletsm.routing.AllStreetVehicle;
+import com.mobiletsm.routing.MobileTSMRouteParameter;
 import com.mobiletsm.routing.Place;
 import com.mobiletsm.routing.RouteParameter;
 import com.mobiletsm.routing.Vehicle;
@@ -186,7 +187,7 @@ public class TSMTestBench extends Activity implements StatusListener {
         
         showDialog(DIALOG_READFILE_ID);
         
-        vehicle.setMaxSpeed(50);
+        vehicle.setMaxSpeed(5);
         
         
         simulator = new MovementSimulator();
@@ -347,7 +348,7 @@ public class TSMTestBench extends Activity implements StatusListener {
 					
 					Route route = (Route)status.result;
 					
-					RouteParameter parameter = new RouteParameter(route, vehicle);
+					RouteParameter parameter = new MobileTSMRouteParameter(route, vehicle);
 					double durationOfTravel = parameter.getDurationOfTravel();
 					
 					outputStringBuffer = new StringBuffer();

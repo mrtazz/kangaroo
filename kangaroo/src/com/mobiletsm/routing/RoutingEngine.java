@@ -48,8 +48,8 @@ public interface RoutingEngine {
 	 * @param updatePlaces
 	 * @return
 	 */
-	public RouteParameter routeFromTo(Place from, Place to, Vehicle vehicle, boolean updatePlaces);
-	// TODO: make parameter vehicle independent from TSM
+	public RouteParameter routeFromTo(Place from, Place to, Object vehicle, boolean updatePlaces);
+	
 	
 	/**
 	 * find a route between the two given places from and to using the specified vehicle.
@@ -58,13 +58,11 @@ public interface RoutingEngine {
 	 * @param vehicle
 	 * @return
 	 */
-	public RouteParameter routeFromTo(Place from, Place to, Vehicle vehicle);
-	// TODO: make parameter vehicle independent from TSM
+	public RouteParameter routeFromTo(Place from, Place to, Object vehicle);
+		
 	
-	
-	public Place getNearestPOINode(Place center, POINodeSelector selector, Limits limits);
-	// TODO: make parameter selector independent from TSM
-	
+	public Place getNearestPOINode(Place center, Object selector, Limits limits);
+		
 	
 	public Place getNearestStreetNode(Place center);
 	
