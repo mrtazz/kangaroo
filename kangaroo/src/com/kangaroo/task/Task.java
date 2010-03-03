@@ -1,5 +1,8 @@
 package com.kangaroo.task;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -73,6 +76,21 @@ public class Task
 		}
 		
 		return myTask;
+	}
+	
+	public String getJsonHash()
+	{
+        try
+        {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] messageDigest = md.digest(this.serialize().getBytes());
+            BigInteger number = new BigInteger(1,messageDigest);
+            return number.toString(16);
+        }
+        catch(NoSuchAlgorithmException e)
+        {
+            throw new RuntimeException(e);
+        }
 	}
 	
 	/**
