@@ -60,6 +60,12 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 	
 	
 	@Override
+	public String getInfo() {
+		return super.getInfo() + ":DatabaseMDSProvider";
+	}
+	
+	
+	@Override
 	public void close() {
 		if (isOpen()) {
 			adapter.close();

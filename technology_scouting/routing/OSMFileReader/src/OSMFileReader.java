@@ -35,13 +35,12 @@ import org.openstreetmap.travelingsalesman.routing.Route;
 import org.openstreetmap.travelingsalesman.routing.routers.MultiTargetDijkstraRouter;
 
 import com.kangaroo.tsm.osm.io.FileLoader;
+import com.mobiletsm.osm.MobileTSMDatabaseWriter;
 import com.mobiletsm.osm.OsmHelper;
 import com.mobiletsm.osm.data.MobileDataSet;
 import com.mobiletsm.osm.data.adapters.MDSSQLiteDatabaseAdapter;
 import com.mobiletsm.osm.data.providers.DatabaseMDSProvider;
 import com.mobiletsm.osm.data.providers.MobileDataSetProvider;
-import com.mobiletsm.osm.data.searching.Amenity;
-import com.mobiletsm.osm.data.searching.AmenityPOINodeSelector;
 import com.mobiletsm.osm.data.searching.CombinedSelector;
 import com.mobiletsm.osm.data.searching.POINodeSelector;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
@@ -66,31 +65,8 @@ public class OSMFileReader {
 		System.out.println("FileLoader: output: # nodes = " + OsmHelper.getNumberOfNodes(map));
 		System.out.println("FileLoader: output: # ways = " + OsmHelper.getNumberOfWays(map));	
 			
-		OsmHelper.printTagHighscore(map);
-		
 		/*
-		check(map, 251509287, 251508961, 120.49640487214027);
-		check(map, 251509130, 251508961, 331.4961956154394);
-		check(map, 497272644, 251508961, 325.32961429340145);
-		check(map, 256221938, 251508961, 364.94431352492535);
-		check(map, 497272641, 251508961, 381.21675836061905);
-		check(map, 497272643, 251508961, 413.2603406193887);
-		check(map, 256221926, 251508961, 430.72580823124946);
-		check(map, 251509218, 251508961, 517.62);
-		check(map, 251345242, 251508961, 670.0026857361946);
-		check(map, 251345241, 251508961, 687.5500000000001);
-		check(map, 469369005, 251508961, 733.8784132660115);
-		check(map, 311469703, 251508961, 1111.588165339088);
-		check(map, 311486350, 251508961, 1062.8265957872009);
-		check(map, 472945111, 251508961, 1227.365644377827);
-		check(map, 472945238, 251508961, 1297.1111762650655);
-		check(map, 472945179, 251508961, 1311.7721145377773);
-		check(map, 472945172, 251508961, 1388.3932927796754);
-		check(map, 183842750, 251508961, 1464.6121577612607);
-		check(map, 181732799, 251508961, 1636.7872967894943);
-		check(map, 181732792, 251508961, 1606.1228723916768);
-		check(map, 461773975, 251508961, 1603.5566761878056);
-		check(map, 181732907, 251508961, 1662.1996472615235);
+		OsmHelper.printTagHighscore(map);
 		*/
 		
 		/*
@@ -104,14 +80,18 @@ public class OSMFileReader {
 		Node node = new Node(0, 0, (Date)null, null, 0, tags, 0, 0);		
 		System.out.println("sel1.isAllowed() = " + sel1.isAllowed(null, node));
 		System.out.println("sel2.isAllowed() = " + sel2.isAllowed(null, node));
+		*/
 		
 		
 		
-		/*
 		// write map to a mobile database
-		OsmHelper.writeToMobileDatabase(map, "jdbc:sqlite:/Users/andreaswalz/Downloads/map.db");
+		
+		MobileTSMDatabaseWriter writer = new MobileTSMDatabaseWriter();
+		writer.setLogStream(System.out);		
+		writer.writeDatabase(map, "jdbc:sqlite:/Users/andreaswalz/Downloads/map.db");		
+		
 		map = null;
-		*/		
+			
 		
 		/*
 		// compare routing on two maps

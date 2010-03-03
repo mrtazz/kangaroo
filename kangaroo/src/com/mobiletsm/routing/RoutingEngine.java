@@ -24,11 +24,17 @@ public interface RoutingEngine {
 	
 	
 	/**
-	 * check if the routing engine has already been initialized.
-	 * 
+	 * check if the routing engine has already been initialized. 
 	 * @return true if the routing engine has already been initialized, false otherwiese
 	 */
 	public boolean initialized();
+	
+	
+	/**
+	 * returns a short description of the routing engine and its data source
+	 * @return short description of the routing engine and its data source
+	 */
+	public String getInfo();
 	
 	
 	/**
@@ -39,6 +45,9 @@ public interface RoutingEngine {
 	
 	/**
 	 * find a route between the two given places from and to using the specified vehicle.
+	 * To find a route, the map is searched for the nearest street nodes from places
+	 * from and to and a route is calculated between them. If updatePlaces is true, places
+	 * from and to a updated to this street nodes.
 	 * 	
 	 * @param from
 	 * @param to
@@ -46,14 +55,21 @@ public interface RoutingEngine {
 	 * @param updatePlaces
 	 * @return
 	 */
-	public RouteParameter routeFromTo(Place from, Place to, Vehicle vehicle, boolean updatePlaces);
+	public RouteParameter routeFromTo(Place from, Place to, Object vehicle, boolean updatePlaces);
 	
 	
-	public RouteParameter routeFromTo(Place from, Place to, Vehicle vehicle);
+	/**
+	 * find a route between the two given places from and to using the specified vehicle.
+	 * @param from
+	 * @param to
+	 * @param vehicle
+	 * @return
+	 */
+	public RouteParameter routeFromTo(Place from, Place to, Object vehicle);
+		
 	
-	
-	public Place getNearestPOINode(Place center, POINodeSelector selector, Limits limits);
-	
+	public Place getNearestPOINode(Place center, Object selector, Limits limits);
+		
 	
 	public Place getNearestStreetNode(Place center);
 	

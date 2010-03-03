@@ -17,6 +17,12 @@ import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 public class Place {
 	
 	/**
+	 * 
+	 */
+	public static long UNDEFINED = -1;
+	
+	
+	/**
 	 * id of corresponding open street map node 
 	 */
 	protected long osmNodeId;
@@ -58,12 +64,21 @@ public class Place {
 	}
 	
 	
+	/**
+	 * create a place using given latitude and longitude
+	 * @param latitude
+	 * @param longitude
+	 */
 	public Place(double latitude, double longitude) {
 		super();
 		update(latitude, longitude);
 	}
 	
 	
+	/**
+	 * create a place using the parameter of a Node
+	 * @param node
+	 */
 	public Place(Node node) {
 		this(node, false);
 	}
@@ -89,7 +104,7 @@ public class Place {
 	public void update(double latitude, double longitude) {
 		this.latitude = latitude;
 		this.longitude = longitude;
-		this.osmNodeId = -1;
+		this.osmNodeId = UNDEFINED;
 		this.isOsmStreetNode = false;		
 	}
 	
@@ -110,7 +125,7 @@ public class Place {
 	 * @return
 	 */
 	public boolean isOsmNode() {
-		return (osmNodeId != -1);
+		return (osmNodeId != UNDEFINED);
 	}
 
 	
