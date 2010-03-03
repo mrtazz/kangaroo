@@ -18,4 +18,25 @@ As potential sources for static traffic facility data, one finds basically two o
   
 \end{itemize} 
 
-Besides the two options given above there are of course lots of other providers, but either not free of charge or not very popular. Consequently, Openstreetmap seems to be the one to choose for our project.
+Besides the two options given above there are of course lots of other providers, but either not free of charge or not very popular. Consequently, Openstreetmap seems to be the one to choose for our project. The following will briefly outline its data scheme.\newline
+
+\subsubsection{Data scheme of Openstreetmap}
+
+Openstreetmap uses three main entities to map traffic facilities and geographical characteristics:
+
+\begin{itemize}
+
+	\item \textbf{Nodes}
+	
+		Nodes are the fundamental elements setting up model points for direct use or as a basis for superior map elements. A node imperatively has a unique ID and values for latitude and longitude, but can have optional parameters provided as tags with key-value-pairs. Adding tags to a node is the way to define, for example, Points Of Interest (POI).
+		
+	\item \textbf{Ways}
+	
+		Ways are made up of an ordered list of nodes which span the way in the given order. Just like a node, a way must have a unique\footnote{unique with respect to other ways; there still might be a node with the same ID} ID and may have optional tags.\newline
+		As a way can either be closed\footnote{first and last nodes are the same} or open and can have tags to specifiy parameters, it can be used to map streets, highways, roundabouts, buildings or even administrative areas.	
+		
+	\item \textbf{Relations}
+	
+		Realtions provide a simple way to group other map elements. This feature will not be used.
+	
+\end{itemize}
