@@ -33,8 +33,6 @@ public class CalendarEvent {
 	private Date endDate;
 	/** whether or not the event was a task before */
 	private Boolean wasTask;
-	/** whether or not the event was a link before */
-	private Boolean taskLink;
 	/** all day event */
 	private Boolean allDay;
 	/** description */
@@ -63,7 +61,7 @@ public class CalendarEvent {
 	 */
 	public CalendarEvent(String id, String title, String location,
 			Double locationLongitude, Double locationLatitude, Date startDate,
-			Date endDate, Boolean wasTask, Boolean taskLink, Boolean allDay,
+			Date endDate, Boolean wasTask, Boolean allDay,
 			String description, int calendar, String timezone, Place place) {
 		this.id = id;
 		this.title = title;
@@ -73,11 +71,25 @@ public class CalendarEvent {
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.wasTask = wasTask;
-		this.taskLink = taskLink;
 		this.allDay = allDay;
 		this.description = description;
 		this.calendar = calendar;
 		this.timezone = timezone;
+	}
+	
+	public CalendarEvent() {
+		this.id = null;
+		this.title = null;
+		this.location = null;
+		this.locationLongitude = null;
+		this.locationLatitude = null;
+		this.startDate = null;
+		this.endDate = null;
+		this.wasTask = null;
+		this.allDay = null;
+		this.description = null;
+		this.calendar = -1;
+		this.timezone = null;
 	}
 
 	/**
@@ -190,20 +202,6 @@ public class CalendarEvent {
 	 */
 	public void setWasTask(Boolean wasTask) {
 		this.wasTask = wasTask;
-	}
-
-	/**
-	 * @return the taskLink
-	 */
-	public Boolean getTaskLink() {
-		return taskLink;
-	}
-
-	/**
-	 * @param taskLink the taskLink to set
-	 */
-	public void setTaskLink(Boolean taskLink) {
-		this.taskLink = taskLink;
 	}
 
 	/**
