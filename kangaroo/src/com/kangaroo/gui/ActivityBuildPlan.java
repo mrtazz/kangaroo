@@ -11,6 +11,7 @@ import com.kangaroo.task.TaskConstraintAmenity;
 import com.kangaroo.task.TaskConstraintDate;
 import com.kangaroo.task.TaskConstraintInterface;
 import com.kangaroo.task.TaskConstraintLocation;
+import com.mobiletsm.osm.data.searching.POICode;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -96,7 +97,7 @@ public class ActivityBuildPlan extends Activity
 	        	myTask.setName("Name");
 	        	myTask.setDescription("Description");
 	        	myTask.addConstraint(new TaskConstraintLocation(1));
-	        	myTask.addConstraint(new TaskConstraintAmenity(5));
+	        	myTask.addConstraint(new TaskConstraintAmenity(new POICode(POICode.AMENITY_ARCHITECT_OFFICE)));
 	        	myTask.addConstraint(new TaskConstraintDate(new Date(110,1,24)));
 	        	printTask(myTask);
 	        	

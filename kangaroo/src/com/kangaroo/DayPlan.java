@@ -1,12 +1,13 @@
-package com.kangaroo.calendar;
+package com.kangaroo;
 
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import com.kangaroo.calendar.CalendarEvent;
 import com.kangaroo.task.Task;
 
-public interface CalendarPlan {
+public interface DayPlan {
 
 	
 	public List<CalendarEvent> getEvents();

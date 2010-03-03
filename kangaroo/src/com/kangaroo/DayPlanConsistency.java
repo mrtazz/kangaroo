@@ -1,9 +1,12 @@
-package com.kangaroo.calendar;
+package com.kangaroo;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class CalendarConsistency {
+import com.kangaroo.calendar.CalendarEvent;
+import com.kangaroo.calendar.CalendarEventCollision;
+
+public class DayPlanConsistency {
 
 	/**
 	 * set of calendar collisions
@@ -11,7 +14,7 @@ public class CalendarConsistency {
 	private Set<CalendarEventCollision> collisions;
 	
 	
-	public CalendarConsistency() {
+	public DayPlanConsistency() {
 		super();
 		this.collisions = new HashSet<CalendarEventCollision>();
 	}

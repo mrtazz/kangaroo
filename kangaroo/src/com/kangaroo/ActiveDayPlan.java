@@ -1,4 +1,4 @@
-package com.kangaroo.calendar;
+package com.kangaroo;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,13 +7,15 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import com.kangaroo.calendar.CalendarEvent;
+import com.kangaroo.calendar.CalendarEventComparator;
 import com.kangaroo.task.Task;
 import com.mobiletsm.routing.Place;
 import com.mobiletsm.routing.RouteParameter;
 import com.mobiletsm.routing.RoutingEngine;
 import com.mobiletsm.routing.Vehicle;
 
-public class ActiveCalendarPlan implements CalendarPlan {
+public class ActiveDayPlan implements DayPlan {
 
 	private List<CalendarEvent> events;
 	
@@ -21,20 +23,20 @@ public class ActiveCalendarPlan implements CalendarPlan {
 	private Collection<Task> tasks;
 	
 	
-	private CalendarPlanOptimizer optimizer = null;
+	private DayPlanOptimizer optimizer = null;
 	
 	
 	private RoutingEngine routingEngine = null;
 	
 	
-	public ActiveCalendarPlan() {
+	public ActiveDayPlan() {
 		super();
 		events = new ArrayList<CalendarEvent>();
 		tasks = new ArrayList<Task>();
 	}
 	
 	
-	public ActiveCalendarPlan(CalendarPlan plan) {
+	public ActiveDayPlan(DayPlan plan) {
 		this();
 		events.addAll(plan.getEvents());
 		tasks.addAll(plan.getTasks());
@@ -161,12 +163,12 @@ public class ActiveCalendarPlan implements CalendarPlan {
 	 * checks if the calendar is self-consistent
 	 * @return
 	 */
-	public CalendarConsistency checkConsistency(Vehicle vehicle) {		
+	public DayPlanConsistency checkConsistency(Vehicle vehicle) {		
 		if (routingEngine == null) {
 			throw new RuntimeException("ActiveCalendarPlan.checkConsistency(): No RoutingEngine defined");
 		}
 		
-		CalendarConsistency consistency = new CalendarConsistency();
+		DayPlanConsistency consistency = new DayPlanConsistency();
 		
 		Date pos = null;
 		CalendarEvent event = null;
@@ -197,7 +199,7 @@ public class ActiveCalendarPlan implements CalendarPlan {
 	}
 	
 	
-	public CalendarPlan optimize() {
+	public DayPlan optimize() {
 		if (optimizer == null) {
 			throw new RuntimeException("ActiveCalendarPlan.optimize(): No CalendarPlanOptimizer defined");
 		}
@@ -209,7 +211,7 @@ public class ActiveCalendarPlan implements CalendarPlan {
 	}
 	
 	
-	public void setOptimizer(CalendarPlanOptimizer optimizer) {
+	public void setOptimizer(DayPlanOptimizer optimizer) {
 		this.optimizer = optimizer;
 	}
 	

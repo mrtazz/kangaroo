@@ -1,5 +1,6 @@
 package com.kangaroo.calendar;
 
+
 public class CalendarEventCollision {
 
 	

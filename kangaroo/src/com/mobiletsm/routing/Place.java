@@ -6,6 +6,8 @@ package com.mobiletsm.routing;
 import org.openstreetmap.osm.data.coordinates.LatLon;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 
+import com.google.gson.Gson;
+
 
 /**
  * This class represents an entity that can be used to specify 
@@ -92,7 +94,19 @@ public class Place {
 		this.isOsmStreetNode = place.isOsmStreetNode;
 	}
 	
-		
+	public String serialize()
+	{
+		Gson myJson = new Gson();
+		return myJson.toJson(this);	
+	}
+	
+	public static Place deserialize(String text)
+	{
+		Gson myJson = new Gson();
+		return myJson.fromJson(text, Place.class);
+	}
+	
+	
 	public void update(Node node, boolean isOsmStreetNode) {
 		this.latitude = node.getLatitude();
 		this.longitude = node.getLongitude();

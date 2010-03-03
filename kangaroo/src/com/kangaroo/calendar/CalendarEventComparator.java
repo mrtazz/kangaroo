@@ -2,6 +2,7 @@ package com.kangaroo.calendar;
 
 import java.util.Comparator;
 
+
 public class CalendarEventComparator implements	Comparator<CalendarEvent> {
 	
 

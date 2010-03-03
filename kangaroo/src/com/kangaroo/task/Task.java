@@ -48,7 +48,6 @@ public class Task
 		Task myTask = serializer.fromJson(task, Task.class);
 		String constraints[] = myTask.serializedConstraintSet.split("\\|");
 		String constraintTypes[] = myTask.serializedConstraintSetTypes.split("\\|");
-		System.out.println(constraints.length);
 		for(int i=0;i<constraints.length;i++)
 		{
 			if(constraintTypes[i].equalsIgnoreCase("amenity"))

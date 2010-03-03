@@ -53,12 +53,19 @@ public class CalendarAdapter extends ArrayAdapter<CalendarEvent>{
 				TextView location = (TextView) v.findViewById(R.id.eventlocation);
 				
 				/* fill views */
-				start.setText(ce.getStartDate().getHours()+":"
-							  +ce.getStartDate().getMinutes());
-				end.setText(ce.getEndDate().getHours()+":"
-							+ce.getEndDate().getMinutes());
+				String starttime = "All";
+				String endtime = "Day";
+				if (ce.getAllDay() != true)
+				{
+					starttime = ce.getStartDate().getHours()+":"
+					  		  + ce.getStartDate().getMinutes();
+					endtime = ce.getEndDate().getHours()+":"
+							+ ce.getEndDate().getMinutes();
+				}
+				start.setText(starttime);
+				end.setText(endtime);
 				title.setText(ce.getTitle());
-				location.setText(ce.getLocation());				
+				location.setText(ce.getLocation());
 			}
 			/* return the view */
 			return v;
