@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/!svn/ver/63/trunk/OpenStreetMapViewer/src/org/andnav/osm/contributor
+END
+RouteRecorder.java
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/!svn/ver/3/trunk/OpenStreetMapViewer/src/org/andnav/osm/contributor/RouteRecorder.java
+END
+GpxToPHPUploader.java
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/!svn/ver/10/trunk/OpenStreetMapViewer/src/org/andnav/osm/contributor/GpxToPHPUploader.java
+END
+OSMUploader.java
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/!svn/ver/63/trunk/OpenStreetMapViewer/src/org/andnav/osm/contributor/OSMUploader.java
+END
