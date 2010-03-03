@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
+
+    <TextView android:id="@+id/tasklocation"
+		 android:paddingLeft="50px"
+         android:textSize="18px"
+         android:textStyle="italic"
+         android:layout_width="250px"
+         android:layout_height="wrap_content"/>
+
+    <TextView android:id="@+id/taskdescription"
+		 android:paddingLeft="50px"
+         android:textSize="18px"
+         android:textStyle="italic"
+         android:layout_width="250px"
+         android:layout_height="wrap_content"/> 
+</LinearLayout>
