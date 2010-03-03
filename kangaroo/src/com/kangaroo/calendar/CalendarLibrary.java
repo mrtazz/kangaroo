@@ -109,15 +109,20 @@ public class CalendarLibrary {
     public HashMap<String, CalendarEvent> getEventsByDate(String id, Date date)
     {
     	/** calculate the needed dates */
-    	if (date.equals(null))
+    	Date mydate;
+    	if (date == null)
     	{
-    		date = new Date();
+    		mydate = new Date();
+    	}
+    	else
+    	{
+    		mydate = date;
     	}
     	
-    	Date beginning = new Date(date.getYear(), date.getMonth(),
-    							  date.getDate(), 0, 0);
-    	Date end = new Date(date.getYear(), date.getMonth(),
-    						date.getDate(), 23, 59);
+    	Date beginning = new Date(mydate.getYear(), mydate.getMonth(),
+    							  mydate.getDate(), 0, 0);
+    	Date end = new Date(mydate.getYear(), mydate.getMonth(),
+    						mydate.getDate(), 23, 59);
 
     	/** get the events */
     	String selection;
@@ -200,10 +205,14 @@ public class CalendarLibrary {
 				final String timezone = eventsCursor.getString(8);
 				HashMap<String, String> kd = deserializeKangarooEventData(eventsCursor.getString(5));
 				String description = kd.get("description");
-				Double latitude = Double.parseDouble(kd.get("latitude"));
-				Double longitude = Double.parseDouble(kd.get("longitude"));
-				Place place =   Place.deserialize(kd.get("place"));
-				Boolean wasTask = Boolean.valueOf(kd.get("wasTask"));
+				Double latitude = null;
+				if(kd.get("latitude") != null) latitude = Double.parseDouble(kd.get("latitude"));
+				Double longitude = null;
+				if (kd.get("longitude") != null) longitude = Double.parseDouble(kd.get("longitude"));
+				Place place = null;
+				if(kd.get("place") != null) place = Place.deserialize(kd.get("place"));
+				Boolean wasTask = null;
+				if (kd.get("wasTask") != null) wasTask = Boolean.valueOf(kd.get("wasTask"));
 				
 	            CalendarEvent event = new CalendarEvent(eventid, title, eventLocation,
 	            										longitude, latitude, dtstart, dtend,
