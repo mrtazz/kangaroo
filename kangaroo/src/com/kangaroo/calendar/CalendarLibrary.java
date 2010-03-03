@@ -303,10 +303,22 @@ public class CalendarLibrary {
     	String ret;
     	ret  = "\n";
     	ret  = "---\n";
-    	ret += "longitude: " + ce.getLocationLongitude().toString() +"\n";
-    	ret += "latitude: " + ce.getLocationLatitude().toString() +"\n";
-    	ret += "place: " + ce.getPlace().serialize() +"\n";
-    	ret += "wasTask: " + ce.getWasTask().toString() +"\n";
+    	if (ce.getLocationLongitude() != null)
+    	{
+    		ret += "longitude: " + ce.getLocationLongitude().toString() +"\n";
+    	}
+    	if (ce.getLocationLatitude() != null)
+    	{
+    		ret += "latitude: " + ce.getLocationLatitude().toString() +"\n";
+    	}
+    	if (ce.getPlace() != null)
+    	{
+    		ret += "place: " + ce.getPlace().serialize() +"\n";
+    	}
+    	if (ce.getWasTask() != null)
+    	{
+    		ret += "wasTask: " + ce.getWasTask().toString() +"\n";
+    	}
     	ret += "---\n";
     	return ret;
     }
