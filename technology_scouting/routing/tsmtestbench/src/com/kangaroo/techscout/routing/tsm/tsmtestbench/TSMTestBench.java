@@ -34,9 +34,13 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -118,8 +122,32 @@ public class TSMTestBench extends Activity implements StatusListener {
         
         outputTextView.setText("");
         statusTextView.setText("");
+         
         
+        /*
+        Geocoder gc = new Geocoder(this); //create new geocoder instance 
+        String addressInput = "am kurzarm 7, emmendingen"; //Get input text   
+        try {
+        	List<Address> foundAdresses = gc.getFromLocationName(addressInput, 5); //Search addresses
+          
+        	System.out.println("foundAddresses.size() = " + foundAdresses.size());
+        	
+        	for (int i = 0; i < foundAdresses.size(); ++i) {
+            //Save results as Longitude and Latitude
+            //@todo: if more than one result, then show a select-list
+            Address x = foundAdresses.get(i);
+            System.out.println("lat = " + x.getLatitude() + ", lon = " + x.getLongitude());
+          }
+        }
+        catch (Exception e) {
+        	System.out.println("exception = " + e.toString());
+        }
+		*/
+
+    
+
         
+         
         
         /* ------------------------         
         long time = System.currentTimeMillis();
@@ -270,7 +298,10 @@ public class TSMTestBench extends Activity implements StatusListener {
 					.setNegativeButton("No", new DialogInterface.OnClickListener() {						
 						@Override
 						public void onClick(DialogInterface dialog, int which) {							
-							TSMTestBench.this.finish();							
+							//TSMTestBench.this.finish();
+						    Intent intent = new Intent("com.kangaroo.SELECTPLACE");
+						    intent.addCategory(Intent.CATEGORY_LAUNCHER);
+							startActivity(intent);
 						}
 					});
 				

@@ -178,7 +178,13 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 		
 		if (minDistNode != null) {
 			if (updateCenter) {
+				
 				center.update(minDistNode, true);
+				
+				/* calculate and set name of center place */
+				//adapter.loadCompleteWaysForNodes(minDistNode.getId(), -1);				
+				
+				
 			}
 			return minDistNode;
 		} else {
@@ -189,19 +195,22 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 
 	public MobileInterfaceDataSet getRoutingDataSet(long fromNodeId, long toNodeId, IVehicle vehicle) {
 		
+		/* TODO: add support of vehicles */
 		if (vehicle != null) {
 			throw new UnsupportedOperationException("getRoutingDataSet(): vehicle not yet supported by DatabaseMDSProvider");
 		}
 		
-		adapter.loadNodes(fromNodeId, toNodeId, false);
+		/* load start and destination nodes (with tags) */
+		adapter.loadNodes(fromNodeId, toNodeId, true);
 
+		/* load routing graph unless already present */
 		if (!routingMapPresent) {
 			adapter.loadRoutingStreetNodes();
 			adapter.loadReducedWays();
+			routingMapPresent = true;
 		}			
-			
-		routingMapPresent = true;
 		
+		/*  */
 		adapter.loadCompleteWaysForNodes(fromNodeId, toNodeId);
 		
 		long fromWayId = getWayForNode(fromNodeId);		

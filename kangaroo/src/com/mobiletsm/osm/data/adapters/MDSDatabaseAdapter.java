@@ -35,7 +35,7 @@ public abstract class MDSDatabaseAdapter {
 		// scale factor between root-squared-lat-lon distance and distance in meters
 		double scaleFactor = 2 * Math.PI * (earthRadius * Math.cos(Math.toRadians(center.getLatitude()))) / 360;
 		
-		String sql = String.format(Locale.US, "SELECT id,lat,lon FROM nodes WHERE stnd<=-1 AND " +
+		String sql = String.format(Locale.US, "SELECT id,lat,lon,ways FROM nodes WHERE stnd<=-1 AND " +
 				"((lat-%f)*(lat-%f) + (lon-%f)*(lon-%f)) < %f;",
 				center.getLatitude(), center.getLatitude(), 
 				center.getLongitude(), center.getLongitude(),
@@ -66,8 +66,7 @@ public abstract class MDSDatabaseAdapter {
 					sql.append(", ");
 				else
 					sql.append(");");
-			}
-			
+			}			
 			sqlLog(sql.toString());
 			return sql.toString();
 		} else {
@@ -77,26 +76,40 @@ public abstract class MDSDatabaseAdapter {
 	}
 	
 	
-	protected String SQL_loadCompleteWaysForNodes(long fromNodeId, long toNodeId) {
+	protected String SQL_getWaysForNodes(long fromNodeId, long toNodeId) {
 		String sql = String.format("SELECT ways FROM nodes WHERE id=%d OR id=%d;", fromNodeId, toNodeId);
 		sqlLog(sql);
 		return sql;
 	}
 
 	
-	protected String SQL_loadFullWay(long wayId) {
+	protected String SQL_loadCompleteWay(long wayId) {
 		String sql = String.format("SELECT id,name,highway,tags,wn FROM ways WHERE id=%d;", wayId);			
 		sqlLog(sql);
 		return sql;
 	}
-	
-	
-	protected String SQL_loadReducedWays() {
-		String sql = "SELECT id,name,highway,tags,wn_red FROM ways;";
-		sqlLog(sql);
-		return sql;
-	}
 
+	
+	protected String SQL_loadReducedWays(List<Long> ways) {
+		if (ways != null && ways.size() > 0) {		
+			StringBuffer sql = new StringBuffer("SELECT id,name,highway,tags,wn_red FROM ways WHERE id IN (");			
+			Iterator<Long> id_itr = ways.iterator();
+			while (id_itr.hasNext()) {
+				sql.append(id_itr.next());
+				if (id_itr.hasNext())
+					sql.append(", ");
+				else
+					sql.append(");");
+			}			
+			sqlLog(sql.toString());
+			return sql.toString();
+		} else {
+			String sql = "SELECT id,name,highway,tags,wn_red FROM ways;";
+			sqlLog(sql);
+			return sql;
+		}
+	}
+	
 	
 	protected String SQL_loadRoutingStreetNodes() {
 		String sql = "SELECT id,lat,lon FROM nodes WHERE stnd=-1;";
@@ -135,7 +148,10 @@ public abstract class MDSDatabaseAdapter {
 	public abstract void loadReducedWays();
 	
 	
-	public abstract void loadCompleteWaysForNodes(long fromNodeId, long toNodeId);
+	public abstract void loadReducedWays(List<Long> ways);
+	
+	
+	public abstract List<Long> loadCompleteWaysForNodes(long fromNodeId, long toNodeId);
 	
 	
 	public abstract void loadCompleteWay(long wayId);
