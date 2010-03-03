@@ -1,5 +1,7 @@
 package com.kangaroo.task;
 
+import com.mobiletsm.osm.data.searching.POICode;
+
 /**
  * Instances of this class represent TaskConstraints 
  * that require a certain type of Amenity to fulfill the Task
@@ -8,17 +10,16 @@ package com.kangaroo.task;
  */
 public class TaskConstraintAmenity implements TaskConstraintInterface
 {
-	private int amenityID;
-	private String amenityText;
+	private POICode myPOI;
 	
 	public TaskConstraintAmenity()
 	{
 		
 	}
 	
-	public TaskConstraintAmenity(int id)
+	public TaskConstraintAmenity(POICode id)
 	{
-		amenityID = id;
+		myPOI = id;
 	}
 	
 	public String getType() 
@@ -28,12 +29,12 @@ public class TaskConstraintAmenity implements TaskConstraintInterface
 	
 	public int getId()
 	{
-		return amenityID;
+		return myPOI.getId();
 	}
 	
 	public String getText()
 	{
-		return amenityText;
+		return myPOI.getType();
 	}
 	
 }
