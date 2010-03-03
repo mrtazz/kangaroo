@@ -94,21 +94,46 @@ public class CalendarLibrary {
     }
 
     /**
-     * @brief method to get all events from specified calendar
+     * @brief method to get all events from specified date
      *
      * @param calendarName of the calendar
      *
      * @return CalendarEvent[] with all events from calendar
      */
-    public HashMap<String, CalendarEvent> getEvents(String calendarName)
+    public HashMap<String, CalendarEvent> getEventsByDate(String id, Date date)
     {
-        // initialize data variables
-        HashMap<String, CalendarEvent> events;
-        Calendar cal = dictCalendars.get(calendarName);
-        // get all events from calendar
-        events = cal.getEvents();
-        // return
-        return events;
+    	/** calculate the needed dates */
+    	if (date.equals(null))
+    	{
+    		date = new Date();
+    	}
+    	
+    	Date beginning = new Date(date.getYear(), date.getMonth(),
+    							  date.getDate(), 0, 0);
+    	Date end = new Date(date.getYear(), date.getMonth(),
+    						date.getDate(), 23, 59);
+
+    	/** get the events */
+    	String selection;
+    	String[] selection_args;
+    	/** get all events if no calendar is given */
+    	if (id == null)
+    	{
+    		selection = "dtstart>? AND dtend<?";
+    		selection_args = new String[2];
+    		selection_args[0] = String.valueOf(beginning.getTime());
+    		selection_args[1] = String.valueOf(end.getTime());
+    	}
+    	else
+    	{
+    		selection = "calendar_id=? AND dtstart>? AND dtend<?";
+    		selection_args = new String[3];
+    		selection_args[0] = id;
+    		selection_args[1] = String.valueOf(beginning.getTime());
+    		selection_args[2] = String.valueOf(end.getTime());
+    	}
+
+    	return queryEvents(selection, selection_args);
     }
 
     /**
@@ -244,35 +269,7 @@ public class CalendarLibrary {
      */
     public HashMap<String,CalendarEvent> getTodaysEvents(String id)
     {
-    	/** calculate the needed dates */
-    	Date today = new Date();
-    	Date beginning = new Date(today.getYear(), today.getMonth(),
-    							  today.getDate(), 0, 0);
-    	Date end = new Date(today.getYear(), today.getMonth(),
-				  			today.getDate(), 23, 59);
-
-    	/** get the events */
-    	HashMap<String, CalendarEvent> events = new HashMap<String, CalendarEvent>();
-    	String selection;
-    	String[] selection_args;
-    	/** get all events if no calendar is given */
-    	if (id == null)
-    	{
-    		selection = "dtstart>? AND dtend<?";
-    		selection_args = new String[2];
-    		selection_args[0] = String.valueOf(beginning.getTime());
-    		selection_args[1] = String.valueOf(end.getTime());
-    	}
-    	else
-    	{
-    		selection = "calendar_id=? AND dtstart>? AND dtend<?";
-    		selection_args = new String[3];
-    		selection_args[0] = id;
-    		selection_args[1] = String.valueOf(beginning.getTime());
-    		selection_args[2] = String.valueOf(end.getTime());
-    	}
-
-    	return queryEvents(selection, selection_args);
+    	return getEventsByDate(id, null);
     }
 
 }
