@@ -142,6 +142,7 @@ public class ActiveCalendarPlan implements CalendarPlan {
 			 * we have to divide by 1000*60 to get minutes */
 			double timeLeft = (destinationEvent.getStartDate().getTime() - now.getTime()) / (1000 * 60);
 			
+			/* TODO: handle case where no route could be found */
 			if (route.getNoRouteFound()) {
 				throw new RuntimeException("ActiveCalendarPlan.checkComplianceWith(): No route found");
 			}

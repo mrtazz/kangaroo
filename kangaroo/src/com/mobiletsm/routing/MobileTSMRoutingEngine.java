@@ -41,6 +41,16 @@ public class MobileTSMRoutingEngine implements RoutingEngine {
 
 	
 	@Override
+	public String getInfo() {
+		if (initialized()) {
+			return "MobileTSMRoutingEngine(provider = " + provider.getInfo() + ")";
+		} else {
+			return "MobileTSMRoutingEngine";
+		}
+	}
+	
+	
+	@Override
 	public RouteParameter routeFromTo(Place from, Place to, Object vehicle) {
 		return routeFromTo(from, to, vehicle, false);
 	}

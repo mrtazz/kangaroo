@@ -44,6 +44,15 @@ public abstract class MobileDataSetProvider {
 	}
 	
 	
+	/**
+	 * returns a short description of the MobileDataSetProvider
+	 * @return
+	 */
+	public String getInfo() {
+		return "MobileDataSetProvider";
+	}
+	
+	
 	/* methods to be implemented by MobileDataSetProviders */
 	
 	public abstract boolean open(String source);

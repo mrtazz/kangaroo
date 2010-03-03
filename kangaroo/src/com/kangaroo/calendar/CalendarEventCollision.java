@@ -3,9 +3,15 @@ package com.kangaroo.calendar;
 public class CalendarEventCollision {
 
 	
+	/**
+	 * the calendar event that causes the collisions and which is in danger
+	 */
 	private CalendarEvent event;
 	
 	
+	/**
+	 * 
+	 */
 	private CalendarEvent predecessor;
 	
 	

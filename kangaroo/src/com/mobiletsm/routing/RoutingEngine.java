@@ -31,6 +31,13 @@ public interface RoutingEngine {
 	
 	
 	/**
+	 * returns a short description of the routing engine and its data source
+	 * @return short description of the routing engine and its data source
+	 */
+	public String getInfo();
+	
+	
+	/**
 	 * shut down the routing engine, disconnect from data source and release all resources
 	 */
 	public void shutdown();	
