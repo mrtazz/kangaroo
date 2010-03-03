@@ -5,6 +5,10 @@ package com.kangaroo.calendar;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.mobiletsm.routing.Place;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -191,15 +195,20 @@ public class CalendarLibrary {
 				{
 					System.out.println("Exception thrown: "+e);
 				}
-				final String description = eventsCursor.getString(5);
 				final String eventLocation = eventsCursor.getString(6);
 				final int calendar = Integer.parseInt(eventsCursor.getString(7));
 				final String timezone = eventsCursor.getString(8);
-
+				HashMap<String, String> kd = deserializeKangarooEventData(eventsCursor.getString(5));
+				String description = kd.get("description");
+				Double latitude = Double.parseDouble(kd.get("latitude"));
+				Double longitude = Double.parseDouble(kd.get("longitude"));
+				Place place =   Place.deserialize(kd.get("place"));
+				Boolean wasTask = Boolean.valueOf(kd.get("wasTask"));
+				
 	            CalendarEvent event = new CalendarEvent(eventid, title, eventLocation,
-	            										null, null, dtstart, dtend,
-	            										null, null, allDay, description,
-	            										calendar,timezone, null);
+	            										longitude, latitude, dtstart, dtend,
+	            										wasTask, allDay, description,
+	            										calendar,timezone, place);
 	            events.put(title,event);
 	        }
 
@@ -221,7 +230,7 @@ public class CalendarLibrary {
     	values.put("allDay", event.getAllDay());
     	values.put("dtstart", event.getStartDate().getTime());
     	values.put("dtend", event.getEndDate().getTime());
-    	values.put("description", event.getDescription());
+    	values.put("description", event.getDescription() + serializeKangarooEventData(event));
     	values.put("eventLocation", event.getLocation());
     	values.put("transparency", 0);
     	values.put("visibility", 0);
@@ -272,6 +281,53 @@ public class CalendarLibrary {
     public HashMap<String,CalendarEvent> getTodaysEvents(String id)
     {
     	return getEventsByDate(id, null);
+    }
+    
+    /**
+     * @brief method to serialize kangaroo event information into
+     * yaml like data
+     * @param ce the CalendarEvent to take data from
+     * @return string with serialized data
+     */
+    private String serializeKangarooEventData(CalendarEvent ce)
+    {
+    	String ret;
+    	ret  = "\n";
+    	ret  = "---\n";
+    	ret += "longitude: " + ce.getLocationLongitude().toString() +"\n";
+    	ret += "latitude: " + ce.getLocationLatitude().toString() +"\n";
+    	ret += "place: " + ce.getPlace().serialize() +"\n";
+    	ret += "wasTask: " + ce.getWasTask().toString() +"\n";
+    	ret += "---\n";
+    	return ret;
+    }
+    
+    private HashMap<String, String> deserializeKangarooEventData(String data)
+    {
+    	HashMap<String, String> ret = new HashMap<String, String>();
+    	/** check if yaml data is present */
+    	Pattern p = Pattern.compile("---\n");
+    	Matcher m = p.matcher(data);
+    	boolean b = m.matches();
+    	/** if no data return immediately */
+    	if (b == false)
+    	{
+    		ret.put("description", data);
+    		return ret;
+    	}
+    	/** else parse the data */
+    	else
+    	{
+	    	String[] dataArray = data.split("\n---\n");
+	    	String[] yamlValues = dataArray[1].split("\n");
+	    	ret.put("description", dataArray[0]);
+	    	for (String s : yamlValues)
+	    	{
+	    		String[] values = s.split(":");
+	    		ret.put(values[0], values[1]);
+	    	}
+	    	return ret;
+    	}
     }
 
 }
