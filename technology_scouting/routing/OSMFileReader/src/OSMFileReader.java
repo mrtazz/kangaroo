@@ -86,9 +86,12 @@ public class OSMFileReader {
 		
 		// write map to a mobile database
 		
-		MobileTSMDatabaseWriter writer = new MobileTSMDatabaseWriter();
+		MobileTSMDatabaseWriter writer = 
+			new MobileTSMDatabaseWriter("jdbc:sqlite:/Users/andreaswalz/Downloads/map.db");
 		writer.setLogStream(System.out);		
-		writer.writeDatabase(map, "jdbc:sqlite:/Users/andreaswalz/Downloads/map.db");		
+		writer.openDatabase();
+		writer.writeDatabase(map);
+		writer.closeDatabase();
 		
 		map = null;
 			

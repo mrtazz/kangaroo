@@ -12,7 +12,7 @@ public class POICode {
 	/**
 	 * 
 	 */
-	private static Map<String, Integer> poiCodeMap = new HashMap<String, Integer>();	
+	private static HashMap<String, Integer> poiCodeMap = new HashMap<String, Integer>();	
 	
 	
 	/* amenities */
@@ -263,14 +263,25 @@ public class POICode {
 	}
 	
 	
+	/**
+	 * unique id describing the POI type
+	 */
 	private int id;
 	
 	
+	/**
+	 * string describing the POI type
+	 */
 	private String type;
 	
 	
+	/**
+	 * creates a new POICode of the specified type
+	 * @param type
+	 */
 	public POICode(String type) {
 		super();		
+		/* check if the given string definies a known POI type */
 		Integer myId = poiCodeMap.get(type);
 		if (myId != null) {
 			this.type = type;
@@ -281,11 +292,19 @@ public class POICode {
 	}
 	
 		
+	/**
+	 * returns the unique id describing the POI type
+	 * @return
+	 */
 	public int getId() {
 		return id;
 	}
 	
 	
+	/**
+	 * returns the string describing the POI type
+	 * @return
+	 */
 	public String getType() {
 		return type;
 	}
@@ -318,11 +337,20 @@ public class POICode {
 	}
 	
 	
+	/**
+	 * returns a string concatenation of the tag
+	 * @param tag
+	 * @return
+	 */
 	public static String getTagString(Tag tag) {
 		return tag.getKey() + "#" + tag.getValue();
 	}
 	
 	
+	/**
+	 * returns an unmodifiable version of the POI code map 
+	 * @return
+	 */
 	public static Map<String, Integer> getPOICodeMap() {
 		return Collections.unmodifiableMap(poiCodeMap);
 	}
