@@ -17,5 +17,33 @@
          android:textSize="18px"
          android:textStyle="italic"
          android:layout_width="250px"
+         android:layout_height="wrap_content"/>
+         
+    <TextView android:id="@+id/taskdate"
+		 android:paddingLeft="50px"
+         android:textSize="18px"
+         android:textStyle="italic"
+         android:layout_width="250px"
+         android:layout_height="wrap_content"/>
+         
+    <TextView android:id="@+id/taskdaytime"
+		 android:paddingLeft="50px"
+         android:textSize="18px"
+         android:textStyle="italic"
+         android:layout_width="250px"
+         android:layout_height="wrap_content"/>
+         
+    <TextView android:id="@+id/taskpoi"
+		 android:paddingLeft="50px"
+         android:textSize="18px"
+         android:textStyle="italic"
+         android:layout_width="250px"
+         android:layout_height="wrap_content"/>
+         
+    <TextView android:id="@+id/taskpending"
+		 android:paddingLeft="50px"
+         android:textSize="18px"
+         android:textStyle="italic"
+         android:layout_width="250px"
          android:layout_height="wrap_content"/> 
 </LinearLayout>
