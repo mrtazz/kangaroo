@@ -10,8 +10,8 @@ import java.util.Date;
  */
 public class TaskConstraintDate implements TaskConstraintInterface
 {
-	Date endDate;
-	Date startDate;
+	Date endDate = null;
+	Date startDate = null;
 	
 	public TaskConstraintDate()
 	{
