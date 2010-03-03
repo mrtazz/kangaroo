@@ -56,7 +56,7 @@ public class CalendarLibrary {
      *
      * @return 0 is okay everything else is wrong
      */
-	public void readCalendars()
+	private void readCalendars()
 	{
         // read calendars from db cursor
         while (calendarCursor.moveToNext())
@@ -78,6 +78,7 @@ public class CalendarLibrary {
      */
     public Calendar getCalendar(String name)
     {
+    	readCalendars();
         return dictCalendars.get(name);
     }
 
@@ -88,6 +89,7 @@ public class CalendarLibrary {
      */
     public String[] getAllCalendarNames()
     {
+    	readCalendars();
     	// create array from dictionary keys
     	String[] ret = dictCalendars.keySet().toArray(new String[0]);
     	return ret;
