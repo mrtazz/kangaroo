@@ -32,6 +32,7 @@ public class DayPlan extends ListActivity {
 	  private CalendarAdapter calendarAdapter;
 	  private TextView tv;
 	  private CalendarLibrary cl;
+	  private CalendarEvent actual_calendar_event;
 	  // menu item ids
 	  private final int MENU_DELETE = 0;
 	  private final int MENU_TO_TASK = 1;
@@ -62,7 +63,7 @@ public class DayPlan extends ListActivity {
 		      //Log.e(TAG, "bad menuInfo", e);
 		      return;
 		  }
-		  //long id = getListAdapter().getItemId(info.position);
+		  actual_calendar_event = (CalendarEvent)info.targetView.getTag(R.id.row);
 		  // add menu items
 		  menu.add(0, MENU_DELETE, 0, R.string.delete);
 		  menu.add(0, MENU_TO_TASK, 0, R.string.to_task);
@@ -97,7 +98,8 @@ public class DayPlan extends ListActivity {
 		      return true;
 		    case MENU_TO_TASK:
 			  toast = Toast.makeText(this,
-  					   				 "Menu item MENU_TO_TASK clicked",
+  					   				 "Transform "+actual_calendar_event.getTitle()
+  					   				 +"into task?",
   					   				 Toast.LENGTH_SHORT);
 			  toast.show();
 		  }
