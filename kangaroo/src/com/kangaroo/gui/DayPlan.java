@@ -6,6 +6,7 @@ package com.kangaroo.gui;
 import java.util.ArrayList;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -20,7 +21,6 @@ import android.widget.Toast;
 import com.android.kangaroo.R;
 import com.kangaroo.calendar.CalendarEvent;
 import com.kangaroo.calendar.CalendarLibrary;
-import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 
 /**
  * @author mrtazz
@@ -81,10 +81,11 @@ public class DayPlan extends ListActivity {
 		  	  toast.show();
 		      return true;
 		    case MENU_ADD_LOCATION:
-			  toast = Toast.makeText(this,
-  					   				 "Menu item ADD_LOCATION clicked",
-  					   				 Toast.LENGTH_SHORT);
-			  toast.show();
+			  // show the map
+			  Intent intent = new Intent("com.kangaroo.SELECTPLACE");
+			  intent.addCategory(Intent.CATEGORY_DEFAULT);
+			  startActivityForResult(intent, 1);
+			  
 		      return true;
 		    case MENU_TO_TASK:
 			  toast = Toast.makeText(this,
@@ -93,6 +94,16 @@ public class DayPlan extends ListActivity {
 			  toast.show();
 		  }
 		  return false;
+		}
+	  
+	  @Override
+	  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+			if (data != null) {
+				Toast.makeText(this, "lat = " + data.getExtras().getDouble("latitude") + ", " +
+						"lon = " + data.getExtras().getDouble("longitude"), Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(this, "no position set! resultCode = " + resultCode, Toast.LENGTH_SHORT).show();
+			}
 		}
 
 	  private void reload()
