@@ -2,4 +2,7 @@
 <resources>
     <string name="hello">Hello World, kangaroo_temp_main!</string>
     <string name="app_name">kangaroo</string>
+    <string name="delete">Delete</string>
+    <string name="to_task">Transform to task</string>
+    <string name="add_location">Add location</string>
 </resources>
