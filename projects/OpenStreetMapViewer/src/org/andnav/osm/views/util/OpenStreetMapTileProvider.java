@@ -48,10 +48,11 @@ public class OpenStreetMapTileProvider implements ServiceConnection, OpenStreetM
 
 	public OpenStreetMapTileProvider(final Context ctx,
 			final Handler aDownloadFinishedListener) {
-		// this.mCtx = ctx;
+		this.mCtx = ctx;
 		this.mLoadingMapTile = BitmapFactory.decodeResource(ctx.getResources(),
 				R.drawable.maptile_loading);
 		this.mTileCache = new OpenStreetMapTileCache();
+		
 		
 		if(!ctx.bindService(new Intent(IOpenStreetMapTileProviderService.class.getName()), this, Context.BIND_AUTO_CREATE))
 			Log.e(DEBUGTAG, "Could not bind to " + IOpenStreetMapTileProviderService.class.getName());
@@ -59,6 +60,15 @@ public class OpenStreetMapTileProvider implements ServiceConnection, OpenStreetM
 		this.mDownloadFinishedHandler = aDownloadFinishedListener;
 	}
 
+	
+	/*  */
+	private Context mCtx; 
+	
+	public void finish() {
+		mCtx.unbindService(this);
+	}
+	
+	
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================

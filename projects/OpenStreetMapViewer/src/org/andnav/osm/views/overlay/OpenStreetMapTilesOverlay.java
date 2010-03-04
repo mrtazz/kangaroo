@@ -36,6 +36,15 @@ public class OpenStreetMapTilesOverlay extends OpenStreetMapViewOverlay {
 			this.mTileProvider = aTileProvider;
 	}
 	
+	
+	/*  */
+	public void finish() {
+		if (mTileProvider != null) {
+			mTileProvider.finish();
+		}
+	}
+	
+	
 	public OpenStreetMapRendererInfo getRendererInfo() {
 		return mRendererInfo;
 	}
