@@ -183,8 +183,6 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 				
 				/* calculate and set name of center place */
 				//adapter.loadCompleteWaysForNodes(minDistNode.getId(), -1);				
-				
-				
 			}
 			return minDistNode;
 		} else {
