@@ -16,8 +16,6 @@ public class TaskManager
 {
 	private CalendarLibrary cl;
 	private Context ctx;
-	private String calendarName;
-	private int calendarId;
 	
 	//Constructor
 	public TaskManager(Context myCtx)
@@ -29,25 +27,11 @@ public class TaskManager
 	//get all Tasks from Calendar
 	public ArrayList<Task> getTasks()
 	{
-		String[] calendars = cl.getAllCalendarNames();
-
-		for(int i=0; i<calendars.length; i++)
-		{
-			if(calendars[i].equalsIgnoreCase("kangaroo@lordofhosts.de"))
-			{
-				calendarName = calendars[i];
-				calendarId = i;
-				break;
-			}
-		}
-		//if our calendar is not present, return null
-		if(calendarName == null)
-		{
-			return null;
-		}
-		HashMap<String,CalendarEvent> myMap = cl.getEventsByDate(calendarName, new Date(0,0,1));
+		int calendarId = cl.getCalendar("kangaroo@lordofhosts.de").getId();
 		
-		CalendarEvent myEvents[] = myMap.values().toArray(new CalendarEvent[0]);
+		ArrayList<CalendarEvent> myEventList = cl.getEventsByDate(String.valueOf(calendarId), new Date(0,0,1));
+		
+		CalendarEvent myEvents[] = myEventList.toArray(new CalendarEvent[0]);
 		ArrayList<Task> myTasks = new ArrayList<Task>();
 		for(int i=0; i<myEvents.length; i++)
 		{
@@ -71,7 +55,18 @@ public class TaskManager
 	//add one Task
 	public int addTask(Task myTask)
 	{
-		cl.updateIfNotInsertEventToBackend(getEventForTask(myTask));
+		CalendarEvent temp = getEventForTask(myTask);
+		if(temp.getId().equalsIgnoreCase(""))
+		{
+			//no id set
+			cl.insertEventToBackend(temp);
+		}
+		else
+		{
+			//id is set
+			cl.updateEventInBackend(temp);
+		}
+
 		return 0;
 	}
 	
@@ -84,10 +79,18 @@ public class TaskManager
 	
 	private CalendarEvent getEventForTask(Task myTask)
 	{
+
+		int calendarId = cl.getCalendar("kangaroo@lordofhosts.de").getId();
+
+			
+		CalendarEvent returnEvent = null;
 		String taskString = myTask.serialize();
-		Date startDate = new Date(0,0,1,0,0);
-		Date endDate = new Date(0,0,1,0,1);
-		return new CalendarEvent(myTask.getJsonHash(), "task", "", 0.0, 0.0, startDate, endDate, false, false, false, taskString, 0, "", (Place)null);	
+		Date startDate = new Date(0,0,1,1,0);
+		Date endDate = new Date(0,0,1,1,1);
+
+		returnEvent = new CalendarEvent(myTask.getId(), "task", "", 0.0, 0.0, startDate, endDate, false, false, taskString, calendarId, "GMT", (Place)null);	
+
+		return returnEvent;
 	}
 	
 }

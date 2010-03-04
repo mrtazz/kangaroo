@@ -23,6 +23,7 @@ public class Task
 	private String serializedConstraintSetTypes = "";
 	private String name;
 	private String description;
+	private String id = "";
 	
 	/**
 	 * Blank Constructor
@@ -78,6 +79,18 @@ public class Task
 		return myTask;
 	}
 	
+	
+	
+	public String getId() 
+	{
+		return id;
+	}
+
+	public void setId(String id) 
+	{
+		this.id = id;
+	}
+
 	public String getJsonHash()
 	{
         try
