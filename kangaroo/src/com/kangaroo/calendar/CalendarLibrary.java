@@ -65,7 +65,8 @@ public class CalendarLibrary {
         // read calendars from db cursor
         while (calendarCursor.moveToNext())
         {
-            Calendar cal = new Calendar(calendarCursor.getString(1),
+            Calendar cal = new Calendar(Integer.parseInt(calendarCursor.getString(0)),
+            							calendarCursor.getString(1),
                                         calendarCursor.getString(2),
                                         calendarCursor.getString(5),
                                         null);
