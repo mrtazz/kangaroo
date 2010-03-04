@@ -8,14 +8,14 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.mobiletsm.routing.Place;
-
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+
+import com.mobiletsm.routing.Place;
 
 /**
  * @author mrtazz
@@ -226,10 +226,11 @@ public class CalendarLibrary {
 
 
     /**
-     * @brief update method to enter events to backend
-     * @param event object to add to backend
+     * @brief method to build android content values from event
+     * @param CalendarEvent object
+     * @return contentvalues object
      */
-    public void updateIfNotInsertEventToBackend(CalendarEvent event)
+    private ContentValues buildValuesFromEvent(CalendarEvent event)
     {
     	/** build event values */
     	ContentValues values = new ContentValues();
@@ -244,19 +245,30 @@ public class CalendarLibrary {
     	values.put("transparency", 0);
     	values.put("visibility", 0);
     	values.put("hasAlarm", 0);
-
-    	/** update if not insert */
-    	if ((contentResolver.query(eventsURI, eventsFields,
-    							   "Events._id="+event.getId(), null, null)) != null)
-    	{
-    		Uri uri = ContentUris.withAppendedId(eventsURI, Long.parseLong(event.getId()));
-    		contentResolver.update(uri, values, null, null);
-    	}
-    	else
-    	{
-	    	/** enter into content provider backend */
-	    	contentResolver.insert(eventsURI, values);
-    	}
+    
+    	return values;
+    }
+    
+    /**
+     * @brief method to insert event to backend
+     * @param CalendarEvent
+     */
+    public void insertEventToBackend(CalendarEvent ce)
+    {
+    	ContentValues values = buildValuesFromEvent(ce);
+    	/** enter into content provider backend */
+    	contentResolver.insert(eventsURI, values);	
+    }
+    
+    /**
+     * @brief method to update Event to Backend
+     * @param CalendarEvent
+     */
+    public void updateEventInBackend(CalendarEvent ce)
+    {
+    	ContentValues values = buildValuesFromEvent(ce);
+    	Uri uri = ContentUris.withAppendedId(eventsURI, Long.parseLong(ce.getId()));
+		contentResolver.update(uri, values, null, null);    	
     }
 
     /**
