@@ -15,6 +15,10 @@ public class POICode {
 	private static HashMap<String, Integer> poiCodeMap = new HashMap<String, Integer>();	
 	
 	
+	public static final int POICODE_ID_UNDEFINED = -1;
+	
+	public static final String POICODE_TYPE_UNDEFINED = "poicode_undefined";
+	
 	/* amenities */
 	public static final String AMENITY_RESTAURANT = "amenity#restaurant";
 	public static final String AMENITY_PUB = "amenity#pub";
@@ -138,6 +142,8 @@ public class POICode {
 
 	
 	static {
+		
+		poiCodeMap.put(POICODE_TYPE_UNDEFINED, POICODE_ID_UNDEFINED);
 		
 		/* amenities */
 		poiCodeMap.put(AMENITY_RESTAURANT, 1);
@@ -266,13 +272,21 @@ public class POICode {
 	/**
 	 * unique id describing the POI type
 	 */
-	private int id;
+	private int id = POICODE_ID_UNDEFINED;
 	
 	
 	/**
 	 * string describing the POI type
 	 */
-	private String type;
+	private String type = POICODE_TYPE_UNDEFINED;
+	
+	
+	/**
+	 * 
+	 */
+	public POICode() {
+		super();
+	}
 	
 	
 	/**
