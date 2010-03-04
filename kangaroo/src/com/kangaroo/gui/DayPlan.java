@@ -33,6 +33,7 @@ public class DayPlan extends ListActivity {
 	  private TextView tv;
 	  private CalendarLibrary cl;
 	  private CalendarEvent actual_calendar_event;
+	  private int actual_calendar = 1;
 	  // menu item ids
 	  private final int MENU_DELETE = 0;
 	  private final int MENU_TO_TASK = 1;
@@ -110,11 +111,15 @@ public class DayPlan extends ListActivity {
 	  @Override
 	  public void onActivityResult(int requestCode, int resultCode, Intent data) {
 			if (data != null) {
-				Toast.makeText(this, "lat = " + data.getExtras().getDouble("latitude") + ", " +
-						"lon = " + data.getExtras().getDouble("longitude"), Toast.LENGTH_SHORT).show();
+				double lat = data.getExtras().getDouble("latitude");
+				double lon = data.getExtras().getDouble("longitude");
+				actual_calendar_event.setLocationLatitude(lat);
+				actual_calendar_event.setLocationLongitude(lon);
+				cl.updateEventInBackend(actual_calendar_event);
 			} else {
 				Toast.makeText(this, "no position set! resultCode = " + resultCode, Toast.LENGTH_SHORT).show();
 			}
+			reload();
 		}
 
 	  /**
@@ -125,7 +130,7 @@ public class DayPlan extends ListActivity {
 	        tv.setText("Today");
 	  		Toast toast = Toast.makeText(this, "Reloading events!", Toast.LENGTH_SHORT);
 	  		toast.show();
-	        eventlist = cl.getTodaysEvents("1");
+	        eventlist = cl.getTodaysEvents(Integer.toString(actual_calendar));
 		    // Bind the ListView to an ArrayList of strings.
 	        calendarAdapter = new CalendarAdapter(this, R.layout.row, eventlist);
 	        setListAdapter(this.calendarAdapter);
