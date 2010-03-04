@@ -85,7 +85,9 @@ public class OpenStreetMap extends Activity implements OpenStreetMapConstants {
     	if(mPrefs.getBoolean(PREFS_SHOW_LOCATION, false))
     		this.mLocationOverlay.enableMyLocation();
    		this.mLocationOverlay.followLocation(mPrefs.getBoolean(PREFS_FOLLOW_LOCATION, true));
-    	
+   		
+    	setResult(RESULT_CANCELED);
+   		
     }
         
     @Override
@@ -102,11 +104,8 @@ public class OpenStreetMap extends Activity implements OpenStreetMapConstants {
     	edit.commit();
     	super.onPause();
     	
-    	/* additions for kangaroo */
-    	Intent resultIntent = new Intent();
-    	resultIntent.putExtra("android.location.Location", myLocation);
-    	setResult(RESULT_OK, resultIntent);
-    	finish();
+    		//mOsmv.finish();
+    	
     }
     
     @Override
@@ -222,6 +221,11 @@ public class OpenStreetMap extends Activity implements OpenStreetMapConstants {
 			myLocation.setAccuracy(30);
 			this.mLocationOverlay.followLocation(true);
 			this.mLocationOverlay.onLocationChanged(myLocation);
+			
+	    	Intent resultIntent = new Intent("com.kangaroo.SELECTPLACE_RESULT");
+	    	resultIntent.putExtra("latitude", myLocation.getLatitude());
+	    	resultIntent.putExtra("longitude", myLocation.getLongitude());
+	    	setResult(RESULT_OK, resultIntent);
 			
 		}
 

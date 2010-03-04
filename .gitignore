@@ -1,7 +1,6 @@
 !.gitignore
 *.undo
 *.orig
-*.db
 *.aux
 *.bbl
 *.blg

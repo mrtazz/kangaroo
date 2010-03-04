@@ -14,9 +14,7 @@ public interface RoutingEngine {
 	
 	
 	/**
-	 * initialize the routing engine and connect to the routing data source
-	 * given by the parameter source. 
-	 * 
+	 * initialize the routing engine and set its map data source. 
 	 * @param source a string describing the routing and navigation data source
 	 * @return true if initialization was successful, false otherwise 
 	 */

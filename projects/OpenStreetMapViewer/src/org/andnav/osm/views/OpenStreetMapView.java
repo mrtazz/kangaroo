@@ -83,6 +83,15 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 	// Constructors
 	// ===========================================================
 
+	
+	/*  */
+	public void finish() {
+		if (mMapOverlay != null) {
+			mMapOverlay.finish();
+		}
+	}
+	
+	
 	private OpenStreetMapView(final Context context, AttributeSet attrs,
 			final OpenStreetMapRendererInfo aRendererInfo,
 			final OpenStreetMapTileProvider aTileProvider) {
