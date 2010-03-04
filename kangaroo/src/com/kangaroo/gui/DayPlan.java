@@ -6,6 +6,7 @@ package com.kangaroo.gui;
 import java.util.ArrayList;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -20,7 +21,6 @@ import android.widget.Toast;
 import com.android.kangaroo.R;
 import com.kangaroo.calendar.CalendarEvent;
 import com.kangaroo.calendar.CalendarLibrary;
-import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 
 /**
  * @author mrtazz
@@ -48,7 +48,10 @@ public class DayPlan extends ListActivity {
 
 	        reload();
 	  }
-	  public void onCreateContextMenu(ContextMenu menu,
+	  /* (non-Javadoc)
+	 * @see android.app.Activity#onCreateContextMenu(android.view.ContextMenu, android.view.View, android.view.ContextMenu.ContextMenuInfo)
+	 */
+	public void onCreateContextMenu(ContextMenu menu,
 			  						  View v,
 			  						  ContextMenuInfo menuInfo)
 	  {
@@ -71,7 +74,12 @@ public class DayPlan extends ListActivity {
 	    return applyMenuChoice(item) || super.onContextItemSelected(item);
 	  }
 	  
-	  private boolean applyMenuChoice(MenuItem item) {
+	  /**
+	   * @brief method to distinguish context menu choices 
+	   * @param item MenuItem
+	   * @return true if choice was found, false otherwise
+	   */
+	private boolean applyMenuChoice(MenuItem item) {
 		  Toast toast;
 		  switch (item.getItemId()) {
 		    case MENU_DELETE:
@@ -81,10 +89,11 @@ public class DayPlan extends ListActivity {
 		  	  toast.show();
 		      return true;
 		    case MENU_ADD_LOCATION:
-			  toast = Toast.makeText(this,
-  					   				 "Menu item ADD_LOCATION clicked",
-  					   				 Toast.LENGTH_SHORT);
-			  toast.show();
+			  // show the map
+			  Intent intent = new Intent("com.kangaroo.SELECTPLACE");
+			  intent.addCategory(Intent.CATEGORY_DEFAULT);
+			  startActivityForResult(intent, 1);
+			  
 		      return true;
 		    case MENU_TO_TASK:
 			  toast = Toast.makeText(this,
@@ -94,8 +103,22 @@ public class DayPlan extends ListActivity {
 		  }
 		  return false;
 		}
+	
+	  // callback method for intent result
+	  @Override
+	  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+			if (data != null) {
+				Toast.makeText(this, "lat = " + data.getExtras().getDouble("latitude") + ", " +
+						"lon = " + data.getExtras().getDouble("longitude"), Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(this, "no position set! resultCode = " + resultCode, Toast.LENGTH_SHORT).show();
+			}
+		}
 
-	  private void reload()
+	  /**
+	   * @brief method to reload today's events 
+	   */
+	private void reload()
 	  {
 	        tv.setText("Today");
 	  		Toast toast = Toast.makeText(this, "Reloading events!", Toast.LENGTH_SHORT);
@@ -108,7 +131,10 @@ public class DayPlan extends ListActivity {
 	  }
 
 	  /** menu methods */
-	  public boolean onCreateOptionsMenu(Menu menu){
+	  /* (non-Javadoc)
+	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+	 */
+	public boolean onCreateOptionsMenu(Menu menu){
 
 		  MenuInflater inflater = getMenuInflater();
 		  inflater.inflate(R.menu.dayplan_menu, menu);
@@ -116,7 +142,10 @@ public class DayPlan extends ListActivity {
 
 	  }
 
-	  public boolean onOptionsItemSelected (MenuItem item){
+	  /* (non-Javadoc)
+	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	 */
+	public boolean onOptionsItemSelected (MenuItem item){
 
 		  switch (item.getItemId()){
 
