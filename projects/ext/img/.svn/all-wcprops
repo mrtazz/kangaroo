@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/3/trunk/OpenStreetMapViewer/ext/img
+END
+marker_default.svg
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/3/trunk/OpenStreetMapViewer/ext/img/marker_default.svg
+END
+Openstreetmap_logo.svg
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/!svn/ver/3/trunk/OpenStreetMapViewer/ext/img/Openstreetmap_logo.svg
+END
+marker_default_focused_base.svg
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/!svn/ver/3/trunk/OpenStreetMapViewer/ext/img/marker_default_focused_base.svg
+END

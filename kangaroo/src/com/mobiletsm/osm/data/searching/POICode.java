@@ -12,8 +12,12 @@ public class POICode {
 	/**
 	 * 
 	 */
-	private static Map<String, Integer> poiCodeMap = new HashMap<String, Integer>();	
+	private static HashMap<String, Integer> poiCodeMap = new HashMap<String, Integer>();	
 	
+	
+	public static final int POICODE_ID_UNDEFINED = -1;
+	
+	public static final String POICODE_TYPE_UNDEFINED = "poicode_undefined";
 	
 	/* amenities */
 	public static final String AMENITY_RESTAURANT = "amenity#restaurant";
@@ -139,6 +143,8 @@ public class POICode {
 	
 	static {
 		
+		poiCodeMap.put(POICODE_TYPE_UNDEFINED, POICODE_ID_UNDEFINED);
+		
 		/* amenities */
 		poiCodeMap.put(AMENITY_RESTAURANT, 1);
 		poiCodeMap.put(AMENITY_PUB, 2);
@@ -263,14 +269,33 @@ public class POICode {
 	}
 	
 	
-	private int id;
+	/**
+	 * unique id describing the POI type
+	 */
+	private int id = POICODE_ID_UNDEFINED;
 	
 	
-	private String type;
+	/**
+	 * string describing the POI type
+	 */
+	private String type = POICODE_TYPE_UNDEFINED;
 	
 	
+	/**
+	 * 
+	 */
+	public POICode() {
+		super();
+	}
+	
+	
+	/**
+	 * creates a new POICode of the specified type
+	 * @param type
+	 */
 	public POICode(String type) {
 		super();		
+		/* check if the given string definies a known POI type */
 		Integer myId = poiCodeMap.get(type);
 		if (myId != null) {
 			this.type = type;
@@ -281,11 +306,19 @@ public class POICode {
 	}
 	
 		
+	/**
+	 * returns the unique id describing the POI type
+	 * @return
+	 */
 	public int getId() {
 		return id;
 	}
 	
 	
+	/**
+	 * returns the string describing the POI type
+	 * @return
+	 */
 	public String getType() {
 		return type;
 	}
@@ -318,11 +351,20 @@ public class POICode {
 	}
 	
 	
+	/**
+	 * returns a string concatenation of the tag
+	 * @param tag
+	 * @return
+	 */
 	public static String getTagString(Tag tag) {
 		return tag.getKey() + "#" + tag.getValue();
 	}
 	
 	
+	/**
+	 * returns an unmodifiable version of the POI code map 
+	 * @return
+	 */
 	public static Map<String, Integer> getPOICodeMap() {
 		return Collections.unmodifiableMap(poiCodeMap);
 	}

@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/!svn/ver/95/trunk/OpenStreetMapViewer/src/org/andnav/osm/services
+END
+OpenStreetMapTileProviderService.java
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/!svn/ver/93/trunk/OpenStreetMapViewer/src/org/andnav/osm/services/OpenStreetMapTileProviderService.java
+END
+IOpenStreetMapTileProviderService.aidl
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/!svn/ver/84/trunk/OpenStreetMapViewer/src/org/andnav/osm/services/IOpenStreetMapTileProviderService.aidl
+END
+IOpenStreetMapTileProviderCallback.aidl
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/!svn/ver/84/trunk/OpenStreetMapViewer/src/org/andnav/osm/services/IOpenStreetMapTileProviderCallback.aidl
+END

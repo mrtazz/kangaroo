@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
 import java.util.Iterator;
@@ -47,6 +48,8 @@ public class MobileTSMDatabaseWriter {
 	 * 
 	 * table: ways_0
 	 * 
+	 * 
+	 * 			maxspeed integer
 	 * 
 	 * 
 	 */
@@ -105,21 +108,60 @@ public class MobileTSMDatabaseWriter {
 	}
 	
 	
+	private String database;
 	
-	public void writeDatabase(IDataSet map, String database) {
+	
+	private Connection connection = null;
+	
+	
+	public MobileTSMDatabaseWriter(String database) {
+		this.database = database;
+	}
+	
+	
+	/**
+	 * open a connection to the specified database
+	 * @return true if connected successfully, false otherwise
+	 */
+	public boolean openDatabase() {
+		try {
+			Class.forName("org.sqlite.JDBC");
+			connection = DriverManager.getConnection(database);
+			return !connection.isClosed();
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	
+	/**
+	 * close the database connection if open
+	 */
+	public void closeDatabase() {
+		try {
+			if (connection != null && !connection.isClosed()) {
+				connection.close();
+			}
+		} catch (SQLException e) {
+		}
+	}
+	
+	
+	public void writeDatabase(IDataSet map) {
 		
-		/* TODO: 
-		 * - split table 'nodes' in 'street_nodes' and 'poi_nodes' 
-		 * - add column in 'ways' for maxspeed 
-		 */
+		try {
+			if (connection == null || connection.isClosed()) {
+				throw new RuntimeException("MobileTSMDatabaseWriter.writeDatabase(): No connection opened");
+			}
+		} catch (SQLException e1) {
+			throw new RuntimeException("MobileTSMDatabaseWriter.writeDatabase():" + e1.getMessage());
+		}
+		
 		
 		log("writeDatabase: input: # nodes = " + OsmHelper.getNumberOfNodes(map));
 		log("writeDatabase: input: # ways = " + OsmHelper.getNumberOfWays(map));
 		
 		try {
-			Class.forName("org.sqlite.JDBC");
-			Connection connection = DriverManager.getConnection(database);
-			
 			Statement statement = connection.createStatement();
 			statement.executeUpdate("drop table if exists nodes;");
 			statement.executeUpdate("drop table if exists ways;");
@@ -260,13 +302,9 @@ public class MobileTSMDatabaseWriter {
 		    rs = statement.executeQuery("SELECT * FROM ways WHERE id=17744176;");
 		    while(rs.next()) {
 		    	log("writeDatabase: wayid:17744176: wn_red = " + rs.getString("wn_red"));		    	
-		    }
-		    
+		    }	    
 		    
 		    connection.setAutoCommit(true);
-			connection.close();
-			
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

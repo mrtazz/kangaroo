@@ -1,6 +1,7 @@
 package com.mobiletsm.osm.data.adapters;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -103,26 +104,30 @@ public class MDSAndroidDatabaseAdapter extends MDSDatabaseAdapter {
 
 	
 	@Override
-	public void loadCompleteWaysForNodes(long fromNodeId, long toNodeId) {
-		Cursor cursor = database.rawQuery(SQL_loadCompleteWaysForNodes(fromNodeId, toNodeId), null);
+	public List<Long> loadCompleteWaysForNodes(long fromNodeId, long toNodeId) {
+		List<Long> allWays = new ArrayList<Long>();
+		Cursor cursor = database.rawQuery(SQL_getWaysForNodes(fromNodeId, toNodeId), null);
 		if (cursor.getCount() > 0) {
 			int col_ways = cursor.getColumnIndex("ways");			
 			
 			for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {	
 				String ways = cursor.getString(col_ways);
 				List<Long> wayIds = OsmHelper.unpackStringToLongs(ways);
+				allWays.addAll(wayIds);
+				
 				if (wayIds.size() == 1) {
 					loadCompleteWay(wayIds.get(0));
 				}				
 			}			
 		}
 		cursor.close();
+		return allWays;
 	}
 
 	
 	@Override
 	public void loadCompleteWay(long wayId) {
-		Cursor cursor = database.rawQuery(SQL_loadFullWay(wayId), null);
+		Cursor cursor = database.rawQuery(SQL_loadCompleteWay(wayId), null);
 		if (cursor.getCount() > 0) {			
 			int col_id = cursor.getColumnIndex("id");
 			int col_name = cursor.getColumnIndex("name");
@@ -147,8 +152,8 @@ public class MDSAndroidDatabaseAdapter extends MDSDatabaseAdapter {
 
 	
 	@Override
-	public void loadReducedWays() {		
-		Cursor cursor = database.rawQuery(SQL_loadReducedWays(), null);
+	public void loadReducedWays(List<Long> ways) {		
+		Cursor cursor = database.rawQuery(SQL_loadReducedWays(ways), null);
 		if (cursor.getCount() > 0) {
 			int col_id = cursor.getColumnIndex("id");
 			int col_name = cursor.getColumnIndex("name");
@@ -171,6 +176,12 @@ public class MDSAndroidDatabaseAdapter extends MDSDatabaseAdapter {
 		cursor.close();
 	}
 
+	
+	@Override
+	public void loadReducedWays() {
+		loadReducedWays(null);
+	}
+	
 	
 	@Override
 	public void loadRoutingStreetNodes() {
