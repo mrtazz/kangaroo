@@ -3,6 +3,8 @@
  */
 package com.mobiletsm.routing;
 
+import java.util.Locale;
+
 import org.openstreetmap.osm.data.coordinates.LatLon;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 
@@ -37,6 +39,12 @@ public class Place {
 	
 	
 	/**
+	 * 
+	 */
+	protected String name = null;
+	
+	
+	/**
 	 * latitude 
 	 */
 	protected double latitude;
@@ -52,6 +60,12 @@ public class Place {
 	 * additional field that can be used to specify an extra time 
 	 */
 	public long time = 0;
+	
+	
+	public Place() {
+		super();
+		update(UNDEFINED, UNDEFINED);
+	}
 	
 	
 	/**
@@ -172,7 +186,36 @@ public class Place {
 	
 	
 	/**
-	 * returns the position of this place as an LatLon object
+	 * returns the name associated with this place
+	 * @return the name associated with this place
+	 */
+	public String getName() {
+		return name;
+	}
+	
+	
+	/**
+	 * sets the name associated with this place
+	 * @param name
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	
+	@Override
+	public String toString() {
+		if (name != null) {
+			return name;
+		} else {
+			return String.format(Locale.US, "%.5f,%.5f", latitude, longitude);
+		}
+	}
+	
+	
+	/* TODO: remove this method to be independent from TSM */
+	/**
+	 * returns the position of this place as an TSM LatLon object
 	 * 
 	 * @return
 	 */

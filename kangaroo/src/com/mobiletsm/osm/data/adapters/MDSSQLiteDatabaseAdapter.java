@@ -119,13 +119,16 @@ public class MDSSQLiteDatabaseAdapter extends MDSDatabaseAdapter {
 
 	
 	@Override
-	public void loadCompleteWaysForNodes(long fromNodeId, long toNodeId) {
+	public List<Long> loadCompleteWaysForNodes(long fromNodeId, long toNodeId) {
+		List<Long> allWays = new ArrayList<Long>();
 		try {
 			Statement statement = connection.createStatement();
-			ResultSet rs = statement.executeQuery(SQL_loadCompleteWaysForNodes(fromNodeId, toNodeId));			
+			ResultSet rs = statement.executeQuery(SQL_getWaysForNodes(fromNodeId, toNodeId));			
 			while(rs.next()) {
 				String ways = rs.getString("ways");
 				List<Long> wayIds = OsmHelper.unpackStringToLongs(ways);
+				allWays.addAll(wayIds);
+				
 				if (wayIds.size() == 1) {
 					loadCompleteWay(wayIds.get(0));
 				}				
@@ -135,6 +138,7 @@ public class MDSSQLiteDatabaseAdapter extends MDSDatabaseAdapter {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return allWays;
 	}
 
 	
@@ -142,7 +146,7 @@ public class MDSSQLiteDatabaseAdapter extends MDSDatabaseAdapter {
 	public void loadCompleteWay(long wayId) {
 		try {
 			Statement statement = connection.createStatement();			
-			ResultSet rs = statement.executeQuery(SQL_loadFullWay(wayId));			
+			ResultSet rs = statement.executeQuery(SQL_loadCompleteWay(wayId));			
 			while (rs.next()) {
 				long id = rs.getLong("id");				
 				String name = rs.getString("name");
@@ -163,9 +167,15 @@ public class MDSSQLiteDatabaseAdapter extends MDSDatabaseAdapter {
 	
 	@Override
 	public void loadReducedWays() {
+		loadReducedWays(null);
+	}
+	
+	
+	@Override
+	public void loadReducedWays(List<Long> ways) {
 		try {
 			Statement statement = connection.createStatement();			
-			ResultSet rs = statement.executeQuery(SQL_loadReducedWays());			
+			ResultSet rs = statement.executeQuery(SQL_loadReducedWays(ways));			
 			while (rs.next()) {
 				long id = rs.getLong("id");	
 				String name = rs.getString("name");

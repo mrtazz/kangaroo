@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/!svn/ver/93/trunk/OpenStreetMapViewer/src/org/andnav/osm/views/overlay
+END
+OpenStreetMapViewDirectedLocationOverlay.java
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/!svn/ver/92/trunk/OpenStreetMapViewer/src/org/andnav/osm/views/overlay/OpenStreetMapViewDirectedLocationOverlay.java
+END
+MyLocationOverlay.java
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/!svn/ver/91/trunk/OpenStreetMapViewer/src/org/andnav/osm/views/overlay/MyLocationOverlay.java
+END
+OpenStreetMapViewOverlayItem.java
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/!svn/ver/3/trunk/OpenStreetMapViewer/src/org/andnav/osm/views/overlay/OpenStreetMapViewOverlayItem.java
+END
+OpenStreetMapViewOverlay.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/!svn/ver/85/trunk/OpenStreetMapViewer/src/org/andnav/osm/views/overlay/OpenStreetMapViewOverlay.java
+END
+OpenStreetMapViewSimpleLocationOverlay.java
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/!svn/ver/92/trunk/OpenStreetMapViewer/src/org/andnav/osm/views/overlay/OpenStreetMapViewSimpleLocationOverlay.java
+END
+OpenStreetMapTilesOverlay.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/!svn/ver/93/trunk/OpenStreetMapViewer/src/org/andnav/osm/views/overlay/OpenStreetMapTilesOverlay.java
+END
+OpenStreetMapViewItemizedOverlayWithFocus.java
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/!svn/ver/3/trunk/OpenStreetMapViewer/src/org/andnav/osm/views/overlay/OpenStreetMapViewItemizedOverlayWithFocus.java
+END
+OpenStreetMapViewItemizedOverlayControlView.java
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/svn/!svn/ver/3/trunk/OpenStreetMapViewer/src/org/andnav/osm/views/overlay/OpenStreetMapViewItemizedOverlayControlView.java
+END
+OpenStreetMapViewItemizedOverlay.java
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/!svn/ver/92/trunk/OpenStreetMapViewer/src/org/andnav/osm/views/overlay/OpenStreetMapViewItemizedOverlay.java
+END

@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/!svn/ver/95/trunk/OpenStreetMapViewer/src/org/andnav/osm/services/util
+END
+OpenStreetMapTileDownloader.java
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/!svn/ver/84/trunk/OpenStreetMapViewer/src/org/andnav/osm/services/util/OpenStreetMapTileDownloader.java
+END
+OpenStreetMapTileFilesystemProvider.java
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/!svn/ver/84/trunk/OpenStreetMapViewer/src/org/andnav/osm/services/util/OpenStreetMapTileFilesystemProvider.java
+END
+OpenStreetMapTile.java
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/!svn/ver/95/trunk/OpenStreetMapViewer/src/org/andnav/osm/services/util/OpenStreetMapTile.java
+END
+OpenStreetMapTileProviderDataBase.java
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/!svn/ver/84/trunk/OpenStreetMapViewer/src/org/andnav/osm/services/util/OpenStreetMapTileProviderDataBase.java
+END
+OpenStreetMapTileNameFormatter.java
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/!svn/ver/80/trunk/OpenStreetMapViewer/src/org/andnav/osm/services/util/OpenStreetMapTileNameFormatter.java
+END
+StreamUtils.java
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/!svn/ver/80/trunk/OpenStreetMapViewer/src/org/andnav/osm/services/util/StreamUtils.java
+END
+OpenStreetMapAsyncTileProvider.java
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/!svn/ver/84/trunk/OpenStreetMapViewer/src/org/andnav/osm/services/util/OpenStreetMapAsyncTileProvider.java
+END

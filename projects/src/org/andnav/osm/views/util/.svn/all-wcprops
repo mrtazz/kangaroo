@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/!svn/ver/95/trunk/OpenStreetMapViewer/src/org/andnav/osm/views/util
+END
+OpenStreetMapTileProvider.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/!svn/ver/93/trunk/OpenStreetMapViewer/src/org/andnav/osm/views/util/OpenStreetMapTileProvider.java
+END
+MyMath.java
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/!svn/ver/3/trunk/OpenStreetMapViewer/src/org/andnav/osm/views/util/MyMath.java
+END
+LRUMapTileCache.java
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/!svn/ver/95/trunk/OpenStreetMapViewer/src/org/andnav/osm/views/util/LRUMapTileCache.java
+END
+OpenStreetMapTileCache.java
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/!svn/ver/95/trunk/OpenStreetMapViewer/src/org/andnav/osm/views/util/OpenStreetMapTileCache.java
+END
+OpenStreetMapRendererInfo.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/!svn/ver/87/trunk/OpenStreetMapViewer/src/org/andnav/osm/views/util/OpenStreetMapRendererInfo.java
+END
+Mercator.java
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/!svn/ver/92/trunk/OpenStreetMapViewer/src/org/andnav/osm/views/util/Mercator.java
+END
