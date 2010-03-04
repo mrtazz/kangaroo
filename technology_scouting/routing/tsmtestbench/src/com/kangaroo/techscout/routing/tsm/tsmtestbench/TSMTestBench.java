@@ -44,12 +44,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class TSMTestBench extends Activity implements StatusListener {
@@ -300,8 +302,11 @@ public class TSMTestBench extends Activity implements StatusListener {
 						public void onClick(DialogInterface dialog, int which) {							
 							//TSMTestBench.this.finish();
 						    Intent intent = new Intent("com.kangaroo.SELECTPLACE");
-						    intent.addCategory(Intent.CATEGORY_LAUNCHER);
-							startActivity(intent);
+						    intent.addCategory(Intent.CATEGORY_DEFAULT);
+						    //intent.getExtras().putBoolean("test", true);
+							startActivityForResult(intent, 1);
+						    //startActivity(intent);
+							
 						}
 					});
 				
@@ -315,6 +320,17 @@ public class TSMTestBench extends Activity implements StatusListener {
 		return dialog;		
 	}
     
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (data != null) {
+			Toast.makeText(this, "lat = " + data.getExtras().getDouble("latitude") + ", " +
+					"lon = " + data.getExtras().getDouble("longitude"), Toast.LENGTH_SHORT).show();
+		} else {
+			Toast.makeText(this, "no position set! resultCode = " + resultCode, Toast.LENGTH_SHORT).show();
+		}
+	}
+	
 	
 	@Override
 	public void onDestroy() {

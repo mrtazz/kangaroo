@@ -1,6 +1,6 @@
 /*
  * This file is auto-generated.  DO NOT MODIFY.
- * Original file: /Users/andreaswalz/Downloads/osmdroid/osmdroid-read-only/OpenStreetMapViewer/src/org/andnav/osm/services/IOpenStreetMapTileProviderCallback.aidl
+ * Original file: /Users/andreaswalz/Documents/Uni/Informatik/Teamprojekt - WS0910/repository/master/kangaroo/projects/OpenStreetMapViewer/src/org/andnav/osm/services/IOpenStreetMapTileProviderCallback.aidl
  */
 package org.andnav.osm.services;
 import java.lang.String;
