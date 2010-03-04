@@ -3,6 +3,7 @@
  */
 package com.kangaroo.calendar;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -107,7 +108,7 @@ public class CalendarLibrary {
      *
      * @return CalendarEvent[] with all events from calendar
      */
-    public HashMap<String, CalendarEvent> getEventsByDate(String id, Date date)
+    public ArrayList<CalendarEvent> getEventsByDate(String id, Date date)
     {
     	/** calculate the needed dates */
     	Date mydate;
@@ -153,7 +154,7 @@ public class CalendarLibrary {
      * @param id for the calendar to get events from
      * @return HashMap with events
      */
-    public HashMap<String, CalendarEvent> getEventsFromBackend(String id)
+    public ArrayList<CalendarEvent> getEventsFromBackend(String id)
     {
     	String selection;
     	String[] selection_args = new String[1];
@@ -180,9 +181,9 @@ public class CalendarLibrary {
      *
      * @return HashMap<String, CalendarEvent>
      */
-    private HashMap<String, CalendarEvent> queryEvents(String selection, String[] selection_args)
+    private ArrayList<CalendarEvent> queryEvents(String selection, String[] selection_args)
     {
-    	HashMap<String, CalendarEvent> events = new HashMap<String, CalendarEvent>();
+    	ArrayList<CalendarEvent> events = new ArrayList<CalendarEvent>();
 		eventsCursor = contentResolver.query(eventsURI, eventsFields,
 										 	 selection, selection_args, null);
 
@@ -219,7 +220,7 @@ public class CalendarLibrary {
 	            										longitude, latitude, dtstart, dtend,
 	            										wasTask, allDay, description,
 	            										calendar,timezone, place);
-	            events.put(title,event);
+	            events.add(event);
 	        }
 
 		return events;
@@ -300,7 +301,7 @@ public class CalendarLibrary {
      * @param id
      * @return HashMap<String, CalendarEvent>
      */
-    public HashMap<String,CalendarEvent> getTodaysEvents(String id)
+    public ArrayList<CalendarEvent> getTodaysEvents(String id)
     {
     	return getEventsByDate(id, null);
     }

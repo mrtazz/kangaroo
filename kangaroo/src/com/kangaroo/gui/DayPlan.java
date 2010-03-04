@@ -76,19 +76,19 @@ public class DayPlan extends ListActivity {
 		  switch (item.getItemId()) {
 		    case MENU_DELETE:
 			  toast = Toast.makeText(this,
-			  					     "Menu item# "+Long.toString(item.getItemId())+" clicked",
+			  					     "Menu item DELETE clicked",
 				  				     Toast.LENGTH_SHORT);
 		  	  toast.show();
 		      return true;
 		    case MENU_ADD_LOCATION:
 			  toast = Toast.makeText(this,
-  					   				 "Menu item# "+Long.toString(item.getItemId())+" clicked",
+  					   				 "Menu item ADD_LOCATION clicked",
   					   				 Toast.LENGTH_SHORT);
 			  toast.show();
 		      return true;
 		    case MENU_TO_TASK:
 			  toast = Toast.makeText(this,
-  					   				 "Menu item# "+Long.toString(item.getItemId())+" clicked",
+  					   				 "Menu item MENU_TO_TASK clicked",
   					   				 Toast.LENGTH_SHORT);
 			  toast.show();
 		  }
@@ -100,7 +100,7 @@ public class DayPlan extends ListActivity {
 	        tv.setText("Today");
 	  		Toast toast = Toast.makeText(this, "Reloading events!", Toast.LENGTH_SHORT);
 	  		toast.show();
-	        eventlist = new ArrayList<CalendarEvent>(cl.getTodaysEvents("1").values());
+	        eventlist = cl.getTodaysEvents("1");
 		    // Bind the ListView to an ArrayList of strings.
 	        calendarAdapter = new CalendarAdapter(this, R.layout.row, eventlist);
 	        setListAdapter(this.calendarAdapter);
