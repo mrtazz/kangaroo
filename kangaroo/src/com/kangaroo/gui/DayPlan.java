@@ -48,7 +48,10 @@ public class DayPlan extends ListActivity {
 
 	        reload();
 	  }
-	  public void onCreateContextMenu(ContextMenu menu,
+	  /* (non-Javadoc)
+	 * @see android.app.Activity#onCreateContextMenu(android.view.ContextMenu, android.view.View, android.view.ContextMenu.ContextMenuInfo)
+	 */
+	public void onCreateContextMenu(ContextMenu menu,
 			  						  View v,
 			  						  ContextMenuInfo menuInfo)
 	  {
@@ -71,7 +74,12 @@ public class DayPlan extends ListActivity {
 	    return applyMenuChoice(item) || super.onContextItemSelected(item);
 	  }
 	  
-	  private boolean applyMenuChoice(MenuItem item) {
+	  /**
+	   * @brief method to distinguish context menu choices 
+	   * @param item MenuItem
+	   * @return true if choice was found, false otherwise
+	   */
+	private boolean applyMenuChoice(MenuItem item) {
 		  Toast toast;
 		  switch (item.getItemId()) {
 		    case MENU_DELETE:
@@ -95,7 +103,8 @@ public class DayPlan extends ListActivity {
 		  }
 		  return false;
 		}
-	  
+	
+	  // callback method for intent result
 	  @Override
 	  public void onActivityResult(int requestCode, int resultCode, Intent data) {
 			if (data != null) {
@@ -106,7 +115,10 @@ public class DayPlan extends ListActivity {
 			}
 		}
 
-	  private void reload()
+	  /**
+	   * @brief method to reload today's events 
+	   */
+	private void reload()
 	  {
 	        tv.setText("Today");
 	  		Toast toast = Toast.makeText(this, "Reloading events!", Toast.LENGTH_SHORT);
@@ -119,7 +131,10 @@ public class DayPlan extends ListActivity {
 	  }
 
 	  /** menu methods */
-	  public boolean onCreateOptionsMenu(Menu menu){
+	  /* (non-Javadoc)
+	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+	 */
+	public boolean onCreateOptionsMenu(Menu menu){
 
 		  MenuInflater inflater = getMenuInflater();
 		  inflater.inflate(R.menu.dayplan_menu, menu);
@@ -127,7 +142,10 @@ public class DayPlan extends ListActivity {
 
 	  }
 
-	  public boolean onOptionsItemSelected (MenuItem item){
+	  /* (non-Javadoc)
+	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	 */
+	public boolean onOptionsItemSelected (MenuItem item){
 
 		  switch (item.getItemId()){
 
