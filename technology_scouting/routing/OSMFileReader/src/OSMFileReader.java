@@ -60,7 +60,7 @@ public class OSMFileReader {
 	public static void main(String[] args) {	
 		
 		// load map file
-		File mapFile = new File("/Users/andreaswalz/Downloads/map.osm");		
+		File mapFile = new File("/Users/andreaswalz/Downloads/map-fr.osm");		
 		IDataSet map = (new FileLoader(mapFile)).parseOsm();
 		System.out.println("FileLoader: output: # nodes = " + OsmHelper.getNumberOfNodes(map));
 		System.out.println("FileLoader: output: # ways = " + OsmHelper.getNumberOfWays(map));	
@@ -83,25 +83,18 @@ public class OSMFileReader {
 		*/
 		
 		
-		/*
+		
 		// write map to a mobile database		
 		MobileTSMDatabaseWriter writer = 
-			new MobileTSMDatabaseWriter("jdbc:sqlite:/Users/andreaswalz/Downloads/map.db");
+			new MobileTSMDatabaseWriter("jdbc:sqlite:/Users/andreaswalz/Downloads/map-fr.db");
 		writer.setLogStream(System.out);		
 		writer.openDatabase();
 		writer.writeDatabase(map);
 		writer.closeDatabase();
 		map = null;
-		*/
 		
 		
-		Place place = new Place(map.getNodes(Bounds.WORLD).next());
-		System.out.println(place.toString());
-		System.out.println(place.serialize());
-		place = Place.deserialize(place.serialize());
-		System.out.println(place.serialize());
-		
-		
+				
 		/*
 		// compare routing on two maps
 		IDataSet routingMap = OsmHelper.simplifyDataSet(map, new AllStreetVehicle());
