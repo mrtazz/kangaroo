@@ -97,6 +97,7 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 	
 	/* node cache */
 	private final double defaultRadiusToLoad = 300;
+	private final double maxRadiusToLoad = 500;
 	private Vector<Node> cache = null;
 	private Place cacheCenter = null;
 	private double cacheRadius = 0;		
@@ -117,8 +118,14 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 		double newRadius = cacheRadius;
 		if (lastQueryPos != null) {
 			newRadius = 3 * lastQueryPos.distanceTo(center);
-			if (cacheRadius > newRadius)
+			/* allow the radius to increase but not to decrease */
+			if (cacheRadius > newRadius) {
 				newRadius = cacheRadius;
+			}
+			/* don't let the radius exceed a specific value */
+			if (newRadius > maxRadiusToLoad) {
+				newRadius = maxRadiusToLoad;
+			}
 		}
 		lastQueryPos = center;
 		
@@ -153,39 +160,47 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
         	}        	
         }         		        
         
+        /* initialize a new street node cache */
         if (newRadius > 0) {
         	cacheRadius = newRadius;
         	cacheCenter = center;
 	        cache = new Vector<Node>();
-        }
-        
+        }        
 		
 		/* get the street node near the given center */
 		double radiusToLoad = cacheRadius;
-		if (radiusToLoad == 0)
+		if (radiusToLoad == 0) {
 			radiusToLoad = defaultRadiusToLoad;
-        adapter.loadAllStreetNodesAround(center, radiusToLoad);
-				
-		for (Node node : streetNodes.values()) {
-			double dist = center.distanceTo(node.getLatitude(), node.getLongitude());
-            if (cacheRadius > 0 && dist < cacheRadius)
-            	cache.add(node);
-			if (dist < minDist) {
-				minDist = dist;
-				minDistNode = node;
-			}
 		}
-		
-		if (minDistNode != null) {
-			if (updateCenter) {
-				
-				center.update(minDistNode, true);
-				
-				/* calculate and set name of center place */
-				//adapter.loadCompleteWaysForNodes(minDistNode.getId(), -1);				
+        
+		if (adapter.loadAllStreetNodesAround(center, radiusToLoad) > 0) {				
+			/* find the street node closest to the center */
+			for (Node node : streetNodes.values()) {
+				double dist = center.distanceTo(node.getLatitude(), node.getLongitude());
+	            /* fill the street node cache */
+				if (cacheRadius > 0 && dist < cacheRadius) {
+	            	cache.add(node);
+	            }
+				if (dist < minDist) {
+					minDist = dist;
+					minDistNode = node;
+				}
+			}		
+			if (minDistNode != null) {
+				if (updateCenter) {				
+					center.update(minDistNode, true);				
+					/* calculate and set name of center place */
+					//adapter.loadCompleteWaysForNodes(minDistNode.getId(), -1);				
+				}
+				return minDistNode;
+			} else {
+				/* no street node could be found
+				 * (TODO: this case should never occur, because not finding any 
+				 * street node is handled in the if clause one level higher) */
+				return null;
 			}
-			return minDistNode;
 		} else {
+			/* there no street nodes around the center */
 			return null;
 		}
 	}

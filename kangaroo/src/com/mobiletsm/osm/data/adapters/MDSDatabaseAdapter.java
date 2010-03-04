@@ -24,7 +24,7 @@ public abstract class MDSDatabaseAdapter {
 
 	
 	protected void sqlLog(String sql) {
-		//System.out.println("SQL query: " + sql);
+		System.out.println("SQL query: " + sql);
 	}
 	
 	
@@ -139,7 +139,7 @@ public abstract class MDSDatabaseAdapter {
 	public abstract void close();
 	
 	
-	public abstract void loadAllStreetNodesAround(Place center, double radius);
+	public abstract int loadAllStreetNodesAround(Place center, double radius);
 	
 	
 	public abstract void loadAllStreetNodesForWays(long fromWayId, long toWayId);

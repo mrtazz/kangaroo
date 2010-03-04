@@ -53,15 +53,17 @@ public class MDSAndroidDatabaseAdapter extends MDSDatabaseAdapter {
 	
 	
 	@Override
-	public void loadAllStreetNodesAround(Place center, double radius) {
+	public int loadAllStreetNodesAround(Place center, double radius) {
 		Cursor cursor = database.rawQuery(SQL_loadAllStreetNodesAround(center, radius), null);		
-		if (cursor.getCount() > 0) {
+	
+			System.out.println("loadAllStreetNodesAround(radius = " + radius + "): " +
+					"cursor.getCount() = " + cursor.getCount());
+		
+		int counter = cursor.getCount();
+		if (counter > 0) {
 			int col_id = cursor.getColumnIndex("id");
 			int col_lat = cursor.getColumnIndex("lat");
-			int col_lon = cursor.getColumnIndex("lon");
-			
-			System.out.println("MDSAndroidDatabaseAdapter.loadAllStreetNodesAround(): " +
-					"cursor.getCount() = " + cursor.getCount());
+			int col_lon = cursor.getColumnIndex("lon");	
 			
 			for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {	
 				long id = cursor.getLong(col_id);
@@ -72,8 +74,9 @@ public class MDSAndroidDatabaseAdapter extends MDSDatabaseAdapter {
 					streetNodes.put(node.getId(), node);
 				}
 			}			
-		}
+		}		
 		cursor.close();
+		return counter;
 	}
 
 	

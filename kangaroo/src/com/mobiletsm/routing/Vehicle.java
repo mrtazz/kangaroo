@@ -26,7 +26,7 @@ public abstract class Vehicle implements IVehicle {
 	/**
 	 * The maximum speed for this vehicle, specified in km/h
 	 */
-	protected double maxSpeed;
+	protected double maxSpeed = 50;
 	
 	
 	/**

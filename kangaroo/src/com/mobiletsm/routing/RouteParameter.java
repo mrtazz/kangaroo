@@ -5,6 +5,7 @@ package com.mobiletsm.routing;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import org.openstreetmap.osm.Tags;
 import org.openstreetmap.osm.data.WayHelper;
@@ -25,7 +26,13 @@ public abstract class RouteParameter {
 	/**
 	 * static value used to specify undefined parameters
 	 */
-	public static double UNDEFINED = -1;
+	public static double PARAMETER_UNDEFINED = -1;
+	
+	
+	/**
+	 * 
+	 */
+	public static String STRING_PARAMETER_UNDEFINIED = "?";
 	
 	
 	/** 
@@ -37,13 +44,13 @@ public abstract class RouteParameter {
 	/** 
 	 * time it takes to travel the route in minutes
 	 */
-	protected double durationOfTravel;
+	protected double durationOfTravel = PARAMETER_UNDEFINED;
 	
 	
 	/**
 	 * an object describing the route
 	 */
-	protected Object route;
+	protected Object route = PARAMETER_UNDEFINED;
 	
 	
 	/**
@@ -102,10 +109,61 @@ public abstract class RouteParameter {
 	public boolean getNoRouteFound() {
 		return noRouteFound;
 	}
-
+	
+	
+	@Override
+	public String toString() {
+		if (getNoRouteFound()) {
+			return "RouteParameter: {no route found}";
+		} else {
+			return "RouteParameter: {route found: length = " + lengthToString(getLength()) + ", " +
+					"duration = " + durationToString(getDurationOfTravel()) + "}";
+		}
+	}
+	
+	
 
 	/* methods to be implemented */
 	
 	protected abstract void updateRouteParameter(Object route, Object vehicle);
 	
+	
+	/* static methods */
+	
+	/**
+	 * convert the given length to a String
+	 * @param length
+	 * @return
+	 */
+	public static String lengthToString(double length) {
+		if (length == PARAMETER_UNDEFINED) {
+			return STRING_PARAMETER_UNDEFINIED; 
+		} else {
+			if (length < 1000) {
+				return String.format(Locale.US, "%.0fm", length);
+			} else {
+				return String.format(Locale.US, "%.1fkm", length / 1000);
+			}
+		}		
+	}
+	
+	
+	/**
+	 * convert the given duration to a String
+	 * @param duration
+	 * @return
+	 */
+	public static String durationToString(double duration) {
+		if (duration == PARAMETER_UNDEFINED) {
+			return STRING_PARAMETER_UNDEFINIED; 
+		} else {
+			if (duration < 60) {
+				return String.format(Locale.US, "%.0fmin", duration);
+			} else {
+				int hours = (int)(duration / 60);
+				int minutes = (int)(duration - 60 * hours);						
+				return String.format(Locale.US, "%dh%02dmin", hours, minutes);
+			}
+		}		
+	}
 }

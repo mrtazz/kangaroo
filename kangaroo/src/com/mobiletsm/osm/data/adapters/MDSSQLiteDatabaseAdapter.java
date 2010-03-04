@@ -71,12 +71,14 @@ public class MDSSQLiteDatabaseAdapter extends MDSDatabaseAdapter {
 	
 
 	@Override
-	public void loadAllStreetNodesAround(Place center, double radius) {
+	public int loadAllStreetNodesAround(Place center, double radius) {
 		try {
 			Statement statement = connection.createStatement();			
 			String sql = SQL_loadAllStreetNodesAround(center, 0);			
-			ResultSet rs = statement.executeQuery(sql);			
+			ResultSet rs = statement.executeQuery(sql);	
+			int counter = 0;
 			while(rs.next()) {
+				counter++;
 				long id = rs.getLong("id");
 				double lat = rs.getDouble("lat");
 				double lon = rs.getDouble("lon");				
@@ -86,9 +88,11 @@ public class MDSSQLiteDatabaseAdapter extends MDSDatabaseAdapter {
 				}	
 			}			
 			rs.close();
-			statement.close();			
+			statement.close();
+			return counter;
 		} catch (Exception e) {
 			e.printStackTrace();
+			return 0;
 		}
 	}
 

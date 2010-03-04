@@ -50,13 +50,14 @@ public class MobileTSMRouteParameter extends RouteParameter {
 		/* distance of a routing step in meters */
 		double dist;
 		
-		/* no parameters to calculate if no route is given */
 		if (route == null) {
-			this.length = UNDEFINED;
-			this.durationOfTravel = UNDEFINED;
+			/* no parameters to calculate if no route is given */
+			this.length = PARAMETER_UNDEFINED;
+			this.durationOfTravel = PARAMETER_UNDEFINED;
 			return;
 		}
 		
+		/* get thr routing steps */
 		List<RoutingStep> steps = ((Route)route).getRoutingSteps();
 		Iterator<RoutingStep> steps_itr = steps.iterator();
 		
@@ -94,7 +95,7 @@ public class MobileTSMRouteParameter extends RouteParameter {
 		
 		this.length = length;
 		if (vehicle == null) {
-			this.durationOfTravel = UNDEFINED;
+			this.durationOfTravel = PARAMETER_UNDEFINED;
 		} else {
 			this.durationOfTravel = duration;
 		}
