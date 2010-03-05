@@ -45,7 +45,7 @@ public class MobileTSMTestBench extends Activity {
 			public void onClick(View v) {				
 				if (engine == null || !engine.initialized()) {
 					engine = new MobileTSMRoutingEngine();
-					engine.init("/sdcard/map-fr.db");
+					engine.init("/sdcard/map-bla.db");
 				}
 									
 				if (engine.initialized()) {
