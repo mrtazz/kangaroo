@@ -505,6 +505,27 @@ public class OsmHelper {
 	}
 		
 	
+	public static MobileWay getReducedWay(IDataSet map, Collection<Long> intermediateWayNodes, Way way) {
+		MobileWay newWay = new MobileWay(way.getId());
+		double length = 0;
+		WayNode lastWayNode = null;
+		for (WayNode wayNode : way.getWayNodes()) {
+			if (lastWayNode != null) {
+				length += LatLon.distanceInMeters(map.getNodeByID(lastWayNode.getNodeId()), 
+						map.getNodeByID(wayNode.getNodeId()));
+				if (!intermediateWayNodes.contains(wayNode.getNodeId())) {
+					newWay.addWayNode(wayNode.getNodeId(), length);
+					length = 0;
+				}
+			} else {
+				newWay.addWayNode(wayNode.getNodeId(), 0);
+			}
+			lastWayNode = wayNode;
+		}		
+		return newWay;
+	}
+	
+	
 	public static int getNumberOfNodes(IDataSet map) {
 		int result = 0;
 		Iterator<Node> nodes = map.getNodes(Bounds.WORLD);
@@ -643,7 +664,7 @@ public class OsmHelper {
 	
 	
 	
-	public static String packTagsToString(Collection<Tag> tags) {
+	public static String serializeTags(Collection<Tag> tags) {
 		StringBuffer buf = new StringBuffer();		
 		Iterator<Tag> tag_itr = tags.iterator();
 		while(tag_itr.hasNext()) {
@@ -654,7 +675,7 @@ public class OsmHelper {
 	}
 	
 	
-	public static String packWayNodesToString(Way way) {
+	public static String serializeMobileWayNodes(Way way) {
 		List<WayNode> wayNodes = way.getWayNodes();
 		List<MobileWayNode> mobileWayNodes = new LinkedList<MobileWayNode>();
 		
@@ -676,17 +697,7 @@ public class OsmHelper {
 				for (int i = 8; i > longString.length(); i--)
 					buf.append("0");
 				buf.append(longString);				
-			}
-			
-				/*
-				if (way instanceof MobileWay)
-					System.out.println("-1-getWayInfo: " + ((MobileWay)way).getWayNodeInfo());
-				System.out.println("-2-packWayNodesToString: " + buf.toString());
-				MobileWay mobileWay = new MobileWay(way.getId(), 0, (Date)null, null, 0, 
-						way.getTags(), unpackStringToWayNodes(buf.toString()));
-				System.out.println("-3-getWayInfo: " + mobileWay.getWayNodeInfo());
-				*/
-			
+			}			
 			return buf.toString();
 		} else {
 			return packLongsToString(getWayNodeIds(way));
@@ -986,7 +997,7 @@ public class OsmHelper {
 			while(node_itr.hasNext()) {
 				Node node = node_itr.next();				
 
-				String tags = packTagsToString(node.getTags());	//tagPacker(node.getTags());
+				String tags = serializeTags(node.getTags());	//tagPacker(node.getTags());
 				String ways = packLongsToString(getWayIdsForNode(map, node));
 				
 				int isstreetnode = 0;
@@ -1011,8 +1022,8 @@ public class OsmHelper {
 			while(way_itr.hasNext()) {
 				Way way = way_itr.next();
 				
-				String tags = packTagsToString(way.getTags());
-				String wayNodes = packWayNodesToString(way);				
+				String tags = serializeTags(way.getTags());
+				String wayNodes = serializeMobileWayNodes(way);				
 				
 				ps.setLong(1, way.getId());
 				ps.setString(2, tags);

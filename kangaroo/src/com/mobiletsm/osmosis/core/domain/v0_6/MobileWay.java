@@ -75,6 +75,24 @@ public class MobileWay extends Way {
 	
 	/* methods implemented by MobileWay */
 	
+	
+	public static double MAXSPEED_UNRESTRICTED = Double.MAX_VALUE;
+	
+	
+	private double maxSpeed = MAXSPEED_UNRESTRICTED;
+	
+	
+	public void setMaxSpeed(double maxSpeed) {
+		this.maxSpeed = maxSpeed;
+	}
+	
+	
+	public double getMaxSpeed() {
+		return maxSpeed;
+	}
+	
+	
+	
 	private String wayNodes = null;
 	
 	
@@ -96,8 +114,9 @@ public class MobileWay extends Way {
 	@Override
 	public List<WayNode> getWayNodes() {
 		List<WayNode> list = super.getWayNodes();
-		if (list.size() == 0 && wayNodes != null)
+		if (list.size() == 0 && wayNodes != null) {
 			list.addAll(OsmHelper.unpackStringToWayNodes(wayNodes));
+		}
 		return list;
 	}
 	

@@ -4,13 +4,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.openstreetmap.osmosis.core.domain.v0_6.Tag;
 
 public class POICode {
 
 	/**
-	 * 
+	 * mapping between POI code id and OpenStreetMap tag string 
 	 */
 	private static HashMap<String, Integer> poiCodeMap = new HashMap<String, Integer>();	
 	
@@ -18,6 +19,7 @@ public class POICode {
 	public static final int POICODE_ID_UNDEFINED = -1;
 	
 	public static final String POICODE_TYPE_UNDEFINED = "poicode_undefined";
+	
 	
 	/* amenities */
 	public static final String AMENITY_RESTAURANT = "amenity#restaurant";
@@ -265,7 +267,6 @@ public class POICode {
 		poiCodeMap.put(SHOP_TOYS, 146);
 		poiCodeMap.put(SHOP_TRAVEL_AGENCY, 147);
 		poiCodeMap.put(SHOP_VIDEO, 148);
-
 	}
 	
 	
@@ -290,12 +291,32 @@ public class POICode {
 	
 	
 	/**
+	 * creates a new POICode of the specified id
+	 * @param type
+	 */
+	public POICode(int id) {
+		super();		
+		/* check if the given id defines a known POI type */		
+		if (poiCodeMap.containsValue(id)) {
+			for (Entry<String, Integer> entry : poiCodeMap.entrySet()) {
+				if (entry.getValue().intValue() == id) {
+					this.type = entry.getKey();
+					this.id = id;					
+				}
+			}			
+		} else {
+			throw new RuntimeException("POINode(): unknown id");
+		}		
+	}
+	
+	
+	/**
 	 * creates a new POICode of the specified type
 	 * @param type
 	 */
 	public POICode(String type) {
 		super();		
-		/* check if the given string definies a known POI type */
+		/* check if the given string defines a known POI type */
 		Integer myId = poiCodeMap.get(type);
 		if (myId != null) {
 			this.type = type;
@@ -335,6 +356,12 @@ public class POICode {
 	}
 	
 	
+	/* TODO: remove this method to be independent from TSM */
+	/**
+	 * 
+	 * @param tags
+	 * @return
+	 */
 	public static POICode createFromTags(Collection<Tag> tags) {		
 		POICode poiNode = null;
 		for (Tag tag : tags) {
@@ -343,7 +370,8 @@ public class POICode {
 				if (poiNode == null) {
 					poiNode = new POICode(tagString);
 				} else {
-					System.out.println("POICode.createFromTags(): multiple choices possible");
+					System.out.println("POICode.createFromTags(): WARNING: multiple choices possible. " +
+							"Selected " + tagString);
 				}
 			}
 		}		

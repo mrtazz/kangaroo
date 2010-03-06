@@ -89,7 +89,7 @@ public class OSMFileReader {
 			new MobileTSMDatabaseWriter("jdbc:sqlite:/Users/andreaswalz/Downloads/map-fr.db");
 		writer.setLogStream(System.out);		
 		writer.openDatabase();
-		writer.writeDatabase(map);
+		writer.writeDatabaseV2(map);
 		writer.closeDatabase();
 		map = null;
 		
