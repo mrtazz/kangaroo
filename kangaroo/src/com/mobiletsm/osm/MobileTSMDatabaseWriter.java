@@ -144,12 +144,16 @@ public class MobileTSMDatabaseWriter {
 	/**
 	 * close the database connection if open
 	 */
-	public void closeDatabase() {
+	public boolean closeDatabase() {
 		try {
 			if (connection != null && !connection.isClosed()) {
 				connection.close();
+				return true;
+			} else {
+				return false;
 			}
 		} catch (SQLException e) {
+			return false;
 		}
 	}
 	
@@ -350,7 +354,8 @@ public class MobileTSMDatabaseWriter {
 		/* name of way (from tags) */
 		"name text not null," +
 		/* highway type (from tags) */
-		"highway not null," +
+		"highway text " +
+		"not null," +
 		/* maximum speed on way (from tags) */
 		"maxspeed integer not null," +
 		/* tag list */
@@ -362,6 +367,25 @@ public class MobileTSMDatabaseWriter {
 		/* reduced list of way nodes */
 		"waynodes_red text not null" +
 	");";
+	
+	
+	private static final String createTable_index =
+		"CREATE TABLE IF NOT EXISTS index (" +
+		/*  */
+		"id integer primary key," +
+		/* keys */
+		"key text not null," + 
+		/* values */
+		"value text not null" + 
+	");";
+	
+	
+	private static final String createTable_android_metadata = 
+		"CREATE TABLE \"android_metadata\" (\"locale\" TEXT DEFAULT 'en_US')";
+	
+	
+	private static final String insert_android_metadata = 
+		"INSERT INTO \"android_metadata\" VALUES ('en_US')";
 	
 	
 	/**
@@ -537,10 +561,61 @@ public class MobileTSMDatabaseWriter {
 			
 			connection.setAutoCommit(true);
 			
+			
+			/* write android metadata table */
+			statement.execute(createTable_android_metadata);
+			statement.execute(insert_android_metadata);
+			
+			
+			/* write database version */
+			//ps = connection.prepareStatement("");
+			
+			
+						
 		} catch (Exception e) {			
 			e.printStackTrace();
 		}		
 		
 	}
 
+	
+	public void readDatabaseV2() {
+		try {
+			/* prepare statement */
+			Statement statement = connection.createStatement();
+			
+			log("readDatabaseV2: reading and summarizing database...");
+			
+			/* check written database rows */
+			ResultSet rs = statement.executeQuery("SELECT * FROM street_nodes_0;");
+			int numStreetNodes = 0;
+			int numIntermediateStreetNodes = 0;
+			int numEssentialStreetNode = 0;
+		    while(rs.next()) {
+		    	numStreetNodes++;
+		    	int type = rs.getInt("type");
+		    	if (type == STREET_NODE_TYPE_ESSENTIAL) {
+		    		numEssentialStreetNode++;
+		    	} else if (type == STREET_NODE_TYPE_INTERMEDIATE) {
+		    		numIntermediateStreetNodes++;
+		    	}
+		    }
+		    log("readDatabaseV2: database: # street nodes = " + numStreetNodes);
+			log("readDatabaseV2: database: # intermediate street nodes = " + numIntermediateStreetNodes);
+			log("readDatabaseV2: database: # essential street nodes = " + numEssentialStreetNode);
+			
+			
+			rs = statement.executeQuery("SELECT * FROM poi_nodes_0;");
+			int numPOINodes = 0;
+		    while(rs.next()) {
+		    	numPOINodes++;
+		    }
+		    log("readDatabaseV2: database: # POI nodes = " + numPOINodes);
+		    
+		} catch (Exception e) {		/* TODO: catch specific exceptions */
+			
+		}
+	}
+	
+	
 }

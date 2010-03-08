@@ -7,7 +7,7 @@ import com.mobiletsm.routing.RoutingEngine;
 public interface DayPlanOptimizer {
 
 	
-	public void setCalendarPlan(DayPlan plan);
+	public void setDayPlan(DayPlan plan);
 	
 	
 	public void setRoutingEngine(RoutingEngine routingEngine);

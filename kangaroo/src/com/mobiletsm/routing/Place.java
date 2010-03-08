@@ -23,19 +23,25 @@ public class Place {
 	/**
 	 * 
 	 */
-	public static long UNDEFINED = -1;
+	public static long ID_UNDEFINED = -1;
 	
 	
 	/**
 	 * id of corresponding open street map node 
 	 */
-	protected long osmNodeId;
+	protected long osmNodeId = ID_UNDEFINED;
 	
 	
 	/**
 	 * true if corresponding open street map node is a street node
 	 */
-	protected boolean isOsmStreetNode;
+	protected boolean isOsmStreetNode = false;
+	
+	
+	/**
+	 * 
+	 */
+	protected long nearestOsmStreetNodeId = ID_UNDEFINED;
 	
 	
 	/**
@@ -64,7 +70,7 @@ public class Place {
 	
 	public Place() {
 		super();
-		update(UNDEFINED, UNDEFINED);
+		update(ID_UNDEFINED, ID_UNDEFINED);
 	}
 	
 	
@@ -108,11 +114,13 @@ public class Place {
 		this.isOsmStreetNode = place.isOsmStreetNode;
 	}
 	
+	
 	public String serialize()
 	{
 		Gson myJson = new Gson();
 		return myJson.toJson(this);	
 	}
+	
 	
 	public static Place deserialize(String text)
 	{
@@ -132,11 +140,29 @@ public class Place {
 	public void update(double latitude, double longitude) {
 		this.latitude = latitude;
 		this.longitude = longitude;
-		this.osmNodeId = UNDEFINED;
+		this.osmNodeId = ID_UNDEFINED;
 		this.isOsmStreetNode = false;		
 	}
 	
 		
+	/**
+	 * 
+	 * @param id
+	 */
+	public void setNearestOsmStreetNodeId(long id) {
+		nearestOsmStreetNodeId = id;
+	}
+	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public long getNearestOsmStreetNodeId() {
+		return nearestOsmStreetNodeId;
+	}	
+	
+	
 	/**
 	 * returns the open street map node id
 	 * 
@@ -153,7 +179,7 @@ public class Place {
 	 * @return
 	 */
 	public boolean isOsmNode() {
-		return (osmNodeId != UNDEFINED);
+		return (osmNodeId != ID_UNDEFINED);
 	}
 
 	
@@ -208,7 +234,7 @@ public class Place {
 		if (name != null) {
 			return name;
 		} else {
-			return String.format(Locale.US, "%.5f,%.5f", latitude, longitude);
+			return String.format(Locale.US, "Place: {lat=%.7f, lon=%.7f}", latitude, longitude);
 		}
 	}
 	

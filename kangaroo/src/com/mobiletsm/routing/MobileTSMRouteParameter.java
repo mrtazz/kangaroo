@@ -57,12 +57,13 @@ public class MobileTSMRouteParameter extends RouteParameter {
 			return;
 		}
 		
-		/* get thr routing steps */
+		/* get the routing steps */
 		List<RoutingStep> steps = ((Route)route).getRoutingSteps();
 		Iterator<RoutingStep> steps_itr = steps.iterator();
 		
 		String lastStreetName = null;
 		
+		/* iterate over all routing steps */
 		while (steps_itr.hasNext()) {
 			RoutingStep step = steps_itr.next();
 			Way way = step.getWay();			

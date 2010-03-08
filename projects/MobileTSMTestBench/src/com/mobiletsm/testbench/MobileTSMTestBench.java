@@ -45,9 +45,9 @@ public class MobileTSMTestBench extends Activity {
 			public void onClick(View v) {				
 				if (engine == null || !engine.initialized()) {
 					engine = new MobileTSMRoutingEngine();
-					engine.init("/sdcard/map-bla.db");
+					engine.init("/sdcard/map-fr.db");
 				}
-									
+				
 				if (engine.initialized()) {
 					Place place1 = new Place(48.0064241, 7.8521991);
 					

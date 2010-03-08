@@ -31,6 +31,7 @@ import com.mobiletsm.osm.data.searching.POINodeSelector;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileNode;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileWayNode;
+import com.mobiletsm.routing.Limits;
 import com.mobiletsm.routing.Place;
 
 public class DatabaseMDSProvider extends MobileDataSetProvider {
@@ -45,7 +46,7 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 	@Override
 	public boolean open(String source) {
 		if (!isOpen()) {
-			adapter.setMaps(streetNodes, completeWays, reducedWays,	waysForNodes);
+			adapter.setMaps(poiNodes, streetNodes, completeWays, reducedWays,	waysForNodes);
 			return adapter.open(source);
 		} else {
 			return false;
@@ -78,6 +79,9 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 	private boolean routingMapPresent = false;
 	
 
+	private Map<Long, Node> poiNodes = Collections.synchronizedMap(new HashMap<Long, Node>());
+	
+	
 	private Map<Long, Node> streetNodes = Collections.synchronizedMap(new HashMap<Long, Node>());
 	
 	
@@ -90,7 +94,8 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 	private Map<Long, Set<Long>> waysForNodes = Collections.synchronizedMap(new HashMap<Long, Set<Long>>());
 	
 	
-	public Node getNearestStreetNode(Place center) {
+	@Override
+	public Place getNearestStreetNode(Place center) {
 		return getNearestStreetNode(center, false);
 	}
 	
@@ -103,15 +108,26 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 	private double cacheRadius = 0;		
 	private Place lastQueryPos = null;	
 	
-	public Node getNearestStreetNode(Place center, boolean updateCenter) {		
+	
+	@Override
+	public Place getNearestStreetNode(Place center, boolean updateCenter) {		
 		/* do not search the database if given place is already a street node */
-		if (center.isOsmStreetNode()) {
-			long nodeId = center.getOsmNodeId();			
+		if (center.isOsmStreetNode() || center.getNearestOsmStreetNodeId() != Place.ID_UNDEFINED) {
+			/* get id of nearest street node given by center */
+			long nodeId;
+			if (center.isOsmStreetNode()) {
+				nodeId = center.getOsmNodeId();
+			} else {
+				nodeId = center.getNearestOsmStreetNodeId();
+			}		
+			
 			if (!streetNodes.containsKey(nodeId)) {
-				adapter.loadNodes(nodeId, -1, false);
+				adapter.loadStreetNodes(nodeId, -1, false);
 			}			
 			Node node = streetNodes.get(nodeId);
-			return node; 
+			Place place = new Place(node, true); 
+			place.setNearestOsmStreetNodeId(nodeId);
+			return place;
 		}
 				
 		/* recalculate cache radius depending on distance moved since last query */
@@ -155,7 +171,9 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
         			if (updateCenter) {
         				center.update(minDistNode, true);
         			}
-            		return minDistNode;
+        			Place place = new Place(minDistNode, true); 
+        			place.setNearestOsmStreetNodeId(minDistNode.getId());
+        			return place;
             	}
         	}        	
         }         		        
@@ -173,6 +191,8 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 			radiusToLoad = defaultRadiusToLoad;
 		}
         
+			System.out.println("DatabaseMDSProvider.getNearestStreetNode(): radiusToLoad = " + radiusToLoad);
+		
 		if (adapter.loadAllStreetNodesAround(center, radiusToLoad) > 0) {				
 			/* find the street node closest to the center */
 			for (Node node : streetNodes.values()) {
@@ -192,7 +212,9 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 					/* calculate and set name of center place */
 					//adapter.loadCompleteWaysForNodes(minDistNode.getId(), -1);				
 				}
-				return minDistNode;
+				Place place = new Place(minDistNode, true); 
+    			place.setNearestOsmStreetNodeId(minDistNode.getId());
+    			return place;
 			} else {
 				/* no street node could be found
 				 * (TODO: this case should never occur, because not finding any 
@@ -200,7 +222,7 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 				return null;
 			}
 		} else {
-			/* there no street nodes around the center */
+			/* there are no street nodes around the center */
 			return null;
 		}
 	}
@@ -214,11 +236,11 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 		}
 		
 		/* load start and destination nodes (with tags) */
-		adapter.loadNodes(fromNodeId, toNodeId, true);
+		adapter.loadStreetNodes(fromNodeId, toNodeId, true);
 
 		/* load routing graph unless already present */
 		if (!routingMapPresent) {
-			adapter.loadRoutingStreetNodes();
+			adapter.loadAllEssentialStreetNodes();
 			adapter.loadReducedWays();
 			routingMapPresent = true;
 		}			
@@ -271,6 +293,49 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 	}
 
 
+	
+	public Place getNearestPOINode(Place center, POINodeSelector selector, Limits limits) {
+		
+		/* TODO: add support of limits */
+		if (limits != null) {
+			throw new UnsupportedOperationException("getNearestPOINode(): limits not yet supported by DatabaseMDSProvider");
+		}
+		
+		double minDist = Double.MAX_VALUE;
+        Node minDistNode = null; 
+		
+		if (adapter.loadPOINodes(selector.getPOICode()) > 0) {				
+			/* find the street node closest to the center */
+			for (Node node : poiNodes.values()) {
+				/* skip this node if not allowed by selector */
+				if (selector.getPOICode() != null && !selector.isAllowed(null, node)) {
+					continue;
+				}
+				
+				double dist = center.distanceTo(node.getLatitude(), node.getLongitude());
+	            if (dist < minDist) {
+					minDist = dist;
+					minDistNode = node;
+				}
+			}		
+			if (minDistNode != null) {
+				Place place = new Place(minDistNode, true);
+				if (minDistNode instanceof MobileNode) {
+					place.setNearestOsmStreetNodeId(((MobileNode)minDistNode).getNearestStreetNodeId());
+				}				
+				return place;
+			} else {
+				/* no POI node could be found
+				 * (TODO: this case should never occur, because not finding any 
+				 * POI node is handled in the if clause one level higher) */
+				return null;
+			}
+		} else {
+			/* there are no POI nodes around the center */
+			return null;
+		}
+	}
+	
 
 	/* methods not yet supported */
 	

@@ -38,7 +38,7 @@ public abstract class RouteParameter {
 	/** 
 	 * length of route in meters 
 	 */
-	protected double length;
+	protected double length = PARAMETER_UNDEFINED;
 	
 	
 	/** 
@@ -50,13 +50,13 @@ public abstract class RouteParameter {
 	/**
 	 * an object describing the route
 	 */
-	protected Object route = PARAMETER_UNDEFINED;
+	protected Object route = null;
 	
 	
 	/**
 	 * an object describing the vehicle used to travel this route
 	 */
-	protected Object vehicle;
+	protected Object vehicle = null;
 	
 	
 	/**

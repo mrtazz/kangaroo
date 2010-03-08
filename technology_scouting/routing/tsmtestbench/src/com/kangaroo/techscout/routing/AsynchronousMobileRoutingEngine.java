@@ -106,12 +106,12 @@ public class AsynchronousMobileRoutingEngine extends AsynchronousRoutingEngine {
 					
 					/*  */
 					listener.onStatusChanged(new SubJobStartedStatusChange(JOBID_GET_NEAREST_STREET_NODE));
-					fromNodeId = provider.getNearestStreetNode(from, true).getId();
+					fromNodeId = provider.getNearestStreetNode(from, true).getOsmNodeId();
 					listener.onStatusChanged(new SubJobDoneStatusChange(JOBID_GET_NEAREST_STREET_NODE));
 										
 					/*  */				
 					listener.onStatusChanged(new SubJobStartedStatusChange(JOBID_GET_NEAREST_STREET_NODE));
-					toNodeId = provider.getNearestStreetNode(to, true).getId();
+					toNodeId = provider.getNearestStreetNode(to, true).getOsmNodeId();
 					listener.onStatusChanged(new SubJobDoneStatusChange(JOBID_GET_NEAREST_STREET_NODE));
 
 					listener.onStatusChanged(new SubJobStartedStatusChange(JOBID_CREATE_DATASET));
@@ -123,12 +123,6 @@ public class AsynchronousMobileRoutingEngine extends AsynchronousRoutingEngine {
 					Route route = router.route(routingDataSet, routingDataSet.getNodeByID(toNodeId), 
 							routingDataSet.getNodeByID(fromNodeId), vehicle);						
 
-					if (route != null) {
-						System.out.println("route from nodeid:" + fromNodeId + 
-								" to nodeid:" + toNodeId + ", dist = " + 
-								OsmHelper.getRouteLength(route));
-					}
-					
 					listener.onStatusChanged(new JobDoneStatusChange(JOBID_ROUTE_FROMTO, route));
 				} catch (Exception exception) {
 					listener.onStatusChanged(new JobFailedStatusChange(JOBID_ROUTE_FROMTO, exception));
@@ -260,7 +254,7 @@ public class AsynchronousMobileRoutingEngine extends AsynchronousRoutingEngine {
 			listener.onStatusChanged(new JobStartedStatusChange(JOBID_GET_NEAREST_STREET_NODE));
 			synchronized (provider) {
 				try {
-					Long nodeId = provider.getNearestStreetNode(center).getId();
+					Long nodeId = provider.getNearestStreetNode(center).getOsmNodeId();
 					listener.onStatusChanged(new JobDoneStatusChange(JOBID_GET_NEAREST_STREET_NODE, nodeId));
 				} catch (Exception exception) {
 					listener.onStatusChanged(new JobFailedStatusChange(JOBID_GET_NEAREST_STREET_NODE, exception));

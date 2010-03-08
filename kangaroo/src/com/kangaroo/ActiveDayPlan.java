@@ -204,7 +204,7 @@ public class ActiveDayPlan implements DayPlan {
 			throw new RuntimeException("ActiveCalendarPlan.optimize(): No CalendarPlanOptimizer defined");
 		}
 		
-		optimizer.setCalendarPlan(this);
+		optimizer.setDayPlan(this);
 		optimizer.setRoutingEngine(routingEngine);
 				
 		return null;

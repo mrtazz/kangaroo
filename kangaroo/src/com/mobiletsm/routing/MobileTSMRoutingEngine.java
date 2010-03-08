@@ -73,16 +73,16 @@ public class MobileTSMRoutingEngine implements RoutingEngine {
 		
 		/* find the street nodes that are closest to start and 
 		 * destination places */
-		Node fromNode = provider.getNearestStreetNode(from, updatePlaces);
-		Node toNode = provider.getNearestStreetNode(to, updatePlaces);
+		Place fromNode = provider.getNearestStreetNode(from, updatePlaces);
+		Place toNode = provider.getNearestStreetNode(to, updatePlaces);
 		
 		if (fromNode == null || toNode == null) {
 			/* return that no route could be found, because start and/or
 			 * destination places could not be resolved to street nodes */
 			return new MobileTSMRouteParameter(null);
 		} else {
-			long fromNodeId = fromNode.getId();
-			long toNodeId = toNode.getId();		
+			long fromNodeId = fromNode.getOsmNodeId();
+			long toNodeId = toNode.getOsmNodeId();
 			
 			/* build routing data set */
 			MobileInterfaceDataSet routingDataSet = provider.getRoutingDataSet(fromNodeId, toNodeId, null);		
@@ -107,7 +107,9 @@ public class MobileTSMRoutingEngine implements RoutingEngine {
 			throw new RuntimeException("MobileRoutingEngine.getNearestPOINode(): Not a POINodeSelector");
 		}
 		
-		throw new UnsupportedOperationException("getNearestPOINode() not yet supported by MobileRoutingEngine");	
+		POINodeSelector poiNodeSelector = (POINodeSelector)selector;
+		
+		return provider.getNearestPOINode(center, poiNodeSelector, limits);		
 	}
 
 	

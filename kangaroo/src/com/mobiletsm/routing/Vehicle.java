@@ -12,6 +12,8 @@ import org.openstreetmap.osmosis.core.domain.v0_6.Relation;
 import org.openstreetmap.osmosis.core.domain.v0_6.Way;
 import org.openstreetmap.travelingsalesman.routing.IVehicle;
 
+import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
+
 
 
 /**
@@ -24,9 +26,15 @@ import org.openstreetmap.travelingsalesman.routing.IVehicle;
 public abstract class Vehicle implements IVehicle {
 	
 	/**
+	 * default maximum speed of a vehicle, specified in km/h
+	 */
+	public static double MAXSPEED_DEFAULT = 150;
+	
+	
+	/**
 	 * The maximum speed for this vehicle, specified in km/h
 	 */
-	protected double maxSpeed = 50;
+	protected double maxSpeed = MAXSPEED_DEFAULT;
 	
 	
 	/**
@@ -60,7 +68,13 @@ public abstract class Vehicle implements IVehicle {
 		double wayMaxSpeed = defaultWayMaxSpeed;
 		double vehicleMaxSpeed = getMaxSpeed();
 		
-		/* check if way specifies a maximum speed */
+		/* TODO: use getMaxSpeed() of MobileWays if possible */
+		if (way instanceof MobileWay) {
+			System.out.println("Vehicle.getMaxSpeedOnWay(): MobileWay.getMaxSpeed() = "
+					+ ((MobileWay)way).getMaxSpeed());
+		}
+		
+		/* check if way specifies maximum speed */
 		String maxSpeedStr = WayHelper.getTag(way.getTags(), "maxspeed");		
 		if (maxSpeedStr != null) {
 			try {
@@ -105,10 +119,6 @@ public abstract class Vehicle implements IVehicle {
 
 	public abstract boolean isAllowed(IDataSet arg0, Relation arg1);
 
-	public abstract ConfigurationSection getSettings();
-
-
-	
-	
+	public abstract ConfigurationSection getSettings();	
 
 }

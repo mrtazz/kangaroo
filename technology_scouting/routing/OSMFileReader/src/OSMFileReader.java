@@ -42,6 +42,7 @@ import com.mobiletsm.osm.data.adapters.MDSSQLiteDatabaseAdapter;
 import com.mobiletsm.osm.data.providers.DatabaseMDSProvider;
 import com.mobiletsm.osm.data.providers.MobileDataSetProvider;
 import com.mobiletsm.osm.data.searching.CombinedSelector;
+import com.mobiletsm.osm.data.searching.POICode;
 import com.mobiletsm.osm.data.searching.POINodeSelector;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
 import com.mobiletsm.routing.AllStreetVehicle;
@@ -60,69 +61,47 @@ public class OSMFileReader {
 	public static void main(String[] args) {	
 		
 		// load map file
-		File mapFile = new File("/Users/andreaswalz/Downloads/map-fr.osm");		
+		File mapFile = new File("/Users/andreaswalz/Downloads/maps/in/map-fr.osm");		
 		IDataSet map = (new FileLoader(mapFile)).parseOsm();
 		System.out.println("FileLoader: output: # nodes = " + OsmHelper.getNumberOfNodes(map));
 		System.out.println("FileLoader: output: # ways = " + OsmHelper.getNumberOfWays(map));	
-			
-		/*
-		OsmHelper.printTagHighscore(map);
-		*/
-		
-		/*
-		// test amenity selector
-		Amenity foo = new Amenity(Amenity.SCHOOL);
-		System.out.println("id = " + foo.getId() + ", type = " + foo.getType());		
-		AmenityPOINodeSelector sel1 = new AmenityPOINodeSelector();
-		AmenityPOINodeSelector sel2 = new AmenityPOINodeSelector(foo);		
-		Collection<Tag> tags = new Vector<Tag>();
-		tags.add(new Tag("amenity", Amenity.SCHOOL));
-		Node node = new Node(0, 0, (Date)null, null, 0, tags, 0, 0);		
-		System.out.println("sel1.isAllowed() = " + sel1.isAllowed(null, node));
-		System.out.println("sel2.isAllowed() = " + sel2.isAllowed(null, node));
-		*/
-		
-		
+				
 		
 		// write map to a mobile database		
 		MobileTSMDatabaseWriter writer = 
-			new MobileTSMDatabaseWriter("jdbc:sqlite:/Users/andreaswalz/Downloads/map-fr.db");
+			new MobileTSMDatabaseWriter("jdbc:sqlite:/Users/andreaswalz/Downloads/maps/out/map-fr.db");
 		writer.setLogStream(System.out);		
 		writer.openDatabase();
 		writer.writeDatabaseV2(map);
-		writer.closeDatabase();
+		//writer.readDatabaseV2();		
+		System.out.print("closing database...");
+		if (writer.closeDatabase()) {
+			System.out.println("successful!");
+		} else {
+			System.out.println("failed!");
+		}
 		map = null;
 		
-		
-				
-		/*
-		// compare routing on two maps
-		IDataSet routingMap = OsmHelper.simplifyDataSet(map, new AllStreetVehicle());
-		OsmHelper.compareRouting(map, routingMap, new AllStreetVehicle(), System.out);
-		*/
-			
+					
 		/*
 		IVehicle vehicle = new AllStreetVehicle();
 		MobileDataSetProvider provider = new DatabaseMDSProvider(new MDSSQLiteDatabaseAdapter());		
 		provider.open("jdbc:sqlite:/Users/andreaswalz/Downloads/map.db");	
-		*/
 		
-		/*
-		//<bounds minlat="48.032" minlon="7.784" maxlat="48.147" maxlon="8.011"/>
-		double minLat = 48.032;
-		double maxLat = 48.147;
-		double minLon = 7.784;
-		double maxLon = 8.011;
 		
-		double a1 = Place.distance(minLat, minLon, minLat, maxLon);
-		double a2 = Place.distance(maxLat, minLon, maxLat, maxLon);
-		double b = Place.distance(minLat, minLon, maxLat, minLon);
+		POICode poiCode = new POICode(POICode.AMENITY_BANK);
+		Place home = new Place(48.1208603, 7.8581893); 
 		
-		System.out.println("a1 = " + a1);
-		System.out.println("a2 = " + a2);
-		System.out.println("b = " + b);
+		Place poiPlace = provider.getNearestPOINode(home, new POINodeSelector(poiCode), null);
 		
-		System.out.println("area = " + (a1*b)/1000000 + " km^2");
+		if (poiPlace != null) {
+			System.out.println("Place = " + poiPlace.toString());
+			System.out.println("dist = " + home.distanceTo(poiPlace) + " Meter");
+		} else {
+			System.out.println("did not find any POI node of type " + poiCode.getType());
+		}
+		
+		provider.close();
 		*/
 		
 		/*
@@ -150,14 +129,6 @@ public class OSMFileReader {
 		
 		provider.close();			
 		*/
-		
-		
-		/*
-		Way way = routingMap.getWaysByID(20195279);
-		System.out.println(OsmHelper.packTagsToString(way.getTags()));
-		System.out.println(OsmHelper.packWayNodesToString(way));
-		*/
-		
 		
 	}
 	
@@ -241,3 +212,47 @@ public class OSMFileReader {
 	}
 	
 }
+
+
+
+
+/* STUFF:
+
+
+		// test amenity selector
+		Amenity foo = new Amenity(Amenity.SCHOOL);
+		System.out.println("id = " + foo.getId() + ", type = " + foo.getType());		
+		AmenityPOINodeSelector sel1 = new AmenityPOINodeSelector();
+		AmenityPOINodeSelector sel2 = new AmenityPOINodeSelector(foo);		
+		Collection<Tag> tags = new Vector<Tag>();
+		tags.add(new Tag("amenity", Amenity.SCHOOL));
+		Node node = new Node(0, 0, (Date)null, null, 0, tags, 0, 0);		
+		System.out.println("sel1.isAllowed() = " + sel1.isAllowed(null, node));
+		System.out.println("sel2.isAllowed() = " + sel2.isAllowed(null, node));
+		
+		
+		
+		// compare routing on two maps
+		IDataSet routingMap = OsmHelper.simplifyDataSet(map, new AllStreetVehicle());
+		OsmHelper.compareRouting(map, routingMap, new AllStreetVehicle(), System.out);
+		
+
+		//<bounds minlat="48.032" minlon="7.784" maxlat="48.147" maxlon="8.011"/>
+		double minLat = 48.032;
+		double maxLat = 48.147;
+		double minLon = 7.784;
+		double maxLon = 8.011;
+		
+		double a1 = Place.distance(minLat, minLon, minLat, maxLon);
+		double a2 = Place.distance(maxLat, minLon, maxLat, maxLon);
+		double b = Place.distance(minLat, minLon, maxLat, minLon);
+		
+		System.out.println("a1 = " + a1);
+		System.out.println("a2 = " + a2);
+		System.out.println("b = " + b);
+		
+		System.out.println("area = " + (a1*b)/1000000 + " km^2");
+
+
+
+*/

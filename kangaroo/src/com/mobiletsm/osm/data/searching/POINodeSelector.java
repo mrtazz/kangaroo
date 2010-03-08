@@ -49,15 +49,15 @@ public class POINodeSelector implements Selector {
 	
 	/**
 	 * creates a new POINodeSelector allowing only POI nodes of the given type
-	 * @param poiNode
+	 * @param poiCode
 	 */
-	public POINodeSelector(POICode poiNode) {
+	public POINodeSelector(POICode poiCode) {
 		super();
-		this.poiCode = poiNode;
+		this.poiCode = poiCode;
 	}
 	
 	
-	public POICode getPOINode() {
+	public POICode getPOICode() {
 		return poiCode;
 	}
 	
@@ -92,7 +92,7 @@ public class POINodeSelector implements Selector {
 		boolean isPOINodeSelector = (object instanceof POINodeSelector);
 		if (isPOINodeSelector) {
 			POINodeSelector selector = (POINodeSelector)object;
-			return poiCode.equals(selector.getPOINode());
+			return poiCode.equals(selector.getPOICode());
 		} else {
 			return false;
 		}
