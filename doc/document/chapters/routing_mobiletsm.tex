@@ -18,15 +18,15 @@ Coming up with the decision for using Traveling Salesman, there were several iss
 	
 		By default, Traveling Salesman performs every routing operation on the original set of data not dropping elements that do not affect the result of the operation. An example for elements of this type are nodes, that geographically shape the curvature of a street but do not introduce a junction. A node of this type will be called \emph{intermediate way node} and is dispensable for routing operations unless it is the nearest node to the starting or destination point of a route.\newline
 		
-		Both memory space occupied by the map and time consumption of a routing operation can be reduced by ignoring intermediate way nodes. Nethertheless one cannot dispense with intermediate way nodes close to starting and destination point which implies an individual routing data set for every routing operation. At first sight this induviduality runs contrary to Traveling Salesman's architecture when aiming at keeping compatibility.\newline			
+		Both memory space occupied by the map and time consumption of a routing operation can be reduced by ignoring intermediate way nodes. Nethertheless one cannot dispense with intermediate way nodes close to starting and destination point. This implies an individual routing data set for every routing operation. At first sight this induviduality runs contrary to Traveling Salesman's architecture when aiming at keeping compatibility.\newline			
 		
 		TODO: give values
 											
 	\item \textbf{Searching algorithm}
 	
-		When given two pairs of geographical coordinates and an order to find a route between these two, one has in principle to find the nearest street nodes to starting and destination locations prior to the actual routing operation. This is because non-trivial routing operations can only be performed on a routing graph between vertices. Thus one has to translate from a geographical location to the vertex (node) that best matches it. This can be considered the street node with minimal distance to the given location.\newline
+		When given two pairs of geographical coordinates and an order to find a route between these two, one has to find the nearest street nodes to starting and destination locations prior to the actual routing operation. This is because non-trivial routing operations can only be performed on a routing graph between vertices. Thus one has to translate from a geographical location to the vertex (node) that best matches it. This can be considered the street node with minimal distance to the given location.\newline
 				
-		A naive ansatz to finding the nearest street node 	to a geoprahical location would be to iterate over all street nodes, calculate distance between the location and each street node and select the one with minimal distance. Exactly this is done by Traveling Salesman resulting in an extremly time consuming routing process.\newline
+		A naive ansatz to finding the nearest street node 	to a geoprahical location would be to iterate over all street nodes, calculate the distance between the location and each street node and select the one with minimal distance. Exactly this is done by Traveling Salesman resulting in an extremly time consuming routing process.\newline
 		
 		TODO: give values
 
@@ -35,21 +35,31 @@ Coming up with the decision for using Traveling Salesman, there were several iss
 
 \subsection{What is our solution?}
 
-As just explained in the previous section, three main issues have to be handled: find an efficient data storage archtitecture, reduce and indivualize routing data and improve the search algorithm for nearest nodes. The first two will be outlined conjointly while the last one has an individual section.
+As just explained in the previous section, three main issues have to be handled: reduce and individualize routing data while maintaining compatibility to Traveling Salesman, find an efficient data storage archtitecture and improve the search algorithm for nearest nodes. The next sections will outline ideas and implementations. \newline
 
-\subsubsection{Storing and handling of routing data}
+TODO: still to mention:
+\begin{itemize}
+	\item filtering intermediate way nodes implies need for an extra field holding distance between street nodes.
+	\item derivates of Traveling Salesman's classes \texttt{Node}, \texttt{Way} and \texttt{WayNode}.
+\end{itemize}
 
-The basic idea to circumvent the issues with storage and handling of frouting data is to introduce a module, the \texttt{MobileDataSetProvider}, that can be queried for a specialized set of routing data which is compatible with Traveling Salesman and optimized for an individual routing operation. Any Traveling Salesman router may then be called with a reference to this individual data set.\newline
+\subsubsection{Reducing and individualizing of routing data}
 
-The data set provider itself reads data from any suitable data source (for example from database or a file data stream). Since even individualized data sets will have a large intersection, data is cached in memory to a great extent.
+The basic idea is to introduce a module, the \texttt{MobileDataSetProvider}, that can be queried for a specialized set of routing data which is compatible with Traveling Salesman and optimized for an individual routing operation. Any Traveling Salesman router may then be called with a reference to this individual data set. Anyhow, a router can perform another routing operation with different parameters on the same data set, but since the majority of intermediate way nodes will not be included in the data set, it will probably not find the best route or might even fail.\newline
 
-\subsubsection{Classes and interfaces}
+One can also think of adding functionality to recycle an individualized data set. Instead of creating a new one for each routing operation, an old data set may be updated to be as qualified as if it was created specifically for the new parameters. One may be tempted to believe this is the only way to significantly gain time resources, but we will show that in fact our implementation exploits major improvements without this feature.
 
-\emph{MobileTSM} introduces derivates of Traveling Salesman's classes\texttt{Node}, \texttt{Way} and
+\subsubsection{Data storage architecture}
+
+The data set provider itself reads data from a suitable data source (for example from database or a file stream). Since even individualized data sets will have a large intersection, data is cached in memory to a great extent.\newline
+
+As an abstraction of the data access to routing data sources, a Java interface (called \texttt{RoutingDataAdapter}) is introduced. It provides methods to read map elements from a given data source.
 
 
+\subsubsection{Search algorithm for nearest nodes}
 
 
+\subsection{Routing engine of MobileTSM}
 
 \begin{itemize}
 		
