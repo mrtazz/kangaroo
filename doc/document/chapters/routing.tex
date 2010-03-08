@@ -1,5 +1,7 @@
 One essential feature of our application is its capability to not only consider calendar items for itself but to put them in their geographical context and to account for local traffic facilities. This implies the need for a set of data representing these facilites and an engine to operate on the data.\newline
 
+\section{Routing data}
+
 From a very abstract and general perspective, this set of data can be divided into two categories, namely a dynamic and a static one. As static, in these terms, one should label all facilities which do not depend on any schedule and may in principle by used at any time (for example streets and highways). Dynamic facilities are the ones, that have a more or less fixed schedule constraining their usage (for example tramways and public bus service).\newline
 
 In this project we will only consider static facilities, since also accounting for dynamic ones requires routing algorithms that go far beyond standard algorithms resulting in a more complex application structure and a much more complex routing engine. Besides this aspect, it is a big issue to gather scheduling data about dynamic traffic facilities as there would be a number of carriers with different interfaces to include. However, the user might notably benefit from the abolishment of this restriction. It might be part of future work to include this feature.\newline
@@ -20,7 +22,7 @@ As potential sources for static traffic facility data, one finds basically two o
 
 Besides the two options given above there are of course lots of other providers, but either not free of charge or not very popular. Consequently, Openstreetmap seems to be the one to choose for our project. The following will briefly outline its data scheme.\newline
 
-\subsubsection{Data scheme of Openstreetmap}
+\subsection{Data scheme of Openstreetmap}
 
 Openstreetmap uses three main entities to map traffic facilities and geographical characteristics:
 
@@ -37,6 +39,6 @@ Openstreetmap uses three main entities to map traffic facilities and geographica
 		
 	\item \textbf{Relations}
 	
-		Realtions provide a simple way to group other map elements. This feature will not be used.
+		Realtions provide a simple way to group other map elements. This feature will not be used in our project.
 	
 \end{itemize}

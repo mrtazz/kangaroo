@@ -39,7 +39,9 @@ When trying to assign priorities to these aspects just mentioned before, one wil
 
 Anyhow, as an integral part of the abstraction of the application's structure, the routing interface is designed in a way, that makes it independent of the decision for any routing engine, even if its design was influenced by it. This means, that although a final decision had to be made within the scope of our project, there is still the chance to choose another engine as part of future work.\newline
 
-\subsubsection{Technology scouting - general part}
+\subsection{Technology scouting - general part}
+
+This section will give an overview of the general Technology Scouting process.\newline
 
 Before focusing on a single routing engine, we analyzed the given options of routing engines with respect to our definitions. Unfortunately when doing the technology scouting, we did not know about the OSMAndroid routing engine and thus had no chance to consider it in the decision for a routing engine. Although its analysis has been done when a final decision already had been made and the technology scouting phase had been finished, the reasons for us not to change this decision afterwards will be given in this chapter.\newline
 
@@ -51,7 +53,7 @@ As our analysis revealed that Traveling Salesman is the most promising option\fo
 
 	\item \textbf{Gosmore}	
 	
-		
+		TODO: explain way not Gosmore
 	
 	\item \textbf{Traveling Salesman (TSM)}
 	
@@ -69,11 +71,11 @@ As our analysis revealed that Traveling Salesman is the most promising option\fo
 
 	\item \textbf{proprietary development}
 
-		The possibility to use the given routing engines only as a source of inspiration and to start a proprietary development began to cross our minds, when ideas of how to design a routing engine became clear. Deliberation of combining a slight and efficient data storage system (like Gosmore is using), a reduced routing graph to operate on and java based source code (like Traveling Salesman has) occupied our minds. This thoughts were triggered by becoming aware of the fact that Traveling Salesman is in principle much more than we need and Gosmore in turn would need to much manipulations of the Android system.
+		The possibility to use the given routing engines only as a source of inspiration and to start a proprietary development began to cross our minds, when ideas of how to design a routing engine became clear. Deliberation of combining a slight and efficient data storage system (like Gosmore is using), a reduced routing graph to operate on and java based source code (like Traveling Salesman has) occupied our minds. This thoughts were triggered by becoming aware of the fact that Traveling Salesman is in principle much more than we need and Gosmore in turn would need too much manipulations to be compatible with the Android system.
 
 	\item \textbf{OSMAndroid}
-	
-	
+
+		TODO: explain way not OSMAndroid	
 
 \end{itemize}
 
@@ -105,7 +107,7 @@ Eventually we decided to base the routing engine on the Traveling Salesman proje
 
 The following chapter will give a more detailed introduction in the structure of Traveling Salesman.
 
-\subsubsection{Traveling Salesman}
+\subsection{Traveling Salesman}
 
 As already mentioned, Traveling Salesman is designed following a modular architecture. Every essential or optional type of module is defined by a java interface with basic methods to provide its desired functionality. The most important ones in our project are
 
@@ -127,12 +129,12 @@ As already mentioned, Traveling Salesman is designed following a modular archite
 	
 \end{itemize}
 
-To represent Openstreetmap map elements (nodes, ways and relations), Traveling Salesman uses classes provided by Osmosis, which can be considered as an java based framework for processing of Openstreetmap data. Osmosis employs classes named \texttt{Node}, \texttt{Way} and \texttt{Relation} to represent Openstreetmap map elements accordingly.
+To represent Openstreetmap map elements (nodes, ways and relations), Traveling Salesman uses classes provided by Osmosis, which can be considered as a Java based framework for processing of Openstreetmap data. Osmosis employs classes named \texttt{Node}, \texttt{Way} and \texttt{Relation} to represent Openstreetmap map elements accordingly. 
 
-\subsubsection{Technology scouting - specific part}
+\subsection{Technology scouting - specific part}
 \label{sec:techscout_routing_specific}
 
- 
+This section will give an overview over the Traveling Salesman specific Technology Scouting process.\newline
 
 - changes applied to the XML parser
 
@@ -140,15 +142,32 @@ To represent Openstreetmap map elements (nodes, ways and relations), Traveling S
 
 [...]
 
-\subsubsection{Adaptions and extensions to Traveling Salesman}
 
-Coming up with the decision for using Traveling Salesman, there were several issues to work on:
+\section{Kangaroo Routing Framework}
 
-\begin{enumerate}
-	\item data storage modules
+The interface between the main software core and the routing engine has to be designed independently of any specific routing engine, maintaining an abstraction level that allows to exchange the routing backend easily without any impact on the main software part. We will give an overview of the routing interface, which was designed to be compliant with this requirements.
+
+\subsection{Classes and interfaces}
+
+There is one Java interface and three Java classes that can be considered as the main members of the Kangaroo routing framework.
+
+\begin{itemize}
+
+	\item Interface \texttt{RoutingEngine}
 	
-		The data storage modules (datasets in Traveling Salesman's terminology) that come with the project do not have their focus on efficency and performance as needed for a mobile application. There are several different types of data set modules with different
+		The \texttt{RoutingEngine} interface is the main interface between the routing engine and the part that is using its routing service. It provides methods to find a route between locations and to find street nodes and Points Of Interest near a location.
 		
-		On Android's mobile platform, there are two contradictory goals for the data storage architecture. Since Android limits the heap space for an application to (at this time) 16 megabytes, the map area that can be cached in memory 
+	\item Class \texttt{RouteParameter}
+	
+		An object of this class is returned by the routing engine when having searched the map for a route between two locations. It has methods to return the length of the route and the time it will take to travel the route. Additionally, it may contain an object representing the route itself.
+	
+	\item Class \texttt{Place}
+	
+		This class is an abstract representation of a geographic location. It imperatively consists of a pair of geographical coordinates (latitude and longitude) and may in addition contain a name or a reference to Openstreetmap elements associated with it.
+	
+	\item Class \texttt{Limits}
+	
+		This class is used to define geographical constraints for searches on the map.
 
-\end{enumerate}
+\end{itemize}
+
