@@ -38,7 +38,6 @@ import com.kangaroo.tsm.osm.io.FileLoader;
 import com.mobiletsm.osm.MobileTSMDatabaseWriter;
 import com.mobiletsm.osm.OsmHelper;
 import com.mobiletsm.osm.data.MobileDataSet;
-import com.mobiletsm.osm.data.adapters.MDSSQLiteDatabaseAdapter;
 import com.mobiletsm.osm.data.providers.DatabaseMDSProvider;
 import com.mobiletsm.osm.data.providers.MobileDataSetProvider;
 import com.mobiletsm.osm.data.searching.CombinedSelector;

@@ -17,7 +17,7 @@ import org.openstreetmap.travelingsalesman.routing.routers.MultiTargetDijkstraRo
 
 import com.mobiletsm.osm.OsmHelper;
 import com.mobiletsm.osm.data.MobileInterfaceDataSet;
-import com.mobiletsm.osm.data.adapters.MDSAndroidDatabaseAdapter;
+import com.mobiletsm.osm.data.adapters.RoutingAndroidSQLiteAdapter;
 import com.mobiletsm.osm.data.providers.DatabaseMDSProvider;
 import com.mobiletsm.osm.data.providers.MobileDataSetProvider;
 import com.mobiletsm.osm.data.searching.POINodeSelector;
@@ -190,7 +190,7 @@ public class AsynchronousMobileRoutingEngine extends AsynchronousRoutingEngine {
 		if (dataSource.getScheme() == null || !dataSource.getScheme().startsWith("file")) 
 			throw new RuntimeException("scheme for data source not supported.");
 		
-		dsProvider = new DatabaseMDSProvider(new MDSAndroidDatabaseAdapter());
+		dsProvider = new DatabaseMDSProvider(new RoutingAndroidSQLiteAdapter());
 		RunnableInitializer job = new RunnableInitializer(workingThreadStatusListener, dsProvider, dataSource);
 		Thread worker = new Thread(job);
 		worker.setName("MobileRoutingEngine.init()");

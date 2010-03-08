@@ -26,7 +26,7 @@ import org.openstreetmap.travelingsalesman.routing.IVehicle;
 import com.mobiletsm.osm.OsmHelper;
 import com.mobiletsm.osm.data.MobileInterfaceDataSet;
 import com.mobiletsm.osm.data.MobileRoutingInterfaceDataSet;
-import com.mobiletsm.osm.data.adapters.MDSDatabaseAdapter;
+import com.mobiletsm.osm.data.adapters.RoutingDBAdapter;
 import com.mobiletsm.osm.data.searching.POINodeSelector;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileNode;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
@@ -38,7 +38,7 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 
 	/* database connection stuff */
 	
-	public DatabaseMDSProvider(MDSDatabaseAdapter adapter) {
+	public DatabaseMDSProvider(RoutingDBAdapter adapter) {
 		super(adapter);
 	}
 
@@ -46,7 +46,8 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 	@Override
 	public boolean open(String source) {
 		if (!isOpen()) {
-			adapter.setMaps(poiNodes, streetNodes, completeWays, reducedWays,	waysForNodes);
+			((RoutingDBAdapter)adapter).setMaps(poiNodes, streetNodes, 
+					completeWays, reducedWays, waysForNodes);
 			return adapter.open(source);
 		} else {
 			return false;

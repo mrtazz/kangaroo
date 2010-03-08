@@ -7,7 +7,7 @@ import org.openstreetmap.travelingsalesman.routing.Route;
 import org.openstreetmap.travelingsalesman.routing.routers.MultiTargetDijkstraRouter;
 
 import com.mobiletsm.osm.data.MobileInterfaceDataSet;
-import com.mobiletsm.osm.data.adapters.MDSAndroidDatabaseAdapter;
+import com.mobiletsm.osm.data.adapters.RoutingAndroidSQLiteAdapter;
 import com.mobiletsm.osm.data.providers.DatabaseMDSProvider;
 import com.mobiletsm.osm.data.providers.MobileDataSetProvider;
 import com.mobiletsm.osm.data.searching.POINodeSelector;
@@ -34,7 +34,7 @@ public class MobileTSMRoutingEngine implements RoutingEngine {
 			if (provider != null) {
 				provider.close();
 			}			
-			provider = new DatabaseMDSProvider(new MDSAndroidDatabaseAdapter());
+			provider = new DatabaseMDSProvider(new RoutingAndroidSQLiteAdapter());
 			return provider.open(source);
 		} else {
 			return false;
