@@ -1,9 +1,10 @@
 package com.kangaroo.task;
 
-import java.util.ArrayList;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 
 import com.google.gson.Gson;
 
@@ -22,6 +23,7 @@ public class Task
 	private String serializedConstraintSetTypes = "";
 	private String name;
 	private String description;
+	private String id = "";
 	
 	/**
 	 * Blank Constructor
@@ -54,7 +56,7 @@ public class Task
 		{
 			if(constraintTypes[i].equalsIgnoreCase("amenity"))
 			{
-				myTask.addConstraint(serializer.fromJson(constraints[i], TaskConstraintPOI.class));
+				myTask.addConstraint(serializer.fromJson(constraints[i], TaskConstraintAmenity.class));
 			}
 			else if(constraintTypes[i].equalsIgnoreCase("date"))
 			{
@@ -77,6 +79,33 @@ public class Task
 		return myTask;
 	}
 	
+	
+	
+	public String getId() 
+	{
+		return id;
+	}
+
+	public void setId(String id) 
+	{
+		this.id = id;
+	}
+
+	public String getJsonHash()
+	{
+        try
+        {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] messageDigest = md.digest(this.serialize().getBytes());
+            BigInteger number = new BigInteger(1,messageDigest);
+            return number.toString(16);
+        }
+        catch(NoSuchAlgorithmException e)
+        {
+            throw new RuntimeException(e);
+        }
+	}
+	
 	/**
 	 * This can be called to get a serialized representation of this object to store in persistant memory.
 	 * 
@@ -96,7 +125,7 @@ public class Task
 			String tempJSON = "";
 			if(type.equalsIgnoreCase("amenity"))
 			{
-				TaskConstraintPOI temp = (TaskConstraintPOI)currentTask;
+				TaskConstraintAmenity temp = (TaskConstraintAmenity)currentTask;
 				tempJSON = serializer.toJson(temp);
 			}
 			else if(type.equalsIgnoreCase("date"))
@@ -196,31 +225,5 @@ public class Task
 			return 0;
 		}
 		return 1;
-	}
-	
-	
-	
-	public List<TaskConstraintInterface> getConstraintsOfType(String type) {
-		List<TaskConstraintInterface> result = new ArrayList<TaskConstraintInterface>();
-		
-		/* iterate over every task constraint and add the ones of given type */
-		for (TaskConstraintInterface constraint : this.getConstraints()) {
-			if (constraint.getType().equalsIgnoreCase(type)) {
-				result.add(constraint);
-			}
-		}
-		
-		return result;
-	}
-	
-	
-	
-	/**
-	 * return true, if this task has one or more constraints of given type
-	 * @param type type to check this task constraint list for
-	 * @return true, if this task has one or more constraints of given type
-	 */
-	public boolean hasConstraintsOfType(String type) {
-		return getConstraintsOfType(type).size() > 0;
 	}
 }
