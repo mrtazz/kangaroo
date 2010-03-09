@@ -16,6 +16,7 @@ import com.mobiletsm.routing.RoutingEngine;
 import com.mobiletsm.routing.Vehicle;
 
 public class ActiveDayPlan implements DayPlan {
+	
 
 	private List<CalendarEvent> events;
 	
@@ -89,7 +90,7 @@ public class ActiveDayPlan implements DayPlan {
 		if (events != null) {
 			this.events = events;
 		} else {
-			throw new RuntimeException("ActiveCalendarPlan.setEvents(): null reference given");
+			throw new RuntimeException("ActiveDayPlan.setEvents(): null reference given");
 		}
 	}
 
@@ -99,7 +100,7 @@ public class ActiveDayPlan implements DayPlan {
 		if (tasks != null) {
 			this.tasks = tasks;
 		} else {
-			throw new RuntimeException("ActiveCalendarPlan.setTasks(): null reference given");
+			throw new RuntimeException("ActiveDayPlan.setTasks(): null reference given");
 		}
 	}
 

@@ -7,7 +7,7 @@ import com.android.kangaroo.R;
 import com.kangaroo.system.ServiceCallLocation;
 import com.kangaroo.system.ServiceCallTick;
 import com.kangaroo.task.Task;
-import com.kangaroo.task.TaskConstraintAmenity;
+import com.kangaroo.task.TaskConstraintPOI;
 import com.kangaroo.task.TaskConstraintDate;
 import com.kangaroo.task.TaskConstraintInterface;
 import com.kangaroo.task.TaskConstraintLocation;
@@ -97,7 +97,7 @@ public class ActivityBuildPlan extends Activity
 	        	myTask.setName("Name");
 	        	myTask.setDescription("Description");
 	        	myTask.addConstraint(new TaskConstraintLocation(1));
-	        	myTask.addConstraint(new TaskConstraintAmenity(new POICode(POICode.AMENITY_ARCHITECT_OFFICE)));
+	        	myTask.addConstraint(new TaskConstraintPOI(new POICode(POICode.AMENITY_ARCHITECT_OFFICE)));
 	        	myTask.addConstraint(new TaskConstraintDate(new Date(110,1,24)));
 	        	printTask(myTask);
 	        	

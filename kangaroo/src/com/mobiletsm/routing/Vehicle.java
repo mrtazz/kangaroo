@@ -3,6 +3,9 @@
  */
 package com.mobiletsm.routing;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.openstreetmap.osm.ConfigurationSection;
 import org.openstreetmap.osm.Tags;
 import org.openstreetmap.osm.data.IDataSet;
@@ -24,6 +27,24 @@ import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
  *
  */
 public abstract class Vehicle implements IVehicle {
+	
+	/**
+	 * mapping from highway tag to maximum speed
+	 */
+	public static Map<String, Double> maxSpeedMap = null;
+		
+	
+	static {
+		maxSpeedMap = new HashMap<String, Double>();
+		maxSpeedMap.put("residential", 50.0);
+		maxSpeedMap.put("living_street", 7.0);
+		maxSpeedMap.put("motorway", 130.0);
+		maxSpeedMap.put("trunk", 100.0);
+		maxSpeedMap.put("primary", 100.0);
+		maxSpeedMap.put("secondary", 100.0);
+		maxSpeedMap.put("tertiary", 100.0);		
+	}
+	
 	
 	/**
 	 * default maximum speed of a vehicle, specified in km/h
@@ -74,6 +95,7 @@ public abstract class Vehicle implements IVehicle {
 				System.out.println("Vehicle.getMaxSpeedOnWay(): MobileWay.getMaxSpeed() = "
 						+ ((MobileWay)way).getMaxSpeed());
 		} else {
+			/* check way tags for specification of a maximum speed */
 			String maxSpeedStr = WayHelper.getTag(way.getTags(), "maxspeed");		
 			if (maxSpeedStr != null) {
 				try {
@@ -84,6 +106,13 @@ public abstract class Vehicle implements IVehicle {
 				/* check type of highway */
 				String highway = WayHelper.getTag(way.getTags(), Tags.TAG_HIGHWAY);			
 				if (highway != null) {
+					
+					Double maxSpeedFromMap = maxSpeedMap.get(highway);
+					if (maxSpeedFromMap != null) {
+						wayMaxSpeed = maxSpeedFromMap.doubleValue();
+					}
+								
+					/*
 					if (highway.startsWith("residential")) {
 						wayMaxSpeed = 50;
 					} else if (highway.startsWith("living_street")) {
@@ -94,6 +123,7 @@ public abstract class Vehicle implements IVehicle {
 							highway.startsWith("secondary") || highway.startsWith("tertiary")) {
 						wayMaxSpeed = 100;
 					}
+					*/
 				}
 			}	
 		}

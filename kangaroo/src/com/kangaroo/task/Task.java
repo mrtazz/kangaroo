@@ -1,7 +1,9 @@
 package com.kangaroo.task;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 
 import com.google.gson.Gson;
 
@@ -52,7 +54,7 @@ public class Task
 		{
 			if(constraintTypes[i].equalsIgnoreCase("amenity"))
 			{
-				myTask.addConstraint(serializer.fromJson(constraints[i], TaskConstraintAmenity.class));
+				myTask.addConstraint(serializer.fromJson(constraints[i], TaskConstraintPOI.class));
 			}
 			else if(constraintTypes[i].equalsIgnoreCase("date"))
 			{
@@ -94,7 +96,7 @@ public class Task
 			String tempJSON = "";
 			if(type.equalsIgnoreCase("amenity"))
 			{
-				TaskConstraintAmenity temp = (TaskConstraintAmenity)currentTask;
+				TaskConstraintPOI temp = (TaskConstraintPOI)currentTask;
 				tempJSON = serializer.toJson(temp);
 			}
 			else if(type.equalsIgnoreCase("date"))
@@ -194,5 +196,31 @@ public class Task
 			return 0;
 		}
 		return 1;
+	}
+	
+	
+	
+	public List<TaskConstraintInterface> getConstraintsOfType(String type) {
+		List<TaskConstraintInterface> result = new ArrayList<TaskConstraintInterface>();
+		
+		/* iterate over every task constraint and add the ones of given type */
+		for (TaskConstraintInterface constraint : this.getConstraints()) {
+			if (constraint.getType().equalsIgnoreCase(type)) {
+				result.add(constraint);
+			}
+		}
+		
+		return result;
+	}
+	
+	
+	
+	/**
+	 * return true, if this task has one or more constraints of given type
+	 * @param type type to check this task constraint list for
+	 * @return true, if this task has one or more constraints of given type
+	 */
+	public boolean hasConstraintsOfType(String type) {
+		return getConstraintsOfType(type).size() > 0;
 	}
 }

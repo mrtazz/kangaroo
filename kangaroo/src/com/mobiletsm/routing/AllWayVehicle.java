@@ -11,7 +11,7 @@ import org.openstreetmap.osmosis.core.domain.v0_6.Relation;
 import org.openstreetmap.osmosis.core.domain.v0_6.Way;
 
 
-public class AllWayVehicle extends Vehicle {
+public final class AllWayVehicle extends Vehicle {
 
 	@Override
 	public boolean equals(Object object) {

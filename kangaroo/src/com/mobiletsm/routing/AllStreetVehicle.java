@@ -17,7 +17,7 @@ import org.openstreetmap.travelingsalesman.routing.IVehicle;
  * @author Andreas Walz
  *
  */
-public class AllStreetVehicle extends Vehicle {
+public final class AllStreetVehicle extends Vehicle {
 
 	
 	public AllStreetVehicle() {

@@ -346,10 +346,12 @@ public class Place {
 		boolean result = false;
 		
 		if (this_isOsmNode && place_isOsmNode) {
+			/* consider places with same OpenStreetMap node as equal */
 			if (getOsmNodeId() == place.getOsmNodeId()) {
 				result = true;
 			}
 		} else if (this_hasNearestOsmStreetNode && place_hasNearestOsmStreetNode) {
+			/* consider places with same nearest OpenStreetMap street node as equal */
 			if (getNearestOsmStreetNodeId() == place.getNearestOsmStreetNodeId()) {
 				result = true;
 			}
@@ -359,6 +361,8 @@ public class Place {
 			int place_lat = getHashForDouble(this.getLatitude());
 			int place_lon = getHashForDouble(this.getLongitude());
 			
+			/* consider places with same hash for latitude 
+			 * and longitude as equal */
 			if (this_lat == place_lat && this_lon == place_lon) {
 				result = true;
 			}

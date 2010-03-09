@@ -1,7 +1,12 @@
 package com.kangaroo;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
+import com.kangaroo.task.Task;
+import com.kangaroo.task.TaskConstraintInterface;
 import com.mobiletsm.routing.RoutingEngine;
 
 public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
@@ -30,7 +35,23 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 					"(day plan and/or routing engine) not ready");
 		}
 		
+		/* list of tasks to check */
+		List<Task> tasksToCheck = new ArrayList<Task>();
+		tasksToCheck.addAll(dayPlan.getTasks());
 		
+		DayPlan optimizedDayPlan = new SimpleDayPlan(dayPlan);
+		
+		while (tasksToCheck.size() > 0) {
+			/* get one task from list */
+			Task task = tasksToCheck.get(0);
+			
+			List<TaskConstraintInterface> durationConstraint = 
+				task.getConstraintsOfType(TaskConstraintInterface.TYPE_DURATION);
+			
+			
+			
+			
+		}
 		
 		return null;
 	}
@@ -44,7 +65,7 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 
 	@Override
 	public void setDayPlan(DayPlan plan) {
-		this.dayPlan = dayPlan;
+		this.dayPlan = plan;
 	}
 	
 
