@@ -20,6 +20,8 @@ public class Calendar {
 	 */
 	/** name of the calendar */
 	private String name;
+	/** calendar id */
+	private int id;
 	/** name of the calendar to display */
 	private String displayName;
 	/** used timezone */
@@ -33,13 +35,14 @@ public class Calendar {
 	 * @param timeZone
 	 * @param events
 	 */
-	public Calendar(String name, String displayName, String timeZone,
+	public Calendar(int id, String name, String displayName, String timeZone,
 					HashMap<String, CalendarEvent> events)
 	{
 		this.name = name;
 		this.displayName = displayName;
 		this.timeZone = timeZone;
 		this.events = events;
+		this.id = id;
 	}
 
 	/**
@@ -113,5 +116,13 @@ public class Calendar {
 	public CalendarEvent getEvent(String id)
 	{
 		return events.get(id);
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 }

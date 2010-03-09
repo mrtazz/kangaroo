@@ -3,7 +3,6 @@ package com.kangaroo.task;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 
 import com.google.gson.Gson;
 

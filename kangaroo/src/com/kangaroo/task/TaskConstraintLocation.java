@@ -1,5 +1,7 @@
 package com.kangaroo.task;
 
+import com.mobiletsm.routing.Place;
+
 /**
  * Instances of this class represent TaskConsteraints that require to the task to be executed at 
  * a certain exact location.
@@ -8,21 +10,21 @@ package com.kangaroo.task;
  */
 public class TaskConstraintLocation implements TaskConstraintInterface
 {
-	private long nodeId;
+	private Place myPlace = null;
 	
 	public TaskConstraintLocation()
 	{
 		
 	}
 	
-	public TaskConstraintLocation(int nodeID)
+	public TaskConstraintLocation(Place place)
 	{
-		this.nodeId = nodeID;
+		this.myPlace = place;
 	}
 	
-	public long getNodeId() 
+	public Place getPlace()
 	{
-		return nodeId;
+		return myPlace;
 	}
 
 	public String getType() 

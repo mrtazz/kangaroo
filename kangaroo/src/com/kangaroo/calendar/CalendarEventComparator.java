@@ -7,8 +7,6 @@ public class CalendarEventComparator implements	Comparator<CalendarEvent> {
 	
 
 	public static int START_DATE = 1;
-	
-	
 	public static int END_DATE = 2;
 	
 	

@@ -4,12 +4,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import android.content.Context;
+
 import com.kangaroo.calendar.CalendarEvent;
 import com.kangaroo.calendar.CalendarEventComparator;
+import com.kangaroo.calendar.CalendarLibrary;
 import com.kangaroo.task.Task;
+import com.kangaroo.task.TaskManager;
 import com.mobiletsm.routing.Place;
 import com.mobiletsm.routing.RouteParameter;
 import com.mobiletsm.routing.RoutingEngine;
@@ -20,15 +25,57 @@ public class ActiveDayPlan implements DayPlan {
 
 	private List<CalendarEvent> events;
 	
-	
 	private Collection<Task> tasks;
 	
+	private Context ctx;
 	
 	private DayPlanOptimizer optimizer = null;
 	
-	
 	private RoutingEngine routingEngine = null;
 	
+	private void loadTasks()
+	{
+		TaskManager tm = new TaskManager(ctx);
+		tasks = tm.getTasks();
+	}
+	
+	private void saveTasks()
+	{
+		TaskManager tm = new TaskManager(ctx);
+		tm.putTasks((ArrayList<Task>)tasks);
+	}
+	
+	private void loadEvents()
+	{
+		CalendarLibrary cl = new CalendarLibrary(ctx);
+		int calendarId = cl.getCalendar("kangaroo@lordofhosts.de").getId();
+		//if our calendar is not present, return null
+		
+		ArrayList<CalendarEvent> myMap = cl.getTodaysEvents(String.valueOf(calendarId));
+		events.addAll(myMap);
+
+	}
+	
+	private void saveEvents()
+	{
+
+		CalendarLibrary cl = new CalendarLibrary(ctx);
+		int calendarId = cl.getCalendar("kangaroo@lordofhosts.de").getId();
+		
+		//get List with event currently in Calendar
+		ArrayList<CalendarEvent> calendarList = cl.getTodaysEvents(String.valueOf(calendarId));
+		Iterator<CalendarEvent> it = calendarList.iterator();
+		while(it.hasNext())
+		{
+			cl.deleteEventFromBackend(it.next());
+		}
+		
+		it = events.iterator();
+		while(it.hasNext())
+		{
+			cl.insertEventToBackend(it.next());
+		}
+	}
 	
 	public ActiveDayPlan() {
 		super();
@@ -44,11 +91,26 @@ public class ActiveDayPlan implements DayPlan {
 	}
 	
 	
+	
+	public RoutingEngine getRoutingEngine() 
+	{
+		return routingEngine;
+	}
+
+	public void setRoutingEngine(RoutingEngine routingEngine) 
+	{
+		this.routingEngine = routingEngine;
+	}
+
 	@Override
 	public List<CalendarEvent> getEvents() {
 		return events;
 	}
 
+	public void setContext(Context myCtx)
+	{
+		ctx = myCtx;
+	}
 	
 	@Override
 	/**
@@ -57,6 +119,8 @@ public class ActiveDayPlan implements DayPlan {
 	 * @return
 	 */
 	public CalendarEvent getNextEvent(Date now) {
+		loadEvents();
+		loadTasks();
 		
 		/* make sure the events are in correct order */
 		Collections.sort(events, new CalendarEventComparator(CalendarEventComparator.START_DATE));
@@ -126,8 +190,16 @@ public class ActiveDayPlan implements DayPlan {
 	 * @return
 	 */
 	public int checkComplianceWith(Date now, Place here, CalendarEvent destinationEvent, Vehicle vehicle) {
-		if (destinationEvent == null) {
+		
+		//in getNextEvent loadEvents() is executed, so
+		if (destinationEvent == null) 
+		{
 			destinationEvent = this.getNextEvent(now);
+		}
+		else
+		{
+			loadEvents();
+			loadTasks();
 		}
 		
 		// TODO: use specific exceptions
@@ -221,7 +293,16 @@ public class ActiveDayPlan implements DayPlan {
 	 * synchronize this ActiveCalendarPlan with calendar system of mobile device 
 	 * @return
 	 */
-	public boolean sync() {
-		throw new UnsupportedOperationException("ActiveCalendarPlan.sync(): operation not yet supported");
+	public boolean sync() 
+	{
+		//we need a context to work with the calendar
+		if(ctx == null)
+		{
+			return false;
+		}
+		CalendarLibrary cl = new CalendarLibrary(ctx);
+		
+		
+		return true;
 	}
 }

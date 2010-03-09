@@ -51,6 +51,7 @@ public class CalendarAdapter extends ArrayAdapter<CalendarEvent>{
 				TextView end = (TextView) v.findViewById(R.id.eventendtime);
 				TextView title = (TextView) v.findViewById(R.id.eventtitle);
 				TextView location = (TextView) v.findViewById(R.id.eventlocation);
+				v.setTag(R.id.row, ce);
 				
 				/* fill views */
 				String starttime = "All";

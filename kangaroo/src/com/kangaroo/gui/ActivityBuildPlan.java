@@ -1,7 +1,9 @@
 package com.kangaroo.gui;
 
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 
 import com.android.kangaroo.R;
 import com.kangaroo.system.ServiceCallLocation;
@@ -9,9 +11,12 @@ import com.kangaroo.system.ServiceCallTick;
 import com.kangaroo.task.Task;
 import com.kangaroo.task.TaskConstraintPOI;
 import com.kangaroo.task.TaskConstraintDate;
+import com.kangaroo.task.TaskConstraintDayTime;
 import com.kangaroo.task.TaskConstraintInterface;
 import com.kangaroo.task.TaskConstraintLocation;
+import com.kangaroo.task.TaskManager;
 import com.mobiletsm.osm.data.searching.POICode;
+import com.mobiletsm.routing.Place;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -92,8 +97,10 @@ public class ActivityBuildPlan extends Activity
 	            //AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
 	            //am.cancel(mAlarmSender);
 	        	//stopService(new Intent().setComponent(service));
+	        	TaskManager tm = new TaskManager(getApplicationContext());
 	        	
 	        	Task myTask = new Task();
+<<<<<<< HEAD
 	        	myTask.setName("Name");
 	        	myTask.setDescription("Description");
 	        	myTask.addConstraint(new TaskConstraintLocation(1));
@@ -106,7 +113,29 @@ public class ActivityBuildPlan extends Activity
 	        	Task myTask2 = Task.deserialize(temp);
 	        	printTask(myTask2);
 	        	System.out.println(myTask2.serialize());
+=======
+	        	myTask.setName("Name1");
+	        	myTask.setDescription("Description1");
+	        	myTask.addConstraint(new TaskConstraintLocation(new Place(0,0)));
+	        	myTask.addConstraint(new TaskConstraintAmenity(new POICode(POICode.AMENITY_ARCHITECT_OFFICE)));
+	        	myTask.addConstraint(new TaskConstraintDate(new Date(110,2,4)));
+	        	tm.addTask(myTask);
+>>>>>>> origin/horizon
 	        	
+	        	myTask = new Task();
+	        	myTask.setName("Name2");
+	        	myTask.setDescription("Description2");
+	        	myTask.addConstraint(new TaskConstraintLocation(new Place(0,0)));
+	        	myTask.addConstraint(new TaskConstraintAmenity(new POICode(POICode.SHOP_HAIRDRESSER)));
+	        	myTask.addConstraint(new TaskConstraintDate(new Date(110,2,4)));
+	        	myTask.addConstraint(new TaskConstraintDayTime(new Date(0,0,0,8,0), new Date(0,0,0,17,0)));
+	        	tm.addTask(myTask);
+	         	
+	        	ArrayList<Task> myList = tm.getTasks();
+	        	Iterator<Task> it = myList.iterator();
+	        	printTask(it.next());
+	        	printTask(it.next());
+	        
 	            // Tell the user about what we did.
 	            Toast.makeText(ActivityBuildPlan.this, "done.",
 	                    Toast.LENGTH_LONG).show();
