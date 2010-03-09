@@ -95,7 +95,7 @@ public class OSMFileReader {
 		
 		// Am Kurzarm
 		Place from = new Place(48.1208603, 7.8581893);
-		
+		System.out.println("from.hashCode() = " + from.hashCode());		
 		
 		Place poi1 = routingEngine.getNearestPOINode(from, new POINodeSelector(POICode.AMENITY_SCHOOL), null);
 		System.out.println("poi1 = " + poi1.toString());
@@ -119,6 +119,29 @@ public class OSMFileReader {
 		System.out.println(route3.toString());
 
 		System.out.println(routingEngine.routeFromTo(from, poi2, new AllStreetVehicle(5.0)).toString());
+		
+		
+		
+		// check equals() and hashCode() for Place
+		System.out.println("from.hashCode() = " + from.hashCode());
+		System.out.println("poi1.hashCode() = " + poi1.hashCode());
+		System.out.println("poi2.hashCode() = " + poi2.hashCode());
+		
+		System.out.println("poi1.equals(poi2) = " + poi1.equals(poi2));
+		System.out.println("poi1.equals(poi1) = " + poi1.equals(poi1));
+		
+		System.out.println("poi1.serialize() = " + poi1.serialize());
+		Place poi1_ = Place.deserialize(poi1.serialize());
+		System.out.println("poi1_.hashCode() = " + poi1_.hashCode());		
+		System.out.println("poi1_.equals(poi1) = " + poi1_.equals(poi1));
+		System.out.println("poi1_.equals(poi2) = " + poi1_.equals(poi2));		
+		
+		System.out.println("==> " + from.equals(Place.deserialize(from.serialize())));
+		System.out.println("==> " + poi1.equals(Place.deserialize(poi1.serialize())));
+		System.out.println("==> " + poi2.equals(Place.deserialize(poi2.serialize())));
+		System.out.println("==> " + poi1_.equals(Place.deserialize(poi1_.serialize())));
+		System.out.println("==> " + poi1_.equals(Place.deserialize(poi1.serialize())));
+		System.out.println("  > " + poi1_.equals(Place.deserialize(poi2.serialize())));
 		
 		/*
 		RoutingCache cache = new RoutingCache();		

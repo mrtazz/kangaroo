@@ -249,17 +249,6 @@ public class Place {
 	}
 	
 	
-	/* TODO: remove this method to be independent from TSM */
-	/**
-	 * returns the position of this place as an TSM LatLon object
-	 * 
-	 * @return
-	 */
-	public LatLon getLatLon() {
-		return new LatLon(getLatitude(), getLongitude());
-	}
-	
-	
 	/**
 	 * returns the (approximate) distance in meters between this place
 	 * and the one given by the parameter place
@@ -330,16 +319,26 @@ public class Place {
 	}
 
 
+	/* re-implementation of equals() and hashCode() to guarantee
+	 * correct behavior in HashTables and HashMaps  */
+	
 	@Override
 	public boolean equals(Object object) {
+		/* return false if object given is not a Place */
 		if (!(object instanceof Place)) {
 			return false;
 		}
 		
 		Place place = (Place)object;
 		
+		/* consider places with different hash codes as unequal */
+		if (hashCode() != place.hashCode()) {
+			return false;
+		}
+		
 		boolean this_isOsmNode = this.isOsmNode();
 		boolean place_isOsmNode = place.isOsmNode();
+
 		boolean this_hasNearestOsmStreetNode = this.hasNearestOsmStreetNode();
 		boolean place_hasNearestOsmStreetNode = place.hasNearestOsmStreetNode();
 		
@@ -371,6 +370,28 @@ public class Place {
 		return result;
 	}
 	
+	
+	@Override
+	public int hashCode() {
+		
+		/* if a node is associated with this place, use
+		 * its node id as hash code */
+		if (isOsmNode()) {
+			return (new Long(getOsmNodeId())).hashCode();
+		}
+		
+		/* if a nearest street node is associated with this
+		 * place, use id if this node as hash code */
+		if (hasNearestOsmStreetNode()) {
+			return (new Long(getNearestOsmStreetNodeId())).hashCode();
+		}
+		
+		/* use coordinates as hash */
+		int latHash = getHashForDouble(latitude);
+		int lonHash = getHashForDouble(longitude);
+		return (new Long(latHash + lonHash)).hashCode();
+		
+	}
 	
 	
 	public static int getHashForDouble(double value) {

@@ -39,7 +39,7 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 		List<Task> tasksToCheck = new ArrayList<Task>();
 		tasksToCheck.addAll(dayPlan.getTasks());
 		
-		DayPlan optimizedDayPlan = new SimpleDayPlan(dayPlan);
+		DayPlan optimizedDayPlan = new DayPlan(dayPlan);
 		
 		while (tasksToCheck.size() > 0) {
 			/* get one task from list */
@@ -47,6 +47,7 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 			
 			List<TaskConstraintInterface> durationConstraint = 
 				task.getConstraintsOfType(TaskConstraintInterface.TYPE_DURATION);
+			
 			
 			
 			
@@ -63,11 +64,13 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 	}
 	
 
-	@Override
-	public void setDayPlan(DayPlan plan) {
-		this.dayPlan = plan;
+	/**
+	 * @param dayPlan the dayPlan to set
+	 */
+	public void setDayPlan(DayPlan dayPlan) {
+		this.dayPlan = dayPlan;
 	}
-	
+
 
 	@Override
 	public void setRoutingEngine(RoutingEngine routingEngine) {

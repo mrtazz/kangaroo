@@ -100,33 +100,19 @@ public class ActivityBuildPlan extends Activity
 	        	TaskManager tm = new TaskManager(getApplicationContext());
 	        	
 	        	Task myTask = new Task();
-<<<<<<< HEAD
-	        	myTask.setName("Name");
-	        	myTask.setDescription("Description");
-	        	myTask.addConstraint(new TaskConstraintLocation(1));
-	        	myTask.addConstraint(new TaskConstraintPOI(new POICode(POICode.AMENITY_ARCHITECT_OFFICE)));
-	        	myTask.addConstraint(new TaskConstraintDate(new Date(110,1,24)));
-	        	printTask(myTask);
-	        	
-	        	String temp = myTask.serialize();
-	        	System.out.println(temp);
-	        	Task myTask2 = Task.deserialize(temp);
-	        	printTask(myTask2);
-	        	System.out.println(myTask2.serialize());
-=======
+
 	        	myTask.setName("Name1");
 	        	myTask.setDescription("Description1");
 	        	myTask.addConstraint(new TaskConstraintLocation(new Place(0,0)));
-	        	myTask.addConstraint(new TaskConstraintAmenity(new POICode(POICode.AMENITY_ARCHITECT_OFFICE)));
+	        	myTask.addConstraint(new TaskConstraintPOI(new POICode(POICode.AMENITY_ARCHITECT_OFFICE)));
 	        	myTask.addConstraint(new TaskConstraintDate(new Date(110,2,4)));
 	        	tm.addTask(myTask);
->>>>>>> origin/horizon
-	        	
+
 	        	myTask = new Task();
 	        	myTask.setName("Name2");
 	        	myTask.setDescription("Description2");
 	        	myTask.addConstraint(new TaskConstraintLocation(new Place(0,0)));
-	        	myTask.addConstraint(new TaskConstraintAmenity(new POICode(POICode.SHOP_HAIRDRESSER)));
+	        	myTask.addConstraint(new TaskConstraintPOI(new POICode(POICode.SHOP_HAIRDRESSER)));
 	        	myTask.addConstraint(new TaskConstraintDate(new Date(110,2,4)));
 	        	myTask.addConstraint(new TaskConstraintDayTime(new Date(0,0,0,8,0), new Date(0,0,0,17,0)));
 	        	tm.addTask(myTask);
