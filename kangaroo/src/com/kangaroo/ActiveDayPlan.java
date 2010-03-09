@@ -90,6 +90,17 @@ public class ActiveDayPlan implements DayPlan {
 	}
 	
 	
+	
+	public RoutingEngine getRoutingEngine() 
+	{
+		return routingEngine;
+	}
+
+	public void setRoutingEngine(RoutingEngine routingEngine) 
+	{
+		this.routingEngine = routingEngine;
+	}
+
 	@Override
 	public List<CalendarEvent> getEvents() {
 		return events;
@@ -178,8 +189,16 @@ public class ActiveDayPlan implements DayPlan {
 	 * @return
 	 */
 	public int checkComplianceWith(Date now, Place here, CalendarEvent destinationEvent, Vehicle vehicle) {
-		if (destinationEvent == null) {
+		
+		//in getNextEvent loadEvents() is executed, so
+		if (destinationEvent == null) 
+		{
 			destinationEvent = this.getNextEvent(now);
+		}
+		else
+		{
+			loadEvents();
+			loadTasks();
 		}
 		
 		// TODO: use specific exceptions

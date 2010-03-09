@@ -316,7 +316,7 @@ public class CalendarLibrary {
     {
     	String ret;
     	ret  = "\n";
-    	ret  = "---\n";
+    	ret  += "---\n";
     	if (ce.getLocationLongitude() != null)
     	{
     		ret += "longitude: " + ce.getLocationLongitude().toString() +"\n";
@@ -341,11 +341,12 @@ public class CalendarLibrary {
     {
     	HashMap<String, String> ret = new HashMap<String, String>();
     	/** check if yaml data is present */
-    	Pattern p = Pattern.compile("---\n");
-    	Matcher m = p.matcher(data);
-    	boolean b = m.matches();
+    	//Pattern p = Pattern.compile("^---$");
+    	//Matcher m = p.matcher(data);
+    	//boolean b = m.matches();
+    	
     	/** if no data return immediately */
-    	if (b == false)
+    	if (!data.contains("---"))
     	{
     		ret.put("description", data);
     		return ret;
@@ -359,7 +360,10 @@ public class CalendarLibrary {
 	    	for (String s : yamlValues)
 	    	{
 	    		String[] values = s.split(":");
-	    		ret.put(values[0], values[1]);
+	    		if(values.length == 2)
+	    		{
+	    			ret.put(values[0].trim(), values[1].trim());
+	    		}
 	    	}
 	    	return ret;
     	}
