@@ -27,6 +27,12 @@ public class MobileTSMTestBench extends Activity {
 	
 	private RoutingEngine engine = null;
 	
+	
+	Place place1 = null;
+	Place place2 = null;
+	Vehicle vehicle = null;
+	
+	
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,20 +52,33 @@ public class MobileTSMTestBench extends Activity {
 				if (engine == null || !engine.initialized()) {
 					engine = new MobileTSMRoutingEngine();
 					engine.init("/sdcard/map-fr.db");
+					engine.enableRoutingCache();
 				}
 				
 				if (engine.initialized()) {
-					Place place1 = new Place(48.0064241, 7.8521991);
 					
 					
-					Place place2 = null;
+					if (place1 == null) {
+						System.out.println("create place1");
+						place1 = new Place(48.0064241, 7.8521991);				
+					}
 					
-					place2 = new Place(Double.parseDouble(latEdit.getText().toString()), 
-							Double.parseDouble(lonEdit.getText().toString()));				
+					double lat = Double.parseDouble(latEdit.getText().toString());
+					double lon = Double.parseDouble(lonEdit.getText().toString());
+					
+					if (place2 == null || place2.getLatitude() != lat || place2.getLongitude() != lon) {
+						System.out.println("create place2");
+						place2 = new Place(lat, lon);
+					}
+					
+					double maxSpeed = Double.parseDouble(speedEdit.getText().toString());
+					
+					if (vehicle == null || vehicle.getMaxSpeed() != maxSpeed) {
+						System.out.println("create vehicle");
+						vehicle = new AllStreetVehicle(maxSpeed);
+					}
 					
 					
-					Vehicle vehicle = new AllStreetVehicle();
-					vehicle.setMaxSpeed(Double.parseDouble(speedEdit.getText().toString()));
 					RouteParameter route = engine.routeFromTo(place1, place2, vehicle);
 					
 					System.out.println("route = " + route.toString());					

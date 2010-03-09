@@ -129,7 +129,7 @@ public class Place {
 	}
 	
 	
-	public void update(Node node, boolean isOsmStreetNode) {
+	private void update(Node node, boolean isOsmStreetNode) {
 		this.latitude = node.getLatitude();
 		this.longitude = node.getLongitude();
 		this.osmNodeId = node.getId();
@@ -137,7 +137,7 @@ public class Place {
 	}
 	
 	
-	public void update(double latitude, double longitude) {
+	private void update(double latitude, double longitude) {
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.osmNodeId = ID_UNDEFINED;
@@ -191,6 +191,16 @@ public class Place {
 		return isOsmStreetNode;
 	}
 	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean hasNearestOsmStreetNode() {
+		return (nearestOsmStreetNodeId != ID_UNDEFINED);
+	}
+	
+	
 	/**
 	 * returns the latitude of this place
 	 * 
@@ -234,7 +244,7 @@ public class Place {
 		if (name != null) {
 			return name;
 		} else {
-			return String.format(Locale.US, "Place: {lat=%.7f, lon=%.7f}", latitude, longitude);
+			return String.format(Locale.US, "Place: {lat = %.7f, lon = %.7f}", latitude, longitude);
 		}
 	}
 	
@@ -319,4 +329,48 @@ public class Place {
 		return true;
 	}
 
+
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof Place)) {
+			return false;
+		}
+		
+		Place place = (Place)object;
+		
+		boolean this_isOsmNode = this.isOsmNode();
+		boolean place_isOsmNode = place.isOsmNode();
+		boolean this_hasNearestOsmStreetNode = this.hasNearestOsmStreetNode();
+		boolean place_hasNearestOsmStreetNode = place.hasNearestOsmStreetNode();
+		
+		boolean result = false;
+		
+		if (this_isOsmNode && place_isOsmNode) {
+			if (getOsmNodeId() == place.getOsmNodeId()) {
+				result = true;
+			}
+		} else if (this_hasNearestOsmStreetNode && place_hasNearestOsmStreetNode) {
+			if (getNearestOsmStreetNodeId() == place.getNearestOsmStreetNodeId()) {
+				result = true;
+			}
+		} else {
+			int this_lat = getHashForDouble(this.getLatitude());
+			int this_lon = getHashForDouble(this.getLongitude());
+			int place_lat = getHashForDouble(this.getLatitude());
+			int place_lon = getHashForDouble(this.getLongitude());
+			
+			if (this_lat == place_lat && this_lon == place_lon) {
+				result = true;
+			}
+		}
+		
+		return result;
+	}
+	
+	
+	
+	public static int getHashForDouble(double value) {
+		return (int)(value * 1E7);
+	}
+	
 }

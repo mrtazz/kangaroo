@@ -41,7 +41,7 @@ public abstract class Vehicle implements IVehicle {
 	 * set the maximum speed for this vehicle
 	 * @param	speed	maximum speed in km/h
 	 */
-	public void setMaxSpeed(double maxSpeed) {
+	protected void setMaxSpeed(double maxSpeed) {
 		this.maxSpeed = maxSpeed;
 	}
 	
@@ -68,35 +68,35 @@ public abstract class Vehicle implements IVehicle {
 		double wayMaxSpeed = defaultWayMaxSpeed;
 		double vehicleMaxSpeed = getMaxSpeed();
 		
-		/* TODO: use getMaxSpeed() of MobileWays if possible */
-		if (way instanceof MobileWay) {
-			System.out.println("Vehicle.getMaxSpeedOnWay(): MobileWay.getMaxSpeed() = "
-					+ ((MobileWay)way).getMaxSpeed());
-		}
-		
 		/* check if way specifies maximum speed */
-		String maxSpeedStr = WayHelper.getTag(way.getTags(), "maxspeed");		
-		if (maxSpeedStr != null) {
-			try {
-				wayMaxSpeed = Double.parseDouble(maxSpeedStr);				
-			} catch (NumberFormatException e) {
-			}
-		} else {			
-			/* check type of highway */
-			String highway = WayHelper.getTag(way.getTags(), Tags.TAG_HIGHWAY);			
-			if (highway != null) {
-				if (highway.startsWith("residential")) {
-					wayMaxSpeed = 50;
-				} else if (highway.startsWith("living_street")) {
-					wayMaxSpeed = 7;
-				} else if (highway.startsWith("motorway")) {
-					wayMaxSpeed = 130;
-				} else if (highway.startsWith("trunk") || highway.startsWith("primary") ||
-						highway.startsWith("secondary") || highway.startsWith("tertiary")) {
-					wayMaxSpeed = 100;
+		if ((way instanceof MobileWay) && ((MobileWay)way).hasMaxSpeed()) {
+			wayMaxSpeed = ((MobileWay)way).getMaxSpeed();
+				System.out.println("Vehicle.getMaxSpeedOnWay(): MobileWay.getMaxSpeed() = "
+						+ ((MobileWay)way).getMaxSpeed());
+		} else {
+			String maxSpeedStr = WayHelper.getTag(way.getTags(), "maxspeed");		
+			if (maxSpeedStr != null) {
+				try {
+					wayMaxSpeed = Double.parseDouble(maxSpeedStr);				
+				} catch (NumberFormatException e) {
 				}
-			}
-		}	
+			} else {			
+				/* check type of highway */
+				String highway = WayHelper.getTag(way.getTags(), Tags.TAG_HIGHWAY);			
+				if (highway != null) {
+					if (highway.startsWith("residential")) {
+						wayMaxSpeed = 50;
+					} else if (highway.startsWith("living_street")) {
+						wayMaxSpeed = 7;
+					} else if (highway.startsWith("motorway")) {
+						wayMaxSpeed = 130;
+					} else if (highway.startsWith("trunk") || highway.startsWith("primary") ||
+							highway.startsWith("secondary") || highway.startsWith("tertiary")) {
+						wayMaxSpeed = 100;
+					}
+				}
+			}	
+		}
 		
 		/* return the one that is lower */
 		if (wayMaxSpeed < vehicleMaxSpeed) {
@@ -108,6 +108,8 @@ public abstract class Vehicle implements IVehicle {
 	
 	
 	/* methods to be implemented by a vehicle */
+	
+	public abstract boolean equals(Object object);
 	
 	public abstract boolean isAllowed(IDataSet arg0, Node arg1);
 

@@ -72,4 +72,13 @@ public interface RoutingEngine {
 	public Place getNearestStreetNode(Place center);
 	
 	
+	public void enableRoutingCache();
+	
+	
+	public void disableRoutingCache();
+	
+	
+	public void clearRoutingCache();
+	
+	
 }

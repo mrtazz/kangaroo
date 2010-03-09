@@ -26,7 +26,7 @@ public abstract class RoutingDBAdapter implements RoutingDataAdapter {
 
 	
 	protected void sqlLog(String sql) {
-		System.out.println("SQL query: " + sql);
+		//System.out.println("SQL query: " + sql);
 	}
 	
 	

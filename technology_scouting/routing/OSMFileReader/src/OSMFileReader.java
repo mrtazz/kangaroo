@@ -38,6 +38,7 @@ import com.kangaroo.tsm.osm.io.FileLoader;
 import com.mobiletsm.osm.MobileTSMDatabaseWriter;
 import com.mobiletsm.osm.OsmHelper;
 import com.mobiletsm.osm.data.MobileDataSet;
+import com.mobiletsm.osm.data.adapters.RoutingSQLiteAdapter;
 import com.mobiletsm.osm.data.providers.DatabaseMDSProvider;
 import com.mobiletsm.osm.data.providers.MobileDataSetProvider;
 import com.mobiletsm.osm.data.searching.CombinedSelector;
@@ -46,6 +47,9 @@ import com.mobiletsm.osm.data.searching.POINodeSelector;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
 import com.mobiletsm.routing.AllStreetVehicle;
 import com.mobiletsm.routing.Place;
+import com.mobiletsm.routing.RouteParameter;
+import com.mobiletsm.routing.RoutingEngine;
+import com.mobiletsm.routing.Vehicle;
 import com.mobiletsm.routing.metrics.MobileRoutingMetric;
 import com.mobiletsm.routing.routers.MobileMultiTargetDijkstraRouter;
 
@@ -59,13 +63,16 @@ public class OSMFileReader {
 	 */
 	public static void main(String[] args) {	
 		
+		/*
 		// load map file
 		File mapFile = new File("/Users/andreaswalz/Downloads/maps/in/map-fr.osm");		
 		IDataSet map = (new FileLoader(mapFile)).parseOsm();
 		System.out.println("FileLoader: output: # nodes = " + OsmHelper.getNumberOfNodes(map));
 		System.out.println("FileLoader: output: # ways = " + OsmHelper.getNumberOfWays(map));	
-				
+		*/
 		
+		
+		/*
 		// write map to a mobile database		
 		MobileTSMDatabaseWriter writer = 
 			new MobileTSMDatabaseWriter("jdbc:sqlite:/Users/andreaswalz/Downloads/maps/out/map-fr.db");
@@ -80,14 +87,55 @@ public class OSMFileReader {
 			System.out.println("failed!");
 		}
 		map = null;
+		*/
 		
-					
+	
+		RoutingEngine routingEngine = new TestRoutingEngine();
+		routingEngine.init("jdbc:sqlite:/Users/andreaswalz/Downloads/maps/out/map.db");
+		
+		// Am Kurzarm
+		Place from = new Place(48.1208603, 7.8581893);
+		
+		
+		Place poi1 = routingEngine.getNearestPOINode(from, new POINodeSelector(POICode.AMENITY_SCHOOL), null);
+		System.out.println("poi1 = " + poi1.toString());
+		
+				
+		routingEngine.enableRoutingCache();
+		
+		RouteParameter route1 = routingEngine.routeFromTo(from, poi1, new AllStreetVehicle(5.0));		
+		
+		System.out.println(route1.toString());	
+		
+		Place poi2 = routingEngine.getNearestPOINode(from, new POINodeSelector(POICode.SHOP_BAKERY), null);
+		System.out.println("poi2 = " + poi2.toString());		
+		
+		RouteParameter route2 = routingEngine.routeFromTo(from, poi2, new AllStreetVehicle(5.0));		
+		
+		System.out.println(route2.toString());
+		
+		RouteParameter route3 = routingEngine.routeFromTo(poi1, poi2, new AllStreetVehicle(5.0));		
+		
+		System.out.println(route3.toString());
+
+		System.out.println(routingEngine.routeFromTo(from, poi2, new AllStreetVehicle(5.0)).toString());
+		
 		/*
-		IVehicle vehicle = new AllStreetVehicle();
-		MobileDataSetProvider provider = new DatabaseMDSProvider(new MDSSQLiteDatabaseAdapter());		
-		provider.open("jdbc:sqlite:/Users/andreaswalz/Downloads/map.db");	
+		RoutingCache cache = new RoutingCache();		
+		cache.putElement(route);
+		System.out.println("without cache: " + route.toString());		
+		vehicle = new AllStreetVehicle(4.0);		
+		if (cache.hasElement(from, poi, vehicle)) {
+			System.out.println("from cache: " + cache.getElement(from, poi, vehicle).toString());
+		} else {
+			System.out.println("cache element not found!");
+		}
+		*/
 		
 		
+		routingEngine.shutdown();
+		
+		/*
 		POICode poiCode = new POICode(POICode.AMENITY_BANK);
 		Place home = new Place(48.1208603, 7.8581893); 
 		

@@ -76,21 +76,22 @@ public class MobileWay extends Way {
 	/* methods implemented by MobileWay */
 	
 	
-	public static double MAXSPEED_UNRESTRICTED = Double.MAX_VALUE;
-	
-	
-	private double maxSpeed = MAXSPEED_UNRESTRICTED;
+	private Double maxSpeed = null;
 	
 	
 	public void setMaxSpeed(double maxSpeed) {
-		this.maxSpeed = maxSpeed;
+		this.maxSpeed = new Double(maxSpeed);
+	}
+	
+	
+	public boolean hasMaxSpeed() {
+		return maxSpeed != null;
 	}
 	
 	
 	public double getMaxSpeed() {
-		return maxSpeed;
-	}
-	
+		return maxSpeed.doubleValue();
+	}	
 	
 	
 	private String wayNodes = null;

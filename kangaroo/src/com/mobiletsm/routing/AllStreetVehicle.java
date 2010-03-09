@@ -20,6 +20,30 @@ import org.openstreetmap.travelingsalesman.routing.IVehicle;
 public class AllStreetVehicle extends Vehicle {
 
 	
+	public AllStreetVehicle() {
+		this(MAXSPEED_DEFAULT);
+	}
+	
+	
+	public AllStreetVehicle(double maxSpeed) {
+		super();
+		super.setMaxSpeed(maxSpeed);
+	}
+	
+	
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof AllStreetVehicle)) {
+			return false;
+		}
+		
+		AllStreetVehicle vehicle = (AllStreetVehicle)object;		
+		
+		/* return true if both vehicles have the same maximum speed */
+		return this.getMaxSpeed() == vehicle.getMaxSpeed(); 
+	}
+	
+	
 	@Override
 	public boolean isAllowed(IDataSet map, Node node) {		
 		Iterator<Way> wayitr = map.getWaysForNode(node.getId());
@@ -44,14 +68,7 @@ public class AllStreetVehicle extends Vehicle {
 		if (junction != null && junction.equals("roundabout")) {
 			isRoundabout = true;
 		}
-		/*
-		if (way.getId() == 17743035) {
-			System.out.println("AllStreetVehicle.isAllowed(): hasHighway = " + hasHighway);
-			System.out.println("AllStreetVehicle.isAllowed(): hasName = " + hasName);
-			System.out.println("AllStreetVehicle.isAllowed(): hasRef = " + hasRef);
-			System.out.println("AllStreetVehicle.isAllowed(): isRoundabout = " + isRoundabout);
-		}
-		*/
+		
 		return hasHighway && (hasName || hasRef || isRoundabout);		
 	}
 

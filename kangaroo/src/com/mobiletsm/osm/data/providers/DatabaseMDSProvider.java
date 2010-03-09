@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import org.openstreetmap.osm.Tags;
+import org.openstreetmap.osm.data.NodeHelper;
 import org.openstreetmap.osm.data.Selector;
 import org.openstreetmap.osm.data.coordinates.LatLon;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
@@ -75,8 +77,11 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 	}
 	
 	
-	/*  */	
+	/* mapping for OpenStreetMap map elements */	
 	
+	/**
+	 * true if routing map (essential street nodes, reduced ways) is loaded
+	 */
 	private boolean routingMapPresent = false;
 	
 
@@ -170,7 +175,7 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
             	 * that is closer than the one we found inside */
             	if (minDist + distToCenter < cacheRadius) {
         			if (updateCenter) {
-        				center.update(minDistNode, true);
+        				center.setNearestOsmStreetNodeId(minDistNode.getId());
         			}
         			Place place = new Place(minDistNode, true); 
         			place.setNearestOsmStreetNodeId(minDistNode.getId());
@@ -208,11 +213,9 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 				}
 			}		
 			if (minDistNode != null) {
-				if (updateCenter) {				
-					center.update(minDistNode, true);				
-					/* calculate and set name of center place */
-					//adapter.loadCompleteWaysForNodes(minDistNode.getId(), -1);				
-				}
+    			if (updateCenter) {
+    				center.setNearestOsmStreetNodeId(minDistNode.getId());
+    			}
 				Place place = new Place(minDistNode, true); 
     			place.setNearestOsmStreetNodeId(minDistNode.getId());
     			return place;
@@ -246,7 +249,7 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 			routingMapPresent = true;
 		}			
 		
-		/*  */
+		/* ways of start and destination nodes have to be loaded completely */
 		adapter.loadCompleteWaysForNodes(fromNodeId, toNodeId);
 		
 		long fromWayId = getWayForNode(fromNodeId);		
@@ -320,7 +323,11 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 				}
 			}		
 			if (minDistNode != null) {
-				Place place = new Place(minDistNode, true);
+				Place place = new Place(minDistNode, false);
+				String name = OsmHelper.getPOINodeName(minDistNode);
+				if (name != null) {					
+					place.setName(name);
+				}
 				if (minDistNode instanceof MobileNode) {
 					place.setNearestOsmStreetNodeId(((MobileNode)minDistNode).getNearestStreetNodeId());
 				}				
@@ -341,7 +348,7 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 	/* methods not yet supported */
 	
 	public MobileInterfaceDataSet getCompleteDataSet() {
-		throw new UnsupportedOperationException("getFullDataSet() not supported by DatabaseMDSProvider");		
+		throw new UnsupportedOperationException("getCompleteDataSet() not supported by DatabaseMDSProvider");		
 	}
 	
 

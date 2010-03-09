@@ -19,8 +19,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import org.openstreetmap.osm.Tags;
 import org.openstreetmap.osm.data.IDataSet;
 import org.openstreetmap.osm.data.MemoryDataSet;
+import org.openstreetmap.osm.data.NodeHelper;
 import org.openstreetmap.osm.data.Selector;
 import org.openstreetmap.osm.data.WayHelper;
 import org.openstreetmap.osm.data.coordinates.Bounds;
@@ -58,8 +60,6 @@ public class OsmHelper {
 	
 	
 	public static int TAGFLAG_ONEWAY = 1;
-	
-	
 	
 	
 	public static int TAGFLAG_REVERSE_ONEWAY = 2;
@@ -1173,6 +1173,24 @@ public class OsmHelper {
 				highscore.put(key, 1);
 			}
 		}		
+	}
+	
+	
+	public static String getPOINodeName(Node node) {
+		String name = NodeHelper.getTag(node, "name");
+		String operator = NodeHelper.getTag(node, "operator");
+		
+		StringBuffer buf = new StringBuffer();
+		if (name != null) {
+			buf.append(name);
+			if (operator != null) {
+				buf.append(", ");
+			}
+		}
+		if (operator != null) {
+			buf.append(operator);
+		}
+		return buf.toString();
 	}
 	
 }

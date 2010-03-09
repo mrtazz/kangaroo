@@ -65,6 +65,19 @@ public abstract class RouteParameter {
 	protected boolean noRouteFound;
 	
 	
+	/**
+	 * start place of route
+	 */
+	protected Place startPlace = null;
+		
+	
+	/**
+	 * destination place of route
+	 */
+	protected Place destinationPlace = null;
+	
+	
+		
 	public RouteParameter(Object route) {
 		this(route, null);
 	}
@@ -83,7 +96,39 @@ public abstract class RouteParameter {
 		updateRouteParameter(route, vehicle);
 	}
 	
-	
+		
+	/**
+	 * @return the startPlace
+	 */
+	public Place getStartPlace() {
+		return startPlace;
+	}
+
+
+	/**
+	 * @param startPlace the startPlace to set
+	 */
+	public void setStartPlace(Place startPlace) {
+		this.startPlace = startPlace;
+	}
+
+
+	/**
+	 * @return the destinationPlace
+	 */
+	public Place getDestinationPlace() {
+		return destinationPlace;
+	}
+
+
+	/**
+	 * @param destinationPlace the destinationPlace to set
+	 */
+	public void setDestinationPlace(Place destinationPlace) {
+		this.destinationPlace = destinationPlace;
+	}
+
+
 	/**
 	 * returns the length of the route in meters
 	 * @return
@@ -109,15 +154,53 @@ public abstract class RouteParameter {
 	public boolean getNoRouteFound() {
 		return noRouteFound;
 	}
+		
 	
-	
+	/**
+	 * @return the route
+	 */
+	public Object getRoute() {
+		return route;
+	}
+
+
+	/**
+	 * @return the vehicle
+	 */
+	public Object getVehicle() {
+		return vehicle;
+	}
+
+
 	@Override
 	public String toString() {
 		if (getNoRouteFound()) {
 			return "RouteParameter: {no route found}";
 		} else {
-			return "RouteParameter: {route found: length = " + lengthToString(getLength()) + ", " +
-					"duration = " + durationToString(getDurationOfTravel()) + "}";
+			
+			String from = null;
+			String to = null;
+			if (startPlace != null) {
+				from = startPlace.toString();
+			}
+			if (destinationPlace != null) {
+				to = destinationPlace.toString();
+			}
+			
+			StringBuffer buf = new StringBuffer("RouteParameter: {route");
+			
+			if (from != null) {
+				buf.append(" from '" + from + "'");
+			}
+
+			if (to != null) {
+				buf.append(" to '" + to + "'");
+			}
+			
+			buf.append(": length = " + lengthToString(getLength()) + ", " +
+				"duration = " + durationToString(getDurationOfTravel()) + "}");				
+			
+			return buf.toString();
 		}
 	}
 	
