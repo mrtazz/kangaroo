@@ -56,7 +56,7 @@ public class Task
 		{
 			if(constraintTypes[i].equalsIgnoreCase("amenity"))
 			{
-				myTask.addConstraint(serializer.fromJson(constraints[i], TaskConstraintAmenity.class));
+				myTask.addConstraint(serializer.fromJson(constraints[i], TaskConstraintPOI.class));
 			}
 			else if(constraintTypes[i].equalsIgnoreCase("date"))
 			{
@@ -125,7 +125,7 @@ public class Task
 			String tempJSON = "";
 			if(type.equalsIgnoreCase("amenity"))
 			{
-				TaskConstraintAmenity temp = (TaskConstraintAmenity)currentTask;
+				TaskConstraintPOI temp = (TaskConstraintPOI)currentTask;
 				tempJSON = serializer.toJson(temp);
 			}
 			else if(type.equalsIgnoreCase("date"))

@@ -45,9 +45,10 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 			/* get one task from list */
 			Task task = tasksToCheck.get(0);
 			
+			/*
 			List<TaskConstraintInterface> durationConstraint = 
 				task.getConstraintsOfType(TaskConstraintInterface.TYPE_DURATION);
-			
+			*/
 			
 			
 			
