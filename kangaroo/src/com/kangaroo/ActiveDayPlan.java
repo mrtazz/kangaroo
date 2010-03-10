@@ -10,6 +10,7 @@ import java.util.List;
 
 import android.content.Context;
 
+import com.kangaroo.calendar.CalendarAccessAdapter;
 import com.kangaroo.calendar.CalendarEvent;
 import com.kangaroo.calendar.CalendarEventComparator;
 import com.kangaroo.calendar.CalendarLibrary;
@@ -22,8 +23,11 @@ import com.mobiletsm.routing.RoutingEngine;
 import com.mobiletsm.routing.Vehicle;
 
 public class ActiveDayPlan extends DayPlan {
-
 	
+	
+	private CalendarAccessAdapter calendarAccessAdapter = null;
+
+	/*
 	private Context ctx;
 	
 	
@@ -73,12 +77,18 @@ public class ActiveDayPlan extends DayPlan {
 			cl.insertEventToBackend(it.next());
 		}
 	}
+	*/
+
+
+	public void setCalendarAccessAdapter(CalendarAccessAdapter adapter) {
+		this.calendarAccessAdapter = adapter;
+	}
 	
-
-
-	public void setContext(Context myCtx)
+	
+	public void setContext(Context context)
 	{
-		ctx = myCtx;
+		//ctx = context;
+		calendarAccessAdapter.setContext(context);
 	}
 
 
@@ -272,7 +282,9 @@ public class ActiveDayPlan extends DayPlan {
 	
 	private void prepareEventAccess(boolean skipLoad) {
 		if (eventAccessDepth++ == 0 && !skipLoad) {
-			loadEvents();
+			//loadEvents();
+			events.clear();
+			events.addAll(calendarAccessAdapter.loadEvents());
 		}
 	}
 	
@@ -283,14 +295,17 @@ public class ActiveDayPlan extends DayPlan {
 					"cannot step back from level 0");
 		}
 		if (--eventAccessDepth == 0 && !skipSave) {
-			saveEvents();
+			//saveEvents();
+			calendarAccessAdapter.saveEvents(events);
 		}
 	}
 	
 	
 	private void prepareTaskAccess(boolean skipLoad) {
 		if (taskAccessDepth++ == 0 && !skipLoad) {
-			loadTasks();
+			//loadTasks();
+			tasks.clear();
+			tasks.addAll(calendarAccessAdapter.loadTasks());
 		}
 	}
 	
@@ -301,7 +316,8 @@ public class ActiveDayPlan extends DayPlan {
 			"cannot step back from level 0");
 		}
 		if (--taskAccessDepth == 0 && !skipSave) {
-			saveTasks();
+			//saveTasks();
+			calendarAccessAdapter.saveTasks(tasks);
 		}
 	}
 	
