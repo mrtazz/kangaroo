@@ -198,7 +198,7 @@ public abstract class RouteParameter {
 			}
 			
 			buf.append(": length = " + lengthToString(getLength()) + ", " +
-				"duration = " + durationToString(getDurationOfTravel()) + "}");				
+				"duration = " + durationToString(Math.rint(getDurationOfTravel())) + "}");				
 			
 			return buf.toString();
 		}

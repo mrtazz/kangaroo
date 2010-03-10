@@ -66,7 +66,7 @@ public class MobileTSMRouteParameter extends RouteParameter {
 		/* iterate over all routing steps */
 		while (steps_itr.hasNext()) {
 			RoutingStep step = steps_itr.next();
-			Way way = step.getWay();			
+			Way way = step.getWay();
 			
 			if (way instanceof MobileWay) {
 				dist = ((MobileWay)way).getPathLength(step.getStartNode().getId(), step.getEndNode().getId());

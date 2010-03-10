@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry excluding="com/kangaroo/gui/|com/kangaroo/temptemp.java|com/kangaroo/|com/kangaroo/calendar/|com/kangaroo/system/|com/kangaroo/task/" kind="src" path="src_kangaroo"/>
+	<classpathentry excluding="com/kangaroo/gui/|com/kangaroo/temptemp.java" kind="src" path="src_kangaroo"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="lib" path="/Users/andreaswalz/Documents/Uni/Informatik/Teamprojekt - WS0910/repository/master/kangaroo/kangaroo/traveling_salesman-1.0.3-RC1.jar"/>

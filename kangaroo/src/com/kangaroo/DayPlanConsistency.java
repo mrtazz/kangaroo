@@ -1,6 +1,7 @@
 package com.kangaroo;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import com.kangaroo.calendar.CalendarEvent;
@@ -24,7 +25,7 @@ public class DayPlanConsistency {
 	 * returns true if no collisions are known, false otherwise
 	 * @return true if no collisions are known, false otherwise
 	 */
-	public boolean isConsistent() {
+	public boolean hasCollisions() {
 		return (collisions.size() == 0);
 	}
 	
@@ -58,6 +59,24 @@ public class DayPlanConsistency {
 	}
 	
 	
-	
+	@Override
+	public String toString() {
+		if (hasCollisions()) {
+			return "DayPlanConsistency: {no collisions}";
+		} else {
+			StringBuffer buf = new StringBuffer("DayPlanConsistency: {");
+			Iterator<CalendarEventCollision> itr = collisions.iterator();
+			while (itr.hasNext()) {
+				CalendarEventCollision collision = itr.next();
+				buf.append(collision.toString());
+				if (itr.hasNext()) {
+					buf.append(", ");
+				} else {
+					buf.append("}");
+				}
+			}
+			return buf.toString();
+		}
+	}
 	
 }

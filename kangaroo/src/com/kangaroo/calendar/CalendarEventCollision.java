@@ -42,4 +42,10 @@ public class CalendarEventCollision {
 	}
 	
 	
+	@Override
+	public String toString() {
+		return "CalendarEventCollision: {timeLeft = " + timeLeft + "}";
+	}
+	
+	
 }

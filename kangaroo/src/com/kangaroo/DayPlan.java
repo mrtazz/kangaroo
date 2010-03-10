@@ -98,7 +98,8 @@ public class DayPlan {
 	 * @return
 	 */
 	public List<CalendarEvent> getEvents() {
-		return events;
+		/* do not return the list itself, but a copy of it */
+		return new ArrayList<CalendarEvent>(events);
 	}
 
 	
@@ -107,7 +108,8 @@ public class DayPlan {
 	 * @return
 	 */
 	public Collection<Task> getTasks() {
-		return tasks;
+		/* do not return the list itself, but a copy of it */
+		return new ArrayList<Task>(tasks);
 	}
 	
 
@@ -181,7 +183,6 @@ public class DayPlan {
 	 */
 	public int checkComplianceBetween(CalendarEvent initialEvent, CalendarEvent destinationEvent, 
 			Object vehicle) throws NoRouteFoundException {
-		setCalendarEventPlace(destinationEvent);
 		return checkComplianceWith(initialEvent.getEndDate(), initialEvent.getPlace(), destinationEvent, vehicle);
 	}
 	
@@ -216,21 +217,27 @@ public class DayPlan {
 			if (routingEngine == null) {
 				throw new RuntimeException("DayPlan.checkComplianceWith(): No routing engine defined");
 			}
-			
-			setCalendarEventPlace(destinationEvent);
 		
 			RouteParameter route = routingEngine.routeFromTo(here, destinationEvent.getPlace(), vehicle);
 		
+				System.out.println("route: = " + route.toString());
+			
 			/* Date.getTime() returns time in milliseconds, so 
 			 * we have to divide by 1000*60 to get minutes */
 			double timeLeft = (destinationEvent.getStartDate().getTime() - now.getTime()) / (1000 * 60);
+			
+				System.out.println("DayPlan.checkComplianceWith(): timeLeft (w/o route) = " + timeLeft);
 			
 			/* TODO: handle case where no route could be found */
 			if (route.getNoRouteFound()) {
 				throw new NoRouteFoundException("DayPlan.checkComplianceWith(): No route found");
 			}
 						
-			timeLeft = timeLeft - route.getDurationOfTravel();
+			/* be pessimistic and round up the duration of travel and 
+			 * round down the gap between subsequent events */
+			timeLeft = Math.floor(timeLeft) - Math.rint(route.getDurationOfTravel());
+			
+				System.out.println("DayPlan.checkComplianceWith(): timeLeft (with route) = " + timeLeft);
 			
 			return (int)timeLeft;
 			
@@ -255,6 +262,8 @@ public class DayPlan {
 		CalendarEvent event = null;
 		CalendarEvent predecessor = null;
 		
+		/* TODO: include checking for overlap between events */
+		
 		/* iterate over all CalendarEvents in the calendar and check consistency  */
 		while ((event = getNextEvent(pos)) != null) {
 			if (predecessor != null) {				
@@ -272,21 +281,13 @@ public class DayPlan {
 				}									
 			}			
 			predecessor = event;
+			pos = event.getEndDate();
 		}
 		
 		return consistency;
 	}
 		
-	
-	/* TODO: this method should be moved to class CalendarEvent */
-	private void setCalendarEventPlace(CalendarEvent event) {
-		Place eventPlace = event.getPlace();		
-		if (eventPlace == null) {
-			eventPlace = new Place(event.getLocationLatitude(), event.getLocationLongitude());
-			event.setPlace(eventPlace);
-		}
-	}
-	
+
 	
 	public DayPlan optimize() {
 		if (optimizer == null) {

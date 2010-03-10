@@ -264,6 +264,10 @@ public class CalendarEvent {
 	 * @return the place
 	 */
 	public Place getPlace() {
+		/* never return null */
+		if (place == null) {
+			place = new Place(getLocationLatitude(), getLocationLongitude());		
+		}
 		return place;
 	}
 

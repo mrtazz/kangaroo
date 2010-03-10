@@ -1,6 +1,13 @@
 package com.mobiletsm.testbench;
 
 
+import java.util.Date;
+import java.util.List;
+
+import com.kangaroo.ActiveDayPlan;
+import com.kangaroo.DayPlanConsistency;
+import com.kangaroo.MemoryCalendarAccessAdapter;
+import com.kangaroo.calendar.CalendarEvent;
 import com.mobiletsm.routing.AllStreetVehicle;
 import com.mobiletsm.routing.MobileTSMRoutingEngine;
 import com.mobiletsm.routing.Place;
@@ -28,6 +35,9 @@ public class MobileTSMTestBench extends Activity {
 	private RoutingEngine engine = null;
 	
 	
+	private ActiveDayPlan activeDayPlan = null;
+	
+	
 	Place place1 = null;
 	Place place2 = null;
 	Vehicle vehicle = null;
@@ -46,6 +56,38 @@ public class MobileTSMTestBench extends Activity {
         lonEdit = (EditText) findViewById(R.id.lonEdit);        
         speedEdit = (EditText) findViewById(R.id.speedEdit);        
         
+        
+        /* create and add some events */
+        
+        activeDayPlan = new ActiveDayPlan();
+        activeDayPlan.setCalendarAccessAdapter(new MemoryCalendarAccessAdapter());
+        activeDayPlan.setContext(getApplicationContext());
+        
+        CalendarEvent event1 = new CalendarEvent();
+        event1.setStartDate(new Date(2010 - 1900, 3, 10, 19, 30));
+        event1.setEndDate(new Date(2010 - 1900, 3, 10, 20, 00));
+        event1.setLocationLatitude(48.0064241);
+        event1.setLocationLongitude(7.8521991);
+
+        CalendarEvent event2 = new CalendarEvent();
+        event2.setStartDate(new Date(2010 - 1900, 3, 10, 20, 10));
+        event2.setEndDate(new Date(2010 - 1900, 3, 10, 21, 00));
+        event2.setLocationLatitude(48.000);
+        event2.setLocationLongitude(7.852);
+
+        CalendarEvent event3 = new CalendarEvent();
+        event3.setStartDate(new Date(2010 - 1900, 3, 10, 21, 20));
+        event3.setEndDate(new Date(2010 - 1900, 3, 10, 21, 40));
+        event3.setLocationLatitude(47.987);
+        event3.setLocationLongitude(7.852);
+        
+        List<CalendarEvent> events = activeDayPlan.getEvents();
+        events.add(event1);
+        events.add(event2);
+        events.add(event3);
+        activeDayPlan.setEvents(events);
+        
+        
         doStuffButton.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {				
@@ -55,9 +97,24 @@ public class MobileTSMTestBench extends Activity {
 					engine.enableRoutingCache();
 				}
 				
+				
 				if (engine.initialized()) {
-					
-					
+			        activeDayPlan.setRoutingEngine(engine);
+			        
+			        System.out.println("# events in calendar = " + activeDayPlan.getEvents().size());
+			        
+					DayPlanConsistency consistency = 
+						activeDayPlan.checkConsistency(new AllStreetVehicle(5.0));
+					if (consistency != null) {
+						System.out.println("consistency = " + consistency.toString());					
+						outputText.setText(consistency.toString());
+					}
+				}
+				
+				/*
+				System.out.println("engine.initialized() = " + engine.initialized());
+				
+				if (engine.initialized()) {					
 					if (place1 == null) {
 						System.out.println("create place1");
 						place1 = new Place(48.0064241, 7.8521991);				
@@ -84,7 +141,8 @@ public class MobileTSMTestBench extends Activity {
 					System.out.println("route = " + route.toString());					
 					outputText.setText(route.toString());
 				}
-
+				*/
+				
 			}
 		});
         
