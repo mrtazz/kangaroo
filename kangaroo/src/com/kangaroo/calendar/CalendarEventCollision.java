@@ -1,51 +1,25 @@
 package com.kangaroo.calendar;
 
+public class CalendarEventCollision extends CalendarEventConflict {
 
-public class CalendarEventCollision {
-
 	
-	/**
-	 * the calendar event that causes the collisions and which is in danger
-	 */
-	private CalendarEvent event;
+	private int lack;
 	
 	
-	/**
-	 * 
-	 */
-	private CalendarEvent predecessor;
-	
-	
-	private double timeLeft;
-	
-		
-	public CalendarEvent getEvent() {
-		return event;
+	public CalendarEventCollision(CalendarEvent event1, CalendarEvent event2, int lack) {
+		super(event1, event2, CONFLICT_PRIORITY_SOFT_COLLISION);
+		this.lack = lack;
 	}
 	
 	
-	public CalendarEvent getPredecessor() {
-		return predecessor;
-	}
-	
-	
-	public double getTimeLeft() {
-		return timeLeft;
-	}
-	
-	
-	public CalendarEventCollision(CalendarEvent event, CalendarEvent predecessor, double timeLeft) {
-		super();
-		this.event = event;
-		this.predecessor = predecessor;
-		this.timeLeft = timeLeft;
+	public int getLack() {
+		return lack;
 	}
 	
 	
 	@Override
 	public String toString() {
-		return "CalendarEventCollision: {timeLeft = " + timeLeft + "}";
+		return "CalendarEventCollision: {lacking "+ lack + " minutes}";
 	}
-	
-	
+
 }

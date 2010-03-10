@@ -10,7 +10,9 @@ import java.util.List;
 import android.content.Context;
 
 import com.kangaroo.calendar.CalendarEvent;
+import com.kangaroo.calendar.CalendarEventCollision;
 import com.kangaroo.calendar.CalendarEventComparator;
+import com.kangaroo.calendar.CalendarEventConflict;
 import com.kangaroo.calendar.CalendarLibrary;
 import com.kangaroo.task.Task;
 import com.kangaroo.task.TaskManager;
@@ -137,7 +139,8 @@ public class DayPlan {
 		Iterator<CalendarEvent> itr = events.iterator();
 		while (itr.hasNext() && result == null) {
 			CalendarEvent event = itr.next();
-			if (event.getStartDate().compareTo(now) > 0) {
+			Date startDate = event.getStartDate();
+			if (startDate != null && startDate.compareTo(now) > 0) {
 				result = event;
 			}
 		}
@@ -267,14 +270,16 @@ public class DayPlan {
 		/* iterate over all CalendarEvents in the calendar and check consistency  */
 		while ((event = getNextEvent(pos)) != null) {
 			if (predecessor != null) {				
-				double timeLeft;				
+				int timeLeft;				
 				try {
 					timeLeft = checkComplianceWith(predecessor.getEndDate(), 
 							predecessor.getPlace(),	event, vehicle);
 					/* add a collision, if time between two events is less
 					 * than it will probably take to move from one event to the other */
 					if (timeLeft < 0) {
-						consistency.addCollision(event, predecessor, timeLeft);
+						CalendarEventConflict conflict = 
+							new CalendarEventCollision(predecessor, event, Math.abs(timeLeft));
+						consistency.addConflict(conflict);
 					}
 				} catch (NoRouteFoundException e) {
 					// TODO: add some kind of 'collision' indicating that no route could be found
