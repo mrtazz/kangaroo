@@ -3,6 +3,9 @@
  */
 package com.mobiletsm.routing;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.openstreetmap.osm.ConfigurationSection;
 import org.openstreetmap.osm.Tags;
 import org.openstreetmap.osm.data.IDataSet;
@@ -11,6 +14,8 @@ import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 import org.openstreetmap.osmosis.core.domain.v0_6.Relation;
 import org.openstreetmap.osmosis.core.domain.v0_6.Way;
 import org.openstreetmap.travelingsalesman.routing.IVehicle;
+
+import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
 
 
 
@@ -24,16 +29,40 @@ import org.openstreetmap.travelingsalesman.routing.IVehicle;
 public abstract class Vehicle implements IVehicle {
 	
 	/**
+	 * mapping from highway tag to maximum speed
+	 */
+	public static Map<String, Double> maxSpeedMap = null;
+		
+	
+	static {
+		maxSpeedMap = new HashMap<String, Double>();
+		maxSpeedMap.put("residential", 50.0);
+		maxSpeedMap.put("living_street", 7.0);
+		maxSpeedMap.put("motorway", 130.0);
+		maxSpeedMap.put("trunk", 100.0);
+		maxSpeedMap.put("primary", 100.0);
+		maxSpeedMap.put("secondary", 100.0);
+		maxSpeedMap.put("tertiary", 100.0);		
+	}
+	
+	
+	/**
+	 * default maximum speed of a vehicle, specified in km/h
+	 */
+	public static double MAXSPEED_DEFAULT = 150;
+	
+	
+	/**
 	 * The maximum speed for this vehicle, specified in km/h
 	 */
-	protected double maxSpeed;
+	protected double maxSpeed = MAXSPEED_DEFAULT;
 	
 	
 	/**
 	 * set the maximum speed for this vehicle
 	 * @param	speed	maximum speed in km/h
 	 */
-	public void setMaxSpeed(double maxSpeed) {
+	protected void setMaxSpeed(double maxSpeed) {
 		this.maxSpeed = maxSpeed;
 	}
 	
@@ -60,29 +89,44 @@ public abstract class Vehicle implements IVehicle {
 		double wayMaxSpeed = defaultWayMaxSpeed;
 		double vehicleMaxSpeed = getMaxSpeed();
 		
-		/* check if way specifies a maximum speed */
-		String maxSpeedStr = WayHelper.getTag(way.getTags(), "maxspeed");		
-		if (maxSpeedStr != null) {
-			try {
-				wayMaxSpeed = Double.parseDouble(maxSpeedStr);				
-			} catch (NumberFormatException e) {
-			}
-		} else {			
-			/* check type of highway */
-			String highway = WayHelper.getTag(way.getTags(), Tags.TAG_HIGHWAY);			
-			if (highway != null) {
-				if (highway.startsWith("residential")) {
-					wayMaxSpeed = 50;
-				} else if (highway.startsWith("living_street")) {
-					wayMaxSpeed = 7;
-				} else if (highway.startsWith("motorway")) {
-					wayMaxSpeed = 130;
-				} else if (highway.startsWith("trunk") || highway.startsWith("primary") ||
-						highway.startsWith("secondary") || highway.startsWith("tertiary")) {
-					wayMaxSpeed = 100;
+		/* check if way specifies maximum speed */
+		if ((way instanceof MobileWay) && ((MobileWay)way).hasMaxSpeed()) {
+			wayMaxSpeed = ((MobileWay)way).getMaxSpeed();
+				System.out.println("Vehicle.getMaxSpeedOnWay(): MobileWay.getMaxSpeed() = "
+						+ ((MobileWay)way).getMaxSpeed());
+		} else {
+			/* check way tags for specification of a maximum speed */
+			String maxSpeedStr = WayHelper.getTag(way.getTags(), "maxspeed");		
+			if (maxSpeedStr != null) {
+				try {
+					wayMaxSpeed = Double.parseDouble(maxSpeedStr);				
+				} catch (NumberFormatException e) {
 				}
-			}
-		}	
+			} else {			
+				/* check type of highway */
+				String highway = WayHelper.getTag(way.getTags(), Tags.TAG_HIGHWAY);			
+				if (highway != null) {
+					
+					Double maxSpeedFromMap = maxSpeedMap.get(highway);
+					if (maxSpeedFromMap != null) {
+						wayMaxSpeed = maxSpeedFromMap.doubleValue();
+					}
+								
+					/*
+					if (highway.startsWith("residential")) {
+						wayMaxSpeed = 50;
+					} else if (highway.startsWith("living_street")) {
+						wayMaxSpeed = 7;
+					} else if (highway.startsWith("motorway")) {
+						wayMaxSpeed = 130;
+					} else if (highway.startsWith("trunk") || highway.startsWith("primary") ||
+							highway.startsWith("secondary") || highway.startsWith("tertiary")) {
+						wayMaxSpeed = 100;
+					}
+					*/
+				}
+			}	
+		}
 		
 		/* return the one that is lower */
 		if (wayMaxSpeed < vehicleMaxSpeed) {
@@ -95,6 +139,8 @@ public abstract class Vehicle implements IVehicle {
 	
 	/* methods to be implemented by a vehicle */
 	
+	public abstract boolean equals(Object object);
+	
 	public abstract boolean isAllowed(IDataSet arg0, Node arg1);
 
 	public abstract boolean isAllowed(IDataSet arg0, Way arg1);
@@ -105,10 +151,6 @@ public abstract class Vehicle implements IVehicle {
 
 	public abstract boolean isAllowed(IDataSet arg0, Relation arg1);
 
-	public abstract ConfigurationSection getSettings();
-
-
-	
-	
+	public abstract ConfigurationSection getSettings();	
 
 }

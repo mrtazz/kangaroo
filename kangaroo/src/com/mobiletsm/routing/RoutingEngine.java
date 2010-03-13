@@ -51,7 +51,7 @@ public interface RoutingEngine {
 	 * @param to
 	 * @param vehicle
 	 * @param updatePlaces
-	 * @return
+	 * @return 
 	 */
 	public RouteParameter routeFromTo(Place from, Place to, Object vehicle, boolean updatePlaces);
 	
@@ -70,6 +70,15 @@ public interface RoutingEngine {
 		
 	
 	public Place getNearestStreetNode(Place center);
+	
+	
+	public void enableRoutingCache();
+	
+	
+	public void disableRoutingCache();
+	
+	
+	public void clearRoutingCache();
 	
 	
 }

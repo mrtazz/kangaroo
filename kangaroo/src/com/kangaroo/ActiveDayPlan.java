@@ -8,29 +8,24 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import android.content.Context;
-
+import com.kangaroo.calendar.CalendarAccessAdapter;
 import com.kangaroo.calendar.CalendarEvent;
 import com.kangaroo.calendar.CalendarEventComparator;
-import com.kangaroo.calendar.CalendarLibrary;
 import com.kangaroo.task.Task;
-import com.kangaroo.task.TaskManager;
+import com.mobiletsm.routing.NoRouteFoundException;
 import com.mobiletsm.routing.Place;
 import com.mobiletsm.routing.RouteParameter;
 import com.mobiletsm.routing.RoutingEngine;
 import com.mobiletsm.routing.Vehicle;
 
-public class ActiveDayPlan implements DayPlan {
+public class ActiveDayPlan extends DayPlan {
+	
+	
+	private CalendarAccessAdapter calendarAccessAdapter = null;
 
-	private List<CalendarEvent> events;
-	
-	private Collection<Task> tasks;
-	
+	/*
 	private Context ctx;
 	
-	private DayPlanOptimizer optimizer = null;
-	
-	private RoutingEngine routingEngine = null;
 	
 	private void loadTasks()
 	{
@@ -38,11 +33,13 @@ public class ActiveDayPlan implements DayPlan {
 		tasks = tm.getTasks();
 	}
 	
+	
 	private void saveTasks()
 	{
 		TaskManager tm = new TaskManager(ctx);
 		tm.putTasks((ArrayList<Task>)tasks);
 	}
+	
 	
 	private void loadEvents()
 	{
@@ -54,6 +51,7 @@ public class ActiveDayPlan implements DayPlan {
 		events.addAll(myMap);
 
 	}
+	
 	
 	private void saveEvents()
 	{
@@ -75,233 +73,317 @@ public class ActiveDayPlan implements DayPlan {
 			cl.insertEventToBackend(it.next());
 		}
 	}
-	
-	public ActiveDayPlan() {
-		super();
-		events = new ArrayList<CalendarEvent>();
-		tasks = new ArrayList<Task>();
+	*/
+
+
+	public void setCalendarAccessAdapter(CalendarAccessAdapter adapter) {
+		this.calendarAccessAdapter = adapter;
 	}
 	
 	
-	public ActiveDayPlan(DayPlan plan) {
-		this();
-		events.addAll(plan.getEvents());
-		tasks.addAll(plan.getTasks());
-	}
-	
-	
-	
-	public RoutingEngine getRoutingEngine() 
-	{
-		return routingEngine;
+	@Override
+	public int checkComplianceWith(Date now, Place here,
+			CalendarEvent destinationEvent, Object vehicle) throws NoRouteFoundException {
+		
+		/* a compliance check should only operate on events */
+		prepareEventAccess(false);
+				
+		try {
+			int result = super.checkComplianceWith(now, here, destinationEvent, vehicle);		
+			/* the routing engine may have affected event places */
+			terminateEventAccess(false);
+			return result;
+		} catch (RuntimeException exception) {
+			/* make sure we step from this level even if a
+			 * runtime exception occurs */
+			terminateEventAccess(true);
+			throw exception;
+		}		
 	}
 
-	public void setRoutingEngine(RoutingEngine routingEngine) 
-	{
-		this.routingEngine = routingEngine;
+
+
+	@Override
+	public DayPlanConsistency checkConsistency(Vehicle vehicle, Date now) {
+		/* a consistency check should only operate on events */
+		prepareEventAccess(false);
+		
+		try {
+			DayPlanConsistency result = super.checkConsistency(vehicle, now);			
+			/* the routing engine may have affected event places */
+			terminateEventAccess(false);
+			return result;
+		} catch (RuntimeException exception) {
+			/* make sure we step from this level even if a
+			 * runtime exception occurs */
+			terminateEventAccess(true);
+			throw exception;
+		}		
 	}
+
+
 
 	@Override
 	public List<CalendarEvent> getEvents() {
-		return events;
+		/* prepare to access events */
+		prepareEventAccess(false);
+		
+		try {
+			List<CalendarEvent> result = super.getEvents();			
+			/* this is only a read access, so don't write to the calendar */
+			terminateEventAccess(true);
+			return result;		
+		} catch (RuntimeException exception) {
+			/* make sure we step from this level even if a
+			 * runtime exception occurs */
+			terminateEventAccess(true);
+			throw exception;
+		}		
 	}
 
-	public void setContext(Context myCtx)
-	{
-		ctx = myCtx;
-	}
-	
+
+
 	@Override
-	/**
-	 * return the event in the calendar that is next starting from given Date
-	 * @param now
-	 * @return
-	 */
 	public CalendarEvent getNextEvent(Date now) {
-		loadEvents();
-		loadTasks();
+		/* prepare to access events */
+		prepareEventAccess(false);
 		
-		/* make sure the events are in correct order */
-		Collections.sort(events, new CalendarEventComparator(CalendarEventComparator.START_DATE));
-		
-		/* return first event in the list if no date is given */
-		if (now == null && events.size() > 0) {
-			return events.get(0);
-		}
-		
-		/* return the first event that has a start date after now */
-		Iterator<CalendarEvent> itr = events.iterator();
-		while (itr.hasNext()) {
-			CalendarEvent event = itr.next();
-			if (event.getStartDate().compareTo(now) > 0)
-				return event;			
-		}
-		
-		/* there are no events or all events are in the past */
-		return null;
+		try {
+			CalendarEvent result = super.getNextEvent(now);	
+			/* this is only a read access, so don't write to the calendar */
+			terminateEventAccess(true);
+			return result;	
+		} catch (RuntimeException exception) {
+			/* make sure we step from this level even if a
+			 * runtime exception occurs */
+			terminateEventAccess(true);
+			throw exception;
+		}		
 	}
 
-	
+
+
 	@Override
 	public Collection<Task> getTasks() {
-		return tasks;
+		/* prepare to access tasks */
+		prepareTaskAccess(false);
+		
+		try {
+			Collection<Task> result = super.getTasks();			
+			/* this is only a read access, so don't write to the calendar */
+			terminateTaskAccess(true);
+			return result;
+		} catch (RuntimeException exception) {
+			/* make sure we step from this level even if a
+			 * runtime exception occurs */
+			terminateTaskAccess(true);
+			throw exception;
+		}		
+	}
+	
+	
+	@Override
+	public int getNumberOfEvents() {
+		/* prepare to access events */
+		prepareEventAccess(false);
+		
+		try {
+			int result = super.getNumberOfEvents();
+			/* this is only a read access, so don't write to the calendar */
+			terminateTaskAccess(true);
+			return result;			
+		} catch (RuntimeException exception) {
+			/* make sure we step from this level even if a
+			 * runtime exception occurs */
+			terminateEventAccess(true);
+			throw exception;
+		}		
+	}
+	
+	
+	@Override
+	public int getNumberOfTasks() {
+		/* prepare to access tasks */
+		prepareTaskAccess(false);
+		
+		try {
+			int result = super.getNumberOfTasks();
+			/* this is only a read access, so don't write to the calendar */
+			terminateTaskAccess(true);
+			return result;			
+		} catch (RuntimeException exception) {
+			/* make sure we step from this level even if a
+			 * runtime exception occurs */
+			terminateTaskAccess(true);
+			throw exception;
+		}		
 	}
 
+
+	@Override
+	public void addEvent(CalendarEvent event) {
+		/* we don't have to read the calendar */
+		prepareEventAccess(true);
+		
+		try {
+			super.addEvent(event);
+			terminateEventAccess(false);
+		} catch (RuntimeException exception) {
+			/* make sure we step from this level even if a
+			 * runtime exception occurs */
+			terminateEventAccess(true);
+			throw exception;
+		}	
+	}
 	
+	
+	@Override
+	public void addTask(Task task) {
+		/* we don't have to read the calendar */
+		prepareTaskAccess(true);
+		
+		try {
+			super.addTask(task);
+			terminateTaskAccess(false);
+		} catch (RuntimeException exception) {
+			/* make sure we step from this level even if a
+			 * runtime exception occurs */
+			terminateTaskAccess(true);
+			throw exception;
+		}
+	}
+	
+	
+	
+	@Override
+	public DayPlan optimize(Date now, Place here, Object vehicle) {
+		/* prepare to access events and tasks */
+		prepareEventAccess(false);
+		prepareTaskAccess(false);
+		
+		try {
+			DayPlan result = super.optimize(now, here, vehicle);
+			/* the routing engine may have affected places in events and tasks */
+			terminateTaskAccess(false);
+			terminateEventAccess(false);
+			return result;
+		} catch (RuntimeException exeption) {
+			/* make sure we step from this level even if a
+			 * runtime exception occurs */
+			terminateTaskAccess(true);
+			terminateEventAccess(true);
+			throw exeption;
+		}		
+	}
+
+
+
 	@Override
 	public void setEvents(List<CalendarEvent> events) {
-		if (events != null) {
-			this.events = events;
-		} else {
-			throw new RuntimeException("ActiveCalendarPlan.setEvents(): null reference given");
-		}
+		/* we don't have to read the calendar */
+		prepareEventAccess(true);
+		
+		try {
+			super.setEvents(events);
+			terminateEventAccess(false);
+		} catch (RuntimeException exception) {
+			/* make sure we step from this level even if a
+			 * runtime exception occurs */
+			terminateEventAccess(true);
+			throw exception;
+		}		
 	}
 
-	
+
+
 	@Override
 	public void setTasks(Collection<Task> tasks) {
-		if (tasks != null) {
-			this.tasks = tasks;
-		} else {
-			throw new RuntimeException("ActiveCalendarPlan.setTasks(): null reference given");
-		}
-	}
-
-	
-	/**
-	 * return the number of minutes left to start moving towards the next event
-	 * @param now
-	 * @param here
-	 * @param vehicle
-	 * @return
-	 */
-	public int checkComplianceWith(Date now, Place here, Vehicle vehicle) {
-		return checkComplianceWith(now, here, null, vehicle);
+		/* we don't have to read the calendar */
+		prepareTaskAccess(true);
+		
+		try {
+			super.setTasks(tasks);
+			terminateTaskAccess(false);
+		} catch (RuntimeException exception) {
+			/* make sure we step from this level even if a
+			 * runtime exception occurs */
+			terminateTaskAccess(true);
+			throw exception;
+		}		
 	}
 	
 	
-	/**
-	 * return the number of minutes left to start moving towards the given event
-	 * @param now
-	 * @param here
-	 * @param destinationEvent
-	 * @param vehicle
-	 * @return
-	 */
-	public int checkComplianceWith(Date now, Place here, CalendarEvent destinationEvent, Vehicle vehicle) {
+	
+	@Override
+	public String toString() {
+		/* prepare to access events */
+		prepareEventAccess(false);
+		prepareTaskAccess(false);
 		
-		//in getNextEvent loadEvents() is executed, so
-		if (destinationEvent == null) 
-		{
-			destinationEvent = this.getNextEvent(now);
+		try {
+			String result = super.toString();	
+			/* this is only a read access, so don't write to the calendar */
+			terminateTaskAccess(true);
+			terminateEventAccess(true);
+			return result;	
+		} catch (RuntimeException exception) {
+			/* make sure we step from this level even if a
+			 * runtime exception occurs */
+			terminateTaskAccess(true);
+			terminateEventAccess(true);
+			throw exception;
 		}
-		else
-		{
-			loadEvents();
-			loadTasks();
-		}
-		
-		// TODO: use specific exceptions
-		
-		if (destinationEvent != null) {			
-			if (routingEngine == null) {
-				throw new RuntimeException("ActiveCalendarPlan.checkComplianceWith(): No RoutingEngine defined");
-			}
-			
-			setCalendarEventPlace(destinationEvent);
-		
-			RouteParameter route = routingEngine.routeFromTo(here, destinationEvent.getPlace(), vehicle, true);
-		
-			/* Date.getTime() returns time in milliseconds, so 
-			 * we have to divide by 1000*60 to get minutes */
-			double timeLeft = (destinationEvent.getStartDate().getTime() - now.getTime()) / (1000 * 60);
-			
-			/* TODO: handle case where no route could be found */
-			if (route.getNoRouteFound()) {
-				throw new RuntimeException("ActiveCalendarPlan.checkComplianceWith(): No route found");
-			}
-						
-			timeLeft = timeLeft - route.getDurationOfTravel();
-			
-			return (int)timeLeft;
-			
-		} else {
-			throw new RuntimeException("ActiveCalendarPlan.checkComplianceWith(): Event missing");
+	}	
+	
+	
+	private int eventAccessDepth = 0;
+	
+	
+	private int taskAccessDepth = 0;
+	
+	
+	private void prepareEventAccess(boolean skipLoad) {
+		if (eventAccessDepth++ == 0 && !skipLoad) {
+			//loadEvents();
+			events.clear();
+			events.addAll(calendarAccessAdapter.loadEvents());
 		}
 	}
 	
 	
-	/**
-	 * checks if the calendar is self-consistent
-	 * @return
-	 */
-	public DayPlanConsistency checkConsistency(Vehicle vehicle) {		
-		if (routingEngine == null) {
-			throw new RuntimeException("ActiveCalendarPlan.checkConsistency(): No RoutingEngine defined");
+	private void terminateEventAccess(boolean skipSave) {
+		if (eventAccessDepth <= 0) {
+			throw new RuntimeException("ActiveDayPlan.terminateEventAccess(): " +
+					"cannot step back from level 0");
 		}
-		
-		DayPlanConsistency consistency = new DayPlanConsistency();
-		
-		Date pos = null;
-		CalendarEvent event = null;
-		CalendarEvent predecessor = null;
-		
-		/* iterate over all CalendarEvents in the calendar and check consistency  */
-		while ((event = getNextEvent(pos)) != null) {
-			if (predecessor != null) {				
-				// TODO: add routing cache (needs hash for CalendarEvents)
-				double timeLeft = checkComplianceWith(predecessor.getEndDate(), predecessor.getPlace(), event, vehicle);									
-				if (timeLeft < 0) {
-					consistency.addCollision(event, predecessor, timeLeft);
-				}
-			}			
-			predecessor = event;
-		}
-		
-		return consistency;
-	}
-		
-	
-	private void setCalendarEventPlace(CalendarEvent event) {
-		Place eventPlace = event.getPlace();		
-		if (eventPlace == null) {
-			eventPlace = new Place(event.getLocationLatitude(), event.getLocationLongitude());
-			event.setPlace(eventPlace);
+		if (--eventAccessDepth == 0 && !skipSave) {
+			//saveEvents();
+			calendarAccessAdapter.saveEvents(events);
 		}
 	}
 	
 	
-	public DayPlan optimize() {
-		if (optimizer == null) {
-			throw new RuntimeException("ActiveCalendarPlan.optimize(): No CalendarPlanOptimizer defined");
+	private void prepareTaskAccess(boolean skipLoad) {
+		if (taskAccessDepth++ == 0 && !skipLoad) {
+			//loadTasks();
+			tasks.clear();
+			tasks.addAll(calendarAccessAdapter.loadTasks());
 		}
-		
-		optimizer.setCalendarPlan(this);
-		optimizer.setRoutingEngine(routingEngine);
-				
-		return null;
 	}
 	
 	
-	public void setOptimizer(DayPlanOptimizer optimizer) {
-		this.optimizer = optimizer;
-	}
-	
-	
-	/**
-	 * synchronize this ActiveCalendarPlan with calendar system of mobile device 
-	 * @return
-	 */
-	public boolean sync() 
-	{
-		//we need a context to work with the calendar
-		if(ctx == null)
-		{
-			return false;
+	private void terminateTaskAccess(boolean skipSave) {
+		if (taskAccessDepth <= 0) {
+			throw new RuntimeException("ActiveDayPlan.terminateTaskAccess(): " +
+			"cannot step back from level 0");
 		}
-		CalendarLibrary cl = new CalendarLibrary(ctx);
-		
-		
-		return true;
+		if (--taskAccessDepth == 0 && !skipSave) {
+			//saveTasks();
+			calendarAccessAdapter.saveTasks(tasks);
+		}
 	}
+	
+	
+	
+	
 }

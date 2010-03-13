@@ -13,7 +13,7 @@ import android.widget.SimpleExpandableListAdapter;
 
 import com.android.kangaroo.R;
 import com.kangaroo.task.Task;
-import com.kangaroo.task.TaskConstraintAmenity;
+import com.kangaroo.task.TaskConstraintPOI;
 import com.kangaroo.task.TaskConstraintDate;
 import com.kangaroo.task.TaskConstraintDayTime;
 import com.kangaroo.task.TaskConstraintInterface;
@@ -105,7 +105,7 @@ public class TaskList extends ExpandableListActivity {
 				 String type = tc.getType();
 				 if (type.equals("amenity")) 
 				 {
-					 TaskConstraintAmenity ta = (TaskConstraintAmenity)tc;
+					 TaskConstraintPOI ta = (TaskConstraintPOI)tc;
 					 m.put("taskpoi",ta.getText());
 				 }
 				 else if (type.equals("date"))
@@ -163,19 +163,19 @@ public class TaskList extends ExpandableListActivity {
         	myTask1.setName("Essen kaufen");
         	myTask1.setDescription("essen halt");
         	myTask1.addConstraint(new TaskConstraintLocation(new Place(2,3)));
-        	myTask1.addConstraint(new TaskConstraintAmenity(new POICode(POICode.AMENITY_ARCHITECT_OFFICE)));
+        	myTask1.addConstraint(new TaskConstraintPOI(new POICode(POICode.AMENITY_ARCHITECT_OFFICE)));
         	myTask1.addConstraint(new TaskConstraintDate(new Date(110,2,17)));
         	Task myTask2 = new Task();
         	myTask2.setName("Geld holen");
         	myTask2.setDescription("fuer mehr essen");
         	myTask2.addConstraint(new TaskConstraintLocation(new Place(3,4)));
-        	myTask2.addConstraint(new TaskConstraintAmenity(new POICode(POICode.AMENITY_ARTS_CENTRE)));
+        	myTask2.addConstraint(new TaskConstraintPOI(new POICode(POICode.AMENITY_ARTS_CENTRE)));
         	myTask2.addConstraint(new TaskConstraintDate(new Date(110,2,12)));
         	Task myTask3 = new Task();
         	myTask3.setName("Kleider kaufen");
         	myTask3.setDescription("alte kleider zu klein");
         	myTask3.addConstraint(new TaskConstraintLocation(new Place(4,5)));
-        	myTask3.addConstraint(new TaskConstraintAmenity(new POICode(POICode.AMENITY_ATM)));
+        	myTask3.addConstraint(new TaskConstraintPOI(new POICode(POICode.AMENITY_ATM)));
         	myTask3.addConstraint(new TaskConstraintDate(new Date(110,2,23)));
 	        
 	        taskslist.add(myTask1);

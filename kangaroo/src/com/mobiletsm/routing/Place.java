@@ -23,19 +23,25 @@ public class Place {
 	/**
 	 * 
 	 */
-	public static long UNDEFINED = -1;
+	public static long ID_UNDEFINED = -1;
 	
 	
 	/**
 	 * id of corresponding open street map node 
 	 */
-	protected long osmNodeId;
+	protected long osmNodeId = ID_UNDEFINED;
 	
 	
 	/**
 	 * true if corresponding open street map node is a street node
 	 */
-	protected boolean isOsmStreetNode;
+	protected boolean isOsmStreetNode = false;
+	
+	
+	/**
+	 * 
+	 */
+	protected long nearestOsmStreetNodeId = ID_UNDEFINED;
 	
 	
 	/**
@@ -64,7 +70,7 @@ public class Place {
 	
 	public Place() {
 		super();
-		update(UNDEFINED, UNDEFINED);
+		update(ID_UNDEFINED, ID_UNDEFINED);
 	}
 	
 	
@@ -108,11 +114,13 @@ public class Place {
 		this.isOsmStreetNode = place.isOsmStreetNode;
 	}
 	
+	
 	public String serialize()
 	{
 		Gson myJson = new Gson();
 		return myJson.toJson(this);	
 	}
+	
 	
 	public static Place deserialize(String text)
 	{
@@ -121,7 +129,7 @@ public class Place {
 	}
 	
 	
-	public void update(Node node, boolean isOsmStreetNode) {
+	private void update(Node node, boolean isOsmStreetNode) {
 		this.latitude = node.getLatitude();
 		this.longitude = node.getLongitude();
 		this.osmNodeId = node.getId();
@@ -129,14 +137,32 @@ public class Place {
 	}
 	
 	
-	public void update(double latitude, double longitude) {
+	private void update(double latitude, double longitude) {
 		this.latitude = latitude;
 		this.longitude = longitude;
-		this.osmNodeId = UNDEFINED;
+		this.osmNodeId = ID_UNDEFINED;
 		this.isOsmStreetNode = false;		
 	}
 	
 		
+	/**
+	 * 
+	 * @param id
+	 */
+	public void setNearestOsmStreetNodeId(long id) {
+		nearestOsmStreetNodeId = id;
+	}
+	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public long getNearestOsmStreetNodeId() {
+		return nearestOsmStreetNodeId;
+	}	
+	
+	
 	/**
 	 * returns the open street map node id
 	 * 
@@ -153,7 +179,7 @@ public class Place {
 	 * @return
 	 */
 	public boolean isOsmNode() {
-		return (osmNodeId != UNDEFINED);
+		return (osmNodeId != ID_UNDEFINED);
 	}
 
 	
@@ -164,6 +190,16 @@ public class Place {
 	public boolean isOsmStreetNode() {
 		return isOsmStreetNode;
 	}
+	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean hasNearestOsmStreetNode() {
+		return (nearestOsmStreetNodeId != ID_UNDEFINED);
+	}
+	
 	
 	/**
 	 * returns the latitude of this place
@@ -208,19 +244,8 @@ public class Place {
 		if (name != null) {
 			return name;
 		} else {
-			return String.format(Locale.US, "%.5f,%.5f", latitude, longitude);
+			return String.format(Locale.US, "Place: {lat = %.7f, lon = %.7f}", latitude, longitude);
 		}
-	}
-	
-	
-	/* TODO: remove this method to be independent from TSM */
-	/**
-	 * returns the position of this place as an TSM LatLon object
-	 * 
-	 * @return
-	 */
-	public LatLon getLatLon() {
-		return new LatLon(getLatitude(), getLongitude());
 	}
 	
 	
@@ -293,4 +318,84 @@ public class Place {
 		return true;
 	}
 
+
+	/* re-implementation of equals() and hashCode() to guarantee
+	 * correct behavior in HashTables and HashMaps  */
+	
+	@Override
+	public boolean equals(Object object) {
+		/* return false if object given is not a Place */
+		if (!(object instanceof Place)) {
+			return false;
+		}
+		
+		Place place = (Place)object;
+		
+		/* consider places with different hash codes as unequal */
+		if (hashCode() != place.hashCode()) {
+			return false;
+		}
+		
+		boolean this_isOsmNode = this.isOsmNode();
+		boolean place_isOsmNode = place.isOsmNode();
+
+		boolean this_hasNearestOsmStreetNode = this.hasNearestOsmStreetNode();
+		boolean place_hasNearestOsmStreetNode = place.hasNearestOsmStreetNode();
+		
+		boolean result = false;
+		
+		if (this_isOsmNode && place_isOsmNode) {
+			/* consider places with same OpenStreetMap node as equal */
+			if (getOsmNodeId() == place.getOsmNodeId()) {
+				result = true;
+			}
+		} else if (this_hasNearestOsmStreetNode && place_hasNearestOsmStreetNode) {
+			/* consider places with same nearest OpenStreetMap street node as equal */
+			if (getNearestOsmStreetNodeId() == place.getNearestOsmStreetNodeId()) {
+				result = true;
+			}
+		} else {
+			int this_lat = getHashForDouble(this.getLatitude());
+			int this_lon = getHashForDouble(this.getLongitude());
+			int place_lat = getHashForDouble(this.getLatitude());
+			int place_lon = getHashForDouble(this.getLongitude());
+			
+			/* consider places with same hash for latitude 
+			 * and longitude as equal */
+			if (this_lat == place_lat && this_lon == place_lon) {
+				result = true;
+			}
+		}
+		
+		return result;
+	}
+	
+	
+	@Override
+	public int hashCode() {
+		
+		/* if a node is associated with this place, use
+		 * its node id as hash code */
+		if (isOsmNode()) {
+			return (new Long(getOsmNodeId())).hashCode();
+		}
+		
+		/* if a nearest street node is associated with this
+		 * place, use id if this node as hash code */
+		if (hasNearestOsmStreetNode()) {
+			return (new Long(getNearestOsmStreetNodeId())).hashCode();
+		}
+		
+		/* use coordinates as hash */
+		int latHash = getHashForDouble(latitude);
+		int lonHash = getHashForDouble(longitude);
+		return (new Long(latHash + lonHash)).hashCode();
+		
+	}
+	
+	
+	public static int getHashForDouble(double value) {
+		return (int)(value * 1E7);
+	}
+	
 }

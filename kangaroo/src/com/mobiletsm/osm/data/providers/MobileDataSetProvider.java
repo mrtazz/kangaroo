@@ -6,8 +6,10 @@ import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 import org.openstreetmap.travelingsalesman.routing.IVehicle;
 
 import com.mobiletsm.osm.data.MobileInterfaceDataSet;
-import com.mobiletsm.osm.data.adapters.MDSDatabaseAdapter;
+import com.mobiletsm.osm.data.adapters.RoutingDBAdapter;
+import com.mobiletsm.osm.data.adapters.RoutingDataAdapter;
 import com.mobiletsm.osm.data.searching.POINodeSelector;
+import com.mobiletsm.routing.Limits;
 import com.mobiletsm.routing.Place;
 
 /**
@@ -31,14 +33,14 @@ public abstract class MobileDataSetProvider {
 	/**
 	 * 
 	 */
-	protected MDSDatabaseAdapter adapter;
+	protected RoutingDataAdapter adapter;
 	
 	
 	/**
-	 * create an instance of MobileDataSetProvider using an specific MDSDatabaseAdapter
+	 * create an instance of MobileDataSetProvider using an specific RoutingDataAdapter
 	 * @param adapter
 	 */
-	public MobileDataSetProvider(MDSDatabaseAdapter adapter) {
+	public MobileDataSetProvider(RoutingDataAdapter adapter) {
 		super();
 		this.adapter = adapter;
 	}
@@ -64,10 +66,13 @@ public abstract class MobileDataSetProvider {
 	public abstract void close();
 	
 	
-	public abstract Node getNearestStreetNode(Place center);
+	public abstract Place getNearestStreetNode(Place center);
 	
 
-	public abstract Node getNearestStreetNode(Place center, boolean updateCenter);
+	public abstract Place getNearestStreetNode(Place center, boolean updateCenter);
+	
+	
+	public abstract Place getNearestPOINode(Place center, POINodeSelector selector, Limits limits);
 	
 	
 	public abstract MobileInterfaceDataSet getCompleteDataSet();

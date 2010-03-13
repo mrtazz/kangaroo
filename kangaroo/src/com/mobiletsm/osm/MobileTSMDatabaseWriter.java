@@ -21,6 +21,7 @@ import org.openstreetmap.osmosis.core.domain.v0_6.WayNode;
 import org.openstreetmap.travelingsalesman.routing.IVehicle;
 
 import com.mobiletsm.osm.data.searching.CombinedSelector;
+import com.mobiletsm.osm.data.searching.POICode;
 import com.mobiletsm.osm.data.searching.POINodeSelector;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
 import com.mobiletsm.routing.AllStreetVehicle;
@@ -34,6 +35,7 @@ public class MobileTSMDatabaseWriter {
 	 * 			id integer primary key
 	 * 			lat real not null			
 	 * 			lon real not null
+	 * 			tags text not null
 	 * 			ways text not null
 	 * 			type integer not null
 	 * 
@@ -43,14 +45,19 @@ public class MobileTSMDatabaseWriter {
 	 * 			lat real not null
 	 * 			lon real not null
 	 * 			poicode integer not null
+	 * 			tags text not null
 	 * 			nst integer not null
 	 * 
 	 * 
 	 * table: ways_0
-	 * 
-	 * 
-	 * 			maxspeed integer
-	 * 
+	 *			id integer primary key 
+	 * 			name text not null
+	 * 			highway not null
+	 * 			maxspeed integer not null
+	 * 			tags text not null
+	 * 			flags integer not null
+	 * 			waynodes text not null
+	 * 			waynodes_red text not null
 	 * 
 	 */
 	
@@ -98,7 +105,7 @@ public class MobileTSMDatabaseWriter {
 	
 	private void log(String msg) {
 		if (logStream != null) {
-			logStream.println("MobileTSMDatabaseWriter: " + msg);
+			logStream.println(msg);
 		}
 	}
 	
@@ -137,12 +144,16 @@ public class MobileTSMDatabaseWriter {
 	/**
 	 * close the database connection if open
 	 */
-	public void closeDatabase() {
+	public boolean closeDatabase() {
 		try {
 			if (connection != null && !connection.isClosed()) {
 				connection.close();
+				return true;
+			} else {
+				return false;
 			}
 		} catch (SQLException e) {
+			return false;
 		}
 	}
 	
@@ -155,8 +166,7 @@ public class MobileTSMDatabaseWriter {
 			}
 		} catch (SQLException e1) {
 			throw new RuntimeException("MobileTSMDatabaseWriter.writeDatabase():" + e1.getMessage());
-		}
-		
+		}		
 		
 		log("writeDatabase: input: # nodes = " + OsmHelper.getNumberOfNodes(map));
 		log("writeDatabase: input: # ways = " + OsmHelper.getNumberOfWays(map));
@@ -199,7 +209,7 @@ public class MobileTSMDatabaseWriter {
 				ps.setDouble(2, node.getLatitude());
 				ps.setDouble(3, node.getLongitude());
 				/* set tags */
-				String tagString = OsmHelper.packTagsToString(tags);
+				String tagString = OsmHelper.serializeTags(tags);
 				ps.setString(4, tagString);				
 				/* set ways for node */				
 				ps.setString(5, OsmHelper.packLongsToString(OsmHelper.getWayIdsForNode(completeMap, node)));				
@@ -255,7 +265,7 @@ public class MobileTSMDatabaseWriter {
 				if (highway == null) highway = "";
 				ps.setString(4, highway);
 				/* set tags */
-				String tagString = OsmHelper.packTagsToString(tags);				
+				String tagString = OsmHelper.serializeTags(tags);				
 				if (tagString == null) tagString = "";
 				ps.setString(3, tagString);				
 					
@@ -264,23 +274,7 @@ public class MobileTSMDatabaseWriter {
 				ps.setString(6, wayNodeString);
 				
 				/* set reduced list of way nodes */
-				MobileWay newWay = new MobileWay(way.getId());
-				double length = 0;
-				WayNode lastWayNode = null;
-				for (WayNode wayNode : way.getWayNodes()) {
-					if (lastWayNode != null) {
-						length += LatLon.distanceInMeters(completeMap.getNodeByID(lastWayNode.getNodeId()), 
-								completeMap.getNodeByID(wayNode.getNodeId()));
-						if (!intermediateWayNodes.contains(wayNode.getNodeId())) {
-							newWay.addWayNode(wayNode.getNodeId(), length);
-							length = 0;
-						}
-					} else {
-						newWay.addWayNode(wayNode.getNodeId(), 0);
-					}
-					lastWayNode = wayNode;
-				}	
-				ps.setString(7, OsmHelper.packWayNodesToString(newWay));					
+				ps.setString(7, OsmHelper.serializeMobileWayNodes(OsmHelper.getReducedWay(completeMap, intermediateWayNodes, way)));					
 				ps.execute();
 			}
 			
@@ -310,5 +304,318 @@ public class MobileTSMDatabaseWriter {
 		}
 		
 	}
+	
+	
+	
+	public static final int STREET_NODE_TYPE_ESSENTIAL = 0;
+	
+	
+	public static final int STREET_NODE_TYPE_INTERMEDIATE = 1;
+	
+	
+	private static final String createTable_poi_nodes_0 =
+		"CREATE TABLE IF NOT EXISTS poi_nodes_0 (" +
+		/* id of node */
+		"id integer primary key," +
+		/* latitude of node */ 
+		"lat real not null," +
+		/* longitude of node */
+		"lon real not null," +
+		/* poi code of node */
+		"poicode integer not null," +
+		/* tag list of node */
+		"tags text not null," +
+		/* id of nearest street node to this node */
+		"nst integer not null" +
+	");";
+		
+		
+	private static final String createTable_street_nodes_0 =
+		"CREATE TABLE IF NOT EXISTS street_nodes_0 (" +
+		/* id of street node */
+		"id integer primary key," +
+		/* latitude of street node */
+		"lat real not null," +
+		/* longitude of street node */
+		"lon real not null," +
+		/* tag list of street node */
+		"tags text not null," +
+		/* way list of street node */
+		"ways text not null," +
+		/* type of street node */
+		"type integer not null" +
+	");";
+	
+	
+	private static final String createTable_ways_0 =
+		"CREATE TABLE IF NOT EXISTS ways_0 (" +
+		/* id of way */
+		"id integer primary key," +
+		/* name of way (from tags) */
+		"name text not null," +
+		/* highway type (from tags) */
+		"highway text " +
+		"not null," +
+		/* maximum speed on way (from tags) */
+		"maxspeed integer not null," +
+		/* tag list */
+		"tags text not null," +
+		/* flags (from tags) */
+		"flags integer not null," +
+		/* unreduced list of way nodes */
+		"waynodes text not null," +
+		/* reduced list of way nodes */
+		"waynodes_red text not null" +
+	");";
+	
+	
+	private static final String createTable_index =
+		"CREATE TABLE IF NOT EXISTS index (" +
+		/*  */
+		"id integer primary key," +
+		/* keys */
+		"key text not null," + 
+		/* values */
+		"value text not null" + 
+	");";
+	
+	
+	private static final String createTable_android_metadata = 
+		"CREATE TABLE \"android_metadata\" (\"locale\" TEXT DEFAULT 'en_US')";
+	
+	
+	private static final String insert_android_metadata = 
+		"INSERT INTO \"android_metadata\" VALUES ('en_US')";
+	
+	
+	/**
+	 * writes the given map to a database using data model V2
+	 * @param map
+	 */
+	public void writeDatabaseV2(IDataSet map) {
+		
+		try {
+			if (connection == null || connection.isClosed()) {
+				throw new RuntimeException("MobileTSMDatabaseWriter.writeDatabase(): No connection opened");
+			}
+		} catch (SQLException e1) {
+			throw new RuntimeException("MobileTSMDatabaseWriter.writeDatabase():" + e1.getMessage());
+		}		
+		
+		log("writeDatabaseV2: input: # nodes = " + OsmHelper.getNumberOfNodes(map));
+		log("writeDatabaseV2: input: # ways = " + OsmHelper.getNumberOfWays(map));
+		
+		
+		try {
+			/* prepare statement */
+			Statement statement = connection.createStatement();
+			connection.setAutoCommit(false);
+			PreparedStatement ps;
+			
+			/* drop and recreate tables in database */
+			statement.executeUpdate("drop table if exists street_nodes_0;");
+			statement.executeUpdate("drop table if exists poi_nodes_0;");
+			statement.executeUpdate("drop table if exists ways_0;");
+			statement.executeUpdate(createTable_street_nodes_0);
+			statement.executeUpdate(createTable_poi_nodes_0);
+			statement.executeUpdate(createTable_ways_0);
+			
+			Selector poiNodeSelector = new POINodeSelector();
+			
+			Selector routingVehicle = new AllStreetVehicle();			
+			IDataSet routingMap = OsmHelper.applyFilter(map, routingVehicle);			
+			Collection<Long> intermediateWayNodes = OsmHelper.getIntermediateWayNodes(routingMap);
+			
+			log("writeDatabaseV2: writing street nodes...");			
+			
+			/* write routing street nodes */
+			ps = connection.prepareStatement("INSERT INTO street_nodes_0 " +
+			"(id, lat, lon, tags, ways, type) VALUES (?, ?, ?, ?, ?, ?);");			
+			int numStreetNodes = 0;
+			int numIntermediateStreetNodes = 0;
+			int numEssentialStreetNode = 0;
+			Iterator<Node> streetNodes = routingMap.getNodes(Bounds.WORLD);
+			while (streetNodes.hasNext()) {
+				Node node = streetNodes.next();
+				
+				/* set node id */
+				ps.setLong(1, node.getId());
+				/* set latitude and longitude */
+				ps.setDouble(2, node.getLatitude());
+				ps.setDouble(3, node.getLongitude());
+				/* set tags */
+				ps.setString(4, OsmHelper.serializeTags(node.getTags()));
+				/* set ways */
+				ps.setString(5, OsmHelper.packLongsToString(OsmHelper.getWayIdsForNode(routingMap, node)));
+				/* set type of street node */
+				if (intermediateWayNodes.contains(node.getId())) {
+					ps.setInt(6, STREET_NODE_TYPE_INTERMEDIATE);
+					numIntermediateStreetNodes++;
+				} else {
+					ps.setInt(6, STREET_NODE_TYPE_ESSENTIAL);
+					numEssentialStreetNode++;
+				}				
+				
+				/* execute statement */
+				ps.execute();				
+				
+				numStreetNodes++;
+			}
+			
+			log("writeDatabaseV2: output: # street nodes = " + numStreetNodes);
+			log("writeDatabaseV2: output: # intermediate street nodes = " + numIntermediateStreetNodes);
+			log("writeDatabaseV2: output: # essential street nodes = " + numEssentialStreetNode);
+			
+			
+			
+			log("writeDatabaseV2: writing POI nodes...");	
+			
+			/* write POI nodes */
+			ps = connection.prepareStatement("INSERT INTO poi_nodes_0 " +
+					"(id, lat, lon, poicode, tags, nst) VALUES (?, ?, ?, ?, ?, ?);");	
+			int numPOINodes = 0;
+			Iterator<Node> poiNodes = map.getNodes(Bounds.WORLD);
+			while (poiNodes.hasNext()) {
+				Node node = poiNodes.next();
+				if (poiNodeSelector.isAllowed(map, node)) {
+					
+					/* get POI code of node */
+					POICode poiCode = POICode.createFromTags(node.getTags());
 
+					/* find nearest street node to this node */
+					Node nst = routingMap.getNearestNode(new LatLon(node.getLatitude(), node.getLongitude()), routingVehicle);
+					if (nst == null) {
+						throw new RuntimeException("writeDatabaseV2: ERROR: could not find nearest street node for nodeid:" + node.getId());
+					}
+					
+					/* set node id */
+					ps.setLong(1, node.getId());
+					/* set latitude and longitude */
+					ps.setDouble(2, node.getLatitude());
+					ps.setDouble(3, node.getLongitude());
+					/* set POI code */
+					ps.setInt(4, poiCode.getId());
+					/* set tags */
+					ps.setString(5, OsmHelper.serializeTags(node.getTags()));
+					/* set nearest street node id */
+					ps.setLong(6, nst.getId());
+					
+					/* execute statement */
+					ps.execute();					
+					
+					numPOINodes++;
+				}
+			}			
+			
+			log("writeDatabaseV2: output: # POI nodes = " + numPOINodes);
+			
+			
+			log("writeDatabaseV2: writing ways...");			
+			
+			/* write routing street nodes */
+			ps = connection.prepareStatement("INSERT INTO ways_0 (id, name, highway, maxspeed, " +
+					"flags, tags, waynodes, waynodes_red) VALUES (?, ?, ?, ?, ?, ?, ?, ?);");	
+			int numWays = 0;
+			Iterator<Way> ways = routingMap.getWays(Bounds.WORLD);
+			while (ways.hasNext()) {
+				Way way = ways.next();
+				Collection<Tag> tags = way.getTags();
+				
+				/* set way id */
+				ps.setLong(1, way.getId());				
+				/* set name if available */
+				String name = OsmHelper.getAndRemoveTag(tags, "name");
+				if (name == null) name = "";
+				ps.setString(2, name);
+				/* set highway */
+				String highway = OsmHelper.getAndRemoveTag(tags, "highway");
+				if (highway == null) highway = "";
+				ps.setString(3, highway);
+				/* set maximum speed */
+				String maxSpeedStr = OsmHelper.getAndRemoveTag(tags, "maxspeed");
+				try {
+					int maxSpeed = Integer.parseInt(maxSpeedStr);
+					ps.setInt(4, maxSpeed);
+				} catch (Exception e) { /* TODO: only catch specific exceptions */
+					/*  */
+					ps.setInt(4, 0);				
+				}
+				/* set tag flags */
+				int tagFlags = OsmHelper.getAndRemoveTagFlags(tags);
+				ps.setInt(5, tagFlags);
+				/* set tags */
+				String tagString = OsmHelper.serializeTags(tags);				
+				if (tagString == null) tagString = "";
+				ps.setString(6, tagString);									
+				/* set way nodes */
+				String wayNodeString = OsmHelper.packLongsToString(OsmHelper.getWayNodeIds(way));
+				ps.setString(7, wayNodeString);				
+				/* set reduced list of way nodes */
+				ps.setString(8, OsmHelper.serializeMobileWayNodes(OsmHelper.getReducedWay(routingMap, intermediateWayNodes, way)));					
+				ps.execute();
+				
+				numWays++;
+			}
+			
+			log("writeDatabaseV2: output: # ways = " + numWays);
+			
+			connection.setAutoCommit(true);
+			
+			
+			/* write android metadata table */
+			statement.execute(createTable_android_metadata);
+			statement.execute(insert_android_metadata);
+			
+			
+			/* write database version */
+			//ps = connection.prepareStatement("");
+			
+			
+						
+		} catch (Exception e) {			
+			e.printStackTrace();
+		}		
+		
+	}
+
+	
+	public void readDatabaseV2() {
+		try {
+			/* prepare statement */
+			Statement statement = connection.createStatement();
+			
+			log("readDatabaseV2: reading and summarizing database...");
+			
+			/* check written database rows */
+			ResultSet rs = statement.executeQuery("SELECT * FROM street_nodes_0;");
+			int numStreetNodes = 0;
+			int numIntermediateStreetNodes = 0;
+			int numEssentialStreetNode = 0;
+		    while(rs.next()) {
+		    	numStreetNodes++;
+		    	int type = rs.getInt("type");
+		    	if (type == STREET_NODE_TYPE_ESSENTIAL) {
+		    		numEssentialStreetNode++;
+		    	} else if (type == STREET_NODE_TYPE_INTERMEDIATE) {
+		    		numIntermediateStreetNodes++;
+		    	}
+		    }
+		    log("readDatabaseV2: database: # street nodes = " + numStreetNodes);
+			log("readDatabaseV2: database: # intermediate street nodes = " + numIntermediateStreetNodes);
+			log("readDatabaseV2: database: # essential street nodes = " + numEssentialStreetNode);
+			
+			
+			rs = statement.executeQuery("SELECT * FROM poi_nodes_0;");
+			int numPOINodes = 0;
+		    while(rs.next()) {
+		    	numPOINodes++;
+		    }
+		    log("readDatabaseV2: database: # POI nodes = " + numPOINodes);
+		    
+		} catch (Exception e) {		/* TODO: catch specific exceptions */
+			
+		}
+	}
+	
+	
 }

@@ -13,6 +13,27 @@ import org.openstreetmap.osmosis.core.store.StoreReader;
 
 public class MobileNode extends Node {
 
+	/* additions introduced by MobileNode */
+	
+	public static final long ID_UNDEFINED = -1;
+	
+	
+	private long nearestStreetNodeId = ID_UNDEFINED;
+	
+	
+	public void setNearestStreetNodeId(long id) {
+		nearestStreetNodeId = id;
+	}
+	
+	
+	public long getNearestStreetNodeId() {
+		return nearestStreetNodeId;
+	}
+	
+	
+	
+	/* constructors of superclass */
+	
 	public MobileNode(CommonEntityData entityData, double latitude,
 			double longitude) {
 		super(entityData, latitude, longitude);
@@ -53,6 +74,9 @@ public class MobileNode extends Node {
 		// TODO Auto-generated constructor stub
 	}
 	
+	
+	
+	/* simple constructor introduced by MobileNode */
 	
 	public MobileNode(long id, double lat, double lon) {
 		super(id, 0, (Date)null, null, 0, lat, lon);

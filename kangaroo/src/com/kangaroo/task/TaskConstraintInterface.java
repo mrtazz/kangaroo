@@ -5,8 +5,23 @@ package com.kangaroo.task;
  * @author alex
  *
  */
-public interface TaskConstraintInterface 
-{
+public interface TaskConstraintInterface {
+	
+	public static final String TYPE_POI = "poi";
+	
+	public static final String TYPE_DATE = "date";
+	
+	public static final String TYPE_DAYTIME = "daytime";
+	
+	public static final String TYPE_LOCATION = "location";
+	
+	public static final String TYPE_PENDING_TASK = "pending";
+	
+	public static final String TYPE_DURATION = "duration";
+	
+	public static final String TYPE_PRIORITY = "priority";
+	
+		
 	
 	/**
 	 * This method returns the type of this concrete TaskConstraint.

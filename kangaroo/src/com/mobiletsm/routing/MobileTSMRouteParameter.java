@@ -50,21 +50,23 @@ public class MobileTSMRouteParameter extends RouteParameter {
 		/* distance of a routing step in meters */
 		double dist;
 		
-		/* no parameters to calculate if no route is given */
 		if (route == null) {
-			this.length = UNDEFINED;
-			this.durationOfTravel = UNDEFINED;
+			/* no parameters to calculate if no route is given */
+			this.length = PARAMETER_UNDEFINED;
+			this.durationOfTravel = PARAMETER_UNDEFINED;
 			return;
 		}
 		
+		/* get the routing steps */
 		List<RoutingStep> steps = ((Route)route).getRoutingSteps();
 		Iterator<RoutingStep> steps_itr = steps.iterator();
 		
 		String lastStreetName = null;
 		
+		/* iterate over all routing steps */
 		while (steps_itr.hasNext()) {
 			RoutingStep step = steps_itr.next();
-			Way way = step.getWay();			
+			Way way = step.getWay();
 			
 			if (way instanceof MobileWay) {
 				dist = ((MobileWay)way).getPathLength(step.getStartNode().getId(), step.getEndNode().getId());
@@ -94,7 +96,7 @@ public class MobileTSMRouteParameter extends RouteParameter {
 		
 		this.length = length;
 		if (vehicle == null) {
-			this.durationOfTravel = UNDEFINED;
+			this.durationOfTravel = PARAMETER_UNDEFINED;
 		} else {
 			this.durationOfTravel = duration;
 		}

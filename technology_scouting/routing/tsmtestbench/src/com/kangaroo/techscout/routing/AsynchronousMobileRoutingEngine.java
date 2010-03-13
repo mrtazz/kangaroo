@@ -17,7 +17,7 @@ import org.openstreetmap.travelingsalesman.routing.routers.MultiTargetDijkstraRo
 
 import com.mobiletsm.osm.OsmHelper;
 import com.mobiletsm.osm.data.MobileInterfaceDataSet;
-import com.mobiletsm.osm.data.adapters.MDSAndroidDatabaseAdapter;
+import com.mobiletsm.osm.data.adapters.RoutingAndroidSQLiteAdapter;
 import com.mobiletsm.osm.data.providers.DatabaseMDSProvider;
 import com.mobiletsm.osm.data.providers.MobileDataSetProvider;
 import com.mobiletsm.osm.data.searching.POINodeSelector;
@@ -106,12 +106,12 @@ public class AsynchronousMobileRoutingEngine extends AsynchronousRoutingEngine {
 					
 					/*  */
 					listener.onStatusChanged(new SubJobStartedStatusChange(JOBID_GET_NEAREST_STREET_NODE));
-					fromNodeId = provider.getNearestStreetNode(from, true).getId();
+					fromNodeId = provider.getNearestStreetNode(from, true).getOsmNodeId();
 					listener.onStatusChanged(new SubJobDoneStatusChange(JOBID_GET_NEAREST_STREET_NODE));
 										
 					/*  */				
 					listener.onStatusChanged(new SubJobStartedStatusChange(JOBID_GET_NEAREST_STREET_NODE));
-					toNodeId = provider.getNearestStreetNode(to, true).getId();
+					toNodeId = provider.getNearestStreetNode(to, true).getOsmNodeId();
 					listener.onStatusChanged(new SubJobDoneStatusChange(JOBID_GET_NEAREST_STREET_NODE));
 
 					listener.onStatusChanged(new SubJobStartedStatusChange(JOBID_CREATE_DATASET));
@@ -123,12 +123,6 @@ public class AsynchronousMobileRoutingEngine extends AsynchronousRoutingEngine {
 					Route route = router.route(routingDataSet, routingDataSet.getNodeByID(toNodeId), 
 							routingDataSet.getNodeByID(fromNodeId), vehicle);						
 
-					if (route != null) {
-						System.out.println("route from nodeid:" + fromNodeId + 
-								" to nodeid:" + toNodeId + ", dist = " + 
-								OsmHelper.getRouteLength(route));
-					}
-					
 					listener.onStatusChanged(new JobDoneStatusChange(JOBID_ROUTE_FROMTO, route));
 				} catch (Exception exception) {
 					listener.onStatusChanged(new JobFailedStatusChange(JOBID_ROUTE_FROMTO, exception));
@@ -196,7 +190,7 @@ public class AsynchronousMobileRoutingEngine extends AsynchronousRoutingEngine {
 		if (dataSource.getScheme() == null || !dataSource.getScheme().startsWith("file")) 
 			throw new RuntimeException("scheme for data source not supported.");
 		
-		dsProvider = new DatabaseMDSProvider(new MDSAndroidDatabaseAdapter());
+		dsProvider = new DatabaseMDSProvider(new RoutingAndroidSQLiteAdapter());
 		RunnableInitializer job = new RunnableInitializer(workingThreadStatusListener, dsProvider, dataSource);
 		Thread worker = new Thread(job);
 		worker.setName("MobileRoutingEngine.init()");
@@ -260,7 +254,7 @@ public class AsynchronousMobileRoutingEngine extends AsynchronousRoutingEngine {
 			listener.onStatusChanged(new JobStartedStatusChange(JOBID_GET_NEAREST_STREET_NODE));
 			synchronized (provider) {
 				try {
-					Long nodeId = provider.getNearestStreetNode(center).getId();
+					Long nodeId = provider.getNearestStreetNode(center).getOsmNodeId();
 					listener.onStatusChanged(new JobDoneStatusChange(JOBID_GET_NEAREST_STREET_NODE, nodeId));
 				} catch (Exception exception) {
 					listener.onStatusChanged(new JobFailedStatusChange(JOBID_GET_NEAREST_STREET_NODE, exception));

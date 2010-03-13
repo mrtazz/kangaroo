@@ -18,27 +18,47 @@ public class POINodeSelector implements Selector {
 	private Map<String, Integer> poiCodeMap = null;
 	
 	
-	private POICode poiNode = null;
+	private POICode poiCode = null;
 	
 	
+	/**
+	 * creates a new POINodeSelector allowing only POI nodes of the given type
+	 * @param id
+	 */
+	public POINodeSelector(int id) {
+		this(new POICode(id));
+	}
+	
+	
+	/**
+	 * creates a new POINodeSelector allowing only POI nodes of the given type
+	 * @param type
+	 */
 	public POINodeSelector(String type) {
 		this(new POICode(type));
 	}
 	
 	
+	/**
+	 * creates a new POINodeSelector allowing every type of POI node
+	 */
 	public POINodeSelector() {
 		super();
 	}
 	
 	
-	public POINodeSelector(POICode poiNode) {
+	/**
+	 * creates a new POINodeSelector allowing only POI nodes of the given type
+	 * @param poiCode
+	 */
+	public POINodeSelector(POICode poiCode) {
 		super();
-		this.poiNode = poiNode;
+		this.poiCode = poiCode;
 	}
 	
 	
-	public POICode getPOINode() {
-		return poiNode;
+	public POICode getPOICode() {
+		return poiCode;
 	}
 	
 	
@@ -47,7 +67,7 @@ public class POINodeSelector implements Selector {
 		/* iterate over all tags of given node */
 		for (Tag tag : node.getTags()) {
 			String tagString = POICode.getTagString(tag);
-			if (poiNode == null) {
+			if (poiCode == null) {
 				/* allow every POI node,
 				 * load POI code map unless already done */
 				if (poiCodeMap == null) {
@@ -58,7 +78,7 @@ public class POINodeSelector implements Selector {
 				}
 			} else {
 				/* only allow POI nodes of specified type */
-				if (tagString.equals(poiNode.getType())) {
+				if (tagString.equals(poiCode.getType())) {
 					return true;
 				}
 			}
@@ -72,7 +92,7 @@ public class POINodeSelector implements Selector {
 		boolean isPOINodeSelector = (object instanceof POINodeSelector);
 		if (isPOINodeSelector) {
 			POINodeSelector selector = (POINodeSelector)object;
-			return poiNode.equals(selector.getPOINode());
+			return poiCode.equals(selector.getPOICode());
 		} else {
 			return false;
 		}

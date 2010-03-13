@@ -13,7 +13,7 @@ import com.kangaroo.calendar.CalendarLibrary;
 import com.kangaroo.system.ServiceCallLocation;
 import com.kangaroo.system.ServiceCallTick;
 import com.kangaroo.task.Task;
-import com.kangaroo.task.TaskConstraintAmenity;
+import com.kangaroo.task.TaskConstraintPOI;
 import com.kangaroo.task.TaskConstraintDate;
 import com.kangaroo.task.TaskConstraintDayTime;
 import com.kangaroo.task.TaskConstraintInterface;
@@ -136,18 +136,19 @@ public class ActivityBuildPlan extends Activity
 	        	generateEvents();
 	        	/*
 	        	Task myTask = new Task();
+
 	        	myTask.setName("Name1");
 	        	myTask.setDescription("Description1");
 	        	myTask.addConstraint(new TaskConstraintLocation(new Place(0,0)));
-	        	myTask.addConstraint(new TaskConstraintAmenity(new POICode(POICode.AMENITY_ARCHITECT_OFFICE)));
+	        	myTask.addConstraint(new TaskConstraintPOI(new POICode(POICode.AMENITY_ARCHITECT_OFFICE)));
 	        	myTask.addConstraint(new TaskConstraintDate(new Date(110,2,4)));
 	        	tm.addTask(myTask);
-	        	
+
 	        	myTask = new Task();
 	        	myTask.setName("Name2");
 	        	myTask.setDescription("Description2");
 	        	myTask.addConstraint(new TaskConstraintLocation(new Place(0,0)));
-	        	myTask.addConstraint(new TaskConstraintAmenity(new POICode(POICode.SHOP_HAIRDRESSER)));
+	        	myTask.addConstraint(new TaskConstraintPOI(new POICode(POICode.SHOP_HAIRDRESSER)));
 	        	myTask.addConstraint(new TaskConstraintDate(new Date(110,2,4)));
 	        	myTask.addConstraint(new TaskConstraintDayTime(new Date(0,0,0,8,0), new Date(0,0,0,17,0)));
 	        	tm.addTask(myTask);

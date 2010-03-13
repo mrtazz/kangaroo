@@ -8,16 +8,16 @@ import com.mobiletsm.osm.data.searching.POICode;
  * 
  * @author alex
  */
-public class TaskConstraintAmenity implements TaskConstraintInterface
+public class TaskConstraintPOI implements TaskConstraintInterface
 {
 	private POICode myPOI;
 	
-	public TaskConstraintAmenity()
+	public TaskConstraintPOI()
 	{
 		
 	}
 	
-	public TaskConstraintAmenity(POICode id)
+	public TaskConstraintPOI(POICode id)
 	{
 		myPOI = id;
 	}

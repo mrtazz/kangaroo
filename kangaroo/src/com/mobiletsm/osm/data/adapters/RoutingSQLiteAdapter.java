@@ -21,11 +21,12 @@ import org.openstreetmap.osmosis.core.domain.v0_6.Way;
 import org.openstreetmap.osmosis.core.domain.v0_6.WayNode;
 
 import com.mobiletsm.osm.OsmHelper;
+import com.mobiletsm.osm.data.searching.POICode;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileNode;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
 import com.mobiletsm.routing.Place;
 
-public class MDSSQLiteDatabaseAdapter extends MDSDatabaseAdapter {
+public class RoutingSQLiteAdapter extends RoutingDBAdapter {
 
 	
 	private Connection connection = null;
@@ -71,12 +72,14 @@ public class MDSSQLiteDatabaseAdapter extends MDSDatabaseAdapter {
 	
 
 	@Override
-	public void loadAllStreetNodesAround(Place center, double radius) {
+	public int loadAllStreetNodesAround(Place center, double radius) {
 		try {
 			Statement statement = connection.createStatement();			
 			String sql = SQL_loadAllStreetNodesAround(center, 0);			
-			ResultSet rs = statement.executeQuery(sql);			
+			ResultSet rs = statement.executeQuery(sql);	
+			int counter = 0;
 			while(rs.next()) {
+				counter++;
 				long id = rs.getLong("id");
 				double lat = rs.getDouble("lat");
 				double lon = rs.getDouble("lon");				
@@ -86,9 +89,11 @@ public class MDSSQLiteDatabaseAdapter extends MDSDatabaseAdapter {
 				}	
 			}			
 			rs.close();
-			statement.close();			
+			statement.close();
+			return counter;
 		} catch (Exception e) {
 			e.printStackTrace();
+			return 0;
 		}
 	}
 
@@ -152,7 +157,7 @@ public class MDSSQLiteDatabaseAdapter extends MDSDatabaseAdapter {
 				String name = rs.getString("name");
 				String highway = rs.getString("highway");
 				String tags = rs.getString("tags");
-				String wn = rs.getString("wn");	
+				String wn = rs.getString("waynodes");	
 				Way way = new MobileWay(id, tags, wn);	
 				OsmHelper.addSpecificTags(way, name, highway);
 				addWayToMap(completeWays, way);
@@ -181,7 +186,7 @@ public class MDSSQLiteDatabaseAdapter extends MDSDatabaseAdapter {
 				String name = rs.getString("name");
 				String highway = rs.getString("highway");
 				String tags = rs.getString("tags");
-				String wn_red = rs.getString("wn_red");
+				String wn_red = rs.getString("waynodes_red");
 				Way way = new MobileWay(id, tags, wn_red);
 				OsmHelper.addSpecificTags(way, name, highway);
 				addWayToMap(reducedWays, way);
@@ -195,10 +200,10 @@ public class MDSSQLiteDatabaseAdapter extends MDSDatabaseAdapter {
 
 	
 	@Override
-	public void loadRoutingStreetNodes() {
+	public void loadAllEssentialStreetNodes() {
 		try {
 			Statement statement = connection.createStatement();
-			ResultSet rs = statement.executeQuery(SQL_loadRoutingStreetNodes());			
+			ResultSet rs = statement.executeQuery(sql_loadAllEssentialStreetNodes());			
 			while(rs.next()) {
 				long id = rs.getLong("id");
 				double lat = rs.getDouble("lat");
@@ -218,11 +223,63 @@ public class MDSSQLiteDatabaseAdapter extends MDSDatabaseAdapter {
 
 
 	@Override
-	public void loadNodes(long nodeId1, long nodeId2, boolean loadTags) {
-		// TODO Auto-generated method stub
-		
+	public void loadStreetNodes(long nodeId1, long nodeId2, boolean loadTags) {
+		try {
+			Statement statement = connection.createStatement();
+			ResultSet rs = statement.executeQuery(sql_loadStreetNodes(nodeId1, nodeId2, loadTags));			
+			while(rs.next()) {
+				long id = rs.getLong("id");
+				double lat = rs.getDouble("lat");
+				double lon = rs.getDouble("lon");				
+				Node node = new MobileNode(id, lat, lon);
+				
+				if (loadTags) {
+					String tags = rs.getString("tags");
+					node.getTags().addAll(OsmHelper.unpackStringToTags(tags));
+				}
+				
+				if (!streetNodes.containsKey(node.getId())) {
+					streetNodes.put(node.getId(), node);
+				}
+			}			
+			rs.close();
+			statement.close();			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
 	}
 
 
+	@Override
+	public int loadPOINodes(POICode poiCode) {
+		try {
+			Statement statement = connection.createStatement();
+			ResultSet rs = statement.executeQuery(sql_loadPOINodes(poiCode));	
+			int counter = 0;
+			while(rs.next()) {
+				counter++;
+				long id = rs.getLong("id");
+				double lat = rs.getDouble("lat");
+				double lon = rs.getDouble("lon");	
+				long nst = rs.getLong("nst");
+				MobileNode node = new MobileNode(id, lat, lon);
+
+				String tags = rs.getString("tags");
+				node.getTags().addAll(OsmHelper.unpackStringToTags(tags));
+				
+				node.setNearestStreetNodeId(nst);
+				
+				if (!poiNodes.containsKey(node.getId())) {
+					poiNodes.put(node.getId(), node);
+				}
+			}	
+			rs.close();
+			statement.close();
+			return counter;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}		
+	}
 
 }

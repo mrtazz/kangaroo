@@ -3,8 +3,10 @@ package com.kangaroo.task;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 
 import com.google.gson.Gson;
 
@@ -56,7 +58,7 @@ public class Task
 		{
 			if(constraintTypes[i].equalsIgnoreCase("amenity"))
 			{
-				myTask.addConstraint(serializer.fromJson(constraints[i], TaskConstraintAmenity.class));
+				myTask.addConstraint(serializer.fromJson(constraints[i], TaskConstraintPOI.class));
 			}
 			else if(constraintTypes[i].equalsIgnoreCase("date"))
 			{
@@ -125,7 +127,7 @@ public class Task
 			String tempJSON = "";
 			if(type.equalsIgnoreCase("amenity"))
 			{
-				TaskConstraintAmenity temp = (TaskConstraintAmenity)currentTask;
+				TaskConstraintPOI temp = (TaskConstraintPOI)currentTask;
 				tempJSON = serializer.toJson(temp);
 			}
 			else if(type.equalsIgnoreCase("date"))
@@ -225,5 +227,31 @@ public class Task
 			return 0;
 		}
 		return 1;
+	}
+	
+	
+	public List<TaskConstraintInterface> getConstraintsOfType(String type) {
+		List<TaskConstraintInterface> result = new ArrayList<TaskConstraintInterface>();
+		for (TaskConstraintInterface constraint : constraintSet) {
+			if (type.equalsIgnoreCase(constraint.getType())) {
+				result.add(constraint);
+			}
+		}
+		return result;
+	}
+	
+	
+	public boolean hasConstraintsOfType(String type) {
+		return (getConstraintsOfType(type).size() > 0);
+	}
+	
+	
+	
+	@Override
+	public String toString() {
+		if (name != null) {
+			return "Task: {name = " + name + "}";
+		}
+		return super.toString();
 	}
 }
