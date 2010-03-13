@@ -42,8 +42,9 @@ public class MobileTSMRoutingEngine implements RoutingEngine {
 
 
 	@Override
-	public boolean initialized() {
-		return provider.isOpen();
+	public boolean initialized() 
+	{
+		return (provider != null && provider.isOpen());
 	}
 
 	
