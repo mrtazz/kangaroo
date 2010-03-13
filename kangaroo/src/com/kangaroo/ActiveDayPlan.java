@@ -8,14 +8,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import android.content.Context;
-
 import com.kangaroo.calendar.CalendarAccessAdapter;
 import com.kangaroo.calendar.CalendarEvent;
 import com.kangaroo.calendar.CalendarEventComparator;
-import com.kangaroo.calendar.CalendarLibrary;
 import com.kangaroo.task.Task;
-import com.kangaroo.task.TaskManager;
 import com.mobiletsm.routing.NoRouteFoundException;
 import com.mobiletsm.routing.Place;
 import com.mobiletsm.routing.RouteParameter;
@@ -85,58 +81,44 @@ public class ActiveDayPlan extends DayPlan {
 	}
 	
 	
-	public void setContext(Context context)
-	{
-		//ctx = context;
-		calendarAccessAdapter.setContext(context);
-	}
-
-
-
 	@Override
 	public int checkComplianceWith(Date now, Place here,
 			CalendarEvent destinationEvent, Object vehicle) throws NoRouteFoundException {
 		
 		/* a compliance check should only operate on events */
 		prepareEventAccess(false);
-		
-		int result = 0;
-		
+				
 		try {
-			result = super.checkComplianceWith(now, here, destinationEvent, vehicle);		
+			int result = super.checkComplianceWith(now, here, destinationEvent, vehicle);		
+			/* the routing engine may have affected event places */
+			terminateEventAccess(false);
+			return result;
 		} catch (RuntimeException exception) {
 			/* make sure we step from this level even if a
 			 * runtime exception occurs */
 			terminateEventAccess(true);
 			throw exception;
-		}
-		
-		/* the routing engine may have affected even places */
-		terminateEventAccess(false);
-		return result;
+		}		
 	}
 
 
 
 	@Override
-	public DayPlanConsistency checkConsistency(Vehicle vehicle) {
+	public DayPlanConsistency checkConsistency(Vehicle vehicle, Date now) {
 		/* a consistency check should only operate on events */
 		prepareEventAccess(false);
 		
-		DayPlanConsistency result = null;
-		
 		try {
-			result = super.checkConsistency(vehicle);			
+			DayPlanConsistency result = super.checkConsistency(vehicle, now);			
+			/* the routing engine may have affected event places */
+			terminateEventAccess(false);
+			return result;
 		} catch (RuntimeException exception) {
 			/* make sure we step from this level even if a
 			 * runtime exception occurs */
 			terminateEventAccess(true);
 			throw exception;
-		}
-		
-		/* the routing engine may have affected even places */
-		terminateEventAccess(false);
-		return result;
+		}		
 	}
 
 
@@ -146,20 +128,17 @@ public class ActiveDayPlan extends DayPlan {
 		/* prepare to access events */
 		prepareEventAccess(false);
 		
-		List<CalendarEvent> result = null;
-		
 		try {
-			result = super.getEvents();			
+			List<CalendarEvent> result = super.getEvents();			
+			/* this is only a read access, so don't write to the calendar */
+			terminateEventAccess(true);
+			return result;		
 		} catch (RuntimeException exception) {
 			/* make sure we step from this level even if a
 			 * runtime exception occurs */
 			terminateEventAccess(true);
 			throw exception;
-		}
-		
-		/* this is only a read access, so don't write to the calendar */
-		terminateEventAccess(true);
-		return result;		
+		}		
 	}
 
 
@@ -169,20 +148,17 @@ public class ActiveDayPlan extends DayPlan {
 		/* prepare to access events */
 		prepareEventAccess(false);
 		
-		CalendarEvent result = null;
-		
 		try {
-			result = super.getNextEvent(now);	
+			CalendarEvent result = super.getNextEvent(now);	
+			/* this is only a read access, so don't write to the calendar */
+			terminateEventAccess(true);
+			return result;	
 		} catch (RuntimeException exception) {
 			/* make sure we step from this level even if a
 			 * runtime exception occurs */
 			terminateEventAccess(true);
 			throw exception;
-		}
-		
-		/* this is only a read access, so don't write to the calendar */
-		terminateEventAccess(true);
-		return result;	
+		}		
 	}
 
 
@@ -192,46 +168,112 @@ public class ActiveDayPlan extends DayPlan {
 		/* prepare to access tasks */
 		prepareTaskAccess(false);
 		
-		Collection<Task> result = null;
+		try {
+			Collection<Task> result = super.getTasks();			
+			/* this is only a read access, so don't write to the calendar */
+			terminateTaskAccess(true);
+			return result;
+		} catch (RuntimeException exception) {
+			/* make sure we step from this level even if a
+			 * runtime exception occurs */
+			terminateTaskAccess(true);
+			throw exception;
+		}		
+	}
+	
+	
+	@Override
+	public int getNumberOfEvents() {
+		/* prepare to access events */
+		prepareEventAccess(false);
 		
 		try {
-			result = super.getTasks();			
+			int result = super.getNumberOfEvents();
+			/* this is only a read access, so don't write to the calendar */
+			terminateTaskAccess(true);
+			return result;			
+		} catch (RuntimeException exception) {
+			/* make sure we step from this level even if a
+			 * runtime exception occurs */
+			terminateEventAccess(true);
+			throw exception;
+		}		
+	}
+	
+	
+	@Override
+	public int getNumberOfTasks() {
+		/* prepare to access tasks */
+		prepareTaskAccess(false);
+		
+		try {
+			int result = super.getNumberOfTasks();
+			/* this is only a read access, so don't write to the calendar */
+			terminateTaskAccess(true);
+			return result;			
+		} catch (RuntimeException exception) {
+			/* make sure we step from this level even if a
+			 * runtime exception occurs */
+			terminateTaskAccess(true);
+			throw exception;
+		}		
+	}
+
+
+	@Override
+	public void addEvent(CalendarEvent event) {
+		/* we don't have to read the calendar */
+		prepareEventAccess(true);
+		
+		try {
+			super.addEvent(event);
+			terminateEventAccess(false);
+		} catch (RuntimeException exception) {
+			/* make sure we step from this level even if a
+			 * runtime exception occurs */
+			terminateEventAccess(true);
+			throw exception;
+		}	
+	}
+	
+	
+	@Override
+	public void addTask(Task task) {
+		/* we don't have to read the calendar */
+		prepareTaskAccess(true);
+		
+		try {
+			super.addTask(task);
+			terminateTaskAccess(false);
 		} catch (RuntimeException exception) {
 			/* make sure we step from this level even if a
 			 * runtime exception occurs */
 			terminateTaskAccess(true);
 			throw exception;
 		}
-		
-		/* this is only a read access, so don't write to the calendar */
-		terminateTaskAccess(true);
-		return result;
 	}
-
-
-
+	
+	
+	
 	@Override
-	public DayPlan optimize() {
+	public DayPlan optimize(Date now, Place here, Object vehicle) {
 		/* prepare to access events and tasks */
 		prepareEventAccess(false);
 		prepareTaskAccess(false);
 		
-		DayPlan result = null;
-		
 		try {
-			result = super.optimize();
+			DayPlan result = super.optimize(now, here, vehicle);
+			/* the routing engine may have affected places in events and tasks */
+			terminateTaskAccess(false);
+			terminateEventAccess(false);
+			return result;
 		} catch (RuntimeException exeption) {
 			/* make sure we step from this level even if a
 			 * runtime exception occurs */
 			terminateTaskAccess(true);
 			terminateEventAccess(true);
 			throw exeption;
-		}
-		
-		/* the routing engine may have affected places in events and tasks */
-		terminateTaskAccess(false);
-		terminateEventAccess(false);
-		return result;
+		}		
 	}
 
 
@@ -243,14 +285,13 @@ public class ActiveDayPlan extends DayPlan {
 		
 		try {
 			super.setEvents(events);
+			terminateEventAccess(false);
 		} catch (RuntimeException exception) {
 			/* make sure we step from this level even if a
 			 * runtime exception occurs */
 			terminateEventAccess(true);
 			throw exception;
-		}
-		
-		terminateEventAccess(false);
+		}		
 	}
 
 
@@ -262,16 +303,37 @@ public class ActiveDayPlan extends DayPlan {
 		
 		try {
 			super.setTasks(tasks);
+			terminateTaskAccess(false);
 		} catch (RuntimeException exception) {
 			/* make sure we step from this level even if a
 			 * runtime exception occurs */
 			terminateTaskAccess(true);
 			throw exception;
-		}
-		
-		terminateTaskAccess(false);
+		}		
 	}
 	
+	
+	
+	@Override
+	public String toString() {
+		/* prepare to access events */
+		prepareEventAccess(false);
+		prepareTaskAccess(false);
+		
+		try {
+			String result = super.toString();	
+			/* this is only a read access, so don't write to the calendar */
+			terminateTaskAccess(true);
+			terminateEventAccess(true);
+			return result;	
+		} catch (RuntimeException exception) {
+			/* make sure we step from this level even if a
+			 * runtime exception occurs */
+			terminateTaskAccess(true);
+			terminateEventAccess(true);
+			throw exception;
+		}
+	}	
 	
 	
 	private int eventAccessDepth = 0;

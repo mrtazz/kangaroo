@@ -7,6 +7,7 @@ import java.util.List;
 import com.kangaroo.ActiveDayPlan;
 import com.kangaroo.DayPlanConsistency;
 import com.kangaroo.MemoryCalendarAccessAdapter;
+import com.kangaroo.calendar.CalendarAccessAdapter;
 import com.kangaroo.calendar.CalendarEvent;
 import com.mobiletsm.routing.AllStreetVehicle;
 import com.mobiletsm.routing.MobileTSMRoutingEngine;
@@ -41,6 +42,7 @@ public class MobileTSMTestBench extends Activity {
 	Place place1 = null;
 	Place place2 = null;
 	Vehicle vehicle = null;
+	Date now = null;
 	
 	
 	/** Called when the activity is first created. */
@@ -59,9 +61,12 @@ public class MobileTSMTestBench extends Activity {
         
         /* create and add some events */
         
+        CalendarAccessAdapter adapter = new MemoryCalendarAccessAdapter();
+        adapter.setContext(getApplicationContext());
         activeDayPlan = new ActiveDayPlan();
-        activeDayPlan.setCalendarAccessAdapter(new MemoryCalendarAccessAdapter());
-        activeDayPlan.setContext(getApplicationContext());
+        activeDayPlan.setCalendarAccessAdapter(adapter);
+        
+        now = new Date(2010 - 1900, 3, 10, 19, 00);
         
         CalendarEvent event1 = new CalendarEvent();
         event1.setStartDate(new Date(2010 - 1900, 3, 10, 19, 30));
@@ -80,11 +85,32 @@ public class MobileTSMTestBench extends Activity {
         event3.setEndDate(new Date(2010 - 1900, 3, 10, 21, 40));
         event3.setLocationLatitude(47.987);
         event3.setLocationLongitude(7.852);
+
+        CalendarEvent event4 = new CalendarEvent();
+        event4.setStartDate(new Date(2010 - 1900, 3, 10, 21, 30));
+        event4.setEndDate(new Date(2010 - 1900, 3, 10, 21, 50));
+        event4.setLocationLatitude(47.987);
+        event4.setLocationLongitude(7.852);        
+
+        CalendarEvent event5 = new CalendarEvent();
+        event5.setStartDate(new Date(2010 - 1900, 3, 10, 22, 0));
+        event5.setEndDate(new Date(2010 - 1900, 3, 10, 22, 40));
+        event5.setLocationLatitude(47.983);
+        event5.setLocationLongitude(7.852);        
+
+        CalendarEvent event6 = new CalendarEvent();
+        event6.setStartDate(new Date(2010 - 1900, 3, 10, 23, 0));
+        event6.setEndDate(new Date(2010 - 1900, 3, 10, 23, 40));
+        event6.setLocationLatitude(48.983);
+        event6.setLocationLongitude(7.852);         
         
         List<CalendarEvent> events = activeDayPlan.getEvents();
         events.add(event1);
         events.add(event2);
         events.add(event3);
+        events.add(event4);
+        events.add(event5);
+        events.add(event6);
         activeDayPlan.setEvents(events);
         
         
@@ -101,10 +127,10 @@ public class MobileTSMTestBench extends Activity {
 				if (engine.initialized()) {
 			        activeDayPlan.setRoutingEngine(engine);
 			        
-			        System.out.println("# events in calendar = " + activeDayPlan.getEvents().size());
-			        
-					DayPlanConsistency consistency = 
-						activeDayPlan.checkConsistency(new AllStreetVehicle(5.0));
+			        System.out.println("# events in calendar = " + activeDayPlan.getEvents().size());			        
+					
+			        DayPlanConsistency consistency = 
+						activeDayPlan.checkConsistency(new AllStreetVehicle(5.0), now);
 					if (consistency != null) {
 						System.out.println("consistency = " + consistency.toString());					
 						outputText.setText(consistency.toString());

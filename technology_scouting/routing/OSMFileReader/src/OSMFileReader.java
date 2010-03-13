@@ -9,6 +9,7 @@ import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -34,6 +35,21 @@ import org.openstreetmap.travelingsalesman.routing.IVehicle;
 import org.openstreetmap.travelingsalesman.routing.Route;
 import org.openstreetmap.travelingsalesman.routing.routers.MultiTargetDijkstraRouter;
 
+import com.kangaroo.ActiveDayPlan;
+import com.kangaroo.DayPlan;
+import com.kangaroo.DayPlanConsistency;
+import com.kangaroo.DayPlanOptimizer;
+import com.kangaroo.GreedyTaskInsertionOptimizer;
+import com.kangaroo.MemoryCalendarAccessAdapter;
+import com.kangaroo.TaskConstraintHelper;
+import com.kangaroo.TaskPriorityComparator;
+import com.kangaroo.calendar.CalendarAccessAdapter;
+import com.kangaroo.calendar.CalendarEvent;
+import com.kangaroo.task.Task;
+import com.kangaroo.task.TaskConstraintDate;
+import com.kangaroo.task.TaskConstraintDayTime;
+import com.kangaroo.task.TaskConstraintDuration;
+import com.kangaroo.task.TaskConstraintPOI;
 import com.kangaroo.tsm.osm.io.FileLoader;
 import com.mobiletsm.osm.MobileTSMDatabaseWriter;
 import com.mobiletsm.osm.OsmHelper;
@@ -58,18 +74,186 @@ import com.mobiletsm.routing.routers.MobileMultiTargetDijkstraRouter;
 public class OSMFileReader {
 	
 	
+	public static void testTaskPriorityComparator() {
+		
+		Task task1 = new Task();
+		task1.setName("task1");
+		task1.addConstraint(new TaskConstraintDuration(5));
+		task1.addConstraint(new TaskConstraintPOI(new POICode(POICode.SHOP_BAKERY)));
+		
+		Task task2 = new Task();
+		task2.setName("task2");
+		task2.addConstraint(new TaskConstraintDuration(10));
+		task2.addConstraint(new TaskConstraintDate(new Date(2010 - 1900, 3, 10), new Date(2010 - 1900, 5, 2)));
+		task2.addConstraint(new TaskConstraintDayTime(new Date(2010 - 1900, 5, 2, 15, 59), 
+				new Date(2010 - 1900, 5, 2, 18, 00)));
+		
+		Task task3 = new Task();
+		task3.setName("task3");
+		task3.addConstraint(new TaskConstraintDuration(5));
+		task3.addConstraint(new TaskConstraintDate(new Date(2010 - 1900, 4, 2)));
+		
+		DayPlan dayPlan = new DayPlan();
+		dayPlan.addTask(task1);
+		dayPlan.addTask(task2);
+		dayPlan.addTask(task3);
+		
+		List<Task> tasks = new ArrayList<Task>(dayPlan.getTasks());
+		
+		Collections.sort(tasks, new TaskPriorityComparator());
+		
+		Iterator<Task> task_itr = tasks.iterator();
+		int i = 0;
+		while (task_itr.hasNext()) {
+			
+			Task task = task_itr.next();
+			
+			TaskConstraintHelper helper = new TaskConstraintHelper(task);
+			Date now = new Date(2010 - 1900, 3, 12, 15, 00);
+			//System.out.println(now.toString());
+			
+			System.out.println(">" + i + " " + task.toString() + ", isAllowed(Date) = " + 
+					helper.isAllowed(now));
+			i++;
+		}
+		
+	}
+	
+	
+	public static void testActiveDayPlan() {
+		
+		RoutingEngine routingEngine = new TestRoutingEngine();
+		routingEngine.init("jdbc:sqlite:/Users/andreaswalz/Downloads/maps/out/map-fr.db");
+		routingEngine.enableRoutingCache();
+		
+		
+		/* create and add some events */
+        
+        CalendarAccessAdapter adapter = new MemoryCalendarAccessAdapter();
+        ActiveDayPlan activeDayPlan = new ActiveDayPlan();
+        activeDayPlan.setCalendarAccessAdapter(adapter);
+        
+        Date now = new Date(2010 - 1900, 3, 10, 19, 00);
+        
+        CalendarEvent event1 = new CalendarEvent();
+        event1.setStartDate(new Date(2010 - 1900, 3, 10, 19, 30));
+        event1.setEndDate(new Date(2010 - 1900, 3, 10, 20, 00));
+        event1.setLocationLatitude(48.0064241);
+        event1.setLocationLongitude(7.8521991);
+
+        CalendarEvent event2 = new CalendarEvent();
+        event2.setStartDate(new Date(2010 - 1900, 3, 10, 20, 10));
+        event2.setEndDate(new Date(2010 - 1900, 3, 10, 21, 00));
+        event2.setLocationLatitude(48.000);
+        event2.setLocationLongitude(7.852);
+
+        CalendarEvent event3 = new CalendarEvent();
+        event3.setStartDate(new Date(2010 - 1900, 3, 10, 21, 20));
+        event3.setEndDate(new Date(2010 - 1900, 3, 10, 21, 40));
+        event3.setLocationLatitude(47.987);
+        event3.setLocationLongitude(7.852);
+
+        CalendarEvent event4 = new CalendarEvent();
+        event4.setStartDate(new Date(2010 - 1900, 3, 10, 21, 30));
+        event4.setEndDate(new Date(2010 - 1900, 3, 10, 21, 50));
+        event4.setLocationLatitude(47.987);
+        event4.setLocationLongitude(7.852);        
+
+        CalendarEvent event5 = new CalendarEvent();
+        event5.setStartDate(new Date(2010 - 1900, 3, 10, 22, 0));
+        event5.setEndDate(new Date(2010 - 1900, 3, 10, 22, 40));
+        event5.setLocationLatitude(47.983);
+        event5.setLocationLongitude(7.852);        
+
+        CalendarEvent event6 = new CalendarEvent();
+        event6.setStartDate(new Date(2010 - 1900, 3, 10, 23, 0));
+        event6.setEndDate(new Date(2010 - 1900, 3, 10, 23, 40));
+        event6.setLocationLatitude(48.983);
+        event6.setLocationLongitude(7.852);         
+        
+        activeDayPlan.addEvent(event1);
+        activeDayPlan.addEvent(event2);
+        activeDayPlan.addEvent(event3);
+        activeDayPlan.addEvent(event4);
+        activeDayPlan.addEvent(event5);
+        activeDayPlan.addEvent(event6);
+        
+                
+        
+        /* add and create some tasks */
+        
+		Task task1 = new Task();
+		task1.setName("task1");
+		task1.addConstraint(new TaskConstraintDuration(5));
+		task1.addConstraint(new TaskConstraintPOI(new POICode(POICode.SHOP_BAKERY)));
+		
+		Task task2 = new Task();
+		task2.setName("task2");
+		task2.addConstraint(new TaskConstraintDuration(10));
+		task2.addConstraint(new TaskConstraintDayTime(new Date(2010 - 1900, 5, 2), new Date(2010 - 1900, 5, 2)));
+		
+		Task task3 = new Task();
+		task3.setName("task3");
+		task3.addConstraint(new TaskConstraintDuration(5));
+		task3.addConstraint(new TaskConstraintDate(new Date(2010 - 1900, 5, 2)));
+		
+		activeDayPlan.addTask(task1);
+		activeDayPlan.addTask(task2);
+		activeDayPlan.addTask(task3);
+        
+		
+		
+        
+        
+        if (routingEngine.initialized()) {
+	        activeDayPlan.setRoutingEngine(routingEngine);
+	        			        
+			System.out.println(activeDayPlan.toString());
+	        
+	        /* check consistency */
+	        DayPlanConsistency consistency = 
+				activeDayPlan.checkConsistency(new AllStreetVehicle(50.0), now);
+			if (consistency != null) {
+				System.out.println("consistency = " + consistency.toString());		
+			}
+			
+			
+			/* optimize plan */
+			DayPlanOptimizer optimizer = new GreedyTaskInsertionOptimizer();
+			activeDayPlan.setOptimizer(optimizer);
+			//DayPlan optimizedDayPlan = activeDayPlan.optimize();
+			
+			//System.out.println(optimizedDayPlan.toString());
+		}
+        
+        
+        
+        routingEngine.shutdown();
+		
+	}
+	
+	
+	public static IDataSet loadMapFile(String filename) {
+		File mapFile = new File(filename);		
+		IDataSet map = (new FileLoader(mapFile)).parseOsm();
+		System.out.println("FileLoader: output: # nodes = " + OsmHelper.getNumberOfNodes(map));
+		System.out.println("FileLoader: output: # ways = " + OsmHelper.getNumberOfWays(map));
+		return map;
+	}
+	
+	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {	
 		
-		/*
-		// load map file
-		File mapFile = new File("/Users/andreaswalz/Downloads/maps/in/map-fr.osm");		
-		IDataSet map = (new FileLoader(mapFile)).parseOsm();
-		System.out.println("FileLoader: output: # nodes = " + OsmHelper.getNumberOfNodes(map));
-		System.out.println("FileLoader: output: # ways = " + OsmHelper.getNumberOfWays(map));	
-		*/
+		//testActiveDayPlan();
+		
+		testTaskPriorityComparator();
+		
+		
+		//IDataSet map = loadMapFile("/Users/andreaswalz/Downloads/maps/in/map-fr.osm");
+		
 		
 		
 		/*
@@ -89,7 +273,8 @@ public class OSMFileReader {
 		map = null;
 		*/
 		
-	
+		/*
+		// test routing cache
 		RoutingEngine routingEngine = new TestRoutingEngine();
 		routingEngine.init("jdbc:sqlite:/Users/andreaswalz/Downloads/maps/out/map.db");
 		
@@ -119,8 +304,8 @@ public class OSMFileReader {
 		System.out.println(route3.toString());
 
 		System.out.println(routingEngine.routeFromTo(from, poi2, new AllStreetVehicle(5.0)).toString());
-		
-		
+		routingEngine.shutdown();
+			
 		
 		// check equals() and hashCode() for Place
 		System.out.println("from.hashCode() = " + from.hashCode());
@@ -142,6 +327,8 @@ public class OSMFileReader {
 		System.out.println("==> " + poi1_.equals(Place.deserialize(poi1_.serialize())));
 		System.out.println("==> " + poi1_.equals(Place.deserialize(poi1.serialize())));
 		System.out.println("  > " + poi1_.equals(Place.deserialize(poi2.serialize())));
+		*/
+		
 		
 		/*
 		RoutingCache cache = new RoutingCache();		
@@ -156,7 +343,6 @@ public class OSMFileReader {
 		*/
 		
 		
-		routingEngine.shutdown();
 		
 		/*
 		POICode poiCode = new POICode(POICode.AMENITY_BANK);

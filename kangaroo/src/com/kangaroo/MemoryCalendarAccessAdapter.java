@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import android.content.Context;
-
 import com.kangaroo.calendar.CalendarAccessAdapter;
 import com.kangaroo.calendar.CalendarEvent;
 import com.kangaroo.task.Task;
@@ -53,7 +51,7 @@ public class MemoryCalendarAccessAdapter implements CalendarAccessAdapter {
 
 	
 	@Override
-	public void setContext(Context context) {
+	public void setContext(Object context) {
 		/* don't need to do anything */
 	}
 

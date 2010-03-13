@@ -260,18 +260,31 @@ public class CalendarEvent {
 		this.timezone = timezone;
 	}
 
+	
+	/**
+	 * returns true if this calendar events specifies a location as coordinates
+	 * @return
+	 */
+	public boolean hasLocation() {
+		return (locationLatitude != null && locationLongitude != null);
+	}
+	
+	
 	/**
 	 * @return the place
 	 */
 	public Place getPlace() {
-		/* never return null */
-		if (place == null) {
+		/* only return null if this calendar event doesn't 
+		 * specify any location as coordinates */
+		if (place == null && hasLocation()) {
 			place = new Place(getLocationLatitude(), getLocationLongitude());		
 		}
 		return place;
 	}
 
+	
 	/**
+	 * @deprecated use setLocationLatitude() and setLocationLongitude() to set location coordinates
 	 * @param place the place to set
 	 */
 	public void setPlace(Place place) {

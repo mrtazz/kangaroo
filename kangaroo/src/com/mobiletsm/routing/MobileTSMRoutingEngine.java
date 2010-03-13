@@ -75,9 +75,10 @@ public class MobileTSMRoutingEngine implements RoutingEngine {
 	public RouteParameter routeFromTo(Place from, Place to, Object vehicle, boolean updatePlaces) {
 		/* only accept MobileTSM Vehicle objects */
 		if (!(vehicle instanceof Vehicle)) {
-			throw new RuntimeException("MobileRoutingEngine.routeFromTo(): Not a Vehicle");
+			throw new RuntimeException("MobileTSMRoutingEngine.routeFromTo(): Not a Vehicle");
 		}
 		
+		/* look up this routing order in the routing cache if enabled */
 		if (useRoutingCache && routingCache != null) {
 			RouteParameter cacheRoute = routingCache.getElement(from, to, vehicle);
 			if (cacheRoute != null) {
@@ -115,8 +116,11 @@ public class MobileTSMRoutingEngine implements RoutingEngine {
 			result.setStartPlace(from);
 			result.setDestinationPlace(to);
 			
+			/* store the route in the routing cache if enabled */
 			if (useRoutingCache && routingCache != null) {
 				routingCache.putElement(result);
+				System.out.println("MobileTSMRoutingEngine.routeFromTo(): route put into routing cache " +
+						"(# routes in cache = " + routingCache.size() + ")");
 			}
 			
 			return result; 
@@ -127,7 +131,7 @@ public class MobileTSMRoutingEngine implements RoutingEngine {
 	@Override
 	public Place getNearestPOINode(Place center, Object selector, Limits limits) {
 		if (!(selector instanceof POINodeSelector)) {
-			throw new RuntimeException("MobileRoutingEngine.getNearestPOINode(): Not a POINodeSelector");
+			throw new RuntimeException("MobileTSMRoutingEngine.getNearestPOINode(): Not a POINodeSelector");
 		}
 		
 		POINodeSelector poiNodeSelector = (POINodeSelector)selector;
@@ -138,7 +142,7 @@ public class MobileTSMRoutingEngine implements RoutingEngine {
 	
 	@Override
 	public Place getNearestStreetNode(Place center) {
-		throw new UnsupportedOperationException("getNearestStreetNode() not yet supported by MobileRoutingEngine");
+		throw new UnsupportedOperationException("getNearestStreetNode() not yet supported by MobileTSMRoutingEngine");
 	}
 	
 

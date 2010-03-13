@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import com.kangaroo.calendar.CalendarEvent;
-import com.kangaroo.calendar.CalendarEventConflict;
+import com.kangaroo.calendar.conflicts.CalendarEventConflict;
 
 public class DayPlanConsistency {
 
@@ -56,6 +56,7 @@ public class DayPlanConsistency {
 			return "DayPlanConsistency: {no conflicts}";
 		} else {
 			StringBuffer buf = new StringBuffer("DayPlanConsistency: {");
+			buf.append(conflicts.size() + " conflicts: ");
 			Iterator<CalendarEventConflict> itr = conflicts.iterator();
 			while (itr.hasNext()) {
 				CalendarEventConflict conflict = itr.next();

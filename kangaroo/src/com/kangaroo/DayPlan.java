@@ -7,15 +7,13 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import android.content.Context;
-
 import com.kangaroo.calendar.CalendarEvent;
-import com.kangaroo.calendar.CalendarEventCollision;
 import com.kangaroo.calendar.CalendarEventComparator;
-import com.kangaroo.calendar.CalendarEventConflict;
-import com.kangaroo.calendar.CalendarLibrary;
+import com.kangaroo.calendar.conflicts.CalendarEventCollision;
+import com.kangaroo.calendar.conflicts.CalendarEventConflict;
+import com.kangaroo.calendar.conflicts.CalendarEventOverlap;
+import com.kangaroo.calendar.conflicts.CalendarEventUnroutable;
 import com.kangaroo.task.Task;
-import com.kangaroo.task.TaskManager;
 import com.mobiletsm.routing.NoRouteFoundException;
 import com.mobiletsm.routing.Place;
 import com.mobiletsm.routing.RouteParameter;
@@ -35,6 +33,9 @@ public class DayPlan {
 	
 	
 	protected RoutingEngine routingEngine = null;
+
+
+	private int minimalTimeLeft = 0;
 	
 	
 	/**
@@ -115,6 +116,26 @@ public class DayPlan {
 	}
 	
 
+	public int getNumberOfEvents() {
+		return events.size();
+	}
+	
+	
+	public int getNumberOfTasks() {
+		return tasks.size();
+	}
+	
+	
+	public void addEvent(CalendarEvent event) {
+		events.add(event);
+	}
+	
+	
+	public void addTask(Task task) {
+		tasks.add(task);
+	}
+	
+	
 	/**
 	 * return the event in the calendar that is chronologically
 	 * the next starting from given Date. If Date now is null, the
@@ -132,16 +153,24 @@ public class DayPlan {
 		if (now == null && events.size() > 0) {
 			return events.get(0);
 		}
-		
+				
 		CalendarEvent result = null;
 		
 		/* return the first event that has a start date after now */
 		Iterator<CalendarEvent> itr = events.iterator();
-		while (itr.hasNext() && result == null) {
+		while (itr.hasNext()) {
 			CalendarEvent event = itr.next();
 			Date startDate = event.getStartDate();
+			/* ignore calendar event that do not specify a start date */
 			if (startDate != null && startDate.compareTo(now) > 0) {
-				result = event;
+				if (result == null) {
+					result = event;
+				} else if (result.getStartDate().compareTo(startDate) == 0) {
+					/* there are at least two different events with equal start date
+					 * TODO: should better not be a RuntimeException */
+					throw new RuntimeException("DayPlan.getNextEvent(): " +
+							"There are two different events with equal start date"); 
+				}
 			}
 		}
 		
@@ -186,6 +215,12 @@ public class DayPlan {
 	 */
 	public int checkComplianceBetween(CalendarEvent initialEvent, CalendarEvent destinationEvent, 
 			Object vehicle) throws NoRouteFoundException {
+		
+		/* initialEvent has to specify an end date */
+		if (initialEvent.getEndDate() == null) {
+			throw new MissingParameterException("DayPlan.checkComplianceBetween(): No end date given");
+		}
+		
 		return checkComplianceWith(initialEvent.getEndDate(), initialEvent.getPlace(), destinationEvent, vehicle);
 	}
 	
@@ -217,94 +252,164 @@ public class DayPlan {
 		// TODO: use specific exceptions
 		
 		if (destinationEvent != null) {			
-			if (routingEngine == null) {
-				throw new RuntimeException("DayPlan.checkComplianceWith(): No routing engine defined");
+			/* we need the routing engine to be ready */
+			if (routingEngine == null || !routingEngine.initialized()) {
+				throw new RuntimeException("DayPlan.checkComplianceWith(): Routing engine not ready");
 			}
 		
+			/* destinationEvent has to specify a start date */
+			if (destinationEvent.getStartDate() == null) {
+				throw new MissingParameterException("DayPlan.checkComplianceWith(): No start date given");
+			}
+			
 			RouteParameter route = routingEngine.routeFromTo(here, destinationEvent.getPlace(), vehicle);
 		
-				System.out.println("route: = " + route.toString());
-			
-			/* Date.getTime() returns time in milliseconds, so 
-			 * we have to divide by 1000*60 to get minutes */
-			double timeLeft = (destinationEvent.getStartDate().getTime() - now.getTime()) / (1000 * 60);
-			
-				System.out.println("DayPlan.checkComplianceWith(): timeLeft (w/o route) = " + timeLeft);
-			
-			/* TODO: handle case where no route could be found */
+				System.out.println("DayPlan.checkComplianceWith(): " + route.toString());
+				
+			/* not finding any route should be an exotic case */
 			if (route.getNoRouteFound()) {
 				throw new NoRouteFoundException("DayPlan.checkComplianceWith(): No route found");
 			}
+			
+			/* Date.getTime() returns time in milliseconds, so 
+			 * we have to divide by 1000*60 to get minutes */
+			int timeLeft = (int)Math.floor((destinationEvent.getStartDate().getTime() - now.getTime()) / (1000 * 60));
+			
+				System.out.println("DayPlan.checkComplianceWith(): timeLeft (w/o route) = " + timeLeft);
 						
 			/* be pessimistic and round up the duration of travel and 
 			 * round down the gap between subsequent events */
-			timeLeft = Math.floor(timeLeft) - Math.rint(route.getDurationOfTravel());
+			timeLeft = timeLeft - (int)Math.rint(route.getDurationOfTravel());
 			
 				System.out.println("DayPlan.checkComplianceWith(): timeLeft (with route) = " + timeLeft);
 			
 			return (int)timeLeft;
 			
 		} else {
-			throw new RuntimeException("DayPlan.checkComplianceWith(): Event missing");
+			throw new RuntimeException("DayPlan.checkComplianceWith(): Destination event missing");
 		}
 	}
 	
-	
+		
+	/**
+	 * @return the minimalTimeLeft
+	 */
+	public int getMinimalTimeLeft() {
+		return minimalTimeLeft;
+	}
+
+
+	/**
+	 * @param minimalTimeLeft the minimalTimeLeft to set
+	 */
+	public void setMinimalTimeLeft(int minimalTimeLeft) {
+		this.minimalTimeLeft = minimalTimeLeft;
+	}
+
+
 	/**
 	 * checks if the calendar is self-consistent
 	 * @return
 	 */
-	public DayPlanConsistency checkConsistency(Vehicle vehicle) {		
-		if (routingEngine == null) {
-			throw new RuntimeException("DayPlan.checkConsistency(): No routing engine defined");
-		}
-		
+	public DayPlanConsistency checkConsistency(Vehicle vehicle, Date now) {		
+				
 		DayPlanConsistency consistency = new DayPlanConsistency();
 		
-		Date pos = null;
-		CalendarEvent event = null;
+		Date pos = now;
+		CalendarEvent event;
 		CalendarEvent predecessor = null;
-		
-		/* TODO: include checking for overlap between events */
 		
 		/* iterate over all CalendarEvents in the calendar and check consistency  */
 		while ((event = getNextEvent(pos)) != null) {
-			if (predecessor != null) {				
-				int timeLeft;				
-				try {
-					timeLeft = checkComplianceWith(predecessor.getEndDate(), 
-							predecessor.getPlace(),	event, vehicle);
-					/* add a collision, if time between two events is less
-					 * than it will probably take to move from one event to the other */
-					if (timeLeft < 0) {
-						CalendarEventConflict conflict = 
-							new CalendarEventCollision(predecessor, event, Math.abs(timeLeft));
-						consistency.addConflict(conflict);
-					}
-				} catch (NoRouteFoundException e) {
-					// TODO: add some kind of 'collision' indicating that no route could be found
-				}									
+			
+			/* events have to specify an end date
+			 * TODO: one can also think of considering the case of an undefined end
+			 * date in a calendar event as an event of zero duration. This would imply
+			 * using its start date has an effective end date. */
+			if (event.getEndDate() == null) {
+				throw new MissingParameterException("DayPlan.checkConsistency(): No end date given");
+			}
+			
+			/* at this point we can be sure that event has a start and an end date
+			 * (because getNextEvent() only accounts for events with a start date) */
+
+			if (predecessor != null) {
+				
+				/* make sure these both events do not overlap */
+				if (event.getStartDate().compareTo(predecessor.getEndDate()) >= 0) {
+					
+					/* ignore events that do not specify a location */
+					if (predecessor.hasLocation() && event.hasLocation()) {
+						try {
+							/* check compliance of the event with end date and place
+							 * of preceding calendar event (predecessor)  */
+							int timeLeft = checkComplianceWith(predecessor.getEndDate(), 
+									predecessor.getPlace(), event, vehicle);
+	
+							/* add a collision, if time between two events is less
+							 * than it will probably take to move from one event to the other */
+							if (timeLeft < minimalTimeLeft) {
+								CalendarEventConflict conflict = new CalendarEventCollision(
+										event, predecessor, Math.abs(timeLeft));
+								consistency.addConflict(conflict);
+							}
+	
+						} catch (NoRouteFoundException e) {
+							/* not finding any route between two events is  
+							 * considered as a CalendarEventConflict  */
+							CalendarEventConflict conflict = new CalendarEventUnroutable(
+									event, predecessor);
+							consistency.addConflict(conflict);
+						}
+					} 
+				} else {
+					/* there is an overlap of these both events, calculate overlap in minutes */
+					int overlap = (int)Math.floor((predecessor.getEndDate().getTime() - 
+							event.getStartDate().getTime()) / (1000 * 60));
+					
+					CalendarEventConflict conflict = new CalendarEventOverlap(event, predecessor, overlap);
+					consistency.addConflict(conflict);
+				}
 			}			
+			
 			predecessor = event;
-			pos = event.getEndDate();
+	
+			/* DEPRECATED: there may by accident be an event with an end date chronologically
+			 * before its start date. This would prevent this loop from stopping 
+			if (event.getStartDate().compareTo(event.getEndDate()) > 0) {
+				throw new RuntimeException("DayPlan.checkConsistency(): Event has an end date earlier than its start date");
+			}*/
+			
+			pos = event.getStartDate();
 		}
 		
 		return consistency;
 	}
 		
 
-	
-	public DayPlan optimize() {
+	/**
+	 * try to optimize this day plan using the previously set DayPlanOptimizer
+	 * @param now
+	 * @param here
+	 * @param vehicle TODO
+	 * @return
+	 */
+	public DayPlan optimize(Date now, Place here, Object vehicle) {
 		if (optimizer == null) {
-			throw new RuntimeException("DayPlan.optimize(): No CalendarPlanOptimizer defined");
+			throw new RuntimeException("DayPlan.optimize(): No DayPlanOptimizer defined");
 		}
 		
 		optimizer.setDayPlan(this);
 		optimizer.setRoutingEngine(routingEngine);
 				
-		return optimizer.optimize();
+		return optimizer.optimize(now, here, vehicle);
 	}
 	
 	
+	
+	@Override
+	public String toString() {
+		return "DayPlan: {# events = " + events.size() + ", # tasks = " + tasks.size() + "}";
+	}
 	
 }

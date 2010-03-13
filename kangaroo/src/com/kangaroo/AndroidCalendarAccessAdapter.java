@@ -68,8 +68,8 @@ public class AndroidCalendarAccessAdapter implements CalendarAccessAdapter {
 	
 
 	@Override
-	public void setContext(Context context) {
-		this.context = context;
+	public void setContext(Object context) {
+		this.context = (Context)context;
 	}
 	
 

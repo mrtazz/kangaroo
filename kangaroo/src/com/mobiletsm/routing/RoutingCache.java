@@ -1,6 +1,7 @@
 package com.mobiletsm.routing;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 
 public class RoutingCache {
@@ -15,6 +16,21 @@ public class RoutingCache {
 	
 	public void clear() {
 		cache.clear();
+	}
+	
+	
+	/**
+	 * return the number of routes in this routing cache
+	 * @return
+	 */
+	public int size() {
+		int result = 0;
+		for (Entry<Place, HashMap<Place, RouteParameter>> entry : cache.entrySet()) {
+			for (Entry<Place, RouteParameter> entry2 : entry.getValue().entrySet()) {
+				result++;
+			}
+		}
+		return result;
 	}
 	
 	
@@ -43,15 +59,17 @@ public class RoutingCache {
 	}
 	
 	
+	/* TODO: implement an algorithm to limit the number of elements */
+	
 	public void putElement(RouteParameter route) {		
-		/* check if route parameters are given */
-		if (route == null) {
-			throw new RuntimeException("RoutingCache.putElement(): no route parameter given");
-		}
-		
 		/* check if route parameters specify start and destination places */
 		if (route.getStartPlace() == null || route.getDestinationPlace() == null) {
 			throw new RuntimeException("RoutingCache.putElement(): no start and/or destination place given");
+		}		
+		
+		/* check if route parameters specify a vehicle */
+		if (route.getVehicle() == null) {
+			throw new RuntimeException("RoutingCache.putElement(): no vehicle given");
 		}
 		
 		HashMap<Place, RouteParameter> map = cache.get(route.getStartPlace());

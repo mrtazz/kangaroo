@@ -5,10 +5,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import android.content.Context;
-
 import com.kangaroo.task.Task;
-import com.kangaroo.task.TaskManager;
+
 
 public interface CalendarAccessAdapter {
 	
@@ -25,7 +23,7 @@ public interface CalendarAccessAdapter {
 	public void saveEvents(List<CalendarEvent> events);	
 
 
-	public void setContext(Context context);
+	public void setContext(Object context);
 	
 	
 }

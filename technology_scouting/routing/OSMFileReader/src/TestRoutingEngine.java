@@ -79,10 +79,11 @@ public class TestRoutingEngine implements RoutingEngine {
 			throw new RuntimeException("MobileRoutingEngine.routeFromTo(): Not a Vehicle");
 		}
 		
+		/* look up this routing order in the routing cache if enabled */
 		if (useRoutingCache && routingCache != null) {
 			RouteParameter cacheRoute = routingCache.getElement(from, to, vehicle);
 			if (cacheRoute != null) {
-					System.out.println("TestRoutingEngine.routeFromTo(): using route from routing cache");
+					System.out.println("MobileTSMRoutingEngine.routeFromTo(): using route from routing cache");
 				return cacheRoute;
 			}
 		}		
@@ -116,8 +117,11 @@ public class TestRoutingEngine implements RoutingEngine {
 			result.setStartPlace(from);
 			result.setDestinationPlace(to);
 			
+			/* store the route in the routing cache if enabled */
 			if (useRoutingCache && routingCache != null) {
 				routingCache.putElement(result);
+				System.out.println("MobileTSMRoutingEngine.routeFromTo(): route put into routing cache " +
+						"(# routes in cache = " + routingCache.size() + ")");
 			}
 			
 			return result; 

@@ -19,6 +19,8 @@ public interface TaskConstraintInterface {
 	
 	public static final String TYPE_DURATION = "duration";
 	
+	public static final String TYPE_PRIORITY = "priority";
+	
 		
 	
 	/**
