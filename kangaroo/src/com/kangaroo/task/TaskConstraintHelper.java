@@ -1,13 +1,8 @@
-package com.kangaroo;
+package com.kangaroo.task;
 
 import java.util.Date;
 import java.util.List;
 
-import com.kangaroo.task.Task;
-import com.kangaroo.task.TaskConstraintDate;
-import com.kangaroo.task.TaskConstraintDayTime;
-import com.kangaroo.task.TaskConstraintDuration;
-import com.kangaroo.task.TaskConstraintInterface;
 
 public class TaskConstraintHelper {
 

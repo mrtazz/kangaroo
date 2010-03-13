@@ -1,10 +1,8 @@
-package com.kangaroo;
+package com.kangaroo.task;
 
 import java.util.Comparator;
 import java.util.List;
 
-import com.kangaroo.task.Task;
-import com.kangaroo.task.TaskConstraintInterface;
 
 public class TaskPriorityComparator implements Comparator<Task> {
 

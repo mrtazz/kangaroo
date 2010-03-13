@@ -1,42 +1,31 @@
 package com.kangaroo.gui;
 
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
+
+import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
+import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.kangaroo.R;
 import com.kangaroo.ActiveDayPlan;
 import com.kangaroo.DayPlanConsistency;
 import com.kangaroo.calendar.CalendarEvent;
 import com.kangaroo.calendar.CalendarLibrary;
-import com.kangaroo.system.ServiceCallLocation;
-import com.kangaroo.system.ServiceCallTick;
 import com.kangaroo.task.Task;
-import com.kangaroo.task.TaskConstraintPOI;
-import com.kangaroo.task.TaskConstraintDate;
-import com.kangaroo.task.TaskConstraintDayTime;
 import com.kangaroo.task.TaskConstraintInterface;
-import com.kangaroo.task.TaskConstraintLocation;
 import com.kangaroo.task.TaskManager;
-import com.mobiletsm.osm.data.searching.POICode;
 import com.mobiletsm.routing.AllStreetVehicle;
 import com.mobiletsm.routing.MobileTSMRoutingEngine;
 import com.mobiletsm.routing.Place;
 import com.mobiletsm.routing.RoutingEngine;
 import com.mobiletsm.routing.Vehicle;
-
-import android.app.Activity;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
 public class ActivityBuildPlan extends Activity
 {
@@ -84,6 +73,7 @@ public class ActivityBuildPlan extends Activity
 	        	//UserNotification un = new UserNotification(ctx);
 	        	//un.showNotification("Title", "textMessage", true, MainWindow.class);
 	        	
+	        	/*
 	        	ActiveDayPlan adp = new ActiveDayPlan();
 	        	adp.setContext(getApplicationContext());
 	        	RoutingEngine re = new MobileTSMRoutingEngine();
@@ -98,6 +88,8 @@ public class ActivityBuildPlan extends Activity
 				// Tell the user about what we did.
 	            Toast.makeText(ActivityBuildPlan.this, "scheduled service started",
 	                    Toast.LENGTH_LONG).show();
+	                    
+	                    */
 	        }
 	    };
 

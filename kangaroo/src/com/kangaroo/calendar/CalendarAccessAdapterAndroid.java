@@ -1,4 +1,4 @@
-package com.kangaroo;
+package com.kangaroo.calendar;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,13 +7,10 @@ import java.util.List;
 
 import android.content.Context;
 
-import com.kangaroo.calendar.CalendarAccessAdapter;
-import com.kangaroo.calendar.CalendarEvent;
-import com.kangaroo.calendar.CalendarLibrary;
 import com.kangaroo.task.Task;
 import com.kangaroo.task.TaskManager;
 
-public class AndroidCalendarAccessAdapter implements CalendarAccessAdapter {
+public class CalendarAccessAdapterAndroid implements CalendarAccessAdapter {
 
 	
 	private Context context = null;
