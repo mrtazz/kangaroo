@@ -346,6 +346,10 @@ public class POICode {
 	
 	
 	@Override
+	/**
+	 * returns true if this POICode is compared to another POICode and
+	 * both define the same type of Point Of Interest
+	 */
 	public boolean equals(Object object) {
 		if (object instanceof POICode) {
 			POICode poiNode = (POICode)object;

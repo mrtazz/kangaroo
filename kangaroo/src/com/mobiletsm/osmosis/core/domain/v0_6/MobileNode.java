@@ -11,6 +11,8 @@ import org.openstreetmap.osmosis.core.domain.v0_6.Tag;
 import org.openstreetmap.osmosis.core.store.StoreClassRegister;
 import org.openstreetmap.osmosis.core.store.StoreReader;
 
+import com.mobiletsm.osm.data.searching.POICode;
+
 public class MobileNode extends Node {
 
 	/* additions introduced by MobileNode */
@@ -21,6 +23,9 @@ public class MobileNode extends Node {
 	private long nearestStreetNodeId = ID_UNDEFINED;
 	
 	
+	private POICode poiCode = null;
+	
+	
 	public void setNearestStreetNodeId(long id) {
 		nearestStreetNodeId = id;
 	}
@@ -28,6 +33,16 @@ public class MobileNode extends Node {
 	
 	public long getNearestStreetNodeId() {
 		return nearestStreetNodeId;
+	}
+	
+	
+	public void setPOICode(POICode poiCode) {
+		this.poiCode = poiCode;
+	}
+	
+	
+	public POICode getPOICode() {
+		return poiCode;
 	}
 	
 	

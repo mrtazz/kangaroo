@@ -268,6 +268,7 @@ public class RoutingSQLiteAdapter extends RoutingDBAdapter {
 				node.getTags().addAll(OsmHelper.unpackStringToTags(tags));
 				
 				node.setNearestStreetNodeId(nst);
+				node.setPOICode(poiCode);
 				
 				if (!poiNodes.containsKey(node.getId())) {
 					poiNodes.put(node.getId(), node);
