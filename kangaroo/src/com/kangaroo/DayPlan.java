@@ -279,6 +279,7 @@ public class DayPlan {
 						
 			/* be pessimistic and round up the duration of travel and 
 			 * round down the gap between subsequent events */
+			/* TODO: Math.rint() does not always round up */
 			timeLeft = timeLeft - (int)Math.rint(route.getDurationOfTravel());
 			
 				System.out.println("DayPlan.checkComplianceWith(): timeLeft (with route) = " + timeLeft);

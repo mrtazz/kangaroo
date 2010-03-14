@@ -14,6 +14,7 @@ import com.kangaroo.task.TaskConstraintDuration;
 import com.kangaroo.task.TaskConstraintInterface;
 import com.mobiletsm.routing.NoRouteFoundException;
 import com.mobiletsm.routing.Place;
+import com.mobiletsm.routing.RouteParameter;
 import com.mobiletsm.routing.RoutingEngine;
 
 public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
@@ -75,36 +76,61 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 			Task task = task_itr.next();
 			CalendarEvent taskAsEvent = null;
 			
+			System.out.println("GreedyTaskInsertionOptimizer.optimize(): analyzing task " + task.toString());
+			
 			TaskConstraintHelper constraintHelper = new TaskConstraintHelper(task);
 			
 			/* skip this task if task takes more time than left till next event */		
-			Integer taskDuration = constraintHelper.getDuration();
-			if (taskDuration != null && timeGapToNextEvent != null && 
-					taskDuration.intValue() > timeGapToNextEvent.intValue()) {
+			int taskDuration = constraintHelper.getDuration();
+			if (timeGapToNextEvent != null && taskDuration > timeGapToNextEvent.intValue()) {
+				System.out.println("GreedyTaskInsertionOptimizer.optimize(): SKIP! gap = " + 
+						timeGapToNextEvent + ", duration = " + taskDuration);
 				continue;
 			}
 
-			/* skip this task if  */
+			/* skip this task if its constraints forbid to execute it now */
 			if (!constraintHelper.isAllowed(now)) {
+				System.out.println("GreedyTaskInsertionOptimizer.optimize(): SKIP! cannot be done now");
 				continue;
 			}
 			
+			/* get nearest location that is consistent with the task's constraints */
+			Place place = constraintHelper.getLocation(routingEngine, here);
 			
 			
-			List<TaskConstraintInterface> locationConstraint = 
-				task.getConstraintsOfType(TaskConstraintInterface.TYPE_LOCATION);
-			
-			
-			List<TaskConstraintInterface> poiConstraint = 
-				task.getConstraintsOfType(TaskConstraintInterface.TYPE_POI);
-			
-
-			if (locationConstraint.size() == 0) {
-			
-			} else {
+			if (place != null) {
 				
-			}
+				System.out.println("GreedyTaskInsertionOptimizer.optimize(): place = " + place.getOsmNodeId());
+				
+				/* check if suggestion is consistent with next event
+				 * TODO: this should be skipped if there is no next event */
+				RouteParameter fromHereToTask = routingEngine.routeFromTo(here, place, vehicle);
+				RouteParameter fromTaskToNextEvent = routingEngine.routeFromTo(place, nextEvent.getPlace(), vehicle);
+				
+				System.out.println("GreedyTaskInsertionOptimizer.optimize(): fromHereToTask = " + fromHereToTask);	
+				System.out.println("GreedyTaskInsertionOptimizer.optimize(): fromTaskToNextEvent = " + fromTaskToNextEvent);
+				
+				if (fromHereToTask.getNoRouteFound() || fromTaskToNextEvent.getNoRouteFound()) {
+					continue;
+				}
+				
+				if (timeGapToNextEvent == null) {
+					continue;
+				}
+				
+				int timeLeft = (int)(timeGapToNextEvent - fromHereToTask.getDurationOfTravel() - fromTaskToNextEvent.getDurationOfTravel() - taskDuration);
+				
+				if (timeLeft > 0) {
+					System.out.println(" set task " + task.toString() + " at " + place.toString());
+				}
+				
+			} else {
+				/* the task has no location constraints and may be done now */
+				
+				System.out.println("GreedyTaskInsertionOptimizer.optimize(): SKIP! no location");
+			}		
 			
+		
 			if (taskAsEvent != null) {
 				optimizedDayPlan.addEvent(taskAsEvent);
 			} else {

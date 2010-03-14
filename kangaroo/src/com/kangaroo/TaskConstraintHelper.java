@@ -8,7 +8,19 @@ import com.kangaroo.task.TaskConstraintDate;
 import com.kangaroo.task.TaskConstraintDayTime;
 import com.kangaroo.task.TaskConstraintDuration;
 import com.kangaroo.task.TaskConstraintInterface;
+import com.kangaroo.task.TaskConstraintLocation;
+import com.kangaroo.task.TaskConstraintPOI;
+import com.mobiletsm.osm.data.searching.POINodeSelector;
+import com.mobiletsm.routing.Place;
+import com.mobiletsm.routing.RoutingEngine;
 
+
+
+/**
+ * This class provides methods analyze task constraints.
+ * @author andreaswalz
+ *
+ */
 public class TaskConstraintHelper {
 
 	
@@ -30,18 +42,26 @@ public class TaskConstraintHelper {
 	}
 	
 	
-	public Integer getDuration() {
+	/**
+	 * returns the duration of this task in minutes, 0 if not specified 
+	 * @return
+	 */
+	public int getDuration() {
 		
-		Integer taskDuration = null;
+		int taskDuration = 0;
 
 		List<TaskConstraintInterface> durationConstraints = 
 			task.getConstraintsOfType(TaskConstraintInterface.TYPE_DURATION);
 		
+		if (durationConstraints.size() == 0) {
+			return 0;
+		}
+		
 		for (TaskConstraintInterface constraint : durationConstraints) {
 			TaskConstraintDuration durationConstraint = 
 				(TaskConstraintDuration)constraint;
-			if (taskDuration == null || taskDuration.intValue() < durationConstraint.getDuration()) {
-				taskDuration = new Integer(durationConstraint.getDuration());
+			if (taskDuration < durationConstraint.getDuration()) {
+				taskDuration = durationConstraint.getDuration();
 			}
 		}
 	
@@ -69,18 +89,24 @@ public class TaskConstraintHelper {
 			
 			if (dateConstraint.getStart() != null) {
 
-				// TODO: also check for constraints only specifying a start date
+				if (dateConstraint.getEnd() != null) {
 				
-				/* do not allow both black and white list in one task */
-				if (dateConstraintType == BLACK_LIST) {
-					throw new RuntimeException("TaskConstraintHelper.isAllowed(): " +
-							"Task specifies date constraints of both date span and end date");
-				}					
+					/* do not allow both black and white list in one task */
+					if (dateConstraintType == BLACK_LIST) {
+						throw new RuntimeException("TaskConstraintHelper.isAllowed(): " +
+								"Task specifies date constraints of both date span and end date");
+					}					
+					
+					/* this task has a date constraint white list */
+					dateConstraintType = WHITE_LIST;
+					if (!now.before(dateConstraint.getStart()) && !now.after(dateConstraint.getEnd())) {
+						isAllowedByDateConstraints = true;
+					}
 				
-				/* this task has a date constraint white list */
-				dateConstraintType = WHITE_LIST;
-				if (!now.before(dateConstraint.getStart()) && !now.after(dateConstraint.getEnd())) {
-					isAllowedByDateConstraints = true;
+				} else {
+					
+					// TODO: also check for constraints only specifying a start date
+					
 				}
 				
 			} else {
@@ -136,12 +162,15 @@ public class TaskConstraintHelper {
 					/* this task has a daytime constraint white list */
 					daytimeConstraintType = WHITE_LIST;
 					if (compareDayTime(now, daytimeConstraint.getStartTime()) >= 0
-							&& compareDayTime(daytimeConstraint.getEndTime(),
-									now) >= 0) {
+							&& compareDayTime(daytimeConstraint.getEndTime(), now) >= 0) {
 						isAllowedByDaytimeConstraints = true;
 					}
 					
-				}				
+				} else {
+					
+					// TODO: also check for constraints only specifying a start date
+					
+				}
 				
 			} else {
 				
@@ -191,6 +220,66 @@ public class TaskConstraintHelper {
 		
 		int seconds = daytime1.getSeconds() - daytime2.getSeconds();
 		return seconds;
+	}
+	
+	
+	
+	/**
+	 * return the nearest location from Place here that is consistent with
+	 * constraints of type TaskConstraintLocation and TaskConstraintPOI
+	 * @param routingEngine
+	 * @param here
+	 * @return
+	 */
+	public Place getLocation(RoutingEngine routingEngine, Place here) {
+		
+		Place minPlace = null;
+		double minDist = Double.MAX_VALUE;
+
+		List<TaskConstraintInterface> locationConstraints = 
+			task.getConstraintsOfType(TaskConstraintInterface.TYPE_LOCATION);
+		
+		if (locationConstraints.size() > 0) {
+			
+			for (TaskConstraintInterface constraint : locationConstraints) {
+				TaskConstraintLocation locationConstraint = (TaskConstraintLocation)constraint;
+				
+				/* update minPlace and minDist */
+				Place place = locationConstraint.getPlace();
+				if (place != null) {
+					if (minPlace == null || minPlace.distanceTo(place) < minDist) {
+						minPlace = place;
+						minDist = minPlace.distanceTo(place);
+					}
+				}
+			}
+			
+		}
+		
+				
+		List<TaskConstraintInterface> poiConstraints = 
+			task.getConstraintsOfType(TaskConstraintInterface.TYPE_POI);
+		
+		if (poiConstraints.size() > 0) {
+			
+			for (TaskConstraintInterface constraint : poiConstraints) {
+				TaskConstraintPOI poiConstraint = (TaskConstraintPOI)constraint;				
+				Place place = routingEngine.getNearestPOINode(here, 
+						new POINodeSelector(poiConstraint.getId()), null);
+				
+				/* update minPlace and minDist */
+				if (place != null) {
+					if (minPlace == null || minPlace.distanceTo(place) < minDist) {
+						minPlace = place;
+						minDist = minPlace.distanceTo(place);
+					}
+				}
+				
+			}
+		}
+		
+		return minPlace;
+		
 	}
 	
 }

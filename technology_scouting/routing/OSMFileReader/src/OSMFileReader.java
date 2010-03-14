@@ -49,6 +49,7 @@ import com.kangaroo.task.Task;
 import com.kangaroo.task.TaskConstraintDate;
 import com.kangaroo.task.TaskConstraintDayTime;
 import com.kangaroo.task.TaskConstraintDuration;
+import com.kangaroo.task.TaskConstraintLocation;
 import com.kangaroo.task.TaskConstraintPOI;
 import com.kangaroo.tsm.osm.io.FileLoader;
 import com.mobiletsm.osm.MobileTSMDatabaseWriter;
@@ -134,12 +135,15 @@ public class OSMFileReader {
         activeDayPlan.setCalendarAccessAdapter(adapter);
         
         Date now = new Date(2010 - 1900, 3, 10, 19, 00);
+        Place home = new Place(48.0064241, 7.8521991);
+        Vehicle vehicle = new AllStreetVehicle(12.0);
+        
         
         CalendarEvent event1 = new CalendarEvent();
         event1.setStartDate(new Date(2010 - 1900, 3, 10, 19, 30));
         event1.setEndDate(new Date(2010 - 1900, 3, 10, 20, 00));
-        event1.setLocationLatitude(48.0064241);
-        event1.setLocationLongitude(7.8521991);
+        event1.setLocationLatitude(48.00);
+        event1.setLocationLongitude(7.852);
 
         CalendarEvent event2 = new CalendarEvent();
         event2.setStartDate(new Date(2010 - 1900, 3, 10, 20, 10));
@@ -211,19 +215,23 @@ public class OSMFileReader {
 			System.out.println(activeDayPlan.toString());
 	        
 	        /* check consistency */
-	        DayPlanConsistency consistency = 
-				activeDayPlan.checkConsistency(new AllStreetVehicle(50.0), now);
+	        /*
+			DayPlanConsistency consistency = 
+				activeDayPlan.checkConsistency(vehicle, now);
 			if (consistency != null) {
 				System.out.println("consistency = " + consistency.toString());		
 			}
+			*/
 			
 			
 			/* optimize plan */
+			
 			DayPlanOptimizer optimizer = new GreedyTaskInsertionOptimizer();
 			activeDayPlan.setOptimizer(optimizer);
-			//DayPlan optimizedDayPlan = activeDayPlan.optimize();
+			DayPlan optimizedDayPlan = activeDayPlan.optimize(now, home, vehicle);
+			activeDayPlan.optimize(now, home, vehicle);
 			
-			//System.out.println(optimizedDayPlan.toString());
+
 		}
         
         
@@ -242,36 +250,34 @@ public class OSMFileReader {
 	}
 	
 	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {	
-		
-		//testActiveDayPlan();
-		
-		testTaskPriorityComparator();
-		
-		
-		//IDataSet map = loadMapFile("/Users/andreaswalz/Downloads/maps/in/map-fr.osm");
-		
-		
-		
-		/*
-		// write map to a mobile database		
-		MobileTSMDatabaseWriter writer = 
-			new MobileTSMDatabaseWriter("jdbc:sqlite:/Users/andreaswalz/Downloads/maps/out/map-fr.db");
+	public static void writeDatabase(IDataSet map, String filename) {
+		MobileTSMDatabaseWriter writer = new MobileTSMDatabaseWriter(filename);
 		writer.setLogStream(System.out);		
 		writer.openDatabase();
 		writer.writeDatabaseV2(map);
-		//writer.readDatabaseV2();		
 		System.out.print("closing database...");
 		if (writer.closeDatabase()) {
 			System.out.println("successful!");
 		} else {
 			System.out.println("failed!");
-		}
-		map = null;
-		*/
+		}	
+	}
+	
+	
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {	
+		
+		testActiveDayPlan();
+		
+		//testTaskPriorityComparator();		
+		
+		//IDataSet map = loadMapFile("/Users/andreaswalz/Downloads/maps/in/map-fr.osm");
+		
+		//writeDatabase(map, "jdbc:sqlite:/Users/andreaswalz/Downloads/maps/out/map-fr.db");
+		
+		//testTaskConstraintHelper();
 		
 		/*
 		// test routing cache
@@ -279,23 +285,22 @@ public class OSMFileReader {
 		routingEngine.init("jdbc:sqlite:/Users/andreaswalz/Downloads/maps/out/map.db");
 		
 		// Am Kurzarm
-		Place from = new Place(48.1208603, 7.8581893);
-		System.out.println("from.hashCode() = " + from.hashCode());		
+		Place home = new Place(48.1208603, 7.8581893);
+		System.out.println("from.hashCode() = " + home.hashCode());		
 		
-		Place poi1 = routingEngine.getNearestPOINode(from, new POINodeSelector(POICode.AMENITY_SCHOOL), null);
-		System.out.println("poi1 = " + poi1.toString());
-		
+		Place poi1 = routingEngine.getNearestPOINode(home, new POINodeSelector(POICode.AMENITY_SCHOOL), null);
+		System.out.println("poi1 = " + poi1.toString());		
 				
 		routingEngine.enableRoutingCache();
 		
-		RouteParameter route1 = routingEngine.routeFromTo(from, poi1, new AllStreetVehicle(5.0));		
+		RouteParameter route1 = routingEngine.routeFromTo(home, poi1, new AllStreetVehicle(5.0));		
 		
 		System.out.println(route1.toString());	
 		
-		Place poi2 = routingEngine.getNearestPOINode(from, new POINodeSelector(POICode.SHOP_BAKERY), null);
+		Place poi2 = routingEngine.getNearestPOINode(home, new POINodeSelector(POICode.SHOP_BAKERY), null);
 		System.out.println("poi2 = " + poi2.toString());		
 		
-		RouteParameter route2 = routingEngine.routeFromTo(from, poi2, new AllStreetVehicle(5.0));		
+		RouteParameter route2 = routingEngine.routeFromTo(home, poi2, new AllStreetVehicle(5.0));		
 		
 		System.out.println(route2.toString());
 		
@@ -303,12 +308,12 @@ public class OSMFileReader {
 		
 		System.out.println(route3.toString());
 
-		System.out.println(routingEngine.routeFromTo(from, poi2, new AllStreetVehicle(5.0)).toString());
+		System.out.println(routingEngine.routeFromTo(home, poi2, new AllStreetVehicle(5.0)).toString());
 		routingEngine.shutdown();
 			
 		
 		// check equals() and hashCode() for Place
-		System.out.println("from.hashCode() = " + from.hashCode());
+		System.out.println("from.hashCode() = " + home.hashCode());
 		System.out.println("poi1.hashCode() = " + poi1.hashCode());
 		System.out.println("poi2.hashCode() = " + poi2.hashCode());
 		
@@ -321,7 +326,7 @@ public class OSMFileReader {
 		System.out.println("poi1_.equals(poi1) = " + poi1_.equals(poi1));
 		System.out.println("poi1_.equals(poi2) = " + poi1_.equals(poi2));		
 		
-		System.out.println("==> " + from.equals(Place.deserialize(from.serialize())));
+		System.out.println("==> " + home.equals(Place.deserialize(home.serialize())));
 		System.out.println("==> " + poi1.equals(Place.deserialize(poi1.serialize())));
 		System.out.println("==> " + poi2.equals(Place.deserialize(poi2.serialize())));
 		System.out.println("==> " + poi1_.equals(Place.deserialize(poi1_.serialize())));
@@ -390,6 +395,33 @@ public class OSMFileReader {
 	
 	
 	
+	private static void testTaskConstraintHelper() {
+		
+		RoutingEngine routingEngine = new TestRoutingEngine();
+		routingEngine.init("jdbc:sqlite:/Users/andreaswalz/Downloads/maps/out/map.db");
+		
+		// Am Kurzarm
+		Place home = new Place(48.1208603, 7.8581893);
+		
+		
+		Task task = new Task();
+		task.setName("task");
+		task.addConstraint(new TaskConstraintDuration(5));
+		task.addConstraint(new TaskConstraintDuration(9));
+		//task.addConstraint(new TaskConstraintLocation(home));
+		task.addConstraint(new TaskConstraintPOI(new POICode(POICode.SHOP_BAKERY)));
+		//task.addConstraint(new TaskConstraintPOI(new POICode(POICode.SHOP_SUPERMARKET)));
+		
+		TaskConstraintHelper helper = new TaskConstraintHelper(task);
+		
+		System.out.println("duration = " + helper.getDuration());
+		System.out.println("location = " + helper.getLocation(routingEngine, home));
+		
+		routingEngine.shutdown();
+		
+	}
+
+
 	private static void check(IDataSet dataSet, long fromId, long toId, double dist) {
 		IRouter router = new MobileMultiTargetDijkstraRouter();
 		router.setMetric(new MobileRoutingMetric());

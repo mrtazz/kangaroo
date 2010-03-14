@@ -98,7 +98,12 @@ public class ActiveDayPlan extends DayPlan {
 			 * runtime exception occurs */
 			terminateEventAccess(true);
 			throw exception;
-		}		
+		} catch (NoRouteFoundException exception) {
+			/* make sure we step from this level even if a
+			 * runtime exception occurs */
+			terminateEventAccess(true);
+			throw exception;			
+		}
 	}
 
 

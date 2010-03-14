@@ -1180,17 +1180,21 @@ public class OsmHelper {
 		String name = NodeHelper.getTag(node, "name");
 		String operator = NodeHelper.getTag(node, "operator");
 		
-		StringBuffer buf = new StringBuffer();
-		if (name != null) {
-			buf.append(name);
-			if (operator != null) {
-				buf.append(", ");
+		if (name != null && operator != null) {
+			StringBuffer buf = new StringBuffer();
+			if (name != null) {
+				buf.append(name);
+				if (operator != null) {
+					buf.append(", ");
+				}
 			}
+			if (operator != null) {
+				buf.append(operator);
+			}
+			return buf.toString();
+		} else {
+			return null;
 		}
-		if (operator != null) {
-			buf.append(operator);
-		}
-		return buf.toString();
 	}
 	
 }
