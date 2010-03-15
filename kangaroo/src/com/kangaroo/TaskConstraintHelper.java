@@ -17,7 +17,7 @@ import com.mobiletsm.routing.RoutingEngine;
 
 
 /**
- * This class provides methods analyze task constraints.
+ * This class provides methods to analyze task constraints.
  * @author andreaswalz
  *
  */
@@ -43,8 +43,10 @@ public class TaskConstraintHelper {
 	
 	
 	/**
-	 * returns the duration of this task in minutes, 0 if not specified 
-	 * @return
+	 * returns the duration of this task in minutes, 0 if not specified.
+	 * The task may specify more than one duration constraint, and if so
+	 * the maximum of all will be returned
+	 * @return the duration of this task in minutes, 0 if not specified
 	 */
 	public int getDuration() {
 		
@@ -54,9 +56,11 @@ public class TaskConstraintHelper {
 			task.getConstraintsOfType(TaskConstraintInterface.TYPE_DURATION);
 		
 		if (durationConstraints.size() == 0) {
+			/* no duration constraints associated with this task */
 			return 0;
 		}
 		
+		/* iterate over all duration constraints and find the maximum */
 		for (TaskConstraintInterface constraint : durationConstraints) {
 			TaskConstraintDuration durationConstraint = 
 				(TaskConstraintDuration)constraint;

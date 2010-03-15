@@ -26,10 +26,12 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 	private RoutingEngine routingEngine = null;
 	
 	
-	
+	/**
+	 * returns true if day plan and routing engine are 
+	 * set and routing engine is initialized, false otherwise
+	 * @return
+	 */
 	private boolean initialized() {
-		/* return true if day plan and routing engine are 
-		 * set and routing engine is initialized, false otherwise */
 		return (originalDayPlan != null && routingEngine != null && routingEngine.initialized());
 	}
 	
@@ -49,10 +51,6 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 		optimizedDayPlan.setEvents(dayPlanEvents);
 		
 		
-		/* cases:
-		 * - 
-		 * 
-		 */
 		
 		Integer timeGapToNextEvent = null;
 		CalendarEvent nextEvent = originalDayPlan.getNextEvent(now);		

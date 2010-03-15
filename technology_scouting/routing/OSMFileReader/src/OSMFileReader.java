@@ -136,7 +136,7 @@ public class OSMFileReader {
         
         Date now = new Date(2010 - 1900, 3, 10, 19, 00);
         Place home = new Place(48.0064241, 7.8521991);
-        Vehicle vehicle = new AllStreetVehicle(12.0);
+        Vehicle vehicle = new AllStreetVehicle(50.0);
         
         
         CalendarEvent event1 = new CalendarEvent();
@@ -187,14 +187,16 @@ public class OSMFileReader {
         /* add and create some tasks */
         
 		Task task1 = new Task();
-		task1.setName("task1");
+		task1.setName("schnell was essen");
 		task1.addConstraint(new TaskConstraintDuration(5));
-		task1.addConstraint(new TaskConstraintPOI(new POICode(POICode.SHOP_BAKERY)));
+		task1.addConstraint(new TaskConstraintPOI(new POICode(POICode.AMENITY_FAST_FOOD)));
+		task1.addConstraint(new TaskConstraintDayTime(new Date(0, 0, 0, 19, 00), new Date(0, 0, 0, 20, 00)));
 		
 		Task task2 = new Task();
-		task2.setName("task2");
+		task2.setName("Blumen kaufen");
 		task2.addConstraint(new TaskConstraintDuration(10));
-		task2.addConstraint(new TaskConstraintDayTime(new Date(2010 - 1900, 5, 2), new Date(2010 - 1900, 5, 2)));
+		task2.addConstraint(new TaskConstraintPOI(new POICode(POICode.SHOP_FLORIST)));
+		task2.addConstraint(new TaskConstraintDayTime(18, 00, 20, 00));
 		
 		Task task3 = new Task();
 		task3.setName("task3");
@@ -221,7 +223,7 @@ public class OSMFileReader {
 			if (consistency != null) {
 				System.out.println("consistency = " + consistency.toString());		
 			}
-			*/
+			*7
 			
 			
 			/* optimize plan */
@@ -229,7 +231,7 @@ public class OSMFileReader {
 			DayPlanOptimizer optimizer = new GreedyTaskInsertionOptimizer();
 			activeDayPlan.setOptimizer(optimizer);
 			DayPlan optimizedDayPlan = activeDayPlan.optimize(now, home, vehicle);
-			activeDayPlan.optimize(now, home, vehicle);
+			
 			
 
 		}

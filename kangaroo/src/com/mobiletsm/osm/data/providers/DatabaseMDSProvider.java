@@ -118,7 +118,7 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 	@Override
 	public Place getNearestStreetNode(Place center, boolean updateCenter) {		
 		/* do not search the database if given place is already a street node */
-		if (center.isOsmStreetNode() || center.getNearestOsmStreetNodeId() != Place.ID_UNDEFINED) {
+		if (center.isOsmStreetNode() || center.hasNearestOsmStreetNode()) {
 			/* get id of nearest street node given by center */
 			long nodeId;
 			if (center.isOsmStreetNode()) {
@@ -267,23 +267,28 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 	}
 
 	
-	
+	/**
+	 * set distanceToPredecessor fields in MobileWayNodes of given way
+	 * @param wayId
+	 */
 	private void setWayNodeDistances(long wayId) {
-		if (wayId == -1) 
-			return;		
-		Way way = completeWays.get(wayId);
-		List<WayNode> wayNodes = way.getWayNodes();		
-		Node last = null;
-		for (int i = 0; i < wayNodes.size(); i++) {
-			MobileWayNode wayNode = (MobileWayNode)wayNodes.get(i);
-			Node current = streetNodes.get(wayNode.getNodeId());
-			if (last != null) {
-				double dist = Place.distance(current.getLatitude(), current.getLongitude(), 
-						last.getLatitude(), last.getLongitude());
-				wayNode.setDistanceToPredecessor(dist);
+		if (wayId != -1) {	
+			/* load way and its way nodes */
+			Way way = completeWays.get(wayId);
+			List<WayNode> wayNodes = way.getWayNodes();		
+			Node last = null;
+			/* iterate over all way nodes, calculate and set distances */
+			for (int i = 0; i < wayNodes.size(); i++) {
+				MobileWayNode wayNode = (MobileWayNode)wayNodes.get(i);
+				Node current = streetNodes.get(wayNode.getNodeId());
+				if (last != null) {
+					double dist = Place.distance(current.getLatitude(), current.getLongitude(), 
+							last.getLatitude(), last.getLongitude());
+					wayNode.setDistanceToPredecessor(dist);
+				}
+				last = current;
 			}
-			last = current;
-		}		
+		}
 	}
 	
 	
