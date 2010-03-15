@@ -242,9 +242,9 @@ public class Place {
 	@Override
 	public String toString() {
 		if (name != null) {
-			return name;
+			return String.format(Locale.US, "%s @ (%.7f, %.7f)", name, latitude, longitude);
 		} else {
-			return String.format(Locale.US, "Place: {lat = %.7f, lon = %.7f}", latitude, longitude);
+			return String.format(Locale.US, "Place @ (%.7f, %.7f)", latitude, longitude);
 		}
 	}
 	

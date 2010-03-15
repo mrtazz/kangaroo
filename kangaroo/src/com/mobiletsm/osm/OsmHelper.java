@@ -43,6 +43,8 @@ import org.openstreetmap.travelingsalesman.routing.routers.TurnRestrictedAStar;
 
 import com.mobiletsm.osm.data.MobileDataSet;
 import com.mobiletsm.osm.data.MobileMemoryDataSet;
+import com.mobiletsm.osm.data.searching.POICode;
+import com.mobiletsm.osmosis.core.domain.v0_6.MobileNode;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileWayNode;
 import com.mobiletsm.routing.RouteParameter;
@@ -1180,7 +1182,7 @@ public class OsmHelper {
 		String name = NodeHelper.getTag(node, "name");
 		String operator = NodeHelper.getTag(node, "operator");
 		
-		if (name != null && operator != null) {
+		if (name != null || operator != null) {
 			StringBuffer buf = new StringBuffer();
 			if (name != null) {
 				buf.append(name);
@@ -1192,7 +1194,17 @@ public class OsmHelper {
 				buf.append(operator);
 			}
 			return buf.toString();
-		} else {
+		} else {			
+			if (node instanceof MobileNode) {
+				MobileNode mobileNode = (MobileNode)node;
+				POICode poiCode = mobileNode.getPOICode();
+				if (poiCode != null) {
+					String type = poiCode.getTypeAsDescription(); 
+					if (type != null) {
+						return type;
+					}
+				}
+			}			
 			return null;
 		}
 	}

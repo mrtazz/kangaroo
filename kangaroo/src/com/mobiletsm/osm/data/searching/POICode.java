@@ -20,6 +20,8 @@ public class POICode {
 	
 	public static final String POICODE_TYPE_UNDEFINED = "poicode_undefined";
 	
+	public static final String POICODE_SEPARATOR = "#";
+	
 	
 	/* amenities */
 	public static final String AMENITY_RESTAURANT = "amenity#restaurant";
@@ -359,6 +361,18 @@ public class POICode {
 		}
 	}
 	
+
+	public String getTypeAsDescription() {
+		if (id != POICODE_ID_UNDEFINED) {
+			int sep = type.indexOf(POICODE_SEPARATOR);
+			if (sep >= 0) {
+				String name = type.substring(sep + POICODE_SEPARATOR.length());
+				return name.replaceAll("_", " ");				
+			}
+		}
+		return null;
+	}
+	
 	
 	/* TODO: remove this method to be independent from TSM */
 	/**
@@ -389,7 +403,7 @@ public class POICode {
 	 * @return
 	 */
 	public static String getTagString(Tag tag) {
-		return tag.getKey() + "#" + tag.getValue();
+		return tag.getKey() + POICODE_SEPARATOR + tag.getValue();
 	}
 	
 	
@@ -400,5 +414,7 @@ public class POICode {
 	public static Map<String, Integer> getPOICodeMap() {
 		return Collections.unmodifiableMap(poiCodeMap);
 	}
+	
+	
 	
 }
