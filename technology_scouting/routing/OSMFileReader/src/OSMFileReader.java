@@ -187,20 +187,20 @@ public class OSMFileReader {
         /* add and create some tasks */
         
 		Task task1 = new Task();
-		task1.setName("schnell was essen");
+		task1.setName("Schnell was essen");
 		task1.addConstraint(new TaskConstraintDuration(5));
 		task1.addConstraint(new TaskConstraintPOI(new POICode(POICode.AMENITY_FAST_FOOD)));
 		task1.addConstraint(new TaskConstraintDayTime(new Date(0, 0, 0, 19, 00), new Date(0, 0, 0, 20, 00)));
 		
 		Task task2 = new Task();
 		task2.setName("Frisšr");
-		task2.addConstraint(new TaskConstraintDuration(10));
+		task2.addConstraint(new TaskConstraintDuration(30));
 		task2.addConstraint(new TaskConstraintPOI(new POICode(POICode.SHOP_HAIRDRESSER)));
 		task2.addConstraint(new TaskConstraintDayTime(18, 00, 20, 00));
 		
 		Task task3 = new Task();
-		task3.setName("task3");
-		task3.addConstraint(new TaskConstraintDuration(5));
+		task3.setName("Oma anrufen");
+		task3.addConstraint(new TaskConstraintDuration(30));
 		task3.addConstraint(new TaskConstraintDate(new Date(2010 - 1900, 5, 2)));
 		
 		activeDayPlan.addTask(task1);
@@ -213,8 +213,10 @@ public class OSMFileReader {
         
         if (routingEngine.initialized()) {
 	        activeDayPlan.setRoutingEngine(routingEngine);
-	        			        
-			System.out.println(activeDayPlan.toString());
+
+//			System.out.println("***********");
+			System.out.println("---> " + activeDayPlan.toString());
+			System.out.println("---> " + activeDayPlan.checkConsistency(vehicle, now).toString());
 	        
 	        /* check consistency */
 	        /*
@@ -223,7 +225,7 @@ public class OSMFileReader {
 			if (consistency != null) {
 				System.out.println("consistency = " + consistency.toString());		
 			}
-			*7
+			*/
 			
 			
 			/* optimize plan */
@@ -232,7 +234,9 @@ public class OSMFileReader {
 			activeDayPlan.setOptimizer(optimizer);
 			DayPlan optimizedDayPlan = activeDayPlan.optimize(now, home, vehicle);
 			
-
+//			System.out.println("***********");
+			System.out.println("---> " + optimizedDayPlan.toString());
+			System.out.println("---> " + optimizedDayPlan.checkConsistency(vehicle, now).toString());
 		}
         
         

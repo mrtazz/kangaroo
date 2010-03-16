@@ -10,7 +10,13 @@ import java.util.Locale;
  *
  */
 public abstract class RouteParameter {
-
+	
+	
+	public static int ROUTE_PARAMETER_NO_ROUTE_FOUND = 1;
+	
+	
+	public static int ROUTE_PARAMETER_ONE_POINT_ROUTE = 2;
+	
 	
 	/**
 	 * static value used to specify undefined parameters
@@ -64,9 +70,27 @@ public abstract class RouteParameter {
 	 * destination place of route
 	 */
 	protected Place destinationPlace = null;
-	
-	
 		
+
+	public RouteParameter(int type, Object vehicle) {
+		
+		if (type == ROUTE_PARAMETER_NO_ROUTE_FOUND) {
+			this.route = null;
+			this.vehicle = vehicle;
+			this.noRouteFound = true;			
+		} else if (type == ROUTE_PARAMETER_ONE_POINT_ROUTE) {
+			this.route = null;
+			this.vehicle = vehicle;
+			this.noRouteFound = false;
+			this.length = 0;
+			this.durationOfTravel = 0;
+		} else {
+			throw new RuntimeException("RouteParameter(): type undefined");
+		}
+		
+	}
+	
+	
 	public RouteParameter(Object route) {
 		this(route, null);
 	}
@@ -163,9 +187,9 @@ public abstract class RouteParameter {
 
 	@Override
 	public String toString() {
-		if (getNoRouteFound()) {
-			return "RouteParameter: {no route found}";
-		} else {
+//		if (getNoRouteFound()) {
+//			return "RouteParameter: {no route found}";
+//		} else {
 			
 			String from = null;
 			String to = null;
@@ -176,7 +200,13 @@ public abstract class RouteParameter {
 				to = destinationPlace.toString();
 			}
 			
-			StringBuffer buf = new StringBuffer("RouteParameter: {route");
+			//StringBuffer buf = new StringBuffer("RouteParameter: {route");
+			StringBuffer buf = new StringBuffer("RouteParameter: {");
+			if (getNoRouteFound()) {
+				buf.append("no route found");
+			} else {
+				buf.append("route");
+			}
 			
 			if (from != null) {
 				buf.append(" from '" + from + "'");
@@ -190,7 +220,7 @@ public abstract class RouteParameter {
 				"duration = " + durationToString(Math.rint(getDurationOfTravel())) + "}");				
 			
 			return buf.toString();
-		}
+//		}
 	}
 	
 	

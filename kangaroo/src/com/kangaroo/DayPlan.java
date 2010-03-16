@@ -262,6 +262,9 @@ public class DayPlan {
 				throw new MissingParameterException("DayPlan.checkComplianceWith(): No start date given");
 			}
 			
+				System.out.println("DayPlan.checkComplianceWith(): route from " + here.toString() + 
+						" to " + destinationEvent.getPlace().toString());
+			
 			RouteParameter route = routingEngine.routeFromTo(here, destinationEvent.getPlace(), vehicle);
 		
 				System.out.println("DayPlan.checkComplianceWith(): " + route.toString());
@@ -375,13 +378,6 @@ public class DayPlan {
 			}			
 			
 			predecessor = event;
-	
-			/* DEPRECATED: there may by accident be an event with an end date chronologically
-			 * before its start date. This would prevent this loop from stopping 
-			if (event.getStartDate().compareTo(event.getEndDate()) > 0) {
-				throw new RuntimeException("DayPlan.checkConsistency(): Event has an end date earlier than its start date");
-			}*/
-			
 			pos = event.getStartDate();
 		}
 		
@@ -411,7 +407,27 @@ public class DayPlan {
 	
 	@Override
 	public String toString() {
-		return "DayPlan: {# events = " + events.size() + ", # tasks = " + tasks.size() + "}";
+		
+		if (events.size() > 0 || tasks.size() > 0) {
+			StringBuffer buf = new StringBuffer("DayPlan: {# events = " + events.size() + 
+					", # tasks = " + tasks.size() + ": ");
+			
+			/* make sure the events are in correct order */
+			Collections.sort(events, new CalendarEventComparator(CalendarEventComparator.START_DATE));
+			
+			Iterator<CalendarEvent> event_itr = events.iterator();
+			while (event_itr.hasNext()) {
+				buf.append(event_itr.next().toString());
+				if (event_itr.hasNext()) {
+					buf.append(", ");
+				} else {
+					buf.append("}");
+				}
+			}
+			return buf.toString();			
+		} else {
+			return "DayPlan: {no tasks or events}";
+		}
 	}
 	
 }
