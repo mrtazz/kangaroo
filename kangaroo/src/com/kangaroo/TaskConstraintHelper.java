@@ -3,6 +3,7 @@ package com.kangaroo;
 import java.util.Date;
 import java.util.List;
 
+import com.kangaroo.task.NoLocationFoundException;
 import com.kangaroo.task.Task;
 import com.kangaroo.task.TaskConstraintDate;
 import com.kangaroo.task.TaskConstraintDayTime;
@@ -243,8 +244,9 @@ public class TaskConstraintHelper {
 	 * @param here
 	 * @param geoConstraints TODO
 	 * @return
+	 * @throws NoLocationFoundException 
 	 */
-	public Place getLocation(Place here, GeoConstraints geoConstraints) {
+	public Place getLocation(Place here, GeoConstraints geoConstraints) throws NoLocationFoundException {
 		
 		Place minPlace = null;
 		double minDist = Double.MAX_VALUE;
@@ -296,7 +298,17 @@ public class TaskConstraintHelper {
 			}
 		}
 		
-		return minPlace;
+		if (locationConstraints.size() == 0 && poiConstraints.size() == 0) {
+			/* task does not specify any location constraints */
+			return null;
+		} else {
+			if (minPlace != null) {
+				return minPlace;
+			} else {
+				throw new NoLocationFoundException("TaskConstraintHelper.getLocation(): " +
+						"cannot find a location");
+			}
+		}		
 		
 	}
 	

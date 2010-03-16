@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.kangaroo.calendar.CalendarEvent;
+import com.kangaroo.task.NoLocationFoundException;
 import com.kangaroo.task.Task;
 import com.kangaroo.task.TaskConstraintDuration;
 import com.kangaroo.task.TaskConstraintInterface;
@@ -53,12 +54,13 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 		optimizedDayPlan.setOptimizer(this);
 
 		
-		int timeLeft = 0;	
+		int timeLeftToWait = 0;
+		
 		CalendarEvent nextEvent = originalDayPlan.getNextEvent(now);
 			System.out.println("nextEvent = " + nextEvent);
 		if (nextEvent != null) {
 			try {
-				timeLeft = originalDayPlan.checkComplianceWith(now, here, nextEvent, vehicle);
+				timeLeftToWait = originalDayPlan.checkComplianceWith(now, here, nextEvent, vehicle);
 			} catch (NoRouteFoundException e) {
 				optimizedDayPlan.setTasks(originalDayPlan.getTasks());
 				return optimizedDayPlan.optimize(nextEvent.getEndDate(), nextEvent.getPlace(), vehicle);
@@ -84,53 +86,106 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 				
 					System.out.println("GreedyTaskInsertionOptimizer.optimize(): analyzing task " + task.toString());
 				
+				/* how long does the task take to be executed */ 
 				int taskDuration = constraintHelper.getDuration();
-				if (nextEvent == null || taskDuration <= timeLeft) {
+				
+					System.out.println("GreedyTaskInsertionOptimizer.optimize(): INFO: " +
+							"timeLeftToWait = " +	timeLeftToWait + ", duration = " + taskDuration);
+				
+				if (nextEvent == null || taskDuration <= timeLeftToWait) {
 					/* skip this task if its constraints forbid to execute it now
 					 * TODO: checking task constraint consistency with now is not
 					 * correct, because we have to check if the actual time and 
 					 * duration is consistent with the task's constraints. */
 					if (constraintHelper.isAllowed(now)) {
 						
+						/* find a location to execute the current task */
 						GeoConstraints geoConstraints = null;
 						if (nextEvent != null) {
 							geoConstraints = new GeoConstraints(nextEvent.getPlace());
 						}
-						Place taskExecutionPlace = constraintHelper.getLocation(here, geoConstraints);	
-						
-						if (taskExecutionPlace != null) {
+						Place taskExecutionPlace;
+						try {
+							taskExecutionPlace = constraintHelper.getLocation(here, geoConstraints);
 							
-							if (nextEvent != null) {
+							/*  */
+							if (taskExecutionPlace != null) {
+
+								/*  */
 								RouteParameter fromHereToTask = routingEngine.routeFromTo(here, taskExecutionPlace, vehicle);
-								RouteParameter fromTaskToNextEvent = routingEngine.routeFromTo(taskExecutionPlace, nextEvent.getPlace(), vehicle);
 								
-								if (!fromHereToTask.getNoRouteFound() && !fromTaskToNextEvent.getNoRouteFound()) {
-									int newTimeLeft = (int)(timeLeft - fromHereToTask.getDurationOfTravel() - 
-											fromTaskToNextEvent.getDurationOfTravel() - taskDuration);
+								if (nextEvent != null) {
 									
-									if (newTimeLeft >= 0) {
+									RouteParameter fromTaskToNextEvent = 
+										routingEngine.routeFromTo(taskExecutionPlace, nextEvent.getPlace(), vehicle);
+									
+									if (!fromHereToTask.getNoRouteFound() && !fromTaskToNextEvent.getNoRouteFound()) {
+										/* calculate the time left until next event */
+										int timeLeftUntilNextEvent = 
+											(int)Math.ceil((nextEvent.getStartDate().getTime() - now.getTime()) / (1000 * 60));
+											
+										/* calculate the time left if current task is executed before the next event */
+										int newTimeLeft = (int)(timeLeftUntilNextEvent - fromHereToTask.getDurationOfTravel() - 
+												fromTaskToNextEvent.getDurationOfTravel() - taskDuration);
 										
-										Date taskStartDate = new Date(now.getTime() + (int)(fromHereToTask.getDurationOfTravel() * 1000 * 60));
-										taskAsEvent = new CalendarEvent(task, taskStartDate, taskExecutionPlace);
+										/* check if there is enough time to execute the task
+										 * TODO: allow time buffer */
+										if (newTimeLeft >= 0) {										
+											/* set the start date/time of the event to the time of estimated 
+											 * arrival time at the tasks execution location
+											 * TODO: use a time buffer */
+											Date taskStartDate = new Date(now.getTime() + 
+													(int)Math.ceil(fromHereToTask.getDurationOfTravel()) * 1000 * 60);
+											taskAsEvent = new CalendarEvent(task, taskStartDate, taskExecutionPlace);
+										}
+									} else {
+										System.out.println("GreedyTaskInsertionOptimizer.optimize(): SKIP this task! " +
+											"unable to find routes from here to task and/or from task to next event");
 									}
-								} else {
-									System.out.println("GreedyTaskInsertionOptimizer.optimize(): SKIP this task! " +
-										"unable to find routes from here to task and from task to next event");
+									
+								} else {								
+									/* there is no event chronologically succeeding the task */
+									
+									if (!fromHereToTask.getNoRouteFound()) {
+										/*  */
+										Date taskStartDate = new Date(now.getTime() + 
+												(int)Math.ceil(fromHereToTask.getDurationOfTravel()) * 1000 * 60);
+										taskAsEvent = new CalendarEvent(task, taskStartDate, taskExecutionPlace);
+									} else {
+										System.out.println("GreedyTaskInsertionOptimizer.optimize(): SKIP this task! " +
+											"unable to find a route from here to task");
+									}
+									
 								}
+									
+							} else {
+								/* task has no location constraints and can 
+								 * be executed everywhere, so do it here
+								 * TODO: this assumes the task will be executed
+								 * while 'standing' at the point 'here'. For a
+								 * task without any location constraints, this
+								 * may in principle be done while moving towards
+								 * the next event */
+								taskAsEvent = new CalendarEvent(task, now, here);
 							}
-								
-						} else {
-							/* task can be executed now and here */
-							taskAsEvent = new CalendarEvent(task, now, here);
-						}
+							
+						} catch (NoLocationFoundException e) {
+							/* cannot find an execution location for this task */
+							
+							System.out.println("GreedyTaskInsertionOptimizer.optimize(): SKIP this task! " +
+								"cannot find an execution location for this task");
+						}							
 						
 					} else {
+						/* the task cannot be executed now, because date and/or
+						 * daytime constraints forbid its execution. */
+						
 						System.out.println("GreedyTaskInsertionOptimizer.optimize(): SKIP this task! " +
 								"constraints forbid to execute it now");
 					}
 				} else {
 					System.out.println("GreedyTaskInsertionOptimizer.optimize(): SKIP this task! " +
-							"timeLeft = " +	timeLeft + ", duration = " + taskDuration);
+							"timeLeftToWait = " +	timeLeftToWait + ", duration = " + taskDuration);
 				}
 			}
 		

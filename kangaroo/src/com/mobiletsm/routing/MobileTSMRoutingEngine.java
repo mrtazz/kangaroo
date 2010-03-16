@@ -31,7 +31,7 @@ public class MobileTSMRoutingEngine implements RoutingEngine {
 	/**
 	 * initialize the routing engine and set its map data source.
 	 * The parameter <code>source</code> has to specify a SQLite
-	 * database file path, for example "file:/sdcard/map.db".
+	 * database file path, for example "/sdcard/map.db".
 	 * @param source the SQLite database file path
 	 * @return true if initialization was successful, false otherwise
 	 */

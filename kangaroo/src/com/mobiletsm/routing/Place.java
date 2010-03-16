@@ -319,6 +319,24 @@ public class Place {
 	}
 
 
+	
+	public boolean equalsCoordinates(Place place) {
+		int this_lat = getHashForDouble(this.getLatitude());
+		int this_lon = getHashForDouble(this.getLongitude());
+		int place_lat = getHashForDouble(place.getLatitude());
+		int place_lon = getHashForDouble(place.getLongitude());
+		
+		/* consider places with same hash for latitude 
+		 * and longitude as equal */
+		if (this_lat == place_lat && this_lon == place_lon) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	
+	
 	/* re-implementation of equals() and hashCode() to guarantee
 	 * correct behavior in HashTables and HashMaps  */
 	
@@ -355,16 +373,7 @@ public class Place {
 				result = true;
 			}
 		} else {
-			int this_lat = getHashForDouble(this.getLatitude());
-			int this_lon = getHashForDouble(this.getLongitude());
-			int place_lat = getHashForDouble(this.getLatitude());
-			int place_lon = getHashForDouble(this.getLongitude());
-			
-			/* consider places with same hash for latitude 
-			 * and longitude as equal */
-			if (this_lat == place_lat && this_lon == place_lon) {
-				result = true;
-			}
+			result = equalsCoordinates(place);
 		}
 		
 		return result;

@@ -136,7 +136,7 @@ public class OSMFileReader {
         
         Date now = new Date(2010 - 1900, 3, 10, 19, 00);
         Place home = new Place(48.0064241, 7.8521991);
-        Vehicle vehicle = new AllStreetVehicle(16.0);
+        Vehicle vehicle = new AllStreetVehicle(10.0);
         
         
         CalendarEvent event1 = new CalendarEvent();
@@ -146,7 +146,7 @@ public class OSMFileReader {
         event1.setLocationLongitude(7.852);
 
         CalendarEvent event2 = new CalendarEvent();
-        event2.setStartDate(new Date(2010 - 1900, 3, 10, 20, 10));
+        event2.setStartDate(new Date(2010 - 1900, 3, 10, 20, 45));
         event2.setEndDate(new Date(2010 - 1900, 3, 10, 21, 00));
         event2.setLocationLatitude(48.000);
         event2.setLocationLongitude(7.852);
@@ -158,7 +158,7 @@ public class OSMFileReader {
         event3.setLocationLongitude(7.852);
 
         CalendarEvent event4 = new CalendarEvent();
-        event4.setStartDate(new Date(2010 - 1900, 3, 10, 21, 30));
+        event4.setStartDate(new Date(2010 - 1900, 3, 10, 21, 45));
         event4.setEndDate(new Date(2010 - 1900, 3, 10, 21, 50));
         event4.setLocationLatitude(47.987);
         event4.setLocationLongitude(7.852);        
@@ -194,19 +194,24 @@ public class OSMFileReader {
 		
 		Task task2 = new Task();
 		task2.setName("Frisšr");
-		task2.addConstraint(new TaskConstraintDuration(30));
+		task2.addConstraint(new TaskConstraintDuration(3));
 		task2.addConstraint(new TaskConstraintPOI(new POICode(POICode.SHOP_HAIRDRESSER)));
-		task2.addConstraint(new TaskConstraintDayTime(18, 00, 20, 00));
+		task2.addConstraint(new TaskConstraintDayTime(18, 00, 23, 59));
 		
 		Task task3 = new Task();
 		task3.setName("Oma anrufen");
-		task3.addConstraint(new TaskConstraintDuration(30));
+		task3.addConstraint(new TaskConstraintDuration(3));
 		task3.addConstraint(new TaskConstraintDate(new Date(2010 - 1900, 5, 2)));
+		
+		Task task4 = new Task();
+		task4.setName("nicht machbar");
+		task4.addConstraint(new TaskConstraintDuration(3));
+		task4.addConstraint(new TaskConstraintPOI(new POICode(POICode.AMENITY_ARCHITECT_OFFICE)));		
 		
 		activeDayPlan.addTask(task1);
 		activeDayPlan.addTask(task2);
 		activeDayPlan.addTask(task3);
-        
+		activeDayPlan.addTask(task4);        
 		
 		
         
@@ -420,7 +425,7 @@ public class OSMFileReader {
 		TaskConstraintHelper helper = new TaskConstraintHelper(task);
 		
 		System.out.println("duration = " + helper.getDuration());
-		System.out.println("location = " + helper.getLocation(home, null));
+//		System.out.println("location = " + helper.getLocation(home, null));
 		
 		routingEngine.shutdown();
 		
