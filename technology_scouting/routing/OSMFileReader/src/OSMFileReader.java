@@ -136,7 +136,7 @@ public class OSMFileReader {
         
         Date now = new Date(2010 - 1900, 3, 10, 19, 00);
         Place home = new Place(48.0064241, 7.8521991);
-        Vehicle vehicle = new AllStreetVehicle(10.0);
+        Vehicle vehicle = new AllStreetVehicle(50.0);
         
         
         CalendarEvent event1 = new CalendarEvent();
@@ -202,7 +202,7 @@ public class OSMFileReader {
 		task2.setName("Frisšr");
 		task2.addConstraint(new TaskConstraintDuration(3));
 		task2.addConstraint(new TaskConstraintPOI(new POICode(POICode.SHOP_HAIRDRESSER)));
-		task2.addConstraint(new TaskConstraintDayTime(18, 00, 23, 59));
+		task2.addConstraint(new TaskConstraintDayTime(18, 00, 23, 00));
 		
 		Task task3 = new Task();
 		task3.setName("Oma anrufen");
@@ -211,7 +211,7 @@ public class OSMFileReader {
 		
 		Task task4 = new Task();
 		task4.setName("Brštchen kaufen");
-		task4.addConstraint(new TaskConstraintDuration(30));
+		task4.addConstraint(new TaskConstraintDuration(3));
 		task4.addConstraint(new TaskConstraintPOI(new POICode(POICode.SHOP_BAKERY)));		
 		//task4.addConstraint(new TaskConstraintDayTime(18, 00, 19, 10));
 		
@@ -219,19 +219,26 @@ public class OSMFileReader {
 		task5.setName("Blumen kaufen");
 		task5.addConstraint(new TaskConstraintDuration(30));
 		task5.addConstraint(new TaskConstraintPOI(new POICode(POICode.SHOP_FLORIST)));	
+		task5.addConstraint(new TaskConstraintDayTime(18, 00, 23, 00));
+
+		Task task6 = new Task();
+		task6.setName("Buch kaufen");
+		task6.addConstraint(new TaskConstraintDuration(30));
+		task6.addConstraint(new TaskConstraintPOI(new POICode(POICode.SHOP_BOOKS)));	
+		task6.addConstraint(new TaskConstraintDayTime(18, 00, 23, 00));
+		
 		
 		activeDayPlan.addTask(task1);
 		activeDayPlan.addTask(task2);
 		activeDayPlan.addTask(task3);
 		activeDayPlan.addTask(task4);        
 		activeDayPlan.addTask(task5);		
-		
+		activeDayPlan.addTask(task6);		
         
         
         if (routingEngine.initialized()) {
 	        activeDayPlan.setRoutingEngine(routingEngine);
 
-//			System.out.println("***********");
 			System.out.println("---> " + activeDayPlan.toString());
 			System.out.println("---> " + activeDayPlan.checkConsistency(vehicle, now).toString());
 	        
@@ -250,8 +257,7 @@ public class OSMFileReader {
 			DayPlanOptimizer optimizer = new GreedyTaskInsertionOptimizer();
 			activeDayPlan.setOptimizer(optimizer);
 			DayPlan optimizedDayPlan = activeDayPlan.optimize(now, home, vehicle);
-			
-//			System.out.println("***********");
+
 			System.out.println("---> " + optimizedDayPlan.toString());
 			System.out.println("---> " + optimizedDayPlan.checkConsistency(vehicle, now).toString());
 		}

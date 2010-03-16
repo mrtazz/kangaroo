@@ -51,6 +51,12 @@ public class Place {
 	
 	
 	/**
+	 * 
+	 */
+	protected String locationName = null;
+	
+	
+	/**
 	 * latitude 
 	 */
 	protected double latitude;
@@ -239,13 +245,38 @@ public class Place {
 	}
 	
 	
+	/**
+	 * @return the locationName
+	 */
+	public String getLocationName() {
+		return locationName;
+	}
+
+
+	/**
+	 * @param locationName the locationName to set
+	 */
+	public void setLocationName(String locationName) {
+		this.locationName = locationName;
+	}
+
+
 	@Override
 	public String toString() {
-		if (name != null) {
-			return String.format(Locale.US, "%s @ (%.7f, %.7f)", name, latitude, longitude);
-		} else {
-			return String.format(Locale.US, "Place @ (%.7f, %.7f)", latitude, longitude);
+		String name = getName();
+		String locationName = getLocationName();
+		String coordinates = String.format(Locale.US, "(%.7f, %.7f)", latitude, longitude);
+		
+		if (name == null) {
+			name = "Place";
 		}
+		if (locationName == null) {
+			locationName = coordinates;
+		} else {
+			locationName = locationName + " " + coordinates;
+		}
+		
+		return name + " @ " + locationName;
 	}
 	
 	
