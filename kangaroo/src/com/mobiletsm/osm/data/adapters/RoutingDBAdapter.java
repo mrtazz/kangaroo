@@ -1,5 +1,6 @@
 package com.mobiletsm.osm.data.adapters;
 
+import java.io.PrintStream;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,7 +12,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.openstreetmap.osm.data.coordinates.LatLon;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 import org.openstreetmap.osmosis.core.domain.v0_6.Way;
 import org.openstreetmap.osmosis.core.domain.v0_6.WayNode;
@@ -25,114 +25,24 @@ import com.mobiletsm.routing.Place;
 public abstract class RoutingDBAdapter implements RoutingDataAdapter {
 
 	
+	private static final String SQL_LOG_NO_QUERY = "no query";
+	
+	
+	private PrintStream logStream = null;
+	
+	
+	public void setLogStream(PrintStream logStream) {
+		this.logStream = logStream;
+	}
+	
+	
 	protected void sqlLog(String sql) {
-		//System.out.println("SQL query: " + sql);
-	}
-	
-	
-	/* database table structure v1 */
-	
-	/*
-	protected String SQL_loadAllStreetNodesAround(Place center, double radius) {
-		// earth radius
-		final double earthRadius = 6378140;
-		
-		// scale factor between root-squared-lat-lon distance and distance in meters
-		double scaleFactor = 2 * Math.PI * (earthRadius * Math.cos(Math.toRadians(center.getLatitude()))) / 360;
-		
-		String sql = String.format(Locale.US, "SELECT id,lat,lon,ways FROM nodes WHERE stnd<=-1 AND " +
-				"((lat-%f)*(lat-%f) + (lon-%f)*(lon-%f)) < %f;",
-				center.getLatitude(), center.getLatitude(), 
-				center.getLongitude(), center.getLongitude(),
-				Math.pow(radius / scaleFactor, 2));
-		sqlLog(sql);
-		return sql;
-	}
-	
-	
-	protected String SQL_loadAllStreetNodesForWays(long fromWayId, long toWayId) {
-		Set<Long> ids = new HashSet<Long>();		
-		if (fromWayId != -1) {
-			List<WayNode> wayNodeIds1 = completeWays.get(fromWayId).getWayNodes();				
-			for (WayNode wayNode : wayNodeIds1)
-				ids.add(wayNode.getNodeId());
-		}			
-		if (toWayId != -1) {
-			List<WayNode> wayNodeIds2 = completeWays.get(toWayId).getWayNodes();			
-			for (WayNode wayNode : wayNodeIds2)
-				ids.add(wayNode.getNodeId());
-		}		
-		if (ids.size() > 0) {		
-			StringBuffer sql = new StringBuffer("SELECT id,lat,lon FROM nodes WHERE id IN (");			
-			Iterator<Long> id_itr = ids.iterator();
-			while (id_itr.hasNext()) {
-				sql.append(id_itr.next());
-				if (id_itr.hasNext())
-					sql.append(", ");
-				else
-					sql.append(");");
-			}			
-			sqlLog(sql.toString());
-			return sql.toString();
-		} else {
-			sqlLog("null");
-			return null;
+		if (logStream != null) {
+			logStream.println("SQL query: " + sql);			
 		}
 	}
 	
-	
-	protected String SQL_getWaysForNodes(long fromNodeId, long toNodeId) {
-		String sql = String.format("SELECT ways FROM nodes WHERE id=%d OR id=%d;", fromNodeId, toNodeId);
-		sqlLog(sql);
-		return sql;
-	}
-
-	
-	protected String SQL_loadCompleteWay(long wayId) {
-		String sql = String.format("SELECT id,name,highway,tags,wn FROM ways WHERE id=%d;", wayId);			
-		sqlLog(sql);
-		return sql;
-	}
-
-	
-	protected String SQL_loadReducedWays(List<Long> ways) {
-		if (ways != null && ways.size() > 0) {		
-			StringBuffer sql = new StringBuffer("SELECT id,name,highway,tags,wn_red FROM ways WHERE id IN (");			
-			Iterator<Long> id_itr = ways.iterator();
-			while (id_itr.hasNext()) {
-				sql.append(id_itr.next());
-				if (id_itr.hasNext())
-					sql.append(", ");
-				else
-					sql.append(");");
-			}			
-			sqlLog(sql.toString());
-			return sql.toString();
-		} else {
-			String sql = "SELECT id,name,highway,tags,wn_red FROM ways;";
-			sqlLog(sql);
-			return sql;
-		}
-	}
-	
-	
-	protected String SQL_loadRoutingStreetNodes() {
-		String sql = "SELECT id,lat,lon FROM nodes WHERE stnd=-1;";
-		sqlLog(sql);
-		return sql;
-	}
-	
-	
-	protected String SQL_loadNodes(long nodeId1, long nodeId2, boolean loadTags) {
-		String tags = "";
-		if (loadTags)
-			tags = ",tags";
-		String sql = String.format("SELECT id,lat,lon%s FROM nodes WHERE id=%d OR id=%d;", tags, nodeId1, nodeId2);
-		sqlLog(sql);
-		return sql;		
-	}
-	*/
-	
+		
 	
 	/* database table structure version 2 */
 	
@@ -176,14 +86,14 @@ public abstract class RoutingDBAdapter implements RoutingDataAdapter {
 			while (id_itr.hasNext()) {
 				sql.append(id_itr.next());
 				if (id_itr.hasNext())
-					sql.append(", ");
+					sql.append(",");
 				else
 					sql.append(");");
 			}			
 			sqlLog(sql.toString());
 			return sql.toString();
 		} else {
-			sqlLog("null");
+			sqlLog(SQL_LOG_NO_QUERY);
 			return null;
 		}
 	}
@@ -216,10 +126,13 @@ public abstract class RoutingDBAdapter implements RoutingDataAdapter {
 			}			
 			sqlLog(sql.toString());
 			return sql.toString();
-		} else {
+		} else if (ways == null) {
 			String sql = "SELECT id,name,highway,tags,waynodes_red FROM ways_0;";
 			sqlLog(sql);
 			return sql;
+		} else {
+			sqlLog(SQL_LOG_NO_QUERY);
+			return null;
 		}
 	}
 	

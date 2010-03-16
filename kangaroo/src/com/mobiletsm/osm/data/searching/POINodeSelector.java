@@ -12,6 +12,8 @@ import org.openstreetmap.osmosis.core.domain.v0_6.Relation;
 import org.openstreetmap.osmosis.core.domain.v0_6.Tag;
 import org.openstreetmap.osmosis.core.domain.v0_6.Way;
 
+import com.mobiletsm.osmosis.core.domain.v0_6.MobileNode;
+
 public class POINodeSelector implements Selector {
 
 	
@@ -64,7 +66,17 @@ public class POINodeSelector implements Selector {
 	
 	@Override
 	public boolean isAllowed(IDataSet map, Node node) {
-		/* iterate over all tags of given node */
+		
+		if (node instanceof MobileNode) {
+			MobileNode mobileNode = (MobileNode)node;
+			if (mobileNode.getPOICode() != null) {
+				if (poiCode == null || poiCode.equals(mobileNode.getPOICode())) {
+					return true;
+				}
+			}
+		}
+		
+		/* iterate over all tags of given node */		
 		for (Tag tag : node.getTags()) {
 			String tagString = POICode.getTagString(tag);
 			if (poiCode == null) {

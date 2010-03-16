@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -43,6 +44,8 @@ import org.openstreetmap.travelingsalesman.routing.routers.TurnRestrictedAStar;
 
 import com.mobiletsm.osm.data.MobileDataSet;
 import com.mobiletsm.osm.data.MobileMemoryDataSet;
+import com.mobiletsm.osm.data.searching.POICode;
+import com.mobiletsm.osmosis.core.domain.v0_6.MobileNode;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileWayNode;
 import com.mobiletsm.routing.RouteParameter;
@@ -1176,21 +1179,74 @@ public class OsmHelper {
 	}
 	
 	
+	public static String getWayName(Way way) {
+		String name = WayHelper.getTag(way.getTags(), "name"); 
+		if (name != null) {
+			return name;
+		} else {
+			String ref = WayHelper.getTag(way.getTags(), "ref");
+			if (ref != null) {
+				return ref;
+			}
+		}
+		return null;
+	}
+	
+	
+	public static String getWayNameDescription(List<Way> ways) {
+		if (ways != null && ways.size() > 0) {
+			List<String> names = new ArrayList<String>();
+			for (Way way : ways) {
+				String name = getWayName(way);
+				boolean inList = false;
+				for (String listName : names) {
+					if (listName.equalsIgnoreCase(name)) {
+						inList = true;
+					}
+				}
+				if (!inList) {
+					names.add(name);
+				}
+			}
+			if (names.size() == 1) {
+				return names.get(0);
+			} else if (names.size() >= 2) {
+				return names.get(0) + " Ecke " + names.get(1);
+			}
+		}
+		return null;
+	}
+	
+	
 	public static String getPOINodeName(Node node) {
 		String name = NodeHelper.getTag(node, "name");
 		String operator = NodeHelper.getTag(node, "operator");
 		
-		StringBuffer buf = new StringBuffer();
-		if (name != null) {
-			buf.append(name);
-			if (operator != null) {
-				buf.append(", ");
+		if (name != null || operator != null) {
+			StringBuffer buf = new StringBuffer();
+			if (name != null) {
+				buf.append(name);
+				if (operator != null) {
+					buf.append(", ");
+				}
 			}
+			if (operator != null) {
+				buf.append(operator);
+			}
+			return buf.toString();
+		} else {			
+			if (node instanceof MobileNode) {
+				MobileNode mobileNode = (MobileNode)node;
+				POICode poiCode = mobileNode.getPOICode();
+				if (poiCode != null) {
+					String type = poiCode.getTypeAsDescription(); 
+					if (type != null) {
+						return type;
+					}
+				}
+			}			
+			return null;
 		}
-		if (operator != null) {
-			buf.append(operator);
-		}
-		return buf.toString();
 	}
 	
 }

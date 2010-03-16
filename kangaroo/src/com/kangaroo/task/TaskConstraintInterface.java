@@ -7,7 +7,7 @@ package com.kangaroo.task;
  */
 public interface TaskConstraintInterface {
 	
-	public static final String TYPE_POI = "poi";
+	public static final String TYPE_POI = "amenity";
 	
 	public static final String TYPE_DATE = "date";
 	

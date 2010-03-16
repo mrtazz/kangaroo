@@ -11,9 +11,10 @@ import com.kangaroo.calendar.CalendarEvent;
 import com.kangaroo.task.Task;
 import com.kangaroo.task.TaskConstraintHelper;
 import com.kangaroo.task.TaskConstraintInterface;
-import com.kangaroo.task.TaskPriorityComparator;
+import com.mobiletsm.routing.GeoConstraints;
 import com.mobiletsm.routing.NoRouteFoundException;
 import com.mobiletsm.routing.Place;
+import com.mobiletsm.routing.RouteParameter;
 import com.mobiletsm.routing.RoutingEngine;
 
 public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
@@ -25,10 +26,12 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 	private RoutingEngine routingEngine = null;
 	
 	
-	
+	/**
+	 * returns true if day plan and routing engine are 
+	 * set and routing engine is initialized, false otherwise
+	 * @return
+	 */
 	private boolean initialized() {
-		/* return true if day plan and routing engine are 
-		 * set and routing engine is initialized, false otherwise */
 		return (originalDayPlan != null && routingEngine != null && routingEngine.initialized());
 	}
 	
@@ -44,15 +47,25 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 				
 		/* initialize new day plan with events of original day plan */
 		DayPlan optimizedDayPlan = new DayPlan();
-		List<CalendarEvent> dayPlanEvents = originalDayPlan.getEvents();
-		optimizedDayPlan.setEvents(dayPlanEvents);
+		optimizedDayPlan.setEvents(originalDayPlan.getEvents());
 		
 		
-		/* cases:
-		 * - 
-		 * 
-		 */
+//		int timeLeft = 0;	
+//		CalendarEvent nextEvent = originalDayPlan.getNextEvent(now);
+//		if (nextEvent != null) {
+//			try {
+//				timeLeft = originalDayPlan.checkComplianceWith(now, here, nextEvent, vehicle);
+//			} catch (NoRouteFoundException e) {
+//				optimizedDayPlan.setTasks(originalDayPlan.getTasks());
+//				optimizedDayPlan.setRoutingEngine(routingEngine);
+//				optimizedDayPlan.setOptimizer(this);
+//				return optimizedDayPlan.optimize(nextEvent.getStartDate(), nextEvent.getPlace(), vehicle);
+//			}
+//		}
+
 		
+		
+		/* get the next event from now  */		
 		Integer timeGapToNextEvent = null;
 		CalendarEvent nextEvent = originalDayPlan.getNextEvent(now);		
 		if (nextEvent != null) {
@@ -64,10 +77,11 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 			}			
 		}	
 		
+		
 		/* get, sort and iterate over all tasks in active day plan */
-		List<Task> tasksToHandle = new ArrayList<Task>();
-		tasksToHandle.addAll(originalDayPlan.getTasks());
+		List<Task> tasksToHandle = new ArrayList<Task>(originalDayPlan.getTasks());
 		Collections.sort(tasksToHandle, new TaskPriorityComparator());
+		
 		Iterator<Task> task_itr = tasksToHandle.iterator();
 
 		while (task_itr.hasNext()) {
@@ -75,36 +89,68 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 			Task task = task_itr.next();
 			CalendarEvent taskAsEvent = null;
 			
+			System.out.println("GreedyTaskInsertionOptimizer.optimize(): analyzing task " + task.toString());
+			
 			TaskConstraintHelper constraintHelper = new TaskConstraintHelper(task);
+			constraintHelper.setRoutingEngine(routingEngine);
 			
 			/* skip this task if task takes more time than left till next event */		
-			Integer taskDuration = constraintHelper.getDuration();
-			if (taskDuration != null && timeGapToNextEvent != null && 
-					taskDuration.intValue() > timeGapToNextEvent.intValue()) {
+			int taskDuration = constraintHelper.getDuration();
+			if (timeGapToNextEvent != null && taskDuration > timeGapToNextEvent.intValue()) {
+					System.out.println("GreedyTaskInsertionOptimizer.optimize(): SKIP! gap = " + 
+						timeGapToNextEvent + ", duration = " + taskDuration);
 				continue;
 			}
 
-			/* skip this task if  */
+			/* skip this task if its constraints forbid to execute it now
+			 * TODO: checking task constraint consistency with now is not
+			 * correct, because we have to check if the actual time and 
+			 * duration is consistent with the task's constraints.  */
 			if (!constraintHelper.isAllowed(now)) {
+					System.out.println("GreedyTaskInsertionOptimizer.optimize(): SKIP! cannot be done now");
 				continue;
 			}
 			
+			/* get nearest location that is consistent with the task's constraints */
+			Place place = constraintHelper.getLocation(here, new GeoConstraints(nextEvent.getPlace()));
 			
 			
-			List<TaskConstraintInterface> locationConstraint = 
-				task.getConstraintsOfType(TaskConstraintInterface.TYPE_LOCATION);
-			
-			
-			List<TaskConstraintInterface> poiConstraint = 
-				task.getConstraintsOfType(TaskConstraintInterface.TYPE_POI);
-			
-
-			if (locationConstraint.size() == 0) {
-			
-			} else {
+			if (place != null) {
 				
-			}
+				System.out.println("GreedyTaskInsertionOptimizer.optimize(): place = " + place.getOsmNodeId());
+				
+				/* check if suggestion is consistent with next event
+				 * TODO: this should be skipped if there is no next event */
+				RouteParameter fromHereToTask = routingEngine.routeFromTo(here, place, vehicle);
+				RouteParameter fromTaskToNextEvent = routingEngine.routeFromTo(place, nextEvent.getPlace(), vehicle);
+				
+				System.out.println("GreedyTaskInsertionOptimizer.optimize(): fromHereToTask = " + fromHereToTask);	
+				System.out.println("GreedyTaskInsertionOptimizer.optimize(): fromTaskToNextEvent = " + fromTaskToNextEvent);
+				
+				if (fromHereToTask.getNoRouteFound() || fromTaskToNextEvent.getNoRouteFound()) {
+						System.out.println("no route found");
+					continue;
+				}
+				
+				if (timeGapToNextEvent == null) {
+						System.out.println("no time gap");
+					continue;
+				}
+				
+				int timeLeft = (int)(timeGapToNextEvent - fromHereToTask.getDurationOfTravel() - fromTaskToNextEvent.getDurationOfTravel() - taskDuration);
+				
+					System.out.println("timeLeft = " + timeLeft);
+				if (timeLeft > 0) {
+					System.out.println("set task " + task.toString() + " at " + place.toString());
+				}
+				
+			} else {
+				/* the task has no location constraints and may be done now */
+				
+				System.out.println("GreedyTaskInsertionOptimizer.optimize(): SKIP! no location");
+			}		
 			
+		
 			if (taskAsEvent != null) {
 				optimizedDayPlan.addEvent(taskAsEvent);
 			} else {

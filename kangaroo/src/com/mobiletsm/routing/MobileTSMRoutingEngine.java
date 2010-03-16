@@ -130,7 +130,7 @@ public class MobileTSMRoutingEngine implements RoutingEngine {
 
 	
 	@Override
-	public Place getNearestPOINode(Place center, Object selector, Limits limits) {
+	public Place getNearestPOINode(Place center, Object selector, GeoConstraints limits) {
 		if (!(selector instanceof POINodeSelector)) {
 			throw new RuntimeException("MobileTSMRoutingEngine.getNearestPOINode(): Not a POINodeSelector");
 		}

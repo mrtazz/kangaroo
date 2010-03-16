@@ -3,7 +3,25 @@ package com.kangaroo.task;
 import java.util.Date;
 import java.util.List;
 
+import com.kangaroo.task.Task;
+import com.kangaroo.task.TaskConstraintDate;
+import com.kangaroo.task.TaskConstraintDayTime;
+import com.kangaroo.task.TaskConstraintDuration;
+import com.kangaroo.task.TaskConstraintInterface;
+import com.kangaroo.task.TaskConstraintLocation;
+import com.kangaroo.task.TaskConstraintPOI;
+import com.mobiletsm.osm.data.searching.POINodeSelector;
+import com.mobiletsm.routing.GeoConstraints;
+import com.mobiletsm.routing.Place;
+import com.mobiletsm.routing.RoutingEngine;
 
+
+
+/**
+ * This class provides methods to analyze task constraints.
+ * @author andreaswalz
+ *
+ */
 public class TaskConstraintHelper {
 
 	
@@ -19,24 +37,44 @@ public class TaskConstraintHelper {
 	private Task task;
 	
 	
+	private RoutingEngine routingEngine = null;
+	
+	
+	public void setRoutingEngine(RoutingEngine routingEngine) {
+		this.routingEngine = routingEngine;
+	}
+	
+	
 	public TaskConstraintHelper(Task task) {
 		super();
 		this.task = task;
 	}
 	
 	
-	public Integer getDuration() {
+	/**
+	 * returns the duration of this task in minutes, 0 if not specified.
+	 * The task may specify more than one duration constraint, and if so
+	 * the maximum of all will be returned
+	 * @return the duration of this task in minutes, 0 if not specified
+	 */
+	public int getDuration() {
 		
-		Integer taskDuration = null;
+		int taskDuration = 0;
 
 		List<TaskConstraintInterface> durationConstraints = 
 			task.getConstraintsOfType(TaskConstraintInterface.TYPE_DURATION);
 		
+		if (durationConstraints.size() == 0) {
+			/* no duration constraints associated with this task */
+			return 0;
+		}
+		
+		/* iterate over all duration constraints and find the maximum */
 		for (TaskConstraintInterface constraint : durationConstraints) {
 			TaskConstraintDuration durationConstraint = 
 				(TaskConstraintDuration)constraint;
-			if (taskDuration == null || taskDuration.intValue() < durationConstraint.getDuration()) {
-				taskDuration = new Integer(durationConstraint.getDuration());
+			if (taskDuration < durationConstraint.getDuration()) {
+				taskDuration = durationConstraint.getDuration();
 			}
 		}
 	
@@ -64,18 +102,24 @@ public class TaskConstraintHelper {
 			
 			if (dateConstraint.getStart() != null) {
 
-				// TODO: also check for constraints only specifying a start date
+				if (dateConstraint.getEnd() != null) {
 				
-				/* do not allow both black and white list in one task */
-				if (dateConstraintType == BLACK_LIST) {
-					throw new RuntimeException("TaskConstraintHelper.isAllowed(): " +
-							"Task specifies date constraints of both date span and end date");
-				}					
+					/* do not allow both black and white list in one task */
+					if (dateConstraintType == BLACK_LIST) {
+						throw new RuntimeException("TaskConstraintHelper.isAllowed(): " +
+								"Task specifies date constraints of both date span and end date");
+					}					
+					
+					/* this task has a date constraint white list */
+					dateConstraintType = WHITE_LIST;
+					if (!now.before(dateConstraint.getStart()) && !now.after(dateConstraint.getEnd())) {
+						isAllowedByDateConstraints = true;
+					}
 				
-				/* this task has a date constraint white list */
-				dateConstraintType = WHITE_LIST;
-				if (!now.before(dateConstraint.getStart()) && !now.after(dateConstraint.getEnd())) {
-					isAllowedByDateConstraints = true;
+				} else {
+					
+					// TODO: also check for constraints only specifying a start date
+					
 				}
 				
 			} else {
@@ -131,12 +175,15 @@ public class TaskConstraintHelper {
 					/* this task has a daytime constraint white list */
 					daytimeConstraintType = WHITE_LIST;
 					if (compareDayTime(now, daytimeConstraint.getStartTime()) >= 0
-							&& compareDayTime(daytimeConstraint.getEndTime(),
-									now) >= 0) {
+							&& compareDayTime(daytimeConstraint.getEndTime(), now) >= 0) {
 						isAllowedByDaytimeConstraints = true;
 					}
 					
-				}				
+				} else {
+					
+					// TODO: also check for constraints only specifying a start date
+					
+				}
 				
 			} else {
 				
@@ -186,6 +233,71 @@ public class TaskConstraintHelper {
 		
 		int seconds = daytime1.getSeconds() - daytime2.getSeconds();
 		return seconds;
+	}
+	
+	
+	
+	/**
+	 * return the nearest location from Place here that is consistent with
+	 * constraints of type TaskConstraintLocation and TaskConstraintPOI
+	 * @param here
+	 * @param geoConstraints TODO
+	 * @return
+	 */
+	public Place getLocation(Place here, GeoConstraints geoConstraints) {
+		
+		Place minPlace = null;
+		double minDist = Double.MAX_VALUE;
+
+		List<TaskConstraintInterface> locationConstraints = 
+			task.getConstraintsOfType(TaskConstraintInterface.TYPE_LOCATION);
+		
+		if (locationConstraints.size() > 0) {
+			
+			for (TaskConstraintInterface constraint : locationConstraints) {
+				TaskConstraintLocation locationConstraint = (TaskConstraintLocation)constraint;
+				
+				/* update minPlace and minDist */
+				Place place = locationConstraint.getPlace();
+				if (place != null) {
+					if (minPlace == null || minPlace.distanceTo(place) < minDist) {
+						minPlace = place;
+						minDist = minPlace.distanceTo(place);
+					}
+				}
+			}
+			
+		}
+		
+				
+		List<TaskConstraintInterface> poiConstraints = 
+			task.getConstraintsOfType(TaskConstraintInterface.TYPE_POI);
+		
+		if (poiConstraints.size() > 0) {
+			
+			if (routingEngine == null || !routingEngine.initialized()) {
+				throw new RuntimeException("TaskConstraintHelper.getLocation(): " +
+						"no routing engine defined or routing engine not ready");
+			}
+			
+			for (TaskConstraintInterface constraint : poiConstraints) {
+				TaskConstraintPOI poiConstraint = (TaskConstraintPOI)constraint;				
+				Place place = routingEngine.getNearestPOINode(here, 
+						new POINodeSelector(poiConstraint.getId()), geoConstraints);
+				
+				/* update minPlace and minDist */
+				if (place != null) {
+					if (minPlace == null || minPlace.distanceTo(place) < minDist) {
+						minPlace = place;
+						minDist = minPlace.distanceTo(place);
+					}
+				}
+				
+			}
+		}
+		
+		return minPlace;
+		
 	}
 	
 }

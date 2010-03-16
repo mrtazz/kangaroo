@@ -33,7 +33,7 @@ import com.mobiletsm.osm.data.searching.POINodeSelector;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileNode;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileWayNode;
-import com.mobiletsm.routing.Limits;
+import com.mobiletsm.routing.GeoConstraints;
 import com.mobiletsm.routing.Place;
 
 public class DatabaseMDSProvider extends MobileDataSetProvider {
@@ -118,7 +118,7 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 	@Override
 	public Place getNearestStreetNode(Place center, boolean updateCenter) {		
 		/* do not search the database if given place is already a street node */
-		if (center.isOsmStreetNode() || center.getNearestOsmStreetNodeId() != Place.ID_UNDEFINED) {
+		if (center.isOsmStreetNode() || center.hasNearestOsmStreetNode()) {
 			/* get id of nearest street node given by center */
 			long nodeId;
 			if (center.isOsmStreetNode()) {
@@ -267,23 +267,28 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 	}
 
 	
-	
+	/**
+	 * set distanceToPredecessor fields in MobileWayNodes of given way
+	 * @param wayId
+	 */
 	private void setWayNodeDistances(long wayId) {
-		if (wayId == -1) 
-			return;		
-		Way way = completeWays.get(wayId);
-		List<WayNode> wayNodes = way.getWayNodes();		
-		Node last = null;
-		for (int i = 0; i < wayNodes.size(); i++) {
-			MobileWayNode wayNode = (MobileWayNode)wayNodes.get(i);
-			Node current = streetNodes.get(wayNode.getNodeId());
-			if (last != null) {
-				double dist = Place.distance(current.getLatitude(), current.getLongitude(), 
-						last.getLatitude(), last.getLongitude());
-				wayNode.setDistanceToPredecessor(dist);
+		if (wayId != -1) {	
+			/* load way and its way nodes */
+			Way way = completeWays.get(wayId);
+			List<WayNode> wayNodes = way.getWayNodes();		
+			Node last = null;
+			/* iterate over all way nodes, calculate and set distances */
+			for (int i = 0; i < wayNodes.size(); i++) {
+				MobileWayNode wayNode = (MobileWayNode)wayNodes.get(i);
+				Node current = streetNodes.get(wayNode.getNodeId());
+				if (last != null) {
+					double dist = Place.distance(current.getLatitude(), current.getLongitude(), 
+							last.getLatitude(), last.getLongitude());
+					wayNode.setDistanceToPredecessor(dist);
+				}
+				last = current;
 			}
-			last = current;
-		}		
+		}
 	}
 	
 	
@@ -298,12 +303,7 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 
 
 	
-	public Place getNearestPOINode(Place center, POINodeSelector selector, Limits limits) {
-		
-		/* TODO: add support of limits */
-		if (limits != null) {
-			throw new UnsupportedOperationException("getNearestPOINode(): limits not yet supported by DatabaseMDSProvider");
-		}
+	public Place getNearestPOINode(Place center, POINodeSelector selector, GeoConstraints geoConstraints) {
 		
 		double minDist = Double.MAX_VALUE;
         Node minDistNode = null; 
@@ -317,12 +317,17 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 				}
 				
 				double dist = center.distanceTo(node.getLatitude(), node.getLongitude());
+				if (geoConstraints != null && geoConstraints.getDirection() != null) {
+					dist += geoConstraints.getDirection().distanceTo(node.getLatitude(), node.getLongitude()); 
+				}
+				
 	            if (dist < minDist) {
 					minDist = dist;
 					minDistNode = node;
 				}
 			}		
-			if (minDistNode != null) {
+			
+			if (minDistNode != null) {				
 				Place place = new Place(minDistNode, false);
 				String name = OsmHelper.getPOINodeName(minDistNode);
 				if (name != null) {					
@@ -330,6 +335,17 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 				}
 				if (minDistNode instanceof MobileNode) {
 					place.setNearestOsmStreetNodeId(((MobileNode)minDistNode).getNearestStreetNodeId());
+					/*
+					List<Long> wayIds = adapter.loadCompleteWaysForNodes(place.getNearestOsmStreetNodeId(), -1);
+					List<Way> ways = new ArrayList<Way>();
+					adapter.loadReducedWays(wayIds);
+					for (Long wayId : wayIds) {
+						ways.add(reducedWays.get(wayId));
+						System.out.println("---> " + place.getName() + " at way: " + reducedWays.get(wayId) + 
+								", TAGS = " + OsmHelper.serializeTags(reducedWays.get(wayId).getTags()));
+					}
+					System.out.println("===> " + OsmHelper.getWayNameDescription(ways));
+					*/
 				}				
 				return place;
 			} else {

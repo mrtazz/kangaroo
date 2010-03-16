@@ -9,7 +9,7 @@ import com.mobiletsm.osm.data.MobileInterfaceDataSet;
 import com.mobiletsm.osm.data.adapters.RoutingDBAdapter;
 import com.mobiletsm.osm.data.adapters.RoutingDataAdapter;
 import com.mobiletsm.osm.data.searching.POINodeSelector;
-import com.mobiletsm.routing.Limits;
+import com.mobiletsm.routing.GeoConstraints;
 import com.mobiletsm.routing.Place;
 
 /**
@@ -72,7 +72,7 @@ public abstract class MobileDataSetProvider {
 	public abstract Place getNearestStreetNode(Place center, boolean updateCenter);
 	
 	
-	public abstract Place getNearestPOINode(Place center, POINodeSelector selector, Limits limits);
+	public abstract Place getNearestPOINode(Place center, POINodeSelector selector, GeoConstraints limits);
 	
 	
 	public abstract MobileInterfaceDataSet getCompleteDataSet();
