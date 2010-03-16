@@ -92,28 +92,31 @@ public class ActivityDayPlan extends ListActivity {
 	   */
 	private boolean applyMenuChoice(MenuItem item) {
 		  Toast toast;
+		  Boolean ret = false;
 		  switch (item.getItemId()) {
 		    case MENU_DELETE:
-			  toast = Toast.makeText(this,
-			  					     "Menu item DELETE clicked",
-				  				     Toast.LENGTH_SHORT);
-		  	  toast.show();
-		      return true;
+			  eventlist.remove(actual_calendar_event);
+			  dp.setEvents(eventlist);
+		      ret = true;
+		      break;
 		    case MENU_ADD_LOCATION:
 			  // show the map
 			  Intent intent = new Intent("com.kangaroo.SELECTPLACE");
 			  intent.addCategory(Intent.CATEGORY_DEFAULT);
 			  startActivityForResult(intent, 1);
-			  
-		      return true;
+		      ret = true;
+		      break;
 		    case MENU_TO_TASK:
 			  toast = Toast.makeText(this,
   					   				 "Transform "+actual_calendar_event.getTitle()
   					   				 +"into task?",
   					   				 Toast.LENGTH_SHORT);
 			  toast.show();
+			  ret = true;
+			  break;
 		  }
-		  return false;
+		  reload();
+		  return ret;
 		}
 	
 	  // callback method for intent result
@@ -139,6 +142,7 @@ public class ActivityDayPlan extends ListActivity {
 	private void reload()
 	  {
 			Date today = new Date();
+	        tv.setText(today.getDate() + "/" + today.getMonth() + "/" + today.getYear());
 	        eventlist = (ArrayList<CalendarEvent>)dp.getEvents();
 		    // Bind the ListView to an ArrayList of strings.
 	        calendarAdapter = new ArrayAdapterCalendar(this, R.layout.row, eventlist);
