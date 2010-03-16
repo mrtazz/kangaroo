@@ -61,7 +61,7 @@ public class ActivityTaskList extends ExpandableListActivity {
 	        registerForContextMenu(getExpandableListView());
 	        dp = new ActiveDayPlan();
 	        
-	        CalendarAccessAdapter caa = new CalendarAccessAdapterAndroid();
+	        CalendarAccessAdapter caa = new CalendarAccessAdapterAndroid(this);
 		 	caa.setContext(getApplicationContext());
 		 	dp.setCalendarAccessAdapter(caa);
 	        
@@ -248,6 +248,7 @@ public class ActivityTaskList extends ExpandableListActivity {
 			  Toast toast;
 			  switch (item.getItemId()) {
 			    case MENU_DELETE:
+			    	
 				  toast = Toast.makeText(this,
 				  					     "Menu item DELETE clicked",
 					  				     Toast.LENGTH_SHORT);
