@@ -250,7 +250,8 @@ public class Task
 	@Override
 	public String toString() {
 		if (name != null) {
-			return "Task: {name = " + name + "}";
+			//return "Task: {name = " + name + "}";
+			return name + "\n---\n"+this.serialize();
 		}
 		return super.toString();
 	}
