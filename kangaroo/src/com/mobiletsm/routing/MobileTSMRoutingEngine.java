@@ -71,7 +71,7 @@ public class MobileTSMRoutingEngine implements RoutingEngine {
 	public RouteParameter routeFromTo(Place from, Place to, Object vehicle, boolean updatePlaces) {
 		/* only accept MobileTSM Vehicle objects */
 		if (!(vehicle instanceof Vehicle)) {
-			throw new RuntimeException("MobileTSMRoutingEngine.routeFromTo(): Not a Vehicle");
+			throw new RuntimeException("MobileRoutingEngine.routeFromTo(): Not a Vehicle");
 		}
 		
 		/* look up this routing order in the routing cache if enabled */
@@ -81,46 +81,63 @@ public class MobileTSMRoutingEngine implements RoutingEngine {
 					System.out.println("MobileTSMRoutingEngine.routeFromTo(): using route from routing cache");
 				return cacheRoute;
 			}
-		}		
+		}				
 		
-		/* find the street nodes that are closest to start and 
-		 * destination places */
-		Place fromNode = provider.getNearestStreetNode(from, updatePlaces);
-		Place toNode = provider.getNearestStreetNode(to, updatePlaces);
-		
-		if (fromNode == null || toNode == null) {
-			/* return that no route could be found, because start and/or
-			 * destination places could not be resolved to street nodes */
-			return new MobileTSMRouteParameter(null);
+		RouteParameter result;
+
+		if (from.equals(to)) {
+			
+			result = new MobileTSMRouteParameter(RouteParameter.ROUTE_PARAMETER_ONE_POINT_ROUTE, vehicle);
+			
 		} else {
-			long fromNodeId = fromNode.getOsmNodeId();
-			long toNodeId = toNode.getOsmNodeId();
 			
-			/* build routing data set */
-			MobileInterfaceDataSet routingDataSet = provider.getRoutingDataSet(fromNodeId, toNodeId, null);		
-			
-			/* set up the router */
-			IRouter router = new MobileMultiTargetDijkstraRouter();
-			router.setMetric(new MobileRoutingMetric());
-			
-			/* calculate the route */
-			Route route = router.route(routingDataSet, routingDataSet.getNodeByID(toNodeId), 
-					routingDataSet.getNodeByID(fromNodeId), (Vehicle)vehicle);
-			
-			/* return the route parameter */
-			RouteParameter result = new MobileTSMRouteParameter(route, vehicle);
-			result.setStartPlace(from);
-			result.setDestinationPlace(to);
-			
-			/* store the route in the routing cache if enabled */
-			if (useRoutingCache && routingCache != null) {
-				routingCache.putElement(result);
-				System.out.println("MobileTSMRoutingEngine.routeFromTo(): route put into routing cache " +
-						"(# routes in cache = " + routingCache.size() + ")");
+			/* find the street nodes that are closest to start and 
+			 * destination places */
+			Place fromNode = provider.getNearestStreetNode(from, updatePlaces);
+			Place toNode = provider.getNearestStreetNode(to, updatePlaces);
+		
+			if (fromNode == null || toNode == null) {
+				/* return that no route could be found, because start and/or
+				 * destination places could not be resolved to street nodes */
+				result = new MobileTSMRouteParameter(RouteParameter.ROUTE_PARAMETER_NO_ROUTE_FOUND, vehicle);
+			} else {							
+				
+				long fromNodeId = fromNode.getOsmNodeId();
+				long toNodeId = toNode.getOsmNodeId();
+				
+				/* build routing data set */
+				MobileInterfaceDataSet routingDataSet = provider.getRoutingDataSet(fromNodeId, toNodeId, null);		
+				
+				/* set up the router */
+				IRouter router = new MobileMultiTargetDijkstraRouter();
+				router.setMetric(new MobileRoutingMetric());
+				
+				/* calculate the route */
+				Route route = router.route(routingDataSet, routingDataSet.getNodeByID(toNodeId), 
+						routingDataSet.getNodeByID(fromNodeId), (Vehicle)vehicle);
+				
+				/* return the route parameter */
+				if (route != null) {
+					result = new MobileTSMRouteParameter(route, vehicle);
+				} else {
+					result = new MobileTSMRouteParameter(RouteParameter.ROUTE_PARAMETER_NO_ROUTE_FOUND, vehicle);
+				}
+	
 			}
-			
-			return result; 
+		
 		}
+		
+		result.setStartPlace(from);
+		result.setDestinationPlace(to);
+		
+		/* store the route in the routing cache if enabled */
+		if (useRoutingCache && routingCache != null) {
+			routingCache.putElement(result);
+			System.out.println("MobileTSMRoutingEngine.routeFromTo(): route put into routing cache " +
+					"(# routes in cache = " + routingCache.size() + ")");
+		}
+		
+		return result; 
 	}
 
 	
