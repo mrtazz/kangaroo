@@ -19,6 +19,7 @@ import android.widget.Toast;
 import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
 
 import com.android.kangaroo.R;
+import com.kangaroo.ActiveDayPlan;
 import com.kangaroo.task.Task;
 import com.kangaroo.task.TaskConstraintDate;
 import com.kangaroo.task.TaskConstraintDayTime;
@@ -34,9 +35,10 @@ import com.mobiletsm.routing.Place;
  * @brief Activity to show an expandable listview of tasks
  *
  */
-public class TaskList extends ExpandableListActivity {
+public class ActivityTaskList extends ExpandableListActivity {
 
 	private SimpleExpandableListAdapter la;
+	private com.kangaroo.DayPlan dp;
 	private ArrayList<Task> taskslist;
 	private String[] childitems = new String[]{"tasklocation", "taskdescription",
 												"taskdate", "taskdaytime", 
@@ -55,8 +57,15 @@ public class TaskList extends ExpandableListActivity {
 	        super.onCreate(savedInstanceState);
 	        setContentView(R.layout.tasklist);
 	        registerForContextMenu(getExpandableListView());
+	        dp = new ActiveDayPlan();
+	        //setUpTasks();
+	        reload();
 	        
-	        setUpTasks();
+	  }
+	 
+	 private void reload()
+	 {
+		 	
 	        la = new SimpleExpandableListAdapter(this,
 	        									buildGroupEntries(), 
 	        									R.layout.taskfirstlevel,
@@ -67,8 +76,7 @@ public class TaskList extends ExpandableListActivity {
 	        									childitems,
 	        									childlayout);
 	        setListAdapter(la);
-	        
-	  }
+	 }
 	 
 	 /**
 	  * @brief method to build the entries for the first level
@@ -236,7 +244,7 @@ public class TaskList extends ExpandableListActivity {
 			      return true;
 			    case MENU_EDIT:
 				  // show the map
-				  Intent intent = new Intent(this, EditTask.class);
+				  Intent intent = new Intent(this, ActivityEditTask.class);
 				  intent.addCategory(Intent.CATEGORY_DEFAULT);
 				  startActivityForResult(intent, 1);
 				  

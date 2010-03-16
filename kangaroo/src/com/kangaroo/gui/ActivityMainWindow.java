@@ -16,7 +16,7 @@ import com.android.kangaroo.R;
  * @author mrtazz
  *
  */
-public class MainWindow extends TabActivity {
+public class ActivityMainWindow extends TabActivity {
 	
 	 private TabHost myTabHost;
 
@@ -30,13 +30,13 @@ public class MainWindow extends TabActivity {
 	    TabSpec tabDayPlan = myTabHost.newTabSpec("Dayplan");
 	    tabDayPlan.setIndicator("Dayplan");
 	    Context ctx = this.getApplicationContext();
-	    Intent intentDayplan = new Intent(ctx, DayPlan.class);
+	    Intent intentDayplan = new Intent(ctx, ActivityDayPlan.class);
 	    tabDayPlan.setContent(intentDayplan);
 	    myTabHost.addTab(tabDayPlan);
 	    // get tasklist tab
 	    TabSpec tabTasklist = myTabHost.newTabSpec("Tasklist");
 	    tabTasklist.setIndicator("Tasklist");
-	    Intent intentTasklist = new Intent(ctx, TaskList.class);
+	    Intent intentTasklist = new Intent(ctx, ActivityTaskList.class);
 	    tabTasklist.setContent(intentTasklist);
 	    myTabHost.addTab(tabTasklist);
 	    // get debug tab

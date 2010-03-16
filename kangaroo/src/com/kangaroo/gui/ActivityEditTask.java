@@ -12,7 +12,7 @@ import com.android.kangaroo.R;
  * @author mrtazz
  *
  */
-public class EditTask extends Activity {
+public class ActivityEditTask extends Activity {
 	
 	
 	  @Override
