@@ -14,6 +14,11 @@ import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
 public class MobileTSMRouteParameter extends RouteParameter {
 
 	
+	public MobileTSMRouteParameter(int type, Object vehicle) {
+		super(type, vehicle);
+	}
+	
+	
 	public MobileTSMRouteParameter(Object route, Object vehicle) {
 		super(route, vehicle);
 	}
@@ -32,7 +37,7 @@ public class MobileTSMRouteParameter extends RouteParameter {
 	protected void updateRouteParameter(Object route, Object vehicle) {
 		
 		/* throw exception if route is not of type Route */
-		if (route != null && !(route instanceof Route)) {
+		if (!(route instanceof Route)) {
 			throw new RuntimeException("MobileTSMRouteParameter.updateRouteParameter(): Not a Route");
 		}
 
@@ -49,13 +54,7 @@ public class MobileTSMRouteParameter extends RouteParameter {
 		double maxSpeed;
 		/* distance of a routing step in meters */
 		double dist;
-		
-		if (route == null) {
-			/* no parameters to calculate if no route is given */
-			this.length = PARAMETER_UNDEFINED;
-			this.durationOfTravel = PARAMETER_UNDEFINED;
-			return;
-		}
+
 		
 		/* get the routing steps */
 		List<RoutingStep> steps = ((Route)route).getRoutingSteps();
