@@ -20,12 +20,12 @@ import com.kangaroo.calendar.CalendarEvent;
  * @brief adapter for filling a row with calendar data
  *
  */
-public class CalendarAdapter extends ArrayAdapter<CalendarEvent>{
+public class ArrayAdapterCalendar extends ArrayAdapter<CalendarEvent>{
 	
 		private ArrayList<CalendarEvent> events;
 		private Context ctx;
 		
-		public CalendarAdapter(Context ctx, int textViewRessourceId,
+		public ArrayAdapterCalendar(Context ctx, int textViewRessourceId,
 								ArrayList<CalendarEvent> events)
 		{
 			super(ctx, textViewRessourceId, events);

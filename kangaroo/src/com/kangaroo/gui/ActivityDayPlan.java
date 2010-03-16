@@ -26,10 +26,10 @@ import com.kangaroo.calendar.CalendarLibrary;
  * @author mrtazz
  *
  */
-public class DayPlan extends ListActivity {
+public class ActivityDayPlan extends ListActivity {
 
 	  private ArrayList<CalendarEvent> eventlist = null;
-	  private CalendarAdapter calendarAdapter;
+	  private ArrayAdapterCalendar calendarAdapter;
 	  private TextView tv;
 	  private CalendarLibrary cl;
 	  private CalendarEvent actual_calendar_event;
@@ -132,7 +132,7 @@ public class DayPlan extends ListActivity {
 	  		toast.show();
 	        eventlist = cl.getTodaysEvents(Integer.toString(actual_calendar));
 		    // Bind the ListView to an ArrayList of strings.
-	        calendarAdapter = new CalendarAdapter(this, R.layout.row, eventlist);
+	        calendarAdapter = new ArrayAdapterCalendar(this, R.layout.row, eventlist);
 	        setListAdapter(this.calendarAdapter);
 	        calendarAdapter.setNotifyOnChange(true);
 	  }
