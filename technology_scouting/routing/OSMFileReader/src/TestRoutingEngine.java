@@ -33,7 +33,7 @@ public class TestRoutingEngine implements RoutingEngine {
 	/**
 	 * initialize the routing engine and set its map data source.
 	 * The parameter <code>source</code> has to specify a SQLite
-	 * database file path, for example "file:/sdcard/map.db".
+	 * database file path, for example "/sdcard/map.db".
 	 * @param source the SQLite database file path
 	 * @return true if initialization was successful, false otherwise
 	 */
@@ -76,7 +76,7 @@ public class TestRoutingEngine implements RoutingEngine {
 	public RouteParameter routeFromTo(Place from, Place to, Object vehicle, boolean updatePlaces) {
 		/* only accept MobileTSM Vehicle objects */
 		if (!(vehicle instanceof Vehicle)) {
-			throw new RuntimeException("MobileRoutingEngine.routeFromTo(): Not a Vehicle");
+			throw new RuntimeException("TestRoutingEngine.routeFromTo(): Not a Vehicle");
 		}
 		
 		/* look up this routing order in the routing cache if enabled */
@@ -149,7 +149,7 @@ public class TestRoutingEngine implements RoutingEngine {
 	@Override
 	public Place getNearestPOINode(Place center, Object selector, GeoConstraints limits) {
 		if (!(selector instanceof POINodeSelector)) {
-			throw new RuntimeException("MobileRoutingEngine.getNearestPOINode(): Not a POINodeSelector");
+			throw new RuntimeException("TestRoutingEngine.getNearestPOINode(): Not a POINodeSelector");
 		}
 		
 		POINodeSelector poiNodeSelector = (POINodeSelector)selector;
@@ -160,7 +160,7 @@ public class TestRoutingEngine implements RoutingEngine {
 	
 	@Override
 	public Place getNearestStreetNode(Place center) {
-		throw new UnsupportedOperationException("getNearestStreetNode() not yet supported by MobileRoutingEngine");
+		throw new UnsupportedOperationException("getNearestStreetNode() not yet supported by TestRoutingEngine");
 	}
 	
 
@@ -196,7 +196,5 @@ public class TestRoutingEngine implements RoutingEngine {
 			routingCache.clear();
 		}
 	}
-
-
 
 }

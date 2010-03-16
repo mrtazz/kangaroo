@@ -88,7 +88,7 @@ public class MobileTSMRoutingEngine implements RoutingEngine {
 		
 		RouteParameter result;
 
-		if (from.equals(to)) {
+		if (from.equalsCoordinates(to)) {
 			
 			result = new MobileTSMRouteParameter(RouteParameter.ROUTE_PARAMETER_ONE_POINT_ROUTE, vehicle);
 			

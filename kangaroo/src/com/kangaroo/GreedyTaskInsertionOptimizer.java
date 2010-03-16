@@ -47,6 +47,9 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 					"(day plan and/or routing engine) not ready");
 		}
 				
+		System.out.println("GreedyTaskInsertionOptimizer.optimize(): starting (now = " + 
+				now.toString() + ", here = " + here.toString() + ") ...");
+		
 		/* initialize new day plan with events of original day plan */
 		DayPlan optimizedDayPlan = new DayPlan();
 		optimizedDayPlan.setEvents(originalDayPlan.getEvents());
@@ -92,7 +95,13 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 					System.out.println("GreedyTaskInsertionOptimizer.optimize(): INFO: " +
 							"timeLeftToWait = " +	timeLeftToWait + ", duration = " + taskDuration);
 				
+				/* check if there is enough time to insert this task before
+				 * the next event (this is a heuristic approach)
+				 * TODO: this may reject tasks that can be executed between
+				 * now and the next event anyhow (think of tasks that can
+				 * be executed while moving towards the next event) */
 				if (nextEvent == null || taskDuration <= timeLeftToWait) {
+					
 					/* skip this task if its constraints forbid to execute it now
 					 * TODO: checking task constraint consistency with now is not
 					 * correct, because we have to check if the actual time and 
@@ -184,6 +193,8 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 								"constraints forbid to execute it now");
 					}
 				} else {
+					/* executing this task  */
+					
 					System.out.println("GreedyTaskInsertionOptimizer.optimize(): SKIP this task! " +
 							"timeLeftToWait = " +	timeLeftToWait + ", duration = " + taskDuration);
 				}
@@ -207,19 +218,38 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 		
 		if (nextEvent != null && optimizedDayPlan.getNumberOfTasks() > 0) {
 			if (taskSet) {
+				/* recursive optimization
+				 * TODO: include a maximal recursion depth */
 				return optimizedDayPlan.optimize(now, here, vehicle);				
 			} else {
+				/* recursive optimization
+				 * TODO: include a maximal recursion depth */
 				return optimizedDayPlan.optimize(nextEvent.getEndDate(), nextEvent.getPlace(), vehicle);	
 			}
 		} else {
-			return optimizedDayPlan;//.optimize(now, here, vehicle);
+			/* there no task left to set or there is no chronologically
+			 * succeeding event constraining optimization */
+			
+			if (optimizedDayPlan.getNumberOfTasks() > 0 && taskSet) {
+				/* nextEvent = null */
+				
+				/* there are still some tasks left that may be set,
+				 * use recursive optimization
+				 * TODO: include a maximal recursion depth */
+				return optimizedDayPlan.optimize(now, here, vehicle);
+			} else {
+				/* there is nothing to optimize anymore, because
+				 * either there are no more tasks to set or none
+				 * of the remaining tasks could be set */
+				return optimizedDayPlan;
+			}
 		}
 	}
 	
 
 	@Override
 	public Set<DayPlan> optimize(Date now, Place here, Object vehicle, int suggestions) {
-		return null;
+		throw new UnsupportedOperationException("GreedyTaskInsertionOptimizer.optimize(): Operation not yet supported");
 	}
 	
 

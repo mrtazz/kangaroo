@@ -173,7 +173,13 @@ public class OSMFileReader {
         event6.setStartDate(new Date(2010 - 1900, 3, 10, 23, 0));
         event6.setEndDate(new Date(2010 - 1900, 3, 10, 23, 40));
         event6.setLocationLatitude(48.983);
-        event6.setLocationLongitude(7.852);         
+        event6.setLocationLongitude(7.852);  
+        
+        CalendarEvent event7 = new CalendarEvent();
+        event7.setStartDate(new Date(2010 - 1900, 3, 10, 23, 45));
+        event7.setEndDate(new Date(2010 - 1900, 3, 10, 23, 50));
+        event7.setLocationLatitude(47.983);
+        event7.setLocationLongitude(7.852); 
         
         activeDayPlan.addEvent(event1);
         activeDayPlan.addEvent(event2);
@@ -181,7 +187,7 @@ public class OSMFileReader {
         activeDayPlan.addEvent(event4);
         activeDayPlan.addEvent(event5);
         activeDayPlan.addEvent(event6);
-        
+        activeDayPlan.addEvent(event7);        
                 
         
         /* add and create some tasks */
@@ -190,7 +196,7 @@ public class OSMFileReader {
 		task1.setName("Schnell was essen");
 		task1.addConstraint(new TaskConstraintDuration(5));
 		task1.addConstraint(new TaskConstraintPOI(new POICode(POICode.AMENITY_FAST_FOOD)));
-		task1.addConstraint(new TaskConstraintDayTime(new Date(0, 0, 0, 19, 00), new Date(0, 0, 0, 20, 00)));
+		task1.addConstraint(new TaskConstraintDayTime(new Date(0, 0, 0, 19, 00), new Date(0, 0, 0, 20, 01)));
 		
 		Task task2 = new Task();
 		task2.setName("Frisšr");
@@ -204,15 +210,21 @@ public class OSMFileReader {
 		task3.addConstraint(new TaskConstraintDate(new Date(2010 - 1900, 5, 2)));
 		
 		Task task4 = new Task();
-		task4.setName("nicht machbar");
-		task4.addConstraint(new TaskConstraintDuration(3));
-		task4.addConstraint(new TaskConstraintPOI(new POICode(POICode.AMENITY_ARCHITECT_OFFICE)));		
+		task4.setName("Brštchen kaufen");
+		task4.addConstraint(new TaskConstraintDuration(30));
+		task4.addConstraint(new TaskConstraintPOI(new POICode(POICode.SHOP_BAKERY)));		
+		//task4.addConstraint(new TaskConstraintDayTime(18, 00, 19, 10));
+		
+		Task task5 = new Task();
+		task5.setName("Blumen kaufen");
+		task5.addConstraint(new TaskConstraintDuration(30));
+		task5.addConstraint(new TaskConstraintPOI(new POICode(POICode.SHOP_FLORIST)));	
 		
 		activeDayPlan.addTask(task1);
 		activeDayPlan.addTask(task2);
 		activeDayPlan.addTask(task3);
 		activeDayPlan.addTask(task4);        
-		
+		activeDayPlan.addTask(task5);		
 		
         
         
