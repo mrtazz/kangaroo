@@ -1,10 +1,6 @@
 package com.mobiletsm.osm.data.adapters;
 
 import java.io.PrintStream;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;

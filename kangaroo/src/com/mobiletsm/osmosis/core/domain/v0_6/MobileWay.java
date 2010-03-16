@@ -1,6 +1,5 @@
 package com.mobiletsm.osmosis.core.domain.v0_6;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -12,7 +11,6 @@ import org.openstreetmap.osm.data.WayHelper;
 import org.openstreetmap.osm.data.coordinates.LatLon;
 import org.openstreetmap.osmosis.core.domain.common.TimestampContainer;
 import org.openstreetmap.osmosis.core.domain.v0_6.CommonEntityData;
-import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 import org.openstreetmap.osmosis.core.domain.v0_6.OsmUser;
 import org.openstreetmap.osmosis.core.domain.v0_6.Tag;
 import org.openstreetmap.osmosis.core.domain.v0_6.Way;

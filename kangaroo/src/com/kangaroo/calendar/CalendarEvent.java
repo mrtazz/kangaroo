@@ -4,7 +4,10 @@
 package com.kangaroo.calendar;
 
 import java.util.Date;
+import java.util.Locale;
 
+import com.kangaroo.task.TaskConstraintHelper;
+import com.kangaroo.task.Task;
 import com.mobiletsm.routing.Place;
 /**
  * @author mrtazz
@@ -75,6 +78,7 @@ public class CalendarEvent {
 		this.description = description;
 		this.calendar = calendar;
 		this.timezone = timezone;
+		this.place = place;
 	}
 	
 	public CalendarEvent() {
@@ -90,8 +94,32 @@ public class CalendarEvent {
 		this.description = null;
 		this.calendar = -1;
 		this.timezone = null;
+		this.place = null;
 	}
 
+	
+	public CalendarEvent(Task task, Date now, Place here) {
+		/* TODO: complete this method */
+		
+		TaskConstraintHelper helper = new TaskConstraintHelper(task);
+		Date endDate = new Date(now.getTime() + helper.getDuration() * 1000 * 60);
+		
+		this.id = null;
+		this.title = task.getName();
+		this.location = here.toString();
+		this.locationLongitude = here.getLongitude();
+		this.locationLatitude = here.getLatitude();
+		this.startDate = now;
+		this.endDate = endDate;
+		this.wasTask = true;
+		this.allDay = null;
+		this.description = task.toString();
+		this.calendar = -1;
+		this.timezone = null;
+		this.place = here;
+	}
+	
+	
 	/**
 	 * @return the id
 	 */
@@ -289,6 +317,28 @@ public class CalendarEvent {
 	 */
 	public void setPlace(Place place) {
 		this.place = place;
+	}
+	
+	
+	@Override
+	public String toString() {
+		
+		String startDate = "??";
+		if (getStartDate() != null) {
+			startDate = String.format(Locale.US, "%1$tH:%1$tM", getStartDate());
+		}
+		
+		String endDate = "??";
+		if (getEndDate() != null) {
+			endDate = String.format(Locale.US, "%1$tH:%1$tM", getEndDate());
+		}
+		
+		String title = "<no title>";
+		if (getTitle() != null) {
+			title = getTitle();
+		}
+		
+		return "CalendarEvent: {" + title + ", " + startDate + "-" + endDate + ", " + getPlace().toString() + "}";
 	}
 
 

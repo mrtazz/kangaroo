@@ -3,7 +3,6 @@ package com.mobiletsm.routing;
 import java.util.Iterator;
 
 import org.openstreetmap.osm.ConfigurationSection;
-import org.openstreetmap.osm.Tags;
 import org.openstreetmap.osm.data.IDataSet;
 import org.openstreetmap.osm.data.WayHelper;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;

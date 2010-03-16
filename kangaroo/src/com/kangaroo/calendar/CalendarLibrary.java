@@ -6,9 +6,6 @@ package com.kangaroo.calendar;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;

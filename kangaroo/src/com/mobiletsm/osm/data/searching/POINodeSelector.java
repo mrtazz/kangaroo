@@ -2,11 +2,8 @@ package com.mobiletsm.osm.data.searching;
 
 import java.util.Map;
 
-import org.openstreetmap.osm.Tags;
 import org.openstreetmap.osm.data.IDataSet;
-import org.openstreetmap.osm.data.NodeHelper;
 import org.openstreetmap.osm.data.Selector;
-import org.openstreetmap.osm.data.WayHelper;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 import org.openstreetmap.osmosis.core.domain.v0_6.Relation;
 import org.openstreetmap.osmosis.core.domain.v0_6.Tag;

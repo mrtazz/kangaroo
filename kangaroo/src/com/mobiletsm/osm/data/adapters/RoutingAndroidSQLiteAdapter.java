@@ -1,12 +1,7 @@
 package com.mobiletsm.osm.data.adapters;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-
-import org.openstreetmap.osm.data.coordinates.LatLon;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 import org.openstreetmap.osmosis.core.domain.v0_6.Way;
 

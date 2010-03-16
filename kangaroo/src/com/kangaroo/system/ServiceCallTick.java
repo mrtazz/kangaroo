@@ -23,7 +23,7 @@ public class ServiceCallTick extends android.app.Service
 	private PendingIntent mAlarmSender = null;
 	private int callIntervall;
 	private SharedPreferences prefsPrivate = null;
-	private String preferencesName = "Kagaroo_ServiceCallTick_Pref";
+	private String preferencesName = "kangaroo_config";
 	
 	/**
 	 * This method is part of the Service-interface. It is called when an instance of the service
@@ -35,7 +35,7 @@ public class ServiceCallTick extends android.app.Service
     {
     	System.out.println("ServiceCallTick onCreate called");	
     	prefsPrivate = getSharedPreferences(preferencesName, MODE_PRIVATE);
-    	callIntervall = prefsPrivate.getInt("callIntervall", 60);
+    	callIntervall = prefsPrivate.getInt("background_call_intervall", 60);
     	mAlarmSender = PendingIntent.getService(ServiceCallTick.this, 0, new Intent(ServiceCallTick.this, ServiceCallTick.class), 0);
     	startScheduled();
     }
@@ -48,7 +48,7 @@ public class ServiceCallTick extends android.app.Service
     {
 		//safe our internal state for next time
 		Editor prefsPrivateEditor = prefsPrivate.edit();
-		prefsPrivateEditor.putInt("callIntervall", callIntervall);
+		prefsPrivateEditor.putInt("background_call_intervall", callIntervall);
 		prefsPrivateEditor.commit();
     }
     
@@ -81,7 +81,7 @@ public class ServiceCallTick extends android.app.Service
 		this.callIntervall = callIntervall;
 		//safe our internal state for next time
 		Editor prefsPrivateEditor = prefsPrivate.edit();
-		prefsPrivateEditor.putInt("callIntervall", callIntervall);
+		prefsPrivateEditor.putInt("background_call_intervall", callIntervall);
 		prefsPrivateEditor.commit();
 		
 		startScheduled();

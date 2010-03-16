@@ -14,18 +14,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.kangaroo.R;
-import com.kangaroo.ActiveDayPlan;
-import com.kangaroo.DayPlanConsistency;
 import com.kangaroo.calendar.CalendarEvent;
 import com.kangaroo.calendar.CalendarLibrary;
 import com.kangaroo.task.Task;
 import com.kangaroo.task.TaskConstraintInterface;
-import com.kangaroo.task.TaskManager;
-import com.mobiletsm.routing.AllStreetVehicle;
-import com.mobiletsm.routing.MobileTSMRoutingEngine;
+import com.kangaroo.task.TaskLibrary;
 import com.mobiletsm.routing.Place;
-import com.mobiletsm.routing.RoutingEngine;
-import com.mobiletsm.routing.Vehicle;
 
 public class ActivityBuildPlan extends Activity
 {
@@ -123,7 +117,7 @@ public class ActivityBuildPlan extends Activity
 	            //AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
 	            //am.cancel(mAlarmSender);
 	        	//stopService(new Intent().setComponent(service));
-	        	TaskManager tm = new TaskManager(getApplicationContext());
+	        	TaskLibrary tm = new TaskLibrary(getApplicationContext(), "kangaroo@lordofhosts.de");
 	        	
 	        	generateEvents();
 	        	/*
