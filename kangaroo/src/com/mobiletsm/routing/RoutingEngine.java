@@ -1,7 +1,5 @@
 package com.mobiletsm.routing;
 
-import com.mobiletsm.osm.data.searching.POINodeSelector;
-
 
 /**
  * This interface defines the routing api used to perform routing and

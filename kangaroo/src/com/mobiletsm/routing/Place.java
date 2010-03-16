@@ -5,7 +5,6 @@ package com.mobiletsm.routing;
 
 import java.util.Locale;
 
-import org.openstreetmap.osm.data.coordinates.LatLon;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 
 import com.google.gson.Gson;

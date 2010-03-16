@@ -1,14 +1,9 @@
 package com.mobiletsm.routing;
 
-import org.openstreetmap.osm.data.coordinates.LatLon;
-import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 import org.openstreetmap.travelingsalesman.routing.IRouter;
 import org.openstreetmap.travelingsalesman.routing.Route;
-import org.openstreetmap.travelingsalesman.routing.routers.MultiTargetDijkstraRouter;
-
 import com.mobiletsm.osm.data.MobileInterfaceDataSet;
 import com.mobiletsm.osm.data.adapters.RoutingAndroidSQLiteAdapter;
-import com.mobiletsm.osm.data.adapters.RoutingSQLiteAdapter;
 import com.mobiletsm.osm.data.providers.DatabaseMDSProvider;
 import com.mobiletsm.osm.data.providers.MobileDataSetProvider;
 import com.mobiletsm.osm.data.searching.POINodeSelector;

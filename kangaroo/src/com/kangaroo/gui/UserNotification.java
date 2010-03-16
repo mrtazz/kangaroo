@@ -6,15 +6,7 @@ import com.kangaroo.gui.UserNotification;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Intent;
-import android.os.Binder;
-import android.os.IBinder;
-import android.os.Looper;
-import android.os.Parcel;
-import android.os.RemoteException;
-import android.os.Vibrator;
-import android.widget.Toast;
 import android.content.Context;
 
 public class UserNotification

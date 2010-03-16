@@ -1,11 +1,9 @@
 package com.mobiletsm.routing.routers;
 
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.openstreetmap.osm.data.IDataSet;
-import org.openstreetmap.osm.data.coordinates.Coordinate;
 import org.openstreetmap.osm.data.coordinates.LatLon;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 

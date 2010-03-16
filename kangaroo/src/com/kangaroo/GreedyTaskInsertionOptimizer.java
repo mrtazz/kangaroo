@@ -11,6 +11,7 @@ import com.kangaroo.calendar.CalendarEvent;
 import com.kangaroo.task.Task;
 import com.kangaroo.task.TaskConstraintHelper;
 import com.kangaroo.task.TaskConstraintInterface;
+import com.kangaroo.task.TaskPriorityComparator;
 import com.mobiletsm.routing.GeoConstraints;
 import com.mobiletsm.routing.NoRouteFoundException;
 import com.mobiletsm.routing.Place;
