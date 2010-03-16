@@ -6,7 +6,7 @@ package com.kangaroo.calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import com.kangaroo.TaskConstraintHelper;
+import com.kangaroo.task.TaskConstraintHelper;
 import com.kangaroo.task.Task;
 import com.mobiletsm.routing.Place;
 /**
