@@ -113,7 +113,7 @@ public class CalendarEvent {
 		this.endDate = endDate;
 		this.wasTask = true;
 		this.allDay = null;
-		this.description = task.toString();
+		this.description = task.getDescription()+"\n---\n"+task.serialize();
 		this.calendar = -1;
 		this.timezone = null;
 		this.place = here;
