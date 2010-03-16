@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import com.kangaroo.calendar.CalendarEvent;
 import com.kangaroo.calendar.conflicts.CalendarEventConflict;
 
 public class DayPlanConsistency {

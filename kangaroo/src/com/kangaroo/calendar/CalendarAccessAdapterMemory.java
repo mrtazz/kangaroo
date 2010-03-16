@@ -1,14 +1,12 @@
-package com.kangaroo;
+package com.kangaroo.calendar;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.kangaroo.calendar.CalendarAccessAdapter;
-import com.kangaroo.calendar.CalendarEvent;
 import com.kangaroo.task.Task;
 
-public class MemoryCalendarAccessAdapter implements CalendarAccessAdapter {
+public class CalendarAccessAdapterMemory implements CalendarAccessAdapter {
 
 	
 	private List<CalendarEvent> events = null;
@@ -17,7 +15,7 @@ public class MemoryCalendarAccessAdapter implements CalendarAccessAdapter {
 	private Collection<Task> tasks = null;
 	
 	
-	public MemoryCalendarAccessAdapter() {
+	public CalendarAccessAdapterMemory() {
 		super();
 		events = new ArrayList<CalendarEvent>();
 		tasks = new ArrayList<Task>();

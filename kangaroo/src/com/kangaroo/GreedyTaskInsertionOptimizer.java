@@ -1,7 +1,6 @@
 package com.kangaroo;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
@@ -11,8 +10,9 @@ import java.util.Set;
 import com.kangaroo.calendar.CalendarEvent;
 import com.kangaroo.task.NoLocationFoundException;
 import com.kangaroo.task.Task;
-import com.kangaroo.task.TaskConstraintDuration;
+import com.kangaroo.task.TaskConstraintHelper;
 import com.kangaroo.task.TaskConstraintInterface;
+import com.kangaroo.task.TaskPriorityComparator;
 import com.mobiletsm.routing.GeoConstraints;
 import com.mobiletsm.routing.NoRouteFoundException;
 import com.mobiletsm.routing.Place;

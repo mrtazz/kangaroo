@@ -17,13 +17,11 @@ import org.openstreetmap.osm.data.coordinates.LatLon;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 import org.openstreetmap.osmosis.core.domain.v0_6.Tag;
 import org.openstreetmap.osmosis.core.domain.v0_6.Way;
-import org.openstreetmap.osmosis.core.domain.v0_6.WayNode;
 import org.openstreetmap.travelingsalesman.routing.IVehicle;
 
 import com.mobiletsm.osm.data.searching.CombinedSelector;
 import com.mobiletsm.osm.data.searching.POICode;
 import com.mobiletsm.osm.data.searching.POINodeSelector;
-import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
 import com.mobiletsm.routing.AllStreetVehicle;
 
 public class MobileTSMDatabaseWriter {

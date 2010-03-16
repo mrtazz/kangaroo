@@ -1,26 +1,15 @@
 package com.mobiletsm.osm.data.providers;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-import org.openstreetmap.osm.Tags;
-import org.openstreetmap.osm.data.NodeHelper;
-import org.openstreetmap.osm.data.Selector;
 import org.openstreetmap.osm.data.coordinates.LatLon;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
-import org.openstreetmap.osmosis.core.domain.v0_6.Tag;
 import org.openstreetmap.osmosis.core.domain.v0_6.Way;
 import org.openstreetmap.osmosis.core.domain.v0_6.WayNode;
 import org.openstreetmap.travelingsalesman.routing.IVehicle;
@@ -31,7 +20,6 @@ import com.mobiletsm.osm.data.MobileRoutingInterfaceDataSet;
 import com.mobiletsm.osm.data.adapters.RoutingDBAdapter;
 import com.mobiletsm.osm.data.searching.POINodeSelector;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileNode;
-import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileWayNode;
 import com.mobiletsm.routing.GeoConstraints;
 import com.mobiletsm.routing.Place;

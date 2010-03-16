@@ -1,37 +1,30 @@
 package com.kangaroo.gui;
 
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
-
-import com.android.kangaroo.R;
-import com.kangaroo.system.ServiceCallLocation;
-import com.kangaroo.system.ServiceCallTick;
-import com.kangaroo.task.Task;
-import com.kangaroo.task.TaskConstraintPOI;
-import com.kangaroo.task.TaskConstraintDate;
-import com.kangaroo.task.TaskConstraintDayTime;
-import com.kangaroo.task.TaskConstraintInterface;
-import com.kangaroo.task.TaskConstraintLocation;
-import com.kangaroo.task.TaskManager;
-import com.mobiletsm.osm.data.searching.POICode;
-import com.mobiletsm.routing.Place;
 
 import android.app.Activity;
 import android.content.ComponentName;
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
-
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.kangaroo.R;
+import com.kangaroo.calendar.CalendarEvent;
+import com.kangaroo.calendar.CalendarLibrary;
+import com.kangaroo.task.Task;
+import com.kangaroo.task.TaskConstraintInterface;
+import com.kangaroo.task.TaskLibrary;
+import com.mobiletsm.routing.Place;
+
 public class ActivityBuildPlan extends Activity
 {
     private TextView myText; 
+    private Context ctx;
     
     private ComponentName service;
     
@@ -52,7 +45,7 @@ public class ActivityBuildPlan extends Activity
 	        button.setOnClickListener(mStopAlarmListener);
 	        
 	        myText = (TextView)findViewById(R.id.text);
-	         
+	        ctx = this.getApplicationContext(); 
 	  }   
 	  
 	   
@@ -66,14 +59,31 @@ public class ActivityBuildPlan extends Activity
 	            //am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
 	            //                firstTime, 30*1000, mAlarmSender);
 	            
-	        	ComponentName comp = new ComponentName(getPackageName(), ServiceCallTick.class.getName());
-				ComponentName service = startService(new Intent().setComponent(comp));
-				ComponentName comp2 = new ComponentName(getPackageName(), ServiceCallLocation.class.getName());
-				ComponentName service2 = startService(new Intent().setComponent(comp2));
+	        	//ComponentName comp = new ComponentName(getPackageName(), ServiceCallTick.class.getName());
+				//ComponentName service = startService(new Intent().setComponent(comp));
+				//ComponentName comp2 = new ComponentName(getPackageName(), ServiceCallLocation.class.getName());
+				//ComponentName service2 = startService(new Intent().setComponent(comp2));
 				
+	        	//UserNotification un = new UserNotification(ctx);
+	        	//un.showNotification("Title", "textMessage", true, MainWindow.class);
+	        	
+	        	/*
+	        	ActiveDayPlan adp = new ActiveDayPlan();
+	        	adp.setContext(getApplicationContext());
+	        	RoutingEngine re = new MobileTSMRoutingEngine();
+	        	re.init("file:/sdcard/map-fr.db");
+	        	adp.setRoutingEngine(re);
+	        	Vehicle ve = new AllStreetVehicle();
+	        	ve.setMaxSpeed(50.0);
+	        	DayPlanConsistency dpc = adp.checkConsistency(ve);
+	        	System.out.println(dpc.isConsistent());
+	        	re.shutdown();
+	        	
 				// Tell the user about what we did.
 	            Toast.makeText(ActivityBuildPlan.this, "scheduled service started",
 	                    Toast.LENGTH_LONG).show();
+	                    
+	                    */
 	        }
 	    };
 
@@ -91,14 +101,26 @@ public class ActivityBuildPlan extends Activity
 	    	System.out.println("");
 	    }
 	    
+	    private void generateEvents()
+	    {
+	    	CalendarLibrary cl = new CalendarLibrary(ctx);
+			int calendarId = cl.getCalendar("kangaroo@lordofhosts.de").getId();
+			CalendarEvent ce = new CalendarEvent("", "Termin1", "", 47.9948308, 7.8497112, new Date(110,2,9,14,0), new Date(110,2,9,15,0), false, false, "Description1", calendarId, "GMT", (Place)null);	
+			cl.insertEventToBackend(ce);
+			ce = new CalendarEvent("", "Termin2", "", 47.9950469, 7.8326674, new Date(110,2,9,15,0), new Date(110,2,9,16,0), false, false, "Description2", calendarId, "GMT", (Place)null);	
+			cl.insertEventToBackend(ce);
+	    }
+	    
 	    private OnClickListener mStopAlarmListener = new OnClickListener() {
 	        public void onClick(View v) {
 	            // And cancel the alarm.
 	            //AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
 	            //am.cancel(mAlarmSender);
 	        	//stopService(new Intent().setComponent(service));
-	        	TaskManager tm = new TaskManager(getApplicationContext());
+	        	TaskLibrary tm = new TaskLibrary(getApplicationContext(), "kangaroo@lordofhosts.de");
 	        	
+	        	generateEvents();
+	        	/*
 	        	Task myTask = new Task();
 
 	        	myTask.setName("Name1");
@@ -121,7 +143,7 @@ public class ActivityBuildPlan extends Activity
 	        	Iterator<Task> it = myList.iterator();
 	        	printTask(it.next());
 	        	printTask(it.next());
-	        
+	        */
 	            // Tell the user about what we did.
 	            Toast.makeText(ActivityBuildPlan.this, "done.",
 	                    Toast.LENGTH_LONG).show();

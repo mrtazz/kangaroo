@@ -1,8 +1,6 @@
 package com.kangaroo.calendar;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import com.kangaroo.task.Task;

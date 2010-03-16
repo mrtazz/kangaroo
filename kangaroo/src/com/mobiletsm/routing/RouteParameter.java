@@ -3,18 +3,7 @@
  */
 package com.mobiletsm.routing;
 
-import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
-
-import org.openstreetmap.osm.Tags;
-import org.openstreetmap.osm.data.WayHelper;
-import org.openstreetmap.osmosis.core.domain.v0_6.Way;
-import org.openstreetmap.travelingsalesman.routing.Route;
-import org.openstreetmap.travelingsalesman.routing.Route.RoutingStep;
-
-import com.mobiletsm.osm.OsmHelper;
-import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
 
 /**
  * @author andreaswalz

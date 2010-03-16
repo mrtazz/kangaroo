@@ -18,7 +18,7 @@ public class ServiceCallLocation extends Service
 	private int minUpdateTime;
 	private float minUpdateDistance;
 	private SharedPreferences prefsPrivate;
-	private String preferencesName = "Kagaroo_ServiceCallLocation_Pref";
+	private String preferencesName = "kangaroo_config";
 	
 	/*
 	 * This is called when the Service is called and no running copy of it exists.
@@ -31,8 +31,8 @@ public class ServiceCallLocation extends Service
 	{
 		 System.out.println("ServiceCallLocation on Create called");
 		 prefsPrivate = getSharedPreferences(preferencesName, MODE_PRIVATE);
-		 minUpdateTime = prefsPrivate.getInt("minUpdateTime", 60);
-		 minUpdateDistance = prefsPrivate.getFloat("minUpdateDistance", 100);
+		 minUpdateTime = prefsPrivate.getInt("background_call_time_difference", 60);
+		 minUpdateDistance = prefsPrivate.getFloat("background_call_position", 100);
 		 
 		 mLocationIntent = PendingIntent.getService(ServiceCallLocation.this, 0, new Intent(ServiceCallLocation.this, ServiceCallLocation.class), 0);
 		 locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -46,8 +46,8 @@ public class ServiceCallLocation extends Service
 	public void onDestroy()
 	{
 		Editor prefsPrivateEditor = prefsPrivate.edit();
-		prefsPrivateEditor.putInt("minUpdateTime", minUpdateTime);
-		prefsPrivateEditor.putFloat("minUpdateDistance", minUpdateDistance);
+		prefsPrivateEditor.putInt("background_call_time_difference", minUpdateTime);
+		prefsPrivateEditor.putFloat("background_call_position", minUpdateDistance);
 		prefsPrivateEditor.commit();
 	}
 	
@@ -108,7 +108,7 @@ public class ServiceCallLocation extends Service
 	{
 		this.minUpdateTime = minUpdateTime;
 		Editor prefsPrivateEditor = prefsPrivate.edit();
-		prefsPrivateEditor.putInt("minUpdateTime", minUpdateTime);
+		prefsPrivateEditor.putInt("background_call_time_difference", minUpdateTime);
 		prefsPrivateEditor.commit();
 		
 		unregisterLocationManager();
@@ -132,7 +132,7 @@ public class ServiceCallLocation extends Service
 	{
 		this.minUpdateDistance = minUpdateDistance;
 		Editor prefsPrivateEditor = prefsPrivate.edit();
-		prefsPrivateEditor.putFloat("minUpdateDistance", minUpdateDistance);
+		prefsPrivateEditor.putFloat("background_call_position", minUpdateDistance);
 		prefsPrivateEditor.commit();
 		
 		unregisterLocationManager();

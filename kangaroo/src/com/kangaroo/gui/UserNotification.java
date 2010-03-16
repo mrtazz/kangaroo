@@ -6,15 +6,7 @@ import com.kangaroo.gui.UserNotification;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Intent;
-import android.os.Binder;
-import android.os.IBinder;
-import android.os.Looper;
-import android.os.Parcel;
-import android.os.RemoteException;
-import android.os.Vibrator;
-import android.widget.Toast;
 import android.content.Context;
 
 public class UserNotification
@@ -37,7 +29,7 @@ public class UserNotification
 	    /**
 	     * Show a notification while this service is running.
 	     */
-	    public void showNotification(String title, String textMessage, Class okKlickActivity) 
+	    public void showNotification(String title, String textMessage, boolean vibrate_sound, Class okKlickActivity) 
 	    {
 	        Notification notification = new Notification(R.drawable.stat_happy, textMessage, System.currentTimeMillis());
 
@@ -46,7 +38,12 @@ public class UserNotification
 
 	        // Set the info for the views that show in the notification panel.
 	       notification.setLatestEventInfo(ctx, title, textMessage, contentIntent);
-
+	       notification.tickerText = title;
+	       if(vibrate_sound)
+	       {
+	    	   notification.defaults = notification.DEFAULT_SOUND | notification.DEFAULT_VIBRATE;
+	       }
+	       
 	        // Send the notification.
 	        mNM.notify(12345678, notification);
 	    }

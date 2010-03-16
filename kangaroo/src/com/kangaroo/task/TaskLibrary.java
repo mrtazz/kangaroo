@@ -1,9 +1,7 @@
 package com.kangaroo.task;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 
 import android.content.Context;
@@ -12,14 +10,16 @@ import com.kangaroo.calendar.CalendarEvent;
 import com.kangaroo.calendar.CalendarLibrary;
 import com.mobiletsm.routing.Place;
 
-public class TaskManager 
+public class TaskLibrary 
 {
 	private CalendarLibrary cl;
 	private Context ctx;
+	private String calendarName;
 	
 	//Constructor
-	public TaskManager(Context myCtx)
+	public TaskLibrary(Context myCtx, String newCalendarName)
 	{
+		calendarName = newCalendarName;
 		ctx = myCtx;
 		cl = new CalendarLibrary(ctx);
 	}
@@ -27,7 +27,7 @@ public class TaskManager
 	//get all Tasks from Calendar
 	public ArrayList<Task> getTasks()
 	{
-		int calendarId = cl.getCalendar("kangaroo@lordofhosts.de").getId();
+		int calendarId = cl.getCalendar(calendarName).getId();
 		
 		ArrayList<CalendarEvent> myEventList = cl.getEventsByDate(String.valueOf(calendarId), new Date(0,0,1));
 		
@@ -80,7 +80,7 @@ public class TaskManager
 	private CalendarEvent getEventForTask(Task myTask)
 	{
 
-		int calendarId = cl.getCalendar("kangaroo@lordofhosts.de").getId();
+		int calendarId = cl.getCalendar(calendarName).getId();
 
 			
 		CalendarEvent returnEvent = null;

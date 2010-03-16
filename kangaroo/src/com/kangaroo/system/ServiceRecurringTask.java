@@ -18,7 +18,7 @@ public class ServiceRecurringTask extends Service
 	private PowerManager myPowerManager;
 	private PowerManager.WakeLock myWakeLock;
 	private SharedPreferences prefsPrivate = null;
-	private String preferencesName = "Kagaroo_ServiceRecurringTask_Pref";
+	private String preferencesName = "kangaroo_config";
 	private boolean semaphoreTaskAktive;
 	
 	/**

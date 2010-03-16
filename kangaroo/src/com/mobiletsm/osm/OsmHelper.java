@@ -8,8 +8,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -20,9 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-import org.openstreetmap.osm.Tags;
 import org.openstreetmap.osm.data.IDataSet;
-import org.openstreetmap.osm.data.MemoryDataSet;
 import org.openstreetmap.osm.data.NodeHelper;
 import org.openstreetmap.osm.data.Selector;
 import org.openstreetmap.osm.data.WayHelper;
@@ -38,18 +34,12 @@ import org.openstreetmap.travelingsalesman.routing.IRouter;
 import org.openstreetmap.travelingsalesman.routing.IVehicle;
 import org.openstreetmap.travelingsalesman.routing.Route;
 import org.openstreetmap.travelingsalesman.routing.Route.RoutingStep;
-import org.openstreetmap.travelingsalesman.routing.metrics.ShortestRouteMetric;
-import org.openstreetmap.travelingsalesman.routing.routers.MultiTargetDijkstraRouter;
-import org.openstreetmap.travelingsalesman.routing.routers.TurnRestrictedAStar;
-
 import com.mobiletsm.osm.data.MobileDataSet;
 import com.mobiletsm.osm.data.MobileMemoryDataSet;
 import com.mobiletsm.osm.data.searching.POICode;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileNode;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileWay;
 import com.mobiletsm.osmosis.core.domain.v0_6.MobileWayNode;
-import com.mobiletsm.routing.RouteParameter;
-import com.mobiletsm.routing.Vehicle;
 import com.mobiletsm.routing.metrics.MobileRoutingMetric;
 import com.mobiletsm.routing.routers.MobileMultiTargetDijkstraRouter;
 

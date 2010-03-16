@@ -1,21 +1,14 @@
 package com.kangaroo;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import com.kangaroo.calendar.CalendarAccessAdapter;
 import com.kangaroo.calendar.CalendarEvent;
-import com.kangaroo.calendar.CalendarEventComparator;
 import com.kangaroo.task.Task;
 import com.mobiletsm.routing.NoRouteFoundException;
 import com.mobiletsm.routing.Place;
-import com.mobiletsm.routing.RouteParameter;
-import com.mobiletsm.routing.RoutingEngine;
 import com.mobiletsm.routing.Vehicle;
 
 public class ActiveDayPlan extends DayPlan {

@@ -1,12 +1,9 @@
 package com.mobiletsm.osm.data.providers;
 
-import org.openstreetmap.osm.data.Selector;
 import org.openstreetmap.osm.data.coordinates.LatLon;
-import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 import org.openstreetmap.travelingsalesman.routing.IVehicle;
 
 import com.mobiletsm.osm.data.MobileInterfaceDataSet;
-import com.mobiletsm.osm.data.adapters.RoutingDBAdapter;
 import com.mobiletsm.osm.data.adapters.RoutingDataAdapter;
 import com.mobiletsm.osm.data.searching.POINodeSelector;
 import com.mobiletsm.routing.GeoConstraints;

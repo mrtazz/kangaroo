@@ -1,4 +1,4 @@
-package com.kangaroo;
+package com.kangaroo.task;
 
 import java.util.Date;
 import java.util.List;

@@ -1,11 +1,7 @@
 package com.mobiletsm.routing;
 
-import org.openstreetmap.osm.data.coordinates.LatLon;
-import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 import org.openstreetmap.travelingsalesman.routing.IRouter;
 import org.openstreetmap.travelingsalesman.routing.Route;
-import org.openstreetmap.travelingsalesman.routing.routers.MultiTargetDijkstraRouter;
-
 import com.mobiletsm.osm.data.MobileInterfaceDataSet;
 import com.mobiletsm.osm.data.adapters.RoutingAndroidSQLiteAdapter;
 import com.mobiletsm.osm.data.providers.DatabaseMDSProvider;
@@ -49,7 +45,8 @@ public class MobileTSMRoutingEngine implements RoutingEngine {
 
 
 	@Override
-	public boolean initialized() {
+	public boolean initialized() 
+	{
 		return (provider != null && provider.isOpen());
 	}
 

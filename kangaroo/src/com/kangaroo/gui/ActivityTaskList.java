@@ -8,16 +8,24 @@ import java.util.Date;
 import java.util.HashMap;
 
 import android.app.ExpandableListActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.SimpleExpandableListAdapter;
+import android.widget.Toast;
+import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
 
 import com.android.kangaroo.R;
+import com.kangaroo.ActiveDayPlan;
 import com.kangaroo.task.Task;
-import com.kangaroo.task.TaskConstraintPOI;
 import com.kangaroo.task.TaskConstraintDate;
 import com.kangaroo.task.TaskConstraintDayTime;
 import com.kangaroo.task.TaskConstraintInterface;
 import com.kangaroo.task.TaskConstraintLocation;
+import com.kangaroo.task.TaskConstraintPOI;
 import com.kangaroo.task.TaskConstraintPendingTasks;
 import com.mobiletsm.osm.data.searching.POICode;
 import com.mobiletsm.routing.Place;
@@ -27,9 +35,10 @@ import com.mobiletsm.routing.Place;
  * @brief Activity to show an expandable listview of tasks
  *
  */
-public class TaskList extends ExpandableListActivity {
+public class ActivityTaskList extends ExpandableListActivity {
 
 	private SimpleExpandableListAdapter la;
+	private com.kangaroo.DayPlan dp;
 	private ArrayList<Task> taskslist;
 	private String[] childitems = new String[]{"tasklocation", "taskdescription",
 												"taskdate", "taskdaytime", 
@@ -37,14 +46,26 @@ public class TaskList extends ExpandableListActivity {
 	private int[] childlayout = new int[]{R.id.tasklocation, R.id.taskdescription,
 									      R.id.taskdate, R.id.taskdaytime,
 									      R.id.taskpending, R.id.taskpoi};
+
+	  // menu item ids
+	  private final int MENU_DELETE = 0;
+	  private final int MENU_EDIT = 1;
 	
 	 @Override
 	  public void onCreate(Bundle savedInstanceState)
 	  {
 	        super.onCreate(savedInstanceState);
 	        setContentView(R.layout.tasklist);
+	        registerForContextMenu(getExpandableListView());
+	        dp = new ActiveDayPlan();
+	        //setUpTasks();
+	        reload();
 	        
-	        setUpTasks();
+	  }
+	 
+	 private void reload()
+	 {
+		 	
 	        la = new SimpleExpandableListAdapter(this,
 	        									buildGroupEntries(), 
 	        									R.layout.taskfirstlevel,
@@ -55,8 +76,7 @@ public class TaskList extends ExpandableListActivity {
 	        									childitems,
 	        									childlayout);
 	        setListAdapter(la);
-	        
-	  }
+	 }
 	 
 	 /**
 	  * @brief method to build the entries for the first level
@@ -182,4 +202,54 @@ public class TaskList extends ExpandableListActivity {
 	        taskslist.add(myTask2);
 	        taskslist.add(myTask3);
 	 }
+	 
+	 // context menu methods
+	 /* (non-Javadoc)
+	 * @see android.app.Activity#onCreateContextMenu(android.view.ContextMenu, android.view.View, android.view.ContextMenu.ContextMenuInfo)
+	 */
+	 public void onCreateContextMenu(ContextMenu menu,
+			  						  View v,
+			  						  ContextMenuInfo menuInfo)
+	 {
+		  ExpandableListContextMenuInfo info;
+		  try {
+		      info = (ExpandableListContextMenuInfo) menuInfo;
+		  } catch (ClassCastException e) {
+		      //Log.e(TAG, "bad menuInfo", e);
+		      return;
+		  }
+		  // add menu items
+		  menu.add(0, MENU_DELETE, 0, R.string.delete);
+		  menu.add(0, MENU_EDIT, 0, R.string.edit_task);
+	  }
+	  /** when press-hold option selected */
+	  @Override
+	  public boolean onContextItemSelected(MenuItem item) {
+	    return applyMenuChoice(item) || super.onContextItemSelected(item);
+	  }
+	  
+	  /**
+	   * @brief method to distinguish context menu choices 
+	   * @param item MenuItem
+	   * @return true if choice was found, false otherwise
+	   */
+		private boolean applyMenuChoice(MenuItem item) {
+			  Toast toast;
+			  switch (item.getItemId()) {
+			    case MENU_DELETE:
+				  toast = Toast.makeText(this,
+				  					     "Menu item DELETE clicked",
+					  				     Toast.LENGTH_SHORT);
+			  	  toast.show();
+			      return true;
+			    case MENU_EDIT:
+				  // show the map
+				  Intent intent = new Intent(this, ActivityEditTask.class);
+				  intent.addCategory(Intent.CATEGORY_DEFAULT);
+				  startActivityForResult(intent, 1);
+				  
+			      return true;
+			  }
+			  return false;
+			}
 }
