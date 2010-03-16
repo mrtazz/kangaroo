@@ -8,8 +8,15 @@ import java.util.Date;
 import java.util.HashMap;
 
 import android.app.ExpandableListActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.AdapterView;
 import android.widget.SimpleExpandableListAdapter;
+import android.widget.Toast;
 
 import com.android.kangaroo.R;
 import com.kangaroo.task.Task;
@@ -37,12 +44,17 @@ public class TaskList extends ExpandableListActivity {
 	private int[] childlayout = new int[]{R.id.tasklocation, R.id.taskdescription,
 									      R.id.taskdate, R.id.taskdaytime,
 									      R.id.taskpending, R.id.taskpoi};
+
+	  // menu item ids
+	  private final int MENU_DELETE = 0;
+	  private final int MENU_EDIT = 1;
 	
 	 @Override
 	  public void onCreate(Bundle savedInstanceState)
 	  {
 	        super.onCreate(savedInstanceState);
 	        setContentView(R.layout.tasklist);
+	        registerForContextMenu(getListView());
 	        
 	        setUpTasks();
 	        la = new SimpleExpandableListAdapter(this,
@@ -182,4 +194,54 @@ public class TaskList extends ExpandableListActivity {
 	        taskslist.add(myTask2);
 	        taskslist.add(myTask3);
 	 }
+	 
+	 // context menu methods
+	 /* (non-Javadoc)
+		 * @see android.app.Activity#onCreateContextMenu(android.view.ContextMenu, android.view.View, android.view.ContextMenu.ContextMenuInfo)
+		 */
+		public void onCreateContextMenu(ContextMenu menu,
+				  						  View v,
+				  						  ContextMenuInfo menuInfo)
+		  {
+			  AdapterView.AdapterContextMenuInfo info;
+			  try {
+			      info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+			  } catch (ClassCastException e) {
+			      //Log.e(TAG, "bad menuInfo", e);
+			      return;
+			  }
+			  // add menu items
+			  menu.add(0, MENU_DELETE, 0, R.string.delete);
+			  menu.add(0, MENU_EDIT, 0, R.string.edit_task);
+		  }
+		  /** when press-hold option selected */
+		  @Override
+		  public boolean onContextItemSelected(MenuItem item) {
+		    return applyMenuChoice(item) || super.onContextItemSelected(item);
+		  }
+		  
+		  /**
+		   * @brief method to distinguish context menu choices 
+		   * @param item MenuItem
+		   * @return true if choice was found, false otherwise
+		   */
+		private boolean applyMenuChoice(MenuItem item) {
+			  Toast toast;
+			  switch (item.getItemId()) {
+			    case MENU_DELETE:
+				  toast = Toast.makeText(this,
+				  					     "Menu item DELETE clicked",
+					  				     Toast.LENGTH_SHORT);
+			  	  toast.show();
+			      return true;
+			    case MENU_EDIT:
+				  // show the map
+				  Intent intent = new Intent(this, EditTask.class);
+				  intent.addCategory(Intent.CATEGORY_DEFAULT);
+				  startActivityForResult(intent, 1);
+				  
+			      return true;
+			  }
+			  return false;
+			}
 }
