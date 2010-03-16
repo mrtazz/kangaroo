@@ -168,8 +168,7 @@ public class MobileWay extends Way {
 		}
 		buf.append("]");
 		return buf.toString();
-	}
-	
+	}	
 	
 	
 	/**

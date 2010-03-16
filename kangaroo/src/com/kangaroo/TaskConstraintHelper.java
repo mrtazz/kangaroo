@@ -11,6 +11,7 @@ import com.kangaroo.task.TaskConstraintInterface;
 import com.kangaroo.task.TaskConstraintLocation;
 import com.kangaroo.task.TaskConstraintPOI;
 import com.mobiletsm.osm.data.searching.POINodeSelector;
+import com.mobiletsm.routing.GeoConstraints;
 import com.mobiletsm.routing.Place;
 import com.mobiletsm.routing.RoutingEngine;
 
@@ -34,6 +35,14 @@ public class TaskConstraintHelper {
 	
 	
 	private Task task;
+	
+	
+	private RoutingEngine routingEngine = null;
+	
+	
+	public void setRoutingEngine(RoutingEngine routingEngine) {
+		this.routingEngine = routingEngine;
+	}
 	
 	
 	public TaskConstraintHelper(Task task) {
@@ -231,11 +240,11 @@ public class TaskConstraintHelper {
 	/**
 	 * return the nearest location from Place here that is consistent with
 	 * constraints of type TaskConstraintLocation and TaskConstraintPOI
-	 * @param routingEngine
 	 * @param here
+	 * @param geoConstraints TODO
 	 * @return
 	 */
-	public Place getLocation(RoutingEngine routingEngine, Place here) {
+	public Place getLocation(Place here, GeoConstraints geoConstraints) {
 		
 		Place minPlace = null;
 		double minDist = Double.MAX_VALUE;
@@ -266,10 +275,15 @@ public class TaskConstraintHelper {
 		
 		if (poiConstraints.size() > 0) {
 			
+			if (routingEngine == null || !routingEngine.initialized()) {
+				throw new RuntimeException("TaskConstraintHelper.getLocation(): " +
+						"no routing engine defined or routing engine not ready");
+			}
+			
 			for (TaskConstraintInterface constraint : poiConstraints) {
 				TaskConstraintPOI poiConstraint = (TaskConstraintPOI)constraint;				
 				Place place = routingEngine.getNearestPOINode(here, 
-						new POINodeSelector(poiConstraint.getId()), null);
+						new POINodeSelector(poiConstraint.getId()), geoConstraints);
 				
 				/* update minPlace and minDist */
 				if (place != null) {

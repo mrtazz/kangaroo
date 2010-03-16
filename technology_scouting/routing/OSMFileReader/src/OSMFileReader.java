@@ -136,7 +136,7 @@ public class OSMFileReader {
         
         Date now = new Date(2010 - 1900, 3, 10, 19, 00);
         Place home = new Place(48.0064241, 7.8521991);
-        Vehicle vehicle = new AllStreetVehicle(50.0);
+        Vehicle vehicle = new AllStreetVehicle(16.0);
         
         
         CalendarEvent event1 = new CalendarEvent();
@@ -193,9 +193,9 @@ public class OSMFileReader {
 		task1.addConstraint(new TaskConstraintDayTime(new Date(0, 0, 0, 19, 00), new Date(0, 0, 0, 20, 00)));
 		
 		Task task2 = new Task();
-		task2.setName("Blumen kaufen");
+		task2.setName("Frisšr");
 		task2.addConstraint(new TaskConstraintDuration(10));
-		task2.addConstraint(new TaskConstraintPOI(new POICode(POICode.SHOP_FLORIST)));
+		task2.addConstraint(new TaskConstraintPOI(new POICode(POICode.SHOP_HAIRDRESSER)));
 		task2.addConstraint(new TaskConstraintDayTime(18, 00, 20, 00));
 		
 		Task task3 = new Task();
@@ -231,7 +231,6 @@ public class OSMFileReader {
 			DayPlanOptimizer optimizer = new GreedyTaskInsertionOptimizer();
 			activeDayPlan.setOptimizer(optimizer);
 			DayPlan optimizedDayPlan = activeDayPlan.optimize(now, home, vehicle);
-			
 			
 
 		}
@@ -417,7 +416,7 @@ public class OSMFileReader {
 		TaskConstraintHelper helper = new TaskConstraintHelper(task);
 		
 		System.out.println("duration = " + helper.getDuration());
-		System.out.println("location = " + helper.getLocation(routingEngine, home));
+		System.out.println("location = " + helper.getLocation(home, null));
 		
 		routingEngine.shutdown();
 		

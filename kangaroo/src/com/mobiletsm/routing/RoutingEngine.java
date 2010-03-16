@@ -66,7 +66,7 @@ public interface RoutingEngine {
 	public RouteParameter routeFromTo(Place from, Place to, Object vehicle);
 		
 	
-	public Place getNearestPOINode(Place center, Object selector, Limits limits);
+	public Place getNearestPOINode(Place center, Object selector, GeoConstraints limits);
 		
 	
 	public Place getNearestStreetNode(Place center);

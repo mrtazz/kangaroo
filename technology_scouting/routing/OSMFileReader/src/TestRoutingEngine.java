@@ -6,7 +6,7 @@ import com.mobiletsm.osm.data.adapters.RoutingSQLiteAdapter;
 import com.mobiletsm.osm.data.providers.DatabaseMDSProvider;
 import com.mobiletsm.osm.data.providers.MobileDataSetProvider;
 import com.mobiletsm.osm.data.searching.POINodeSelector;
-import com.mobiletsm.routing.Limits;
+import com.mobiletsm.routing.GeoConstraints;
 import com.mobiletsm.routing.MobileTSMRouteParameter;
 import com.mobiletsm.routing.Place;
 import com.mobiletsm.routing.RouteParameter;
@@ -130,7 +130,7 @@ public class TestRoutingEngine implements RoutingEngine {
 
 	
 	@Override
-	public Place getNearestPOINode(Place center, Object selector, Limits limits) {
+	public Place getNearestPOINode(Place center, Object selector, GeoConstraints limits) {
 		if (!(selector instanceof POINodeSelector)) {
 			throw new RuntimeException("MobileRoutingEngine.getNearestPOINode(): Not a POINodeSelector");
 		}
@@ -179,5 +179,7 @@ public class TestRoutingEngine implements RoutingEngine {
 			routingCache.clear();
 		}
 	}
+
+
 
 }

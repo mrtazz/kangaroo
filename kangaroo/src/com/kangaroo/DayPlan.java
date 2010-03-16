@@ -287,7 +287,8 @@ public class DayPlan {
 			return (int)timeLeft;
 			
 		} else {
-			throw new RuntimeException("DayPlan.checkComplianceWith(): Destination event missing");
+			/* if there is no event to be compliant with */
+			return Integer.MAX_VALUE;
 		}
 	}
 	

@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -1175,6 +1176,45 @@ public class OsmHelper {
 				highscore.put(key, 1);
 			}
 		}		
+	}
+	
+	
+	public static String getWayName(Way way) {
+		String name = WayHelper.getTag(way.getTags(), "name"); 
+		if (name != null) {
+			return name;
+		} else {
+			String ref = WayHelper.getTag(way.getTags(), "ref");
+			if (ref != null) {
+				return ref;
+			}
+		}
+		return null;
+	}
+	
+	
+	public static String getWayNameDescription(List<Way> ways) {
+		if (ways != null && ways.size() > 0) {
+			List<String> names = new ArrayList<String>();
+			for (Way way : ways) {
+				String name = getWayName(way);
+				boolean inList = false;
+				for (String listName : names) {
+					if (listName.equalsIgnoreCase(name)) {
+						inList = true;
+					}
+				}
+				if (!inList) {
+					names.add(name);
+				}
+			}
+			if (names.size() == 1) {
+				return names.get(0);
+			} else if (names.size() >= 2) {
+				return names.get(0) + " Ecke " + names.get(1);
+			}
+		}
+		return null;
 	}
 	
 	
