@@ -4,6 +4,8 @@
 package com.kangaroo.gui;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -19,6 +21,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.kangaroo.R;
+import com.kangaroo.ActiveDayPlan;
+import com.kangaroo.calendar.CalendarAccessAdapter;
+import com.kangaroo.calendar.CalendarAccessAdapterAndroid;
 import com.kangaroo.calendar.CalendarEvent;
 import com.kangaroo.calendar.CalendarLibrary;
 
@@ -31,7 +36,7 @@ public class ActivityDayPlan extends ListActivity {
 	  private ArrayList<CalendarEvent> eventlist = null;
 	  private ArrayAdapterCalendar calendarAdapter;
 	  private TextView tv;
-	  private CalendarLibrary cl;
+	  private com.kangaroo.ActiveDayPlan dp;
 	  private CalendarEvent actual_calendar_event;
 	  private int actual_calendar = 1;
 	  // menu item ids
@@ -45,8 +50,12 @@ public class ActivityDayPlan extends ListActivity {
 	        super.onCreate(savedInstanceState);
 	        setContentView(R.layout.dayplan);
 	        registerForContextMenu(getListView());
-	        cl = new CalendarLibrary(this);
 	        tv = (TextView)findViewById(R.id.DayTitle);
+	        dp = new ActiveDayPlan();
+	        
+	        CalendarAccessAdapter caa = new CalendarAccessAdapterAndroid(this);
+		 	caa.setContext(getApplicationContext());
+		 	dp.setCalendarAccessAdapter(caa);
 
 	        reload();
 	  }
@@ -111,11 +120,13 @@ public class ActivityDayPlan extends ListActivity {
 	  @Override
 	  public void onActivityResult(int requestCode, int resultCode, Intent data) {
 			if (data != null) {
+				eventlist.remove(actual_calendar_event);
 				double lat = data.getExtras().getDouble("latitude");
 				double lon = data.getExtras().getDouble("longitude");
 				actual_calendar_event.setLocationLatitude(lat);
 				actual_calendar_event.setLocationLongitude(lon);
-				cl.updateEventInBackend(actual_calendar_event);
+				eventlist.add(actual_calendar_event);
+				dp.setEvents(eventlist);
 			} else {
 				Toast.makeText(this, "no position set! resultCode = " + resultCode, Toast.LENGTH_SHORT).show();
 			}
@@ -127,10 +138,12 @@ public class ActivityDayPlan extends ListActivity {
 	   */
 	private void reload()
 	  {
-	        tv.setText("Today");
-	  		Toast toast = Toast.makeText(this, "Reloading events!", Toast.LENGTH_SHORT);
+			Date today = new Date();
+	        //tv.setText(today.getDate + "/" + today.getMonth() + "/" + today.getYear());
+	  		tv.setText(today.toLocaleString());
+			Toast toast = Toast.makeText(this, "Reloading events!", Toast.LENGTH_SHORT);
 	  		toast.show();
-	        eventlist = cl.getTodaysEvents(Integer.toString(actual_calendar));
+	        eventlist = (ArrayList<CalendarEvent>)dp.getEvents();
 		    // Bind the ListView to an ArrayList of strings.
 	        calendarAdapter = new ArrayAdapterCalendar(this, R.layout.row, eventlist);
 	        setListAdapter(this.calendarAdapter);
