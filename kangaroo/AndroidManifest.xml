@@ -25,6 +25,7 @@
 		<activity 	android:icon="@drawable/icon" android:label="kangaroo" android:name="com.kangaroo.gui.ActivityBuildPlan"></activity>
 		
 		<activity android:name="com.kangaroo.gui.ActivityTask"></activity>
+		<activity android:name="com.kangaroo.gui.EditTask"></activity>
 		
 		<activity android:name="com.kangaroo.gui.TaskList">
 			<intent-filter>
