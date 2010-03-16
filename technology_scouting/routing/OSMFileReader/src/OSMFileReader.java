@@ -40,17 +40,17 @@ import com.kangaroo.DayPlan;
 import com.kangaroo.DayPlanConsistency;
 import com.kangaroo.DayPlanOptimizer;
 import com.kangaroo.GreedyTaskInsertionOptimizer;
-import com.kangaroo.MemoryCalendarAccessAdapter;
-import com.kangaroo.TaskConstraintHelper;
-import com.kangaroo.TaskPriorityComparator;
 import com.kangaroo.calendar.CalendarAccessAdapter;
+import com.kangaroo.calendar.CalendarAccessAdapterMemory;
 import com.kangaroo.calendar.CalendarEvent;
 import com.kangaroo.task.Task;
 import com.kangaroo.task.TaskConstraintDate;
 import com.kangaroo.task.TaskConstraintDayTime;
 import com.kangaroo.task.TaskConstraintDuration;
+import com.kangaroo.task.TaskConstraintHelper;
 import com.kangaroo.task.TaskConstraintLocation;
 import com.kangaroo.task.TaskConstraintPOI;
+import com.kangaroo.task.TaskPriorityComparator;
 import com.kangaroo.tsm.osm.io.FileLoader;
 import com.mobiletsm.osm.MobileTSMDatabaseWriter;
 import com.mobiletsm.osm.OsmHelper;
@@ -130,7 +130,7 @@ public class OSMFileReader {
 		
 		/* create and add some events */
         
-        CalendarAccessAdapter adapter = new MemoryCalendarAccessAdapter();
+        CalendarAccessAdapter adapter = new CalendarAccessAdapterMemory();
         ActiveDayPlan activeDayPlan = new ActiveDayPlan();
         activeDayPlan.setCalendarAccessAdapter(adapter);
         
