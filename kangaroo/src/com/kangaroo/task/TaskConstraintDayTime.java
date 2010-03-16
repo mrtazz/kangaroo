@@ -13,6 +13,11 @@ public class TaskConstraintDayTime implements TaskConstraintInterface
 	private Date startTime;
 	private Date endTime;
 	
+	public TaskConstraintDayTime()
+	{
+		
+	}
+	
 	public TaskConstraintDayTime(Date startTime, Date endTime)
 	{
 		this.startTime = startTime;
