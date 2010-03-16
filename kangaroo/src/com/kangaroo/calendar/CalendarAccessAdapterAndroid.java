@@ -19,8 +19,9 @@ public class CalendarAccessAdapterAndroid implements CalendarAccessAdapter
 	private String preferencesName = "kangaroo_config";
 	private SharedPreferences prefsPrivate = null;
 	
-	public CalendarAccessAdapterAndroid()
+	public CalendarAccessAdapterAndroid(Context con)
 	{ 
+		this.context = con;
 		prefsPrivate = context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE);
 		calendarName = prefsPrivate.getString("calendar_in_use", "kangaroo@lordofhosts.de");
 	}
