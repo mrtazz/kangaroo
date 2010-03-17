@@ -1,5 +1,7 @@
 package com.kangaroo.system;
 
+import java.util.Date;
+
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,6 +13,16 @@ import android.os.Parcel;
 import android.os.PowerManager;
 import android.os.RemoteException;
 
+import com.kangaroo.ActiveDayPlan;
+import com.kangaroo.DayPlanConsistency;
+import com.kangaroo.calendar.CalendarAccessAdapter;
+import com.kangaroo.calendar.CalendarAccessAdapterAndroid;
+import com.kangaroo.calendar.CalendarAccessAdapterMemory;
+import com.mobiletsm.routing.AllStreetVehicle;
+import com.mobiletsm.routing.MobileTSMRoutingEngine;
+import com.mobiletsm.routing.RoutingEngine;
+import com.mobiletsm.routing.Vehicle;
+
 public class ServiceRecurringTask extends Service
 {
 	
@@ -20,6 +32,8 @@ public class ServiceRecurringTask extends Service
 	private SharedPreferences prefsPrivate = null;
 	private String preferencesName = "kangaroo_config";
 	private boolean semaphoreTaskAktive;
+	private ActiveDayPlan currentDayPlan;
+	private Vehicle currentVehicle;
 	
 	/**
 	 * Initialize the new Service-object here
@@ -33,6 +47,21 @@ public class ServiceRecurringTask extends Service
 		
 		myPowerManager = (PowerManager) getSystemService(POWER_SERVICE);
 		semaphoreTaskAktive = false;
+		
+		//initialize the Dayplan
+		currentDayPlan = new ActiveDayPlan();
+		RoutingEngine re = new MobileTSMRoutingEngine();
+		re.enableRoutingCache();
+    	re.init("file:/sdcard/map-fr.db");
+    	currentDayPlan.setRoutingEngine(re);
+    	
+    	
+        //CalendarAccessAdapter caa = new CalendarAccessAdapterAndroid(this);
+    	CalendarAccessAdapter caa = new CalendarAccessAdapterMemory();
+    	caa.setContext(getApplicationContext());
+		currentDayPlan.setCalendarAccessAdapter(caa);
+		
+		currentVehicle = new AllStreetVehicle(50.0);
 	}
 	
 	/**
@@ -86,6 +115,8 @@ public class ServiceRecurringTask extends Service
     			//call from ServiceCallLocation, get Location info
     			currentLocation = (Location)currentIntent.getExtras().get("location");
     			//TODO do stuff here that we need to do when the location has changed
+    			
+    			//DayPlanConsistency dpc = currentDayPlan.checkConsistency(currentVehicle, new Date());
     			
     			}
     		else
