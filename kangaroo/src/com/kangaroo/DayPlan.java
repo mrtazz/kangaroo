@@ -276,14 +276,14 @@ public class DayPlan {
 			
 			/* Date.getTime() returns time in milliseconds, so 
 			 * we have to divide by 1000*60 to get minutes */
-			int timeLeft = (int)Math.floor((destinationEvent.getStartDate().getTime() - now.getTime()) / (1000 * 60));
+			int timeLeft = (int)Math.ceil((destinationEvent.getStartDate().getTime() - now.getTime()) / (1000 * 60));
 			
 				System.out.println("DayPlan.checkComplianceWith(): timeLeft (w/o route) = " + timeLeft);
 						
 			/* be pessimistic and round up the duration of travel and 
 			 * round down the gap between subsequent events */
 			/* TODO: Math.rint() does not always round up */
-			timeLeft = timeLeft - (int)Math.rint(route.getDurationOfTravel());
+			timeLeft = timeLeft - (int)Math.ceil(route.getDurationOfTravel());
 			
 				System.out.println("DayPlan.checkComplianceWith(): timeLeft (with route) = " + timeLeft);
 			
@@ -369,7 +369,7 @@ public class DayPlan {
 					} 
 				} else {
 					/* there is an overlap of these both events, calculate overlap in minutes */
-					int overlap = (int)Math.floor((predecessor.getEndDate().getTime() - 
+					int overlap = (int)Math.ceil((predecessor.getEndDate().getTime() - 
 							event.getStartDate().getTime()) / (1000 * 60));
 					
 					CalendarEventConflict conflict = new CalendarEventOverlap(event, predecessor, overlap);
@@ -410,18 +410,18 @@ public class DayPlan {
 		
 		if (events.size() > 0 || tasks.size() > 0) {
 			StringBuffer buf = new StringBuffer("DayPlan: {# events = " + events.size() + 
-					", # tasks = " + tasks.size() + ": ");
+					", # tasks = " + tasks.size() + ":\n");
 			
 			/* make sure the events are in correct order */
 			Collections.sort(events, new CalendarEventComparator(CalendarEventComparator.START_DATE));
 			
 			Iterator<CalendarEvent> event_itr = events.iterator();
 			while (event_itr.hasNext()) {
-				buf.append(event_itr.next().toString());
+				buf.append("    " + event_itr.next().toString());
 				if (event_itr.hasNext()) {
-					buf.append(", ");
+					buf.append(",\n");
 				} else {
-					buf.append("}");
+					buf.append("\n}");
 				}
 			}
 			return buf.toString();			
