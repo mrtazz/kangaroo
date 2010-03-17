@@ -341,6 +341,11 @@ public class CalendarLibrary {
     	//Pattern p = Pattern.compile("^---$");
     	//Matcher m = p.matcher(data);
     	//boolean b = m.matches();
+    	if (data == null)
+    	{
+    		ret.put("description","");
+    		return ret;
+    	}
     	
     	/** if no data return immediately */
     	if (!data.contains("---"))
