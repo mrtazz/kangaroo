@@ -58,8 +58,8 @@ public class ActivityEditTask extends Activity {
 				  tv_label.setWidth(label_length);
 				  ll_amenity.addView(tv_label);
 				  EditText ev_content = new EditText(this);
-				  ev_content.setText(ta.getText());
 				  ev_content.setWidth(content_length);
+				  ev_content.setText(ta.getText().split("#")[1]);
 				  ll_amenity.addView(ev_content);
 				  main.addView(ll_amenity);				  
 				}
