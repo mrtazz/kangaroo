@@ -6,8 +6,8 @@ package com.kangaroo.gui;
 import java.util.Date;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,6 +27,7 @@ public class ActivityEditTask extends Activity {
 	
 	  private final int label_length = 90;
 	  private final int content_length = 200;
+	  private Task t;
 	
 	  @Override
 	  public void onCreate(Bundle savedInstanceState)
@@ -34,7 +35,9 @@ public class ActivityEditTask extends Activity {
 	        super.onCreate(savedInstanceState);
 	        setContentView(R.layout.edittask);
 	        String s = (String)getIntent().getExtras().get("task");
-	        Task t = Task.deserialize(s);
+	        t = Task.deserialize(s);
+	        
+	        updateResultData();
 	        
 	        EditText edit_title = (EditText)findViewById(R.id.edittitle);
 	        EditText edit_description = (EditText)findViewById(R.id.editdescription);
@@ -122,6 +125,15 @@ public class ActivityEditTask extends Activity {
 				}
 			}
 	        
+	  }
+	  
+	  
+	  private void updateResultData()
+	  {
+		    Intent resultIntent = new Intent("com.kangaroo.EDITTASK_RESULT");
+			resultIntent.putExtra("task", t.serialize());
+			setResult(RESULT_OK, resultIntent);
+		  
 	  }
 	  
 

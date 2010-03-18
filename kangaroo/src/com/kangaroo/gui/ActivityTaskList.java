@@ -233,6 +233,7 @@ public class ActivityTaskList extends ExpandableListActivity {
 					  				       Toast.LENGTH_SHORT);
 			  	  	toast.show();
 			  	  	ret = true;
+			  	  	reload();
 			  	  	break;
 			    case MENU_EDIT:
 				  // show the map
@@ -246,8 +247,20 @@ public class ActivityTaskList extends ExpandableListActivity {
 			      ret = true;
 			      break;
 			  }
-			  reload();
 			  return ret;
+			}
+		
+		@Override
+		  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+				if (data != null) {
+					Task t = Task.deserialize((String)data.getExtras().get("task"));
+					taskslist.remove((int)actual_task);
+					taskslist.add(t);
+					dp.setTasks(taskslist);
+				} else {
+					Toast.makeText(this, "Did not get task back! resultCode = " + resultCode, Toast.LENGTH_SHORT).show();
+				}
+				reload();
 			}
 		
 		
