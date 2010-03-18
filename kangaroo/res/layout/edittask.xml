@@ -40,4 +40,36 @@
     	android:layout_height="wrap_content">
     </EditText>
   </LinearLayout>
+  <LinearLayout
+  	xmlns:android="http://schemas.android.com/apk/res/android"
+  	android:layout_width="wrap_content"
+  	android:layout_height="wrap_content"
+  	android:orientation="horizontal">
+	<TextView
+		android:text="Starttime:"
+		android:id="@+id/taskstarttimetextview"
+		android:layout_width="100px"
+		android:layout_height="wrap_content">
+	</TextView>
+    <TimePicker
+ 		android:id="@+id/taskstarttimepicker"
+ 		android:layout_width="wrap_content"
+ 		android:layout_height="wrap_content"/>
+  </LinearLayout>
+  <LinearLayout
+  	xmlns:android="http://schemas.android.com/apk/res/android"
+  	android:layout_width="wrap_content"
+  	android:layout_height="wrap_content"
+  	android:orientation="horizontal">
+	<TextView
+		android:text="Endtime:"
+		android:id="@+id/taskendtimetextview"
+		android:layout_width="100px"
+		android:layout_height="wrap_content">
+	</TextView>
+    <TimePicker
+ 		android:id="@+id/taskendtimepicker"
+ 		android:layout_width="wrap_content"
+ 		android:layout_height="wrap_content"/>
+  </LinearLayout>
 </LinearLayout>

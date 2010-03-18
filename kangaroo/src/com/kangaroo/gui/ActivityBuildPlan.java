@@ -1,7 +1,9 @@
 package com.kangaroo.gui;
 
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -17,8 +19,13 @@ import com.android.kangaroo.R;
 import com.kangaroo.calendar.CalendarEvent;
 import com.kangaroo.calendar.CalendarLibrary;
 import com.kangaroo.task.Task;
+import com.kangaroo.task.TaskConstraintDate;
+import com.kangaroo.task.TaskConstraintDayTime;
 import com.kangaroo.task.TaskConstraintInterface;
+import com.kangaroo.task.TaskConstraintLocation;
+import com.kangaroo.task.TaskConstraintPOI;
 import com.kangaroo.task.TaskLibrary;
+import com.mobiletsm.osm.data.searching.POICode;
 import com.mobiletsm.routing.Place;
 
 public class ActivityBuildPlan extends Activity
@@ -119,8 +126,8 @@ public class ActivityBuildPlan extends Activity
 	        	//stopService(new Intent().setComponent(service));
 	        	TaskLibrary tm = new TaskLibrary(getApplicationContext(), "kangaroo@lordofhosts.de");
 	        	
-	        	generateEvents();
-	        	/*
+	        	//generateEvents();
+	        	
 	        	Task myTask = new Task();
 
 	        	myTask.setName("Name1");
@@ -143,7 +150,7 @@ public class ActivityBuildPlan extends Activity
 	        	Iterator<Task> it = myList.iterator();
 	        	printTask(it.next());
 	        	printTask(it.next());
-	        */
+	        
 	            // Tell the user about what we did.
 	            Toast.makeText(ActivityBuildPlan.this, "done.",
 	                    Toast.LENGTH_LONG).show();
