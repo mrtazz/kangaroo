@@ -25,6 +25,8 @@ import com.kangaroo.task.TaskConstraintPOI;
  */
 public class ActivityEditTask extends Activity {
 	
+	  private final int label_length = 90;
+	  private final int content_length = 200;
 	
 	  @Override
 	  public void onCreate(Bundle savedInstanceState)
@@ -53,10 +55,11 @@ public class ActivityEditTask extends Activity {
 				  ll_amenity.setOrientation(0);
 				  TextView tv_label = new TextView(this);
 				  tv_label.setText("Amenity: ");
-				  tv_label.setWidth(90);
+				  tv_label.setWidth(label_length);
 				  ll_amenity.addView(tv_label);
 				  EditText ev_content = new EditText(this);
 				  ev_content.setText(ta.getText());
+				  ev_content.setWidth(content_length);
 				  ll_amenity.addView(ev_content);
 				  main.addView(ll_amenity);				  
 				}
@@ -70,10 +73,10 @@ public class ActivityEditTask extends Activity {
 					ll_end.setOrientation(0);
 					TextView tv_s = new TextView(this);
 					tv_s.setText("Starttime:");
-					tv_s.setWidth(90);
+					tv_s.setWidth(label_length);
 					TextView tv_e = new TextView(this);
 					tv_e.setText("Endtime:");
-					tv_e.setWidth(90);
+					tv_e.setWidth(label_length);
 					ll_start.addView(tv_s);
 					ll_end.addView(tv_e);
 					TaskConstraintDayTime ta = (TaskConstraintDayTime)tc;
