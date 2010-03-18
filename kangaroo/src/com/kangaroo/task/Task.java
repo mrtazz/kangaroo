@@ -47,8 +47,7 @@ public class Task
 		constraintSet = new HashSet<TaskConstraintInterface>();
 	}
 	
-	
-	public static Task deserialize(String task, String id)
+	public static Task deserialize(String task)
 	{
 		Gson serializer = new Gson();
 		Task myTask = serializer.fromJson(task, Task.class);
@@ -77,6 +76,12 @@ public class Task
 				myTask.addConstraint(serializer.fromJson(constraints[i], TaskConstraintPendingTasks.class));
 			}
 		}
+		return myTask;
+	}
+	
+	public static Task deserialize(String task, String id)
+	{
+		Task myTask = deserialize(task);
 		myTask.setId(id);
 		return myTask;
 	}
