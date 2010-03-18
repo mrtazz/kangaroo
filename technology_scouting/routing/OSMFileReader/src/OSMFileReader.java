@@ -297,6 +297,7 @@ public class OSMFileReader {
 	 */
 	public static void main(String[] args) {	
 		
+			
 		testActiveDayPlan();
 		
 		//testTaskPriorityComparator();		

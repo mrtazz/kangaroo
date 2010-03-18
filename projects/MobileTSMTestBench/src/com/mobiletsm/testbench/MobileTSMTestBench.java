@@ -5,10 +5,19 @@ import java.util.Date;
 import java.util.List;
 
 import com.kangaroo.ActiveDayPlan;
+import com.kangaroo.DayPlan;
 import com.kangaroo.DayPlanConsistency;
-import com.kangaroo.MemoryCalendarAccessAdapter;
+import com.kangaroo.DayPlanOptimizer;
+import com.kangaroo.GreedyTaskInsertionOptimizer;
 import com.kangaroo.calendar.CalendarAccessAdapter;
+import com.kangaroo.calendar.CalendarAccessAdapterMemory;
 import com.kangaroo.calendar.CalendarEvent;
+import com.kangaroo.task.Task;
+import com.kangaroo.task.TaskConstraintDate;
+import com.kangaroo.task.TaskConstraintDayTime;
+import com.kangaroo.task.TaskConstraintDuration;
+import com.kangaroo.task.TaskConstraintPOI;
+import com.mobiletsm.osm.data.searching.POICode;
 import com.mobiletsm.routing.AllStreetVehicle;
 import com.mobiletsm.routing.MobileTSMRoutingEngine;
 import com.mobiletsm.routing.Place;
@@ -40,8 +49,10 @@ public class MobileTSMTestBench extends Activity {
 	
 	
 	Place place1 = null;
-	Place place2 = null;
+	Place place2 = null;	
+	
 	Vehicle vehicle = null;
+	Place home = null;
 	Date now = null;
 	
 	
@@ -61,21 +72,23 @@ public class MobileTSMTestBench extends Activity {
         
         /* create and add some events */
         
-        CalendarAccessAdapter adapter = new MemoryCalendarAccessAdapter();
-        adapter.setContext(getApplicationContext());
+        CalendarAccessAdapter adapter = new CalendarAccessAdapterMemory();
         activeDayPlan = new ActiveDayPlan();
         activeDayPlan.setCalendarAccessAdapter(adapter);
         
         now = new Date(2010 - 1900, 3, 10, 19, 00);
+        home = new Place(48.0064241, 7.8521991);
+        vehicle = new AllStreetVehicle(50.0);
+        
         
         CalendarEvent event1 = new CalendarEvent();
         event1.setStartDate(new Date(2010 - 1900, 3, 10, 19, 30));
         event1.setEndDate(new Date(2010 - 1900, 3, 10, 20, 00));
-        event1.setLocationLatitude(48.0064241);
-        event1.setLocationLongitude(7.8521991);
+        event1.setLocationLatitude(48.00);
+        event1.setLocationLongitude(7.852);
 
         CalendarEvent event2 = new CalendarEvent();
-        event2.setStartDate(new Date(2010 - 1900, 3, 10, 20, 10));
+        event2.setStartDate(new Date(2010 - 1900, 3, 10, 20, 45));
         event2.setEndDate(new Date(2010 - 1900, 3, 10, 21, 00));
         event2.setLocationLatitude(48.000);
         event2.setLocationLongitude(7.852);
@@ -87,7 +100,7 @@ public class MobileTSMTestBench extends Activity {
         event3.setLocationLongitude(7.852);
 
         CalendarEvent event4 = new CalendarEvent();
-        event4.setStartDate(new Date(2010 - 1900, 3, 10, 21, 30));
+        event4.setStartDate(new Date(2010 - 1900, 3, 10, 21, 45));
         event4.setEndDate(new Date(2010 - 1900, 3, 10, 21, 50));
         event4.setLocationLatitude(47.987);
         event4.setLocationLongitude(7.852);        
@@ -102,16 +115,67 @@ public class MobileTSMTestBench extends Activity {
         event6.setStartDate(new Date(2010 - 1900, 3, 10, 23, 0));
         event6.setEndDate(new Date(2010 - 1900, 3, 10, 23, 40));
         event6.setLocationLatitude(48.983);
-        event6.setLocationLongitude(7.852);         
+        event6.setLocationLongitude(7.852);  
         
-        List<CalendarEvent> events = activeDayPlan.getEvents();
-        events.add(event1);
-        events.add(event2);
-        events.add(event3);
-        events.add(event4);
-        events.add(event5);
-        events.add(event6);
-        activeDayPlan.setEvents(events);
+        CalendarEvent event7 = new CalendarEvent();
+        event7.setStartDate(new Date(2010 - 1900, 3, 10, 23, 45));
+        event7.setEndDate(new Date(2010 - 1900, 3, 10, 23, 50));
+        event7.setLocationLatitude(47.983);
+        event7.setLocationLongitude(7.852); 
+        
+        activeDayPlan.addEvent(event1);
+        activeDayPlan.addEvent(event2);
+        activeDayPlan.addEvent(event3);
+        activeDayPlan.addEvent(event4);
+        activeDayPlan.addEvent(event5);
+        activeDayPlan.addEvent(event6);
+        activeDayPlan.addEvent(event7);        
+                
+        
+        /* add and create some tasks */
+        
+		Task task1 = new Task();
+		task1.setName("Schnell was essen");
+		task1.addConstraint(new TaskConstraintDuration(5));
+		task1.addConstraint(new TaskConstraintPOI(new POICode(POICode.AMENITY_FAST_FOOD)));
+		task1.addConstraint(new TaskConstraintDayTime(new Date(0, 0, 0, 19, 00), new Date(0, 0, 0, 20, 01)));
+		
+		Task task2 = new Task();
+		task2.setName("Frisšr");
+		task2.addConstraint(new TaskConstraintDuration(3));
+		task2.addConstraint(new TaskConstraintPOI(new POICode(POICode.SHOP_HAIRDRESSER)));
+		task2.addConstraint(new TaskConstraintDayTime(18, 00, 23, 00));
+		
+		Task task3 = new Task();
+		task3.setName("Oma anrufen");
+		task3.addConstraint(new TaskConstraintDuration(3));
+		task3.addConstraint(new TaskConstraintDate(new Date(2010 - 1900, 5, 2)));
+		
+		Task task4 = new Task();
+		task4.setName("Brštchen kaufen");
+		task4.addConstraint(new TaskConstraintDuration(3));
+		task4.addConstraint(new TaskConstraintPOI(new POICode(POICode.SHOP_BAKERY)));		
+		//task4.addConstraint(new TaskConstraintDayTime(18, 00, 19, 10));
+		
+		Task task5 = new Task();
+		task5.setName("Blumen kaufen");
+		task5.addConstraint(new TaskConstraintDuration(30));
+		task5.addConstraint(new TaskConstraintPOI(new POICode(POICode.SHOP_FLORIST)));	
+		task5.addConstraint(new TaskConstraintDayTime(18, 00, 23, 00));
+
+		Task task6 = new Task();
+		task6.setName("Buch kaufen");
+		task6.addConstraint(new TaskConstraintDuration(30));
+		task6.addConstraint(new TaskConstraintPOI(new POICode(POICode.SHOP_BOOKS)));	
+		task6.addConstraint(new TaskConstraintDayTime(18, 00, 23, 00));
+		
+		
+		activeDayPlan.addTask(task1);
+		activeDayPlan.addTask(task2);
+		activeDayPlan.addTask(task3);
+		activeDayPlan.addTask(task4);        
+		activeDayPlan.addTask(task5);		
+		activeDayPlan.addTask(task6);		
         
         
         doStuffButton.setOnClickListener(new OnClickListener() {			
@@ -127,14 +191,15 @@ public class MobileTSMTestBench extends Activity {
 				if (engine.initialized()) {
 			        activeDayPlan.setRoutingEngine(engine);
 			        
-			        System.out.println("# events in calendar = " + activeDayPlan.getEvents().size());			        
+			        //System.out.println("---> " + activeDayPlan.toString());
+					//System.out.println("---> " + activeDayPlan.checkConsistency(vehicle, now).toString());
 					
-			        DayPlanConsistency consistency = 
-						activeDayPlan.checkConsistency(new AllStreetVehicle(5.0), now);
-					if (consistency != null) {
-						System.out.println("consistency = " + consistency.toString());					
-						outputText.setText(consistency.toString());
-					}
+					DayPlanOptimizer optimizer = new GreedyTaskInsertionOptimizer();
+					activeDayPlan.setOptimizer(optimizer);
+					DayPlan optimizedDayPlan = activeDayPlan.optimize(now, home, vehicle);
+
+					System.out.println("---> " + optimizedDayPlan.toString());
+					//System.out.println("---> " + optimizedDayPlan.checkConsistency(vehicle, now).toString());
 				}
 				
 				/*
