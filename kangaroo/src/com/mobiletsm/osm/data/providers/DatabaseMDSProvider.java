@@ -1,5 +1,6 @@
 package com.mobiletsm.osm.data.providers;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -323,17 +324,17 @@ public class DatabaseMDSProvider extends MobileDataSetProvider {
 				}
 				if (minDistNode instanceof MobileNode) {
 					place.setNearestOsmStreetNodeId(((MobileNode)minDistNode).getNearestStreetNodeId());
-					/*
+					
+					/* get names of street(s) near this Point Of Interest */
 					List<Long> wayIds = adapter.loadCompleteWaysForNodes(place.getNearestOsmStreetNodeId(), -1);
 					List<Way> ways = new ArrayList<Way>();
 					adapter.loadReducedWays(wayIds);
 					for (Long wayId : wayIds) {
 						ways.add(reducedWays.get(wayId));
-						System.out.println("---> " + place.getName() + " at way: " + reducedWays.get(wayId) + 
-								", TAGS = " + OsmHelper.serializeTags(reducedWays.get(wayId).getTags()));
-					}
-					System.out.println("===> " + OsmHelper.getWayNameDescription(ways));
-					*/
+					}					
+					String locationName = OsmHelper.getWayNameDescription(ways);
+					place.setLocationName(locationName);
+					
 				}				
 				return place;
 			} else {

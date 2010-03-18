@@ -50,6 +50,12 @@ public class Place {
 	
 	
 	/**
+	 * 
+	 */
+	protected String locationName = null;
+	
+	
+	/**
 	 * latitude 
 	 */
 	protected double latitude;
@@ -238,13 +244,38 @@ public class Place {
 	}
 	
 	
+	/**
+	 * @return the locationName
+	 */
+	public String getLocationName() {
+		return locationName;
+	}
+
+
+	/**
+	 * @param locationName the locationName to set
+	 */
+	public void setLocationName(String locationName) {
+		this.locationName = locationName;
+	}
+
+
 	@Override
 	public String toString() {
-		if (name != null) {
-			return String.format(Locale.US, "%s @ (%.7f, %.7f)", name, latitude, longitude);
-		} else {
-			return String.format(Locale.US, "Place @ (%.7f, %.7f)", latitude, longitude);
+		String name = getName();
+		String locationName = getLocationName();
+		String coordinates = String.format(Locale.US, "(%.7f, %.7f)", latitude, longitude);
+		
+		if (name == null) {
+			name = "Place";
 		}
+		if (locationName == null) {
+			locationName = coordinates;
+		} else {
+			locationName = locationName + " " + coordinates;
+		}
+		
+		return name + " @ " + locationName;
 	}
 	
 	
@@ -318,6 +349,24 @@ public class Place {
 	}
 
 
+	
+	public boolean equalsCoordinates(Place place) {
+		int this_lat = getHashForDouble(this.getLatitude());
+		int this_lon = getHashForDouble(this.getLongitude());
+		int place_lat = getHashForDouble(place.getLatitude());
+		int place_lon = getHashForDouble(place.getLongitude());
+		
+		/* consider places with same hash for latitude 
+		 * and longitude as equal */
+		if (this_lat == place_lat && this_lon == place_lon) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	
+	
 	/* re-implementation of equals() and hashCode() to guarantee
 	 * correct behavior in HashTables and HashMaps  */
 	
@@ -354,16 +403,7 @@ public class Place {
 				result = true;
 			}
 		} else {
-			int this_lat = getHashForDouble(this.getLatitude());
-			int this_lon = getHashForDouble(this.getLongitude());
-			int place_lat = getHashForDouble(this.getLatitude());
-			int place_lon = getHashForDouble(this.getLongitude());
-			
-			/* consider places with same hash for latitude 
-			 * and longitude as equal */
-			if (this_lat == place_lat && this_lon == place_lon) {
-				result = true;
-			}
+			result = equalsCoordinates(place);
 		}
 		
 		return result;

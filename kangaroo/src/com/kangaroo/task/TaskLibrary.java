@@ -35,9 +35,9 @@ public class TaskLibrary
 		ArrayList<Task> myTasks = new ArrayList<Task>();
 		for(int i=0; i<myEvents.length; i++)
 		{
-			myTasks.add(Task.deserialize(myEvents[i].getDescription()));
+			myTasks.add(Task.deserialize(myEvents[i].getDescription(), myEvents[i].getId()));
 		}
-		
+
 		return myTasks;
 	}
 	
@@ -73,7 +73,14 @@ public class TaskLibrary
 	//delete Task
 	public int deleteTask(Task myTask)
 	{
-		cl.deleteEventFromBackend(getEventForTask(myTask));
+		if(myTask.getId().equalsIgnoreCase(""))
+		{
+			//no id, no delete
+		}
+		else
+		{
+			cl.deleteEventFromBackend(getEventForTask(myTask));
+		}
 		return 0;
 	}
 	

@@ -1201,7 +1201,7 @@ public class OsmHelper {
 			if (names.size() == 1) {
 				return names.get(0);
 			} else if (names.size() >= 2) {
-				return names.get(0) + " Ecke " + names.get(1);
+				return names.get(0) + ", Ecke " + names.get(1);
 			}
 		}
 		return null;

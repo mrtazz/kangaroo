@@ -48,7 +48,7 @@ public class Task
 	}
 	
 	
-	public static Task deserialize(String task)
+	public static Task deserialize(String task, String id)
 	{
 		Gson serializer = new Gson();
 		Task myTask = serializer.fromJson(task, Task.class);
@@ -77,7 +77,7 @@ public class Task
 				myTask.addConstraint(serializer.fromJson(constraints[i], TaskConstraintPendingTasks.class));
 			}
 		}
-		
+		myTask.setId(id);
 		return myTask;
 	}
 	
@@ -251,6 +251,7 @@ public class Task
 	public String toString() {
 		if (name != null) {
 			return "Task: {name = " + name + "}";
+			//return name + "\n---\n"+this.serialize();
 		}
 		return super.toString();
 	}
