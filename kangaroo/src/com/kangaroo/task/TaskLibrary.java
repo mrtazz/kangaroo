@@ -56,16 +56,16 @@ public class TaskLibrary
 	public int addTask(Task myTask)
 	{
 		CalendarEvent temp = getEventForTask(myTask);
-		if(temp.getId().equalsIgnoreCase(""))
-		{
+		//if(temp.getId().equalsIgnoreCase(""))
+		//{
 			//no id set
 			cl.insertEventToBackend(temp);
-		}
-		else
-		{
+		//}
+		//else
+		//{
 			//id is set
-			cl.updateEventInBackend(temp);
-		}
+		//	cl.updateEventInBackend(temp);
+		//}
 
 		return 0;
 	}
