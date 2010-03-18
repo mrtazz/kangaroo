@@ -83,6 +83,8 @@ public class ActivityEditTask extends Activity {
 					{
 						TimePicker tp_start = new TimePicker(this);
 						TimePicker tp_end = new TimePicker(this);
+						tp_start.setIs24HourView(true);
+						tp_end.setIs24HourView(true);
 						tp_start.setCurrentHour(start.getHours());
 						tp_start.setCurrentMinute(start.getMinutes());
 						tp_end.setCurrentHour(end.getHours());
@@ -95,6 +97,7 @@ public class ActivityEditTask extends Activity {
 					else if (start != null && end == null)
 					{
 						TimePicker tp_start = new TimePicker(this);
+						tp_start.setIs24HourView(true);
 						tp_start.setCurrentHour(start.getHours());
 						tp_start.setCurrentMinute(start.getMinutes());
 						ll_start.addView(tp_start);			
@@ -103,6 +106,7 @@ public class ActivityEditTask extends Activity {
 					else if (start == null && end != null)
 					{
 						TimePicker tp_end = new TimePicker(this);
+						tp_end.setIs24HourView(true);
 						tp_end.setCurrentHour(end.getHours());
 						tp_end.setCurrentMinute(end.getMinutes());
 						ll_end.addView(tp_end);
