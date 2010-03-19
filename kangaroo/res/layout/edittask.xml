@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/mainedittasklayout"
   android:layout_width="wrap_content"
   android:layout_height="wrap_content"
   android:orientation="vertical">
@@ -12,7 +13,7 @@
 	<TextView
 		android:text="Title:"
 		android:id="@+id/tasktitletextview"
-		android:layout_width="100px"
+    	android:layout_width="90px"
 		android:layout_height="wrap_content">
 	</TextView>
     <EditText
@@ -30,7 +31,7 @@
 	<TextView
 		android:text="Description:"
 		android:id="@+id/taskdescriptiontextview"
-		android:layout_width="100px"
+    	android:layout_width="90px"
 		android:layout_height="wrap_content">
 	</TextView>
     <EditText

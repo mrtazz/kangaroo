@@ -42,6 +42,7 @@ public class ActivityTaskList extends ExpandableListActivity {
 	private SimpleExpandableListAdapter la;
 	private com.kangaroo.ActiveDayPlan dp;
 	private ArrayList<Task> taskslist;
+	private long actual_task;
 	private String[] childitems = new String[]{"tasklocation", "taskdescription",
 												"taskdate", "taskdaytime", 
 												"taskpending", "taskpoi"};
@@ -64,8 +65,7 @@ public class ActivityTaskList extends ExpandableListActivity {
 	        CalendarAccessAdapter caa = new CalendarAccessAdapterAndroid(this);
 		 	caa.setContext(getApplicationContext());
 		 	dp.setCalendarAccessAdapter(caa);
-	        
-	        //setUpTasks();
+
 	        reload();
 	        
 	  }
@@ -187,33 +187,6 @@ public class ActivityTaskList extends ExpandableListActivity {
 	 }
 	 
 	 
-	 private void setUpTasks()
-	 {
-		 	taskslist = new ArrayList<Task>();
-		 	Task myTask1 = new Task();
-        	myTask1.setName("Essen kaufen");
-        	myTask1.setDescription("essen halt");
-        	myTask1.addConstraint(new TaskConstraintLocation(new Place(2,3)));
-        	myTask1.addConstraint(new TaskConstraintPOI(new POICode(POICode.AMENITY_ARCHITECT_OFFICE)));
-        	myTask1.addConstraint(new TaskConstraintDate(new Date(110,2,17)));
-        	Task myTask2 = new Task();
-        	myTask2.setName("Geld holen");
-        	myTask2.setDescription("fuer mehr essen");
-        	myTask2.addConstraint(new TaskConstraintLocation(new Place(3,4)));
-        	myTask2.addConstraint(new TaskConstraintPOI(new POICode(POICode.AMENITY_ARTS_CENTRE)));
-        	myTask2.addConstraint(new TaskConstraintDate(new Date(110,2,12)));
-        	Task myTask3 = new Task();
-        	myTask3.setName("Kleider kaufen");
-        	myTask3.setDescription("alte kleider zu klein");
-        	myTask3.addConstraint(new TaskConstraintLocation(new Place(4,5)));
-        	myTask3.addConstraint(new TaskConstraintPOI(new POICode(POICode.AMENITY_ATM)));
-        	myTask3.addConstraint(new TaskConstraintDate(new Date(110,2,23)));
-	        
-	        taskslist.add(myTask1);
-	        taskslist.add(myTask2);
-	        taskslist.add(myTask3);
-	 }
-	 
 	 // context menu methods
 	 /* (non-Javadoc)
 	 * @see android.app.Activity#onCreateContextMenu(android.view.ContextMenu, android.view.View, android.view.ContextMenu.ContextMenuInfo)
@@ -230,6 +203,7 @@ public class ActivityTaskList extends ExpandableListActivity {
 		      return;
 		  }
 		  // add menu items
+		  actual_task = info.id;
 		  menu.add(0, MENU_DELETE, 0, R.string.delete);
 		  menu.add(0, MENU_EDIT, 0, R.string.edit_task);
 	  }
@@ -246,22 +220,48 @@ public class ActivityTaskList extends ExpandableListActivity {
 	   */
 		private boolean applyMenuChoice(MenuItem item) {
 			  Toast toast;
+			  Boolean ret = false;
 			  switch (item.getItemId()) {
 			    case MENU_DELETE:
+			    	Task t = taskslist.get((int)actual_task);
+			    	String s = t.getName();
+			    	taskslist.remove(t);
+			    	dp.setTasks(taskslist);
 			    	
-				  toast = Toast.makeText(this,
-				  					     "Menu item DELETE clicked",
-					  				     Toast.LENGTH_SHORT);
-			  	  toast.show();
-			      return true;
+			    	toast = Toast.makeText(this,
+				  					       "Task " + s + " deleted.",
+					  				       Toast.LENGTH_SHORT);
+			  	  	toast.show();
+			  	  	ret = true;
+			  	  	reload();
+			  	  	break;
 			    case MENU_EDIT:
 				  // show the map
+			      Task tt = taskslist.get((int)actual_task);
+			      String ss = tt.serialize();
 				  Intent intent = new Intent(this, ActivityEditTask.class);
+				  intent.putExtra("task", ss);
 				  intent.addCategory(Intent.CATEGORY_DEFAULT);
 				  startActivityForResult(intent, 1);
 				  
-			      return true;
+			      ret = true;
+			      break;
 			  }
-			  return false;
+			  return ret;
 			}
+		
+		@Override
+		  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+				if (data != null) {
+					Task t = Task.deserialize((String)data.getExtras().get("task"));
+					taskslist.remove((int)actual_task);
+					taskslist.add(t);
+					dp.setTasks(taskslist);
+				} else {
+					Toast.makeText(this, "Did not get task back! resultCode = " + resultCode, Toast.LENGTH_SHORT).show();
+				}
+				reload();
+			}
+		
+		
 }
