@@ -255,7 +255,7 @@ public class ActivityTaskList extends ExpandableListActivity {
 				if (data != null) {
 					Task t = Task.deserialize((String)data.getExtras().get("task"));
 					taskslist.remove((int)actual_task);
-					taskslist.add(t);
+					taskslist.add((int)actual_task, t);
 					dp.setTasks(taskslist);
 				} else {
 					Toast.makeText(this, "Did not get task back! resultCode = " + resultCode, Toast.LENGTH_SHORT).show();

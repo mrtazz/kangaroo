@@ -5,24 +5,29 @@ package com.kangaroo.gui;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.android.kangaroo.R;
 import com.kangaroo.task.Task;
+import com.kangaroo.task.TaskConstraintDate;
 import com.kangaroo.task.TaskConstraintDayTime;
 import com.kangaroo.task.TaskConstraintInterface;
 import com.kangaroo.task.TaskConstraintPOI;
+import com.mobiletsm.osm.data.searching.POICode;
 
 /**
  * @author mrtazz
@@ -46,7 +51,7 @@ public class ActivityEditTask extends Activity {
 	        generator = new Random();
 	        
 	        updateResultData();
-	        
+	  
 	        // set title view
 	        EditText edit_title = (EditText)findViewById(R.id.edittitle);
 	        edit_title.setText(t.getName());
@@ -74,12 +79,16 @@ public class ActivityEditTask extends Activity {
 				  tv_label.setText("Amenity: ");
 				  tv_label.setWidth(label_length);
 				  ll_amenity.addView(tv_label);
-				  EditText ev_content = new EditText(this);
-				  ev_content.setWidth(content_length);
-				  ev_content.setText(ta.getText().split("#")[1]);
-				  ev_content.setId(generator.nextInt());
-				  ll_amenity.addView(ev_content);
-				  active_views.add(buildEventMap(String.valueOf(ev_content.getId()), "edittext", "amenity"));
+				  Spinner amenity_spinner = new Spinner(this);
+				  amenity_spinner.setId(generator.nextInt(Integer.MAX_VALUE));
+				  List<String> amenities = new ArrayList<String>(POICode.getPOICodeMap().keySet());
+				  int pos = amenities.indexOf(ta.getText());
+				  ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, amenities);
+				  adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); 
+				  amenity_spinner.setAdapter(adapter);
+				  amenity_spinner.setSelection(pos);
+				  ll_amenity.addView(amenity_spinner);
+				  active_views.add(buildEventMap(String.valueOf(amenity_spinner.getId()), "spinner", "amenity"));
 				  
 				  main.addView(ll_amenity);				  
 				}
@@ -114,48 +123,76 @@ public class ActivityEditTask extends Activity {
 						tp_end.setCurrentMinute(end.getMinutes());
 						ll_start.addView(tp_start);
 						ll_end.addView(tp_end);
-						tp_start.setId(generator.nextInt());
-						tp_end.setId(generator.nextInt());
+						tp_start.setId(generator.nextInt(Integer.MAX_VALUE));
+						tp_end.setId(generator.nextInt(Integer.MAX_VALUE));
 						active_views.add(buildEventMap(String.valueOf(tp_start.getId()), "timepicker", "starttime"));
 						active_views.add(buildEventMap(String.valueOf(tp_end.getId()), "timepicker", "endtime"));
 						main.addView(ll_start);
 						main.addView(ll_end);
 					}
-					else if (start != null && end == null)
+					
+				else if (type.equals("date"))
+				{
+					LinearLayout ll_startdate = new LinearLayout(this);
+					LinearLayout ll_enddate = new LinearLayout(this);
+					ll_start.setVisibility(1);
+					ll_end.setVisibility(1);
+					ll_start.setOrientation(0);
+					ll_end.setOrientation(0);
+					TextView tv_start = new TextView(this);
+					tv_start.setText("Starttime:");
+					tv_start.setWidth(label_length);
+					TextView tv_end = new TextView(this);
+					tv_end.setText("Endtime:");
+					tv_end.setWidth(label_length);
+					ll_startdate.addView(tv_start);
+					ll_enddate.addView(tv_end);
+					// get constraint data
+					TaskConstraintDate td = (TaskConstraintDate)tc;
+					Date startdate = td.getStart();
+					Date enddate = td.getEnd();
+					if (startdate != null && enddate != null)
 					{
-						TimePicker tp_start = new TimePicker(this);
-						tp_start.setIs24HourView(true);
-						tp_start.setCurrentHour(start.getHours());
-						tp_start.setCurrentMinute(start.getMinutes());
-						tp_start.setId(generator.nextInt());
-						ll_start.addView(tp_start);
-						active_views.add(buildEventMap(String.valueOf(tp_start.getId()), "timepicker", "starttime"));			
-						main.addView(ll_start);
+						DatePicker dp_start = new DatePicker(this);
+						dp_start.updateDate(dp_start.getYear(), dp_start.getMonth(), dp_start.getDayOfMonth());
+						dp_start.setId(generator.nextInt(Integer.MAX_VALUE));
+						ll_startdate.addView(dp_start);
+						main.addView(ll_startdate);
+						
+						DatePicker dp_end = new DatePicker(this);
+						dp_end.updateDate(dp_end.getYear(), dp_end.getMonth(), dp_end.getDayOfMonth());
+						dp_end.setId(generator.nextInt(Integer.MAX_VALUE));
+						ll_enddate.addView(dp_end);
+						main.addView(ll_enddate);
+						
 					}
-					else if (start == null && end != null)
-					{
-						TimePicker tp_end = new TimePicker(this);
-						tp_end.setIs24HourView(true);
-						tp_end.setCurrentHour(end.getHours());
-						tp_end.setCurrentMinute(end.getMinutes());
-						tp_end.setId(generator.nextInt());
-						ll_end.addView(tp_end);
-						active_views.add(buildEventMap(String.valueOf(tp_end.getId()), "timepicker", "endtime"));
-						main.addView(ll_end);
-					}
-					else
+					else if (startdate != null && enddate == null)
 					{
 						
 					}
+					else if (startdate == null && enddate != null)
+					{
+						
+					}
+				
 				}
-			}
-	        
+			}	
+		 }    
 	  }
 	  
 	  
 	  private void updateResultData()
 	  {
+		    // generic view which gets casted to
+		    // specific views
 		  	View v;
+		  	// start and end time of possible daytime constraint
+		  	Date start_time = null;
+		  	Date end_time = null;
+		  	if (active_views.size() > 0)
+		  	{
+		  		t = new Task();
+		  	}
 		  	for (String[] s : active_views)
 		  	{
 		  		if (s[1].equals("edittext"))
@@ -169,17 +206,46 @@ public class ActivityEditTask extends Activity {
 		  			{
 		  				t.setName(((EditText)v).getText().toString());
 		  			}
-		  			else
-		  			{
-		  				
-		  			}
 		  		}
+		  		else if(s[1].equals("spinner"))
+		  		{
+		  			v = (Spinner)findViewById(Integer.valueOf(s[0]));
+		  			if (s[2].equals("amenity"))
+		  			{	
+		  				String as = (String)((Spinner)v).getSelectedItem();
+		  				POICode id = new POICode(as);
+		  				TaskConstraintPOI tcp = new TaskConstraintPOI(id);
+		  				t.addConstraint(tcp);
+		  				
+		  			}	
+		  		}
+		  		else if(s[1].equals("timepicker"))
+		  		{
+		  			v = (TimePicker)findViewById(Integer.valueOf(s[0]));
+		  			if (s[2].equals("starttime"))
+		  			{
+		  				start_time = new Date(0, 0, 0,
+		  									  ((TimePicker)v).getCurrentHour(),
+		  									  ((TimePicker)v).getCurrentMinute());
+		  			}
+		  			else if (s[2].equals("endtime"))
+		  			{
+		  				end_time = new Date(0, 0, 0,
+								  			((TimePicker)v).getCurrentHour(),
+								  			((TimePicker)v).getCurrentMinute());		  				
+		  			}
+		  			
+		  		}
+		    }
+		  	
+		  	if (start_time != null && end_time != null)
+		  	{
+		  		TaskConstraintDayTime tcd = new TaskConstraintDayTime(start_time, end_time);
+		  		t.addConstraint(tcd);
 		  	}
-		  
 		    Intent resultIntent = new Intent("com.kangaroo.EDITTASK_RESULT");
 			resultIntent.putExtra("task", t.serialize());
 			setResult(RESULT_OK, resultIntent);
-		  
 	  }
 	  
 	  /* (non-Javadoc)
