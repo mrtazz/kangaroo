@@ -8,6 +8,7 @@ import java.util.Vector;
 import com.android.kangaroo.R;
 import com.kangaroo.gui.UserNotification;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -40,7 +41,7 @@ public class UserNotification
 	    	
 	    }
 	    
-	    public void updateNotification(Integer id, String title, String textMessage, boolean vibrate_sound, Class okKlickActivity)
+	    public void updateNotification(Integer id, String title, String textMessage, boolean vibrate_sound, Class<Activity> okKlickActivity)
 	    {
 	    	Notification notification = new Notification(R.drawable.stat_happy, textMessage, System.currentTimeMillis());
 
@@ -62,7 +63,7 @@ public class UserNotification
 	    /**
 	     * Show a notification while this service is running.
 	     */
-	    public int showNotification(String title, String textMessage, boolean vibrate_sound, Class okKlickActivity) 
+	    public int showNotification(String title, String textMessage, boolean vibrate_sound, Class<Activity> okKlickActivity) 
 	    {
 	        Notification notification = new Notification(R.drawable.stat_happy, textMessage, System.currentTimeMillis());
 
