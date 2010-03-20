@@ -130,20 +130,21 @@ public class ActivityEditTask extends Activity {
 						main.addView(ll_start);
 						main.addView(ll_end);
 					}
+				}
 					
 				else if (type.equals("date"))
 				{
 					LinearLayout ll_startdate = new LinearLayout(this);
 					LinearLayout ll_enddate = new LinearLayout(this);
-					ll_start.setVisibility(1);
-					ll_end.setVisibility(1);
-					ll_start.setOrientation(0);
-					ll_end.setOrientation(0);
+					ll_startdate.setVisibility(1);
+					ll_enddate.setVisibility(1);
+					ll_startdate.setOrientation(1);
+					ll_enddate.setOrientation(1);
 					TextView tv_start = new TextView(this);
-					tv_start.setText("Starttime:");
+					tv_start.setText("Startdate:");
 					tv_start.setWidth(label_length);
 					TextView tv_end = new TextView(this);
-					tv_end.setText("Endtime:");
+					tv_end.setText("Enddate:");
 					tv_end.setWidth(label_length);
 					ll_startdate.addView(tv_start);
 					ll_enddate.addView(tv_end);
@@ -154,28 +155,38 @@ public class ActivityEditTask extends Activity {
 					if (startdate != null && enddate != null)
 					{
 						DatePicker dp_start = new DatePicker(this);
-						dp_start.updateDate(dp_start.getYear(), dp_start.getMonth(), dp_start.getDayOfMonth());
+						dp_start.updateDate(startdate.getYear() + 1900, startdate.getMonth(), startdate.getDay());
 						dp_start.setId(generator.nextInt(Integer.MAX_VALUE));
+						active_views.add(buildEventMap(String.valueOf(dp_start.getId()), "datepicker", "startdate"));
 						ll_startdate.addView(dp_start);
 						main.addView(ll_startdate);
 						
 						DatePicker dp_end = new DatePicker(this);
-						dp_end.updateDate(dp_end.getYear(), dp_end.getMonth(), dp_end.getDayOfMonth());
+						dp_end.updateDate(enddate.getYear() + 1900, enddate.getMonth(), enddate.getDay());
 						dp_end.setId(generator.nextInt(Integer.MAX_VALUE));
+						active_views.add(buildEventMap(String.valueOf(dp_end.getId()), "datepicker", "enddate"));
 						ll_enddate.addView(dp_end);
 						main.addView(ll_enddate);
 						
 					}
 					else if (startdate != null && enddate == null)
 					{
-						
+						DatePicker dp_start = new DatePicker(this);
+						dp_start.updateDate(startdate.getYear() + 1900, startdate.getMonth(), startdate.getDay());
+						dp_start.setId(generator.nextInt(Integer.MAX_VALUE));
+						active_views.add(buildEventMap(String.valueOf(dp_start.getId()), "datepicker", "startdate"));
+						ll_startdate.addView(dp_start);
+						main.addView(ll_startdate);
 					}
 					else if (startdate == null && enddate != null)
-					{
-						
+					{						
+						DatePicker dp_end = new DatePicker(this);
+						dp_end.updateDate(enddate.getYear() + 1900, enddate.getMonth(), enddate.getDay());
+						dp_end.setId(generator.nextInt(Integer.MAX_VALUE));
+						active_views.add(buildEventMap(String.valueOf(dp_end.getId()), "datepicker", "enddate"));
+						ll_enddate.addView(dp_end);
+						main.addView(ll_enddate);
 					}
-				
-				}
 			}	
 		 }    
 	  }
@@ -189,6 +200,8 @@ public class ActivityEditTask extends Activity {
 		  	// start and end time of possible daytime constraint
 		  	Date start_time = null;
 		  	Date end_time = null;
+		  	Date start_date = null;
+		  	Date end_date = null;
 		  	if (active_views.size() > 0)
 		  	{
 		  		t = new Task();
@@ -236,12 +249,42 @@ public class ActivityEditTask extends Activity {
 		  			}
 		  			
 		  		}
+		  		else if(s[1].equals("datepicker"))
+		  		{
+		  			v = (DatePicker)findViewById(Integer.valueOf(s[0]));
+		  			if (s[2].equals("startdate"))
+		  			{
+		  				start_date = new Date(((DatePicker)v).getYear() - 1900,
+		  									  ((DatePicker)v).getMonth(),
+		  									  ((DatePicker)v).getDayOfMonth());
+		  			}
+		  			else if (s[2].equals("enddate"))
+		  			{
+		  				end_date = new Date(((DatePicker)v).getYear() - 1900,
+								  			((DatePicker)v).getMonth(),
+								  			((DatePicker)v).getDayOfMonth());
+		  			}
+		  			
+		  		}
 		    }
 		  	
 		  	if (start_time != null && end_time != null)
 		  	{
 		  		TaskConstraintDayTime tcd = new TaskConstraintDayTime(start_time, end_time);
 		  		t.addConstraint(tcd);
+		  	}
+		  	if (end_date != null)
+		  	{
+		  		if (start_date != null)
+		  		{
+		  			TaskConstraintDate tcd = new TaskConstraintDate(start_date, end_date);
+		  			t.addConstraint(tcd);
+		  		}
+		  		else
+		  		{
+		  			TaskConstraintDate tcd = new TaskConstraintDate(end_date);
+		  			t.addConstraint(tcd);
+		  		}
 		  	}
 		    Intent resultIntent = new Intent("com.kangaroo.EDITTASK_RESULT");
 			resultIntent.putExtra("task", t.serialize());
