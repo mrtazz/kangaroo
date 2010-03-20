@@ -75,6 +75,11 @@ public class Task
 			{
 				myTask.addConstraint(serializer.fromJson(constraints[i], TaskConstraintPendingTasks.class));
 			}
+			else if(constraintTypes[i].equalsIgnoreCase(TaskConstraintInterface.TYPE_DURATION))
+			{
+				myTask.addConstraint(serializer.fromJson(constraints[i], TaskConstraintDuration.class));
+			}
+			
 		}
 		return myTask;
 	}
@@ -153,6 +158,11 @@ public class Task
 			else if(type.equalsIgnoreCase("pending"))
 			{
 				TaskConstraintPendingTasks temp = (TaskConstraintPendingTasks)currentTask;
+				tempJSON = serializer.toJson(temp);
+			}
+			else if(type.equalsIgnoreCase(TaskConstraintInterface.TYPE_DURATION))
+			{
+				TaskConstraintDuration temp = (TaskConstraintDuration)currentTask;
 				tempJSON = serializer.toJson(temp);
 			}
 			serializedConstraintSet = serializedConstraintSet + "|" + tempJSON;
@@ -235,10 +245,13 @@ public class Task
 	}
 	
 	
-	public List<TaskConstraintInterface> getConstraintsOfType(String type) {
+	public List<TaskConstraintInterface> getConstraintsOfType(String type) 
+	{
 		List<TaskConstraintInterface> result = new ArrayList<TaskConstraintInterface>();
-		for (TaskConstraintInterface constraint : constraintSet) {
-			if (type.equalsIgnoreCase(constraint.getType())) {
+		for(TaskConstraintInterface constraint : constraintSet) 
+		{
+			if(type.equalsIgnoreCase(constraint.getType())) 
+			{
 				result.add(constraint);
 			}
 		}
@@ -246,15 +259,18 @@ public class Task
 	}
 	
 	
-	public boolean hasConstraintsOfType(String type) {
+	public boolean hasConstraintsOfType(String type) 
+	{
 		return (getConstraintsOfType(type).size() > 0);
 	}
 	
 	
 	
 	@Override
-	public String toString() {
-		if (name != null) {
+	public String toString() 
+	{
+		if(name != null) 
+		{
 			return "Task: {name = " + name + "}";
 			//return name + "\n---\n"+this.serialize();
 		}
