@@ -226,6 +226,10 @@ public class Task
 	 */
 	public TaskConstraintInterface[] getConstraints()
 	{
+		while(constraintSet.contains(null))
+		{
+			constraintSet.remove(null);
+		}
 		return constraintSet.toArray(new TaskConstraintInterface[0]);
 	}
 	
