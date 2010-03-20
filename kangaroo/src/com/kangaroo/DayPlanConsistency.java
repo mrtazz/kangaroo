@@ -24,7 +24,7 @@ public class DayPlanConsistency {
 	 * returns true if no conflicts are known, false otherwise
 	 * @return true if no conflicts are known, false otherwise
 	 */
-	public boolean hasConflicts() {
+	public boolean hasNoConflicts() {
 		return (conflicts.size() == 0);
 	}
 	
@@ -51,7 +51,7 @@ public class DayPlanConsistency {
 	
 	@Override
 	public String toString() {
-		if (hasConflicts()) {
+		if (hasNoConflicts()) {
 			return "DayPlanConsistency: {no conflicts}";
 		} else {
 			StringBuffer buf = new StringBuffer("DayPlanConsistency: {");
