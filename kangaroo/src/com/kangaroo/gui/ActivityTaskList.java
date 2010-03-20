@@ -161,7 +161,8 @@ public class ActivityTaskList extends ExpandableListActivity {
 				 else if (type.equals("daytime"))
 				 {
 					 TaskConstraintDayTime ta = (TaskConstraintDayTime)tc;
-					 m.put("taskdaytime", ta.getStartTime().toLocaleString() + "->" + ta.getEndTime().toLocaleString());						
+					 m.put("taskdaytime", pad2(ta.getStartTime().getHours()) + ":" + pad2(ta.getStartTime().getMinutes()) +
+							 	   "->" + pad2(ta.getEndTime().getHours()) + ":" + pad2(ta.getEndTime().getMinutes()));
 				 }
 				 else if (type.equals("location"))
 				 {
@@ -263,5 +264,15 @@ public class ActivityTaskList extends ExpandableListActivity {
 				reload();
 			}
 		
-		
+		/**
+		 * @brief method to pad time to a length of 2
+		 * @param i time as int
+		 * @return padded time as string
+		 */
+		private String pad2(int i)
+		{
+			String s = Integer.toString(i);
+			s= (s.length() < 2) ? ("0"+s) : (s);
+			return s;
+		}
 }
