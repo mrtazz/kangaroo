@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 
 import com.kangaroo.task.Task;

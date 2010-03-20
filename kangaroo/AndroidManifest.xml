@@ -22,7 +22,9 @@
 	        </intent-filter>
 		</activity>
 		
-		<activity 	android:icon="@drawable/icon" android:label="kangaroo" android:name="com.kangaroo.gui.ActivityBuildPlan"></activity>
+		<activity 	android:icon="@drawable/icon" android:label="kangaroo" android:name="com.kangaroo.gui.ActivityBuildPlan">
+
+		</activity>
 		
 		<activity android:name="com.kangaroo.gui.ActivityTask"></activity>
 		<activity android:name="com.kangaroo.gui.ActivityEditTask"></activity>
@@ -37,8 +39,7 @@
 		
 		<service android:name="com.kangaroo.system.ServiceCallLocation"></service>
 		<service android:name="com.kangaroo.system.ServiceCallTick"></service>
-		
-		
+		<service android:name="com.kangaroo.system.ServiceRecurringTask"></service>
 		
 		<receiver android:enabled="true" 
  				  android:exported="false"
@@ -48,7 +49,7 @@
 	    	</intent-filter>
 		</receiver>
 		
-		<service android:name="com.kangaroo.system.ServiceRecurringTask"></service>
+		
 
 	</application>
 	
