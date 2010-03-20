@@ -205,7 +205,12 @@ public class ActivityEditTask extends Activity {
 	  
 	  private void updateResultData()
 	  {
+		    // generic view which gets casted to
+		    // specific views
 		  	View v;
+		  	// start and end time of possible daytime constraint
+		  	Date start_time = null;
+		  	Date end_time = null;
 		  	if (active_views.size() > 0)
 		  	{
 		  		t = new Task();
@@ -236,8 +241,30 @@ public class ActivityEditTask extends Activity {
 		  				
 		  			}	
 		  		}
-		  }
-		  
+		  		else if(s[1].equals("timepicker"))
+		  		{
+		  			v = (TimePicker)findViewById(Integer.valueOf(s[0]));
+		  			if (s[2].equals("starttime"))
+		  			{
+		  				start_time = new Date(0, 0, 0,
+		  									  ((TimePicker)v).getCurrentHour(),
+		  									  ((TimePicker)v).getCurrentMinute());
+		  			}
+		  			else if (s[2].equals("endtime"))
+		  			{
+		  				end_time = new Date(0, 0, 0,
+								  			((TimePicker)v).getCurrentHour(),
+								  			((TimePicker)v).getCurrentMinute());		  				
+		  			}
+		  			
+		  		}
+		    }
+		  	
+		  	if (start_time != null && end_time != null)
+		  	{
+		  		TaskConstraintDayTime tcd = new TaskConstraintDayTime(start_time, end_time);
+		  		t.addConstraint(tcd);
+		  	}
 		    Intent resultIntent = new Intent("com.kangaroo.EDITTASK_RESULT");
 			resultIntent.putExtra("task", t.serialize());
 			setResult(RESULT_OK, resultIntent);
