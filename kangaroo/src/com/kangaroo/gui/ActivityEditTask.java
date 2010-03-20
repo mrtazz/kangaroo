@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,6 +21,7 @@ import android.widget.TimePicker;
 
 import com.android.kangaroo.R;
 import com.kangaroo.task.Task;
+import com.kangaroo.task.TaskConstraintDate;
 import com.kangaroo.task.TaskConstraintDayTime;
 import com.kangaroo.task.TaskConstraintInterface;
 import com.kangaroo.task.TaskConstraintPOI;
@@ -143,13 +145,54 @@ public class ActivityEditTask extends Activity {
 						active_views.add(buildEventMap(String.valueOf(tp_end.getId()), "timepicker", "endtime"));
 						main.addView(ll_end);
 					}
-					else
+					
+				else if (type.equals("date"))
+				{
+					LinearLayout ll_startdate = new LinearLayout(this);
+					LinearLayout ll_enddate = new LinearLayout(this);
+					ll_start.setVisibility(1);
+					ll_end.setVisibility(1);
+					ll_start.setOrientation(0);
+					ll_end.setOrientation(0);
+					TextView tv_start = new TextView(this);
+					tv_start.setText("Starttime:");
+					tv_start.setWidth(label_length);
+					TextView tv_end = new TextView(this);
+					tv_end.setText("Endtime:");
+					tv_end.setWidth(label_length);
+					ll_startdate.addView(tv_start);
+					ll_enddate.addView(tv_end);
+					// get constraint data
+					TaskConstraintDate td = (TaskConstraintDate)tc;
+					Date startdate = td.getStart();
+					Date enddate = td.getEnd();
+					if (startdate != null && enddate != null)
+					{
+						DatePicker dp_start = new DatePicker(this);
+						dp_start.updateDate(dp_start.getYear(), dp_start.getMonth(), dp_start.getDayOfMonth());
+						dp_start.setId(generator.nextInt(Integer.MAX_VALUE));
+						ll_startdate.addView(dp_start);
+						main.addView(ll_startdate);
+						
+						DatePicker dp_end = new DatePicker(this);
+						dp_end.updateDate(dp_end.getYear(), dp_end.getMonth(), dp_end.getDayOfMonth());
+						dp_end.setId(generator.nextInt(Integer.MAX_VALUE));
+						ll_enddate.addView(dp_end);
+						main.addView(ll_enddate);
+						
+					}
+					else if (startdate != null && enddate == null)
 					{
 						
 					}
+					else if (startdate == null && enddate != null)
+					{
+						
+					}
+				
 				}
-			}
-	        
+			}	
+		 }    
 	  }
 	  
 	  
