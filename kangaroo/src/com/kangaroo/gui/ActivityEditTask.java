@@ -130,28 +130,6 @@ public class ActivityEditTask extends Activity {
 						main.addView(ll_start);
 						main.addView(ll_end);
 					}
-					else if (start != null && end == null)
-					{
-						TimePicker tp_start = new TimePicker(this);
-						tp_start.setIs24HourView(true);
-						tp_start.setCurrentHour(start.getHours());
-						tp_start.setCurrentMinute(start.getMinutes());
-						tp_start.setId(generator.nextInt(Integer.MAX_VALUE));
-						ll_start.addView(tp_start);
-						active_views.add(buildEventMap(String.valueOf(tp_start.getId()), "timepicker", "starttime"));			
-						main.addView(ll_start);
-					}
-					else if (start == null && end != null)
-					{
-						TimePicker tp_end = new TimePicker(this);
-						tp_end.setIs24HourView(true);
-						tp_end.setCurrentHour(end.getHours());
-						tp_end.setCurrentMinute(end.getMinutes());
-						tp_end.setId(generator.nextInt(Integer.MAX_VALUE));
-						ll_end.addView(tp_end);
-						active_views.add(buildEventMap(String.valueOf(tp_end.getId()), "timepicker", "endtime"));
-						main.addView(ll_end);
-					}
 					
 				else if (type.equals("date"))
 				{
