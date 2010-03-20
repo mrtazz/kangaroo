@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -25,6 +27,7 @@ import com.android.kangaroo.R;
 import com.kangaroo.task.Task;
 import com.kangaroo.task.TaskConstraintDate;
 import com.kangaroo.task.TaskConstraintDayTime;
+import com.kangaroo.task.TaskConstraintDuration;
 import com.kangaroo.task.TaskConstraintInterface;
 import com.kangaroo.task.TaskConstraintPOI;
 import com.mobiletsm.osm.data.searching.POICode;
@@ -187,7 +190,26 @@ public class ActivityEditTask extends Activity {
 						ll_enddate.addView(dp_end);
 						main.addView(ll_enddate);
 					}
-			}	
+				}
+				else if (type.equals("duration"))
+				{
+					LinearLayout ll_duration = new LinearLayout(this);
+					ll_duration.setVisibility(1);
+					ll_duration.setOrientation(0);
+					TextView tv_duration = new TextView(this);
+					tv_duration.setText("Duration: ");
+					tv_duration.setWidth(label_length);
+					ll_duration.addView(tv_duration);
+					TaskConstraintDuration td = (TaskConstraintDuration)tc;
+					int duration = td.getDuration();
+					EditText ed_duration = new EditText(this);
+					ed_duration.setWidth(content_length);
+					ed_duration.setText(Integer.toString(duration));
+					ed_duration.setId(generator.nextInt(Integer.MAX_VALUE));
+					active_views.add(buildEventMap(String.valueOf(ed_duration.getId()), "edittext", "duration"));
+					ll_duration.addView(ed_duration);
+					main.addView(ll_duration);
+				}
 		 }    
 	  }
 	  
@@ -218,6 +240,20 @@ public class ActivityEditTask extends Activity {
 		  			else if(s[2].equals("title"))
 		  			{
 		  				t.setName(((EditText)v).getText().toString());
+		  			}
+		  			else if(s[2].equals("duration"))
+		  			{
+		  				String ss = ((EditText)v).getText().toString().trim();
+		  				Pattern p = Pattern.compile("\\d+");
+		  				Matcher m = p.matcher(ss);
+		  				Boolean found = m.find();
+		  				if (found == true)
+		  				{
+			  				TaskConstraintDuration tcd = null;
+		  					String res = m.group();
+		  					tcd = new TaskConstraintDuration(Integer.valueOf(res));
+		  					t.addConstraint(tcd);
+		  				}
 		  			}
 		  		}
 		  		else if(s[1].equals("spinner"))

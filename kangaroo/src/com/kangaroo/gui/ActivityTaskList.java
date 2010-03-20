@@ -25,12 +25,11 @@ import com.kangaroo.calendar.CalendarAccessAdapterAndroid;
 import com.kangaroo.task.Task;
 import com.kangaroo.task.TaskConstraintDate;
 import com.kangaroo.task.TaskConstraintDayTime;
+import com.kangaroo.task.TaskConstraintDuration;
 import com.kangaroo.task.TaskConstraintInterface;
 import com.kangaroo.task.TaskConstraintLocation;
 import com.kangaroo.task.TaskConstraintPOI;
 import com.kangaroo.task.TaskConstraintPendingTasks;
-import com.mobiletsm.osm.data.searching.POICode;
-import com.mobiletsm.routing.Place;
 
 /**
  * @author mrtazz
@@ -44,10 +43,10 @@ public class ActivityTaskList extends ExpandableListActivity {
 	private ArrayList<Task> taskslist;
 	private long actual_task;
 	private String[] childitems = new String[]{"tasklocation", "taskdescription",
-												"taskdate", "taskdaytime", 
+											   "taskduration", "taskdate", "taskdaytime", 
 												"taskpending", "taskpoi"};
 	private int[] childlayout = new int[]{R.id.tasklocation, R.id.taskdescription,
-									      R.id.taskdate, R.id.taskdaytime,
+										  R.id.taskduration, R.id.taskdate, R.id.taskdaytime,
 									      R.id.taskpending, R.id.taskpoi};
 
 	  // menu item ids
@@ -150,12 +149,12 @@ public class ActivityTaskList extends ExpandableListActivity {
 					 }
 					 else if (start == null)
 					 {
-						 m.put("taskdate", "Enddate: " + end.toLocaleString());
+						 m.put("taskdate", "Enddate: " + end.getDay() + "/" + end.getMonth() + "/" + end.getYear());
 					 }
 					 else
 					 {
-						 m.put("taskdate","Startdate: "+ start.toLocaleString() + 
-								 		  "Endate: " + end.toLocaleString());
+						 m.put("taskdate","Startdate: "+ start.getDay() + "/" + start.getMonth() + "/" + start.getYear() + 
+								 		  "Endate: " + end.getDay() + "/" + end.getMonth() + "/" + end.getYear());
 					 }
 				 }
 				 else if (type.equals("daytime"))
@@ -173,6 +172,11 @@ public class ActivityTaskList extends ExpandableListActivity {
 				 {
 					 TaskConstraintPendingTasks ta = (TaskConstraintPendingTasks)tc;
 					 m.put("taskpoi",ta.getTaskName());
+				 }
+				 else if(type.equals("duration"))
+				 {
+					 TaskConstraintDuration td = (TaskConstraintDuration)tc;
+					 m.put("taskduration", "Duration: " + td.getDuration());
 				 }
 				 else
 				 {
