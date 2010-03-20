@@ -41,7 +41,7 @@ public class UserNotification
 	    	
 	    }
 	    
-	    public void updateNotification(Integer id, String title, String textMessage, boolean vibrate_sound, Class<Activity> okKlickActivity)
+	    public void updateNotification(Integer id, String title, String textMessage, boolean vibrate_sound, Class okKlickActivity)
 	    {
 	    	Notification notification = new Notification(R.drawable.stat_happy, textMessage, System.currentTimeMillis());
 
@@ -63,7 +63,7 @@ public class UserNotification
 	    /**
 	     * Show a notification while this service is running.
 	     */
-	    public int showNotification(String title, String textMessage, boolean vibrate_sound, Class<Activity> okKlickActivity) 
+	    public int showNotification(String title, String textMessage, boolean vibrate_sound, Class okKlickActivity) 
 	    {
 	        Notification notification = new Notification(R.drawable.stat_happy, textMessage, System.currentTimeMillis());
 
