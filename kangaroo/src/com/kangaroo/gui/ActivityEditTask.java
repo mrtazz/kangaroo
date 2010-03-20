@@ -5,17 +5,19 @@ package com.kangaroo.gui;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -25,6 +27,7 @@ import com.kangaroo.task.TaskConstraintDate;
 import com.kangaroo.task.TaskConstraintDayTime;
 import com.kangaroo.task.TaskConstraintInterface;
 import com.kangaroo.task.TaskConstraintPOI;
+import com.mobiletsm.osm.data.searching.POICode;
 
 /**
  * @author mrtazz
@@ -48,7 +51,7 @@ public class ActivityEditTask extends Activity {
 	        generator = new Random();
 	        
 	        updateResultData();
-	        
+	  
 	        // set title view
 	        EditText edit_title = (EditText)findViewById(R.id.edittitle);
 	        edit_title.setText(t.getName());
@@ -76,12 +79,16 @@ public class ActivityEditTask extends Activity {
 				  tv_label.setText("Amenity: ");
 				  tv_label.setWidth(label_length);
 				  ll_amenity.addView(tv_label);
-				  EditText ev_content = new EditText(this);
-				  ev_content.setWidth(content_length);
-				  ev_content.setText(ta.getText().split("#")[1]);
-				  ev_content.setId(generator.nextInt());
-				  ll_amenity.addView(ev_content);
-				  active_views.add(buildEventMap(String.valueOf(ev_content.getId()), "edittext", "amenity"));
+				  Spinner amenity_spinner = new Spinner(this);
+				  amenity_spinner.setId(generator.nextInt(Integer.MAX_VALUE));
+				  List<String> amenities = new ArrayList<String>(POICode.getPOICodeMap().keySet());
+				  int pos = amenities.indexOf(ta.getText());
+				  ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, amenities);
+				  adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); 
+				  amenity_spinner.setAdapter(adapter);
+				  amenity_spinner.setSelection(pos);
+				  ll_amenity.addView(amenity_spinner);
+				  active_views.add(buildEventMap(String.valueOf(amenity_spinner.getId()), "spinner", "amenity"));
 				  
 				  main.addView(ll_amenity);				  
 				}
@@ -199,6 +206,10 @@ public class ActivityEditTask extends Activity {
 	  private void updateResultData()
 	  {
 		  	View v;
+		  	if (active_views.size() > 0)
+		  	{
+		  		t = new Task();
+		  	}
 		  	for (String[] s : active_views)
 		  	{
 		  		if (s[1].equals("edittext"))
@@ -212,17 +223,24 @@ public class ActivityEditTask extends Activity {
 		  			{
 		  				t.setName(((EditText)v).getText().toString());
 		  			}
-		  			else
-		  			{
-		  				
-		  			}
 		  		}
-		  	}
+		  		else if(s[1].equals("spinner"))
+		  		{
+		  			v = (Spinner)findViewById(Integer.valueOf(s[0]));
+		  			if (s[2].equals("amenity"))
+		  			{	
+		  				String as = (String)((Spinner)v).getSelectedItem();
+		  				POICode id = new POICode(as);
+		  				TaskConstraintPOI tcp = new TaskConstraintPOI(id);
+		  				t.addConstraint(tcp);
+		  				
+		  			}	
+		  		}
+		  }
 		  
 		    Intent resultIntent = new Intent("com.kangaroo.EDITTASK_RESULT");
 			resultIntent.putExtra("task", t.serialize());
 			setResult(RESULT_OK, resultIntent);
-		  
 	  }
 	  
 	  /* (non-Javadoc)
