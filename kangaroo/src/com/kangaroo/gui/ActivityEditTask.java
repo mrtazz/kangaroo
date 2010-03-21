@@ -333,7 +333,6 @@ public class ActivityEditTask extends Activity {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		updateResultData();
-		// TODO Auto-generated method stub
 		return super.onKeyDown(keyCode, event);
 	}
 	  
