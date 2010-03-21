@@ -149,11 +149,11 @@ public class ActivityTaskList extends ExpandableListActivity {
 					 }
 					 else if (start == null)
 					 {
-						 m.put("taskdate", "Enddate: " + end.getDay() + "/" + end.getMonth() + "/" + end.getYear());
+						 m.put("taskdate", "Enddate: " + end.getDay() + "/" + end.getMonth() + "/" + (end.getYear()+1900));
 					 }
 					 else
 					 {
-						 m.put("taskdate","Startdate: "+ start.getDay() + "/" + start.getMonth() + "/" + start.getYear() + 
+						 m.put("taskdate","Startdate: "+ start.getDay() + "/" + start.getMonth() + "/" + (start.getYear()+1900) + 
 								 		  "Endate: " + end.getDay() + "/" + end.getMonth() + "/" + end.getYear());
 					 }
 				 }
