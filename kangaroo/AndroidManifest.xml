@@ -22,19 +22,26 @@
 	        </intent-filter>
 		</activity>
 		
-		<activity 	android:icon="@drawable/icon" android:label="kangaroo" android:name="com.kangaroo.gui.ActivityBuildPlan">
-
-		</activity>
-		
-		<activity android:name="com.kangaroo.gui.ActivityTask"></activity>
-		<activity android:name="com.kangaroo.gui.ActivityEditTask"></activity>
-		
-		<activity android:name="com.kangaroo.gui.ActivityTaskList">
+		<activity android:name="com.kangaroo.gui.ActivityConfiguration">
 			<intent-filter>
 	          <category android:name="android.intent.category.EMBED"></category>
 	          <action android:name="android.intent.action.MAIN"></action>
 	        </intent-filter>
 		</activity>
+		
+	    <activity android:name="com.kangaroo.gui.ActivityTaskList">
+			<intent-filter>
+	          <category android:name="android.intent.category.EMBED"></category>
+	          <action android:name="android.intent.action.MAIN"></action>
+	        </intent-filter>
+		</activity>
+		
+<!-- 		<activity 	android:icon="@drawable/icon" android:label="kangaroo" android:name="com.kangaroo.gui.ActivityBuildPlan"></activity>
+ -->		
+		<activity android:name="com.kangaroo.gui.ActivityTask"></activity>
+		<activity android:name="com.kangaroo.gui.ActivityEditTask"></activity>
+		
+
 		
 		
 		<service android:name="com.kangaroo.system.ServiceCallLocation"></service>
