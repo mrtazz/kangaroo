@@ -168,8 +168,11 @@ public class Task
 			serializedConstraintSet = serializedConstraintSet + "|" + tempJSON;
 			serializedConstraintSetTypes = serializedConstraintSetTypes +  "|" + type;
 		}
-		serializedConstraintSetTypes = serializedConstraintSetTypes.substring(1, serializedConstraintSetTypes.length());
-		serializedConstraintSet = serializedConstraintSet.substring(1, serializedConstraintSet.length());
+		if(serializedConstraintSetTypes != "" && serializedConstraintSet != "")
+		{
+			serializedConstraintSetTypes = serializedConstraintSetTypes.substring(1, serializedConstraintSetTypes.length());
+			serializedConstraintSet = serializedConstraintSet.substring(1, serializedConstraintSet.length());
+		}
 		return serializer.toJson(this);
 	}
 	
