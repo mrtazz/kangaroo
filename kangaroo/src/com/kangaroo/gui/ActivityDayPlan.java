@@ -24,6 +24,7 @@ import com.android.kangaroo.R;
 import com.kangaroo.ActiveDayPlan;
 import com.kangaroo.calendar.CalendarAccessAdapter;
 import com.kangaroo.calendar.CalendarAccessAdapterAndroid;
+import com.kangaroo.calendar.CalendarAccessAdapterMemory;
 import com.kangaroo.calendar.CalendarEvent;
 import com.kangaroo.calendar.CalendarLibrary;
 
@@ -53,8 +54,11 @@ public class ActivityDayPlan extends ListActivity {
 	        tv = (TextView)findViewById(R.id.DayTitle);
 	        dp = new ActiveDayPlan();
 	        
-	        CalendarAccessAdapter caa = new CalendarAccessAdapterAndroid(this);
-		 	caa.setContext(getApplicationContext());
+	        //TODO change back!
+	        //CalendarAccessAdapter caa = new CalendarAccessAdapterAndroid(this);
+	        CalendarAccessAdapter caa = new CalendarAccessAdapterMemory();
+	        
+	        caa.setContext(getApplicationContext());
 		 	dp.setCalendarAccessAdapter(caa);
 
 	        reload();
