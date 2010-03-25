@@ -75,15 +75,9 @@ public class ActivityEditTask extends Activity {
 	        updateResultData();
 	  
 	        // set title view
-	        EditText edit_title = (EditText)findViewById(R.id.edittitle);
-	        edit_title.setText(t.getName());
-	        active_views.add(buildEventMap(String.valueOf(edit_title.getId()),
-	        								"edittext", "title"));
-	        
+		  	main.addView(getTaskTitleLayout(t));
 	        // set description view
-	        EditText edit_description = (EditText)findViewById(R.id.editdescription);
-	        edit_description.setText(t.getDescription());
-	        active_views.add(buildEventMap(String.valueOf(edit_description.getId()), "edittext", "description"));
+		  	main.addView(getTaskDescriptionLayout(t));
 			
 	        TaskConstraintInterface[] constraints = t.getConstraints();
 			for (TaskConstraintInterface tc : constraints)
@@ -91,161 +85,34 @@ public class ActivityEditTask extends Activity {
 				String type = tc.getType();
 				if (type.equals("amenity")) 
 				{
-				  TaskConstraintPOI ta = (TaskConstraintPOI)tc;
-				  LinearLayout ll_amenity = new LinearLayout(this);
-				  ll_amenity.setVisibility(1);
-				  ll_amenity.setOrientation(0);
-				  TextView tv_label = new TextView(this);
-				  tv_label.setText("Amenity: ");
-				  tv_label.setWidth(label_length);
-				  ll_amenity.addView(tv_label);
-				  Spinner amenity_spinner = new Spinner(this);
-				  amenity_spinner.setId(generator.nextInt(Integer.MAX_VALUE));
-				  List<String> amenities = new ArrayList<String>(POICode.getPOICodeMap().keySet());
-				  int pos = amenities.indexOf(ta.getText());
-				  ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, amenities);
-				  adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); 
-				  amenity_spinner.setAdapter(adapter);
-				  amenity_spinner.setSelection(pos);
-				  ll_amenity.addView(amenity_spinner);
-				  active_views.add(buildEventMap(String.valueOf(amenity_spinner.getId()), "spinner", "amenity"));
-				  
-				  main.addView(ll_amenity);				  
+					TaskConstraintPOI ta = (TaskConstraintPOI)tc;
+					main.addView(getAmenityConstraintLayout(ta));				  
 				}
 				else if (type.equals("daytime"))
 				{
-					LinearLayout ll_start = new LinearLayout(this);
-					LinearLayout ll_end = new LinearLayout(this);
-					ll_start.setVisibility(1);
-					ll_end.setVisibility(1);
-					ll_start.setOrientation(0);
-					ll_end.setOrientation(0);
-					TextView tv_s = new TextView(this);
-					tv_s.setText("Starttime:");
-					tv_s.setWidth(label_length);
-					TextView tv_e = new TextView(this);
-					tv_e.setText("Endtime:");
-					tv_e.setWidth(label_length);
-					ll_start.addView(tv_s);
-					ll_end.addView(tv_e);
 					TaskConstraintDayTime ta = (TaskConstraintDayTime)tc;
-					Date start = ta.getStartTime();
-					Date end = ta.getEndTime();
-					if (start != null && end != null)
+					for (LinearLayout ll : getDayTimeConstraintLayout(ta))
 					{
-						TimePicker tp_start = new TimePicker(this);
-						TimePicker tp_end = new TimePicker(this);
-						tp_start.setIs24HourView(true);
-						tp_end.setIs24HourView(true);
-						tp_start.setCurrentHour(start.getHours());
-						tp_start.setCurrentMinute(start.getMinutes());
-						tp_end.setCurrentHour(end.getHours());
-						tp_end.setCurrentMinute(end.getMinutes());
-						ll_start.addView(tp_start);
-						ll_end.addView(tp_end);
-						tp_start.setId(generator.nextInt(Integer.MAX_VALUE));
-						tp_end.setId(generator.nextInt(Integer.MAX_VALUE));
-						active_views.add(buildEventMap(String.valueOf(tp_start.getId()), "timepicker", "starttime"));
-						active_views.add(buildEventMap(String.valueOf(tp_end.getId()), "timepicker", "endtime"));
-						main.addView(ll_start);
-						main.addView(ll_end);
+						if (ll != null) main.addView(ll);
 					}
-				}
-					
+				}	
 				else if (type.equals("date"))
 				{
-					LinearLayout ll_startdate = new LinearLayout(this);
-					LinearLayout ll_enddate = new LinearLayout(this);
-					ll_startdate.setVisibility(1);
-					ll_enddate.setVisibility(1);
-					ll_startdate.setOrientation(1);
-					ll_enddate.setOrientation(1);
-					TextView tv_start = new TextView(this);
-					tv_start.setText("Startdate:");
-					tv_start.setWidth(label_length);
-					TextView tv_end = new TextView(this);
-					tv_end.setText("Enddate:");
-					tv_end.setWidth(label_length);
-					ll_startdate.addView(tv_start);
-					ll_enddate.addView(tv_end);
-					// get constraint data
 					TaskConstraintDate td = (TaskConstraintDate)tc;
-					Date startdate = td.getStart();
-					Date enddate = td.getEnd();
-					if (startdate != null && enddate != null)
+					for (LinearLayout ll : getDateConstraintLayout(td))
 					{
-						DatePicker dp_start = new DatePicker(this);
-						dp_start.updateDate(startdate.getYear() + 1900, startdate.getMonth(), startdate.getDay());
-						dp_start.setId(generator.nextInt(Integer.MAX_VALUE));
-						active_views.add(buildEventMap(String.valueOf(dp_start.getId()), "datepicker", "startdate"));
-						ll_startdate.addView(dp_start);
-						main.addView(ll_startdate);
-						
-						DatePicker dp_end = new DatePicker(this);
-						dp_end.updateDate(enddate.getYear() + 1900, enddate.getMonth(), enddate.getDay());
-						dp_end.setId(generator.nextInt(Integer.MAX_VALUE));
-						active_views.add(buildEventMap(String.valueOf(dp_end.getId()), "datepicker", "enddate"));
-						ll_enddate.addView(dp_end);
-						main.addView(ll_enddate);
-						
-					}
-					else if (startdate != null && enddate == null)
-					{
-						DatePicker dp_start = new DatePicker(this);
-						dp_start.updateDate(startdate.getYear() + 1900, startdate.getMonth(), startdate.getDay());
-						dp_start.setId(generator.nextInt(Integer.MAX_VALUE));
-						active_views.add(buildEventMap(String.valueOf(dp_start.getId()), "datepicker", "startdate"));
-						ll_startdate.addView(dp_start);
-						main.addView(ll_startdate);
-					}
-					else if (startdate == null && enddate != null)
-					{						
-						DatePicker dp_end = new DatePicker(this);
-						dp_end.updateDate(enddate.getYear() + 1900, enddate.getMonth(), enddate.getDay());
-						dp_end.setId(generator.nextInt(Integer.MAX_VALUE));
-						active_views.add(buildEventMap(String.valueOf(dp_end.getId()), "datepicker", "enddate"));
-						ll_enddate.addView(dp_end);
-						main.addView(ll_enddate);
+						if (ll != null) main.addView(ll);
 					}
 				}
 				else if (type.equals("duration"))
 				{
-					LinearLayout ll_duration = new LinearLayout(this);
-					ll_duration.setVisibility(1);
-					ll_duration.setOrientation(0);
-					TextView tv_duration = new TextView(this);
-					tv_duration.setText("Duration: ");
-					tv_duration.setWidth(label_length);
-					ll_duration.addView(tv_duration);
 					TaskConstraintDuration td = (TaskConstraintDuration)tc;
-					int duration = td.getDuration();
-					EditText ed_duration = new EditText(this);
-					ed_duration.setWidth(content_length);
-					ed_duration.setText(Integer.toString(duration));
-					ed_duration.setId(generator.nextInt(Integer.MAX_VALUE));
-					active_views.add(buildEventMap(String.valueOf(ed_duration.getId()), "edittext", "duration"));
-					ll_duration.addView(ed_duration);
-					main.addView(ll_duration);
+					main.addView(getDurationConstraintLayout(td));
 				}
 				else if (type.equals("location"))
 				{
-					LinearLayout ll_location = new LinearLayout(this);
-					ll_location.setVisibility(1);
-					ll_location.setOrientation(0);
-					TextView tv_location = new TextView(this);
-					tv_location.setText("Location: ");
-					tv_location.setWidth(label_length);
-					ll_location.addView(tv_location);
 					TaskConstraintLocation tl = (TaskConstraintLocation)tc;
-					actual_location = tl;
-					EditText ed_location = new EditText(this);
-					ed_location.setWidth(content_length);
-					ed_location.setText(tl.getPlace().toString());
-					ed_location.setId(generator.nextInt(Integer.MAX_VALUE));
-					ed_location.setOnClickListener(LocationClickListener);
-					active_views.add(buildEventMap(String.valueOf(ed_location.getId()), "edittext", "location"));
-					ll_location.addView(ed_location);
-					main.addView(ll_location);
+					main.addView(getLocationConstraintLayout(tl));
 				}
 		 }    
 	  }
@@ -403,4 +270,228 @@ public class ActivityEditTask extends Activity {
 			}
 			load();
 		}
+	  
+	  // view creation code
+	/**
+	 * @brief method to generate EditText with Task title
+	 * @param task
+	 * @return LinearLayout with Textview and EditText
+	 */
+	private LinearLayout getTaskTitleLayout(Task task)
+	{
+		 LinearLayout ll_title = new LinearLayout(this);
+		 TextView tv_label = new TextView(this);
+		 tv_label.setText("Title:");
+		 tv_label.setWidth(label_length);
+       	 EditText edit_title = new EditText(this);
+       	 edit_title.setWidth(content_length);
+       	 edit_title.setId(generator.nextInt(Integer.MAX_VALUE));
+	     edit_title.setText(t.getName());
+	     active_views.add(buildEventMap(String.valueOf(edit_title.getId()), "edittext", "title"));
+         ll_title.addView(tv_label);
+	     ll_title.addView(edit_title);
+	     return ll_title;
+	}
+	  
+	  /**
+	 * @param task
+	 * @return
+	 */
+	 private LinearLayout getTaskDescriptionLayout(Task task)
+	 {
+		 LinearLayout ll_desc = new LinearLayout(this);
+		 TextView tv_label = new TextView(this);
+		 tv_label.setText("Title:");
+		 tv_label.setWidth(label_length);
+       	 EditText edit_description = new EditText(this);
+       	 edit_description.setWidth(content_length);
+       	 edit_description.setId(generator.nextInt(Integer.MAX_VALUE));
+         edit_description.setText(t.getDescription());
+         active_views.add(buildEventMap(String.valueOf(edit_description.getId()), "edittext", "description"));
+         ll_desc.addView(tv_label);
+         ll_desc.addView(edit_description);
+         return ll_desc;
+	 }	  
+	  
+	  /**
+	 * @param tc
+	 * @return
+	 */
+	private LinearLayout getAmenityConstraintLayout(TaskConstraintPOI tc)
+	  {
+		  LinearLayout ll_amenity = new LinearLayout(this);
+		  ll_amenity.setVisibility(1);
+		  ll_amenity.setOrientation(0);
+		  TextView tv_label = new TextView(this);
+		  tv_label.setText("Amenity: ");
+		  tv_label.setWidth(label_length);
+		  ll_amenity.addView(tv_label);
+		  Spinner amenity_spinner = new Spinner(this);
+		  amenity_spinner.setId(generator.nextInt(Integer.MAX_VALUE));
+		  List<String> amenities = new ArrayList<String>(POICode.getPOICodeMap().keySet());
+		  int pos = amenities.indexOf(tc.getText());
+		  ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, amenities);
+		  adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); 
+		  amenity_spinner.setAdapter(adapter);
+		  amenity_spinner.setSelection(pos);
+		  ll_amenity.addView(amenity_spinner);
+		  active_views.add(buildEventMap(String.valueOf(amenity_spinner.getId()), "spinner", "amenity"));
+		  return ll_amenity;
+	  }
+	  
+	/**
+	 * @brief method to generate DayTime start and endtime view
+	 * @param tc TaskConstraintDaytime
+	 * @return Array of size 2 with start and end view
+	 */
+	private LinearLayout[] getDayTimeConstraintLayout(TaskConstraintDayTime tc)
+	  {
+		LinearLayout[] ret = new LinearLayout[2];
+		LinearLayout ll_start = new LinearLayout(this);
+		LinearLayout ll_end = new LinearLayout(this);
+		ll_start.setVisibility(1);
+		ll_end.setVisibility(1);
+		ll_start.setOrientation(0);
+		ll_end.setOrientation(0);
+		TextView tv_s = new TextView(this);
+		tv_s.setText("Starttime:");
+		tv_s.setWidth(label_length);
+		TextView tv_e = new TextView(this);
+		tv_e.setText("Endtime:");
+		tv_e.setWidth(label_length);
+		ll_start.addView(tv_s);
+		ll_end.addView(tv_e);
+		Date start = tc.getStartTime();
+		Date end = tc.getEndTime();
+		if (start != null && end != null)
+		{
+			TimePicker tp_start = new TimePicker(this);
+			TimePicker tp_end = new TimePicker(this);
+			tp_start.setIs24HourView(true);
+			tp_end.setIs24HourView(true);
+			tp_start.setCurrentHour(start.getHours());
+			tp_start.setCurrentMinute(start.getMinutes());
+			tp_end.setCurrentHour(end.getHours());
+			tp_end.setCurrentMinute(end.getMinutes());
+			ll_start.addView(tp_start);
+			ll_end.addView(tp_end);
+			tp_start.setId(generator.nextInt(Integer.MAX_VALUE));
+			tp_end.setId(generator.nextInt(Integer.MAX_VALUE));
+			active_views.add(buildEventMap(String.valueOf(tp_start.getId()), "timepicker", "starttime"));
+			active_views.add(buildEventMap(String.valueOf(tp_end.getId()), "timepicker", "endtime"));
+			ret[0] = ll_start;
+			ret[1] = ll_end;
+		}
+		return ret;
+	  }
+	  
+	  /**
+	 * @param tc
+	 * @return
+	 */
+	private LinearLayout[] getDateConstraintLayout(TaskConstraintDate tc)
+	  {
+		LinearLayout[] ret = new LinearLayout[2];
+		LinearLayout ll_startdate = new LinearLayout(this);
+		LinearLayout ll_enddate = new LinearLayout(this);
+		ll_startdate.setVisibility(1);
+		ll_enddate.setVisibility(1);
+		ll_startdate.setOrientation(1);
+		ll_enddate.setOrientation(1);
+		TextView tv_start = new TextView(this);
+		tv_start.setText("Startdate:");
+		tv_start.setWidth(label_length);
+		TextView tv_end = new TextView(this);
+		tv_end.setText("Enddate:");
+		tv_end.setWidth(label_length);
+		ll_startdate.addView(tv_start);
+		ll_enddate.addView(tv_end);
+		// get constraint data
+		Date startdate = tc.getStart();
+		Date enddate = tc.getEnd();
+		if (startdate != null && enddate != null)
+		{
+			DatePicker dp_start = new DatePicker(this);
+			dp_start.updateDate(startdate.getYear() + 1900, startdate.getMonth(), startdate.getDay());
+			dp_start.setId(generator.nextInt(Integer.MAX_VALUE));
+			active_views.add(buildEventMap(String.valueOf(dp_start.getId()), "datepicker", "startdate"));
+			ll_startdate.addView(dp_start);
+			ret[0] = ll_startdate;
+			
+			DatePicker dp_end = new DatePicker(this);
+			dp_end.updateDate(enddate.getYear() + 1900, enddate.getMonth(), enddate.getDay());
+			dp_end.setId(generator.nextInt(Integer.MAX_VALUE));
+			active_views.add(buildEventMap(String.valueOf(dp_end.getId()), "datepicker", "enddate"));
+			ll_enddate.addView(dp_end);
+			ret[1] = ll_enddate;
+			
+		}
+		else if (startdate != null && enddate == null)
+		{
+			DatePicker dp_start = new DatePicker(this);
+			dp_start.updateDate(startdate.getYear() + 1900, startdate.getMonth(), startdate.getDay());
+			dp_start.setId(generator.nextInt(Integer.MAX_VALUE));
+			active_views.add(buildEventMap(String.valueOf(dp_start.getId()), "datepicker", "startdate"));
+			ll_startdate.addView(dp_start);
+			ret[0] = ll_startdate;
+		}
+		else if (startdate == null && enddate != null)
+		{						
+			DatePicker dp_end = new DatePicker(this);
+			dp_end.updateDate(enddate.getYear() + 1900, enddate.getMonth(), enddate.getDay());
+			dp_end.setId(generator.nextInt(Integer.MAX_VALUE));
+			active_views.add(buildEventMap(String.valueOf(dp_end.getId()), "datepicker", "enddate"));
+			ll_enddate.addView(dp_end);
+			ret[0] = ll_enddate;
+		}
+		return ret;
+	  }
+	  
+	  /**
+	 * @param tc
+	 * @return
+	 */
+	private LinearLayout getDurationConstraintLayout(TaskConstraintDuration tc)
+	  {
+		LinearLayout ll_duration = new LinearLayout(this);
+		ll_duration.setVisibility(1);
+		ll_duration.setOrientation(0);
+		TextView tv_duration = new TextView(this);
+		tv_duration.setText("Duration: ");
+		tv_duration.setWidth(label_length);
+		ll_duration.addView(tv_duration);
+		int duration = tc.getDuration();
+		EditText ed_duration = new EditText(this);
+		ed_duration.setWidth(content_length);
+		ed_duration.setText(Integer.toString(duration));
+		ed_duration.setId(generator.nextInt(Integer.MAX_VALUE));
+		active_views.add(buildEventMap(String.valueOf(ed_duration.getId()), "edittext", "duration"));
+		ll_duration.addView(ed_duration);
+		return ll_duration;  
+	  }
+	  
+	/**
+	 * @param tc
+	 * @return
+	 */
+	private LinearLayout getLocationConstraintLayout(TaskConstraintLocation tc)
+	  {
+		LinearLayout ll_location = new LinearLayout(this);
+		ll_location.setVisibility(1);
+		ll_location.setOrientation(0);
+		TextView tv_location = new TextView(this);
+		tv_location.setText("Location: ");
+		tv_location.setWidth(label_length);
+		ll_location.addView(tv_location);
+		actual_location = tc;
+		EditText ed_location = new EditText(this);
+		ed_location.setWidth(content_length);
+		ed_location.setText(tc.getPlace().toString());
+		ed_location.setId(generator.nextInt(Integer.MAX_VALUE));
+		ed_location.setOnClickListener(LocationClickListener);
+		active_views.add(buildEventMap(String.valueOf(ed_location.getId()), "edittext", "location"));
+		ll_location.addView(ed_location);
+		return ll_location;
+	  }	  
+	  
 }
