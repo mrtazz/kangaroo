@@ -176,7 +176,7 @@ public class ActivityTaskList extends ExpandableListActivity {
 				 else if(type.equals("duration"))
 				 {
 					 TaskConstraintDuration td = (TaskConstraintDuration)tc;
-					 m.put("taskduration", "Duration: " + td.getDuration());
+					 m.put("taskduration", "Duration: " + td.getDuration() + " min");
 				 }
 				 else
 				 {
