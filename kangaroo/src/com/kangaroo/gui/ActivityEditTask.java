@@ -336,7 +336,14 @@ public class ActivityEditTask extends Activity {
 		return super.onKeyDown(keyCode, event);
 	}
 	  
-	  private String[] buildEventMap(String id, String type, String content)
+	/**
+	 * @brief method to build the eventmap for a given view object
+	 * @param id id of the view
+	 * @param type type of the view
+	 * @param content content of the view
+	 * @return array with id,type,content 
+	 */
+	private String[] buildEventMap(String id, String type, String content)
 	  {
 		  	String[] ret = new String[3];
 	        ret[0] = id;
