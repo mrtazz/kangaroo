@@ -157,7 +157,7 @@ public class ActivityTaskList extends ExpandableListActivity {
 					 {
 						 m.put("taskdate","Startdate: "+ pad2(start.getDay()) + "/"
 								 					   + pad2(start.getMonth()) + "/"
-								 					   + (start.getYear()+1900) + 
+								 					   + (start.getYear()+1900) + "\n" +
 								 		    "Endate: " + pad2(end.getDay()) + "/"
 								 		    		   + pad2(end.getMonth()) + "/"
 								 		    		   + (end.getYear()+1900));
