@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:id="@+id/addAmenity" android:title="Add Amenity" />
+  <item android:id="@+id/addLocation" android:title="Add Location" />
+  <item android:id="@+id/addDate" android:title="Add Date" />
+  <item android:id="@+id/addDaytime" android:title="Add Daytime" />
+  <item android:id="@+id/addDuration" android:title="Add Duration" />
+</menu>

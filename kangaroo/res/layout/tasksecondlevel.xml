@@ -18,7 +18,14 @@
          android:textStyle="italic"
          android:layout_width="250px"
          android:layout_height="wrap_content"/>
-         
+
+    <TextView android:id="@+id/taskduration"
+		 android:paddingLeft="50px"
+         android:textSize="18px"
+         android:textStyle="italic"
+         android:layout_width="250px"
+         android:layout_height="wrap_content"/>
+                  
     <TextView android:id="@+id/taskdate"
 		 android:paddingLeft="50px"
          android:textSize="18px"

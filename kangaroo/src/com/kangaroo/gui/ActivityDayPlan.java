@@ -146,7 +146,7 @@ public class ActivityDayPlan extends ListActivity {
 	private void reload()
 	  {
 			Date today = new Date();
-	        tv.setText(today.getDate() + "/" + today.getMonth() + "/" + today.getYear());
+	        tv.setText(today.getDate() + "/" + today.getMonth() + "/" + (today.getYear()+1900));
 	        eventlist = (ArrayList<CalendarEvent>)dp.getEvents();
 		    // Bind the ListView to an ArrayList of strings.
 	        calendarAdapter = new ArrayAdapterCalendar(this, R.layout.row, eventlist);

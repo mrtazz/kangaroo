@@ -25,12 +25,11 @@ import com.kangaroo.calendar.CalendarAccessAdapterAndroid;
 import com.kangaroo.task.Task;
 import com.kangaroo.task.TaskConstraintDate;
 import com.kangaroo.task.TaskConstraintDayTime;
+import com.kangaroo.task.TaskConstraintDuration;
 import com.kangaroo.task.TaskConstraintInterface;
 import com.kangaroo.task.TaskConstraintLocation;
 import com.kangaroo.task.TaskConstraintPOI;
 import com.kangaroo.task.TaskConstraintPendingTasks;
-import com.mobiletsm.osm.data.searching.POICode;
-import com.mobiletsm.routing.Place;
 
 /**
  * @author mrtazz
@@ -44,10 +43,10 @@ public class ActivityTaskList extends ExpandableListActivity {
 	private ArrayList<Task> taskslist;
 	private long actual_task;
 	private String[] childitems = new String[]{"tasklocation", "taskdescription",
-												"taskdate", "taskdaytime", 
+											   "taskduration", "taskdate", "taskdaytime", 
 												"taskpending", "taskpoi"};
 	private int[] childlayout = new int[]{R.id.tasklocation, R.id.taskdescription,
-									      R.id.taskdate, R.id.taskdaytime,
+										  R.id.taskduration, R.id.taskdate, R.id.taskdaytime,
 									      R.id.taskpending, R.id.taskpoi};
 
 	  // menu item ids
@@ -150,18 +149,25 @@ public class ActivityTaskList extends ExpandableListActivity {
 					 }
 					 else if (start == null)
 					 {
-						 m.put("taskdate", "Enddate: " + end.toLocaleString());
+						 m.put("taskdate", "Enddate: " + pad2(end.getDay()) + "/"
+								 					   + pad2(end.getMonth()) + "/"
+								 					   + (end.getYear()+1900));
 					 }
 					 else
 					 {
-						 m.put("taskdate","Startdate: "+ start.toLocaleString() + 
-								 		  "Endate: " + end.toLocaleString());
+						 m.put("taskdate","Startdate: "+ pad2(start.getDay()) + "/"
+								 					   + pad2(start.getMonth()) + "/"
+								 					   + (start.getYear()+1900) + "\n" +
+								 		    "Endate: " + pad2(end.getDay()) + "/"
+								 		    		   + pad2(end.getMonth()) + "/"
+								 		    		   + (end.getYear()+1900));
 					 }
 				 }
 				 else if (type.equals("daytime"))
 				 {
 					 TaskConstraintDayTime ta = (TaskConstraintDayTime)tc;
-					 m.put("taskdaytime", ta.getStartTime().toLocaleString() + "->" + ta.getEndTime().toLocaleString());						
+					 m.put("taskdaytime", "Daytime: " + pad2(ta.getStartTime().getHours()) + ":" + pad2(ta.getStartTime().getMinutes()) +
+							 	   "->" + pad2(ta.getEndTime().getHours()) + ":" + pad2(ta.getEndTime().getMinutes()));
 				 }
 				 else if (type.equals("location"))
 				 {
@@ -172,6 +178,11 @@ public class ActivityTaskList extends ExpandableListActivity {
 				 {
 					 TaskConstraintPendingTasks ta = (TaskConstraintPendingTasks)tc;
 					 m.put("taskpoi",ta.getTaskName());
+				 }
+				 else if(type.equals("duration"))
+				 {
+					 TaskConstraintDuration td = (TaskConstraintDuration)tc;
+					 m.put("taskduration", "Duration: " + td.getDuration() + " min");
 				 }
 				 else
 				 {
@@ -263,5 +274,15 @@ public class ActivityTaskList extends ExpandableListActivity {
 				reload();
 			}
 		
-		
+		/**
+		 * @brief method to pad time to a length of 2
+		 * @param i time as int
+		 * @return padded time as string
+		 */
+		private String pad2(int i)
+		{
+			String s = Integer.toString(i);
+			s= (s.length() < 2) ? ("0"+s) : (s);
+			return s;
+		}
 }
