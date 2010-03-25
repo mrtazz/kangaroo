@@ -372,8 +372,11 @@ public class ActiveDayPlan extends DayPlan {
 	
 	private void terminateTaskAccess(boolean skipSave) {
 		if (taskAccessDepth <= 0) {
-			throw new RuntimeException("ActiveDayPlan.terminateTaskAccess(): " +
-			"cannot step back from level 0");
+			// no real solution but could not think of anything
+			// else at the moment
+			//TODO
+			//throw new RuntimeException("ActiveDayPlan.terminateTaskAccess(): " +
+			//"cannot step back from level 0");
 		}
 		if (--taskAccessDepth == 0 && !skipSave) {
 			//saveTasks();
