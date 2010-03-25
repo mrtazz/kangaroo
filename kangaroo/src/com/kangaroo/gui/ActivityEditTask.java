@@ -14,6 +14,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -515,5 +518,59 @@ public class ActivityEditTask extends Activity {
 		ll_location.addView(ed_location);
 		return ll_location;
 	  }	  
-	  
+	
+	  /** menu methods */
+	  /* (non-Javadoc)
+	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+	 */
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		  MenuInflater inflater = getMenuInflater();
+		  inflater.inflate(R.menu.edittask_menu, menu);
+		  return true;
+	}
+
+	  /* (non-Javadoc)
+	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	 */
+	public boolean onOptionsItemSelected (MenuItem item)
+	{
+		  switch (item.getItemId())
+		  {
+		  	case R.id.addAmenity:
+		  		TaskConstraintPOI tc1 = new TaskConstraintPOI(new POICode("shop#bakery"));
+		  		main.addView(getAmenityConstraintLayout(tc1));
+		  		return true;
+
+		  	case R.id.addLocation:
+		  		TaskConstraintLocation tc2 = new TaskConstraintLocation(new Place(0,0));
+		  		main.addView(getLocationConstraintLayout(tc2));
+		  		return true;
+
+		  	case R.id.addDaytime:
+		  		TaskConstraintDayTime tc3 = new TaskConstraintDayTime(new Date(), new Date());
+		  		for (LinearLayout ll : getDayTimeConstraintLayout(tc3))
+		  		{
+		  			main.addView(ll);
+		  		}
+		  		return true;
+
+		  	case R.id.addDate:
+		  		TaskConstraintDate tc4 = new TaskConstraintDate(new Date(), new Date());
+		  		for (LinearLayout ll : getDateConstraintLayout(tc4))
+		  		{
+		  			main.addView(ll);
+		  		}
+		  		return true;
+
+		  	case R.id.addDuration:
+		  		TaskConstraintDuration tc5 = new TaskConstraintDuration(0);
+		  		main.addView(getDurationConstraintLayout(tc5));
+		  		return true;
+			default:
+				System.out.println("ItemId: "+item.getItemId());
+				return true;
+
+		  }
+	}
 }
