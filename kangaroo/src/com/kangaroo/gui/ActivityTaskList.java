@@ -149,12 +149,18 @@ public class ActivityTaskList extends ExpandableListActivity {
 					 }
 					 else if (start == null)
 					 {
-						 m.put("taskdate", "Enddate: " + end.getDay() + "/" + end.getMonth() + "/" + (end.getYear()+1900));
+						 m.put("taskdate", "Enddate: " + pad2(end.getDay()) + "/"
+								 					   + pad2(end.getMonth()) + "/"
+								 					   + (end.getYear()+1900));
 					 }
 					 else
 					 {
-						 m.put("taskdate","Startdate: "+ start.getDay() + "/" + start.getMonth() + "/" + (start.getYear()+1900) + 
-								 		  "Endate: " + end.getDay() + "/" + end.getMonth() + "/" + end.getYear());
+						 m.put("taskdate","Startdate: "+ pad2(start.getDay()) + "/"
+								 					   + pad2(start.getMonth()) + "/"
+								 					   + (start.getYear()+1900) + 
+								 		    "Endate: " + pad2(end.getDay()) + "/"
+								 		    		   + pad2(end.getMonth()) + "/"
+								 		    		   + (end.getYear()+1900));
 					 }
 				 }
 				 else if (type.equals("daytime"))
