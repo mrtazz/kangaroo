@@ -231,6 +231,7 @@ public class Task
 		{
 			constraintSet.remove(null);
 		}
+		
 		return constraintSet.toArray(new TaskConstraintInterface[0]);
 	}
 	
