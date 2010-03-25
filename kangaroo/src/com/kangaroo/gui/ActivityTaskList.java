@@ -325,7 +325,6 @@ public class ActivityTaskList extends ExpandableListActivity {
 			Task t = new Task();
 	  		t.setName("New Task");
 	  		t.setDescription("New Description");
-	  		t.addConstraint(new TaskConstraintDuration(0));
 	  		taskslist.add(t);
 	  		dp.setTasks(taskslist);
 	  		reload();
