@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -22,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.android.kangaroo.R;
 import com.kangaroo.task.Task;
@@ -29,8 +31,10 @@ import com.kangaroo.task.TaskConstraintDate;
 import com.kangaroo.task.TaskConstraintDayTime;
 import com.kangaroo.task.TaskConstraintDuration;
 import com.kangaroo.task.TaskConstraintInterface;
+import com.kangaroo.task.TaskConstraintLocation;
 import com.kangaroo.task.TaskConstraintPOI;
 import com.mobiletsm.osm.data.searching.POICode;
+import com.mobiletsm.routing.Place;
 
 /**
  * @author mrtazz
@@ -43,7 +47,20 @@ public class ActivityEditTask extends Activity {
 	  private Task t;
 	  private ArrayList<String[]> active_views;
 	  private Random generator;
+	  private TaskConstraintLocation actual_location = null;
 	  private LinearLayout main;
+	  
+	  private OnClickListener LocationClickListener = new OnClickListener()
+	  {
+		@Override
+		public void onClick(View v) {
+			  // show the map
+			  Intent intent = new Intent("com.kangaroo.SELECTPLACE");
+			  intent.addCategory(Intent.CATEGORY_DEFAULT);
+			  startActivityForResult(intent, 1);
+		}
+	  };
+	  
 	  @Override
 	  public void onCreate(Bundle savedInstanceState)
 	  {
@@ -225,6 +242,7 @@ public class ActivityEditTask extends Activity {
 					ed_location.setWidth(content_length);
 					ed_location.setText(tl.getPlace().toString());
 					ed_location.setId(generator.nextInt(Integer.MAX_VALUE));
+					ed_location.setOnClickListener(LocationClickListener);
 					active_views.add(buildEventMap(String.valueOf(ed_location.getId()), "edittext", "location"));
 					ll_location.addView(ed_location);
 					main.addView(ll_location);
@@ -371,5 +389,18 @@ public class ActivityEditTask extends Activity {
 	        return ret;
 	  }
 	  
-
+	  // callback method for intent result
+	  @Override
+	  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+			if (data != null) {
+				double lat = data.getExtras().getDouble("latitude");
+				double lon = data.getExtras().getDouble("longitude");
+				Place p = new Place(lat, lon);
+				t.removeConstraint(actual_location);
+				t.addConstraint(new TaskConstraintLocation(p));
+			} else {
+				Toast.makeText(this, "no position set! resultCode = " + resultCode, Toast.LENGTH_SHORT).show();
+			}
+			load();
+		}
 }
