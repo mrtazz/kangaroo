@@ -212,10 +212,11 @@ public class Task
 	 */
 	public int addConstraint(TaskConstraintInterface currentConstraint)
 	{
-		if(constraintSet.add(currentConstraint))
+		if(currentConstraint != null && constraintSet.add(currentConstraint))
 		{
 			return 0;
 		}
+
 		return 1;
 	}
 	

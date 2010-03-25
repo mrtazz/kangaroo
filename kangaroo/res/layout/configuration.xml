@@ -1,7 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+ <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/configurationlayout"
   android:layout_width="wrap_content"
-  android:layout_height="wrap_content">
-<TextView android:text="@+id/TextView01" android:id="@+id/TextView01" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
+ 
+  <ScrollView android:id="@+id/ScrollView01" android:layout_width="wrap_content" android:layout_height="wrap_content">
+   <LinearLayout
+	  xmlns:android="http://schemas.android.com/apk/res/android"
+	  android:id="@+id/configurationlayout"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:orientation="vertical">
+  
+
+  
+   <LinearLayout
+  	xmlns:android="http://schemas.android.com/apk/res/android"
+  	android:layout_width="wrap_content"
+  	android:layout_height="wrap_content"
+  	android:orientation="horizontal">
+	<TextView
+		android:text="Background-Task Enabled"
+		android:id="@+id/checkText"
+    	android:layout_width="240px"
+		android:layout_height="wrap_content">
+	</TextView>
+	<CheckBox 
+		android:text="" 
+		android:id="@+id/checkEnable" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content">
+	</CheckBox>
+  
+</LinearLayout>
+  
+  <LinearLayout
+  	xmlns:android="http://schemas.android.com/apk/res/android"
+  	android:layout_width="wrap_content"
+  	android:layout_height="wrap_content"
+  	android:orientation="horizontal">
+	<TextView
+		android:text="Background-Task fixed Interval Time (sec.)"
+		android:id="@+id/tasktitletextview1"
+    	android:layout_width="240px"
+		android:layout_height="wrap_content">
+	</TextView>
+    <EditText
+    	android:text=""
+    	android:id="@+id/editBackgroundTime"
+    	android:layout_width="80px"
+    	android:layout_height="wrap_content">
+    </EditText>
+  </LinearLayout>
+  
+  <LinearLayout
+  	xmlns:android="http://schemas.android.com/apk/res/android"
+  	android:layout_width="wrap_content"
+  	android:layout_height="wrap_content"
+  	android:orientation="horizontal">
+	<TextView
+		android:text="Background-Task Interval Distance (m)"
+		android:id="@+id/taskdescriptiontextview2"
+    	android:layout_width="240px"
+		android:layout_height="wrap_content">
+	</TextView>
+    <EditText
+    	android:text=""
+    	android:id="@+id/editBackgroundDistance"
+    	android:layout_width="80px"
+    	android:layout_height="wrap_content">
+    </EditText>
+  </LinearLayout>
+  
+  <LinearLayout
+  	xmlns:android="http://schemas.android.com/apk/res/android"
+  	android:layout_width="wrap_content"
+  	android:layout_height="wrap_content"
+  	android:orientation="horizontal">
+	<TextView
+		android:text="Background-Task Interval Time (sec.)"
+		android:id="@+id/taskdescriptiontextview3"
+    	android:layout_width="240px"
+		android:layout_height="wrap_content">
+	</TextView>
+    <EditText
+    	android:text=""
+    	android:id="@+id/editBackgroundDistanceTime"
+    	android:layout_width="80px"
+    	android:layout_height="wrap_content">
+    </EditText>
+  </LinearLayout>
+  
+  <LinearLayout
+  	xmlns:android="http://schemas.android.com/apk/res/android"
+  	android:layout_width="wrap_content"
+  	android:layout_height="wrap_content"
+  	android:orientation="vertical">
+	<TextView
+		android:text="Calendar to use"
+		android:id="@+id/taskdescriptiontextview4"
+    	android:layout_width="320px"
+		android:layout_height="wrap_content">
+	</TextView>
+    <EditText  
+    	android:id="@+id/editCalendar" 
+    	android:layout_width="320px" 
+    	android:layout_height="wrap_content">                                            
+	</EditText>
+  </LinearLayout>
+  
+  <LinearLayout
+  	xmlns:android="http://schemas.android.com/apk/res/android"
+  	android:layout_width="wrap_content"
+  	android:layout_height="wrap_content"
+  	android:orientation="vertical">
+	<TextView
+		android:text="Optimizer to use"
+		android:id="@+id/taskdescriptiontextview5"
+    	android:layout_width="320px"
+		android:layout_height="wrap_content">
+	</TextView>
+    <EditText  
+    	android:id="@+id/editOptimizer" 
+    	android:layout_width="320px" 
+    	android:layout_height="wrap_content">                                            
+	</EditText>
+  </LinearLayout>
+  
+    <LinearLayout
+  	xmlns:android="http://schemas.android.com/apk/res/android"
+  	android:layout_width="wrap_content"
+  	android:layout_height="wrap_content"
+  	android:orientation="vertical">
+	<TextView
+		android:text="Path to OSM-Map File"
+		android:id="@+id/taskdescriptiontextview6"
+    	android:layout_width="320px"
+		android:layout_height="wrap_content">
+	</TextView>
+    <EditText
+    	android:text=""
+    	android:id="@+id/editMap"
+    	android:layout_width="320px"
+    	android:layout_height="wrap_content">
+    </EditText>
+  </LinearLayout>
+  
+  <LinearLayout
+  	xmlns:android="http://schemas.android.com/apk/res/android"
+  	android:layout_width="wrap_content"
+  	android:layout_height="wrap_content"
+  	android:orientation="horizontal">
+	<Button 
+		android:id="@+id/buttonReset" 
+		android:layout_width="160px" 
+		android:layout_height="wrap_content" 
+		android:text="reset">
+	</Button>   
+    <Button 
+		android:id="@+id/buttonSafe" 
+		android:layout_width="160px" 
+		android:layout_height="wrap_content" 
+		android:text="safe">
+	</Button>  
+  </LinearLayout>
+
+  </LinearLayout>
+ </ScrollView>
 </LinearLayout>
