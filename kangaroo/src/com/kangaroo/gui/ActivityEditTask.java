@@ -17,6 +17,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -40,11 +41,16 @@ import com.mobiletsm.routing.Place;
  * @author mrtazz
  *
  */
+/**
+ * @author mrtazz
+ *
+ */
 public class ActivityEditTask extends Activity {
 	
 	  private final int label_length = 90;
 	  private final int content_length = 200;
 	  private Task t;
+	  private Place p = null;
 	  private ArrayList<String[]> active_views;
 	  private Random generator;
 	  private TaskConstraintLocation actual_location = null;
@@ -73,7 +79,21 @@ public class ActivityEditTask extends Activity {
 			main = (LinearLayout)findViewById(R.id.mainedittasklayout);
 	        
 	        updateResultData();
+	        load();
 	  
+	  }
+	  
+	/**
+	 * @brief load all views
+	 */
+	private void load()
+	  {
+		  	if (active_views.size() > 0)
+		  	{
+		  		main.removeAllViews();
+		  		active_views.removeAll(active_views);
+		  	}
+
 	        // set title view
 		  	main.addView(getTaskTitleLayout(t));
 	        // set description view
@@ -131,6 +151,7 @@ public class ActivityEditTask extends Activity {
 		  	if (active_views.size() > 0)
 		  	{
 		  		t = new Task();
+		  		if (p != null) t.addConstraint(new TaskConstraintLocation(p));
 		  	}
 		  	for (String[] s : active_views)
 		  	{
@@ -262,12 +283,13 @@ public class ActivityEditTask extends Activity {
 			if (data != null) {
 				double lat = data.getExtras().getDouble("latitude");
 				double lon = data.getExtras().getDouble("longitude");
-				Place p = new Place(lat, lon);
+				p = new Place(lat, lon);
 				t.removeConstraint(actual_location);
 				t.addConstraint(new TaskConstraintLocation(p));
 			} else {
 				Toast.makeText(this, "no position set! resultCode = " + resultCode, Toast.LENGTH_SHORT).show();
 			}
+			updateResultData();
 			load();
 		}
 	  
@@ -476,6 +498,7 @@ public class ActivityEditTask extends Activity {
 	 */
 	private LinearLayout getLocationConstraintLayout(TaskConstraintLocation tc)
 	  {
+		p = tc.getPlace();
 		LinearLayout ll_location = new LinearLayout(this);
 		ll_location.setVisibility(1);
 		ll_location.setOrientation(0);
@@ -484,12 +507,11 @@ public class ActivityEditTask extends Activity {
 		tv_location.setWidth(label_length);
 		ll_location.addView(tv_location);
 		actual_location = tc;
-		EditText ed_location = new EditText(this);
+		Button ed_location = new Button(this);
 		ed_location.setWidth(content_length);
 		ed_location.setText(tc.getPlace().toString());
 		ed_location.setId(generator.nextInt(Integer.MAX_VALUE));
 		ed_location.setOnClickListener(LocationClickListener);
-		active_views.add(buildEventMap(String.valueOf(ed_location.getId()), "edittext", "location"));
 		ll_location.addView(ed_location);
 		return ll_location;
 	  }	  
