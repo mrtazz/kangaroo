@@ -541,100 +541,134 @@ public class ActivityEditTask extends Activity {
 		  inflater.inflate(R.menu.edittask_menu, menu);
 		  return true;
 	}
+	
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onPrepareOptionsMenu(android.view.Menu)
+	 */
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu)
+	{
+		menu.clear();
+		if (hasAmenityConstraint) menu.add(0, R.id.addAmenity, 0, "Remove Amenity"); 
+		else menu.add(0, R.id.addAmenity, 0, "Add Amenity");
+		if (hasDayTimeConstraint) menu.add(0, R.id.addDaytime, 0, "Remove Daytime"); 
+		else menu.add(0, R.id.addDaytime, 0, "Add Daytime");
+		if (hasDateConstraint) menu.add(0, R.id.addDate, 0, "Remove Date"); 
+		else menu.add(0, R.id.addDate, 0, "Add Date");
+		if (hasDurationConstraint) menu.add(0, R.id.addDuration, 0, "Remove Duration"); 
+		else menu.add(0, R.id.addDuration, 0, "Add Duration");
+		if (hasLocationConstraint) menu.add(0, R.id.addLocation, 0, "Remove Location"); 
+		else menu.add(0, R.id.addLocation, 0, "Add Location");
+		
+		return super.onPrepareOptionsMenu(menu);
+	}
+
 
 	  /* (non-Javadoc)
 	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
 	 */
 	public boolean onOptionsItemSelected (MenuItem item)
 	{
-	  	  Toast toast;
+		  updateResultData();
+		  boolean ret = false;
 		  switch (item.getItemId())
 		  {
 		  	case R.id.addAmenity:
 		  		if (!hasAmenityConstraint)
 		  		{
 		  			TaskConstraintPOI tc1 = new TaskConstraintPOI(new POICode("shop#bakery"));
-		  			main.addView(getAmenityConstraintLayout(tc1));
+		  			t.addConstraint(tc1);
 		  		}
 		  		else
 		  		{
-			    	toast = Toast.makeText(this,
-	  					       "Constraint exists already.",
-		  				       Toast.LENGTH_SHORT);
-			    	toast.show();
-		  			
+			    	List<TaskConstraintInterface> l =  t.getConstraintsOfType("amenity");
+			    	for (TaskConstraintInterface tci : l)
+			    	{
+			    		t.removeConstraint(tci);
+			    	}
+			    	hasAmenityConstraint = false;
 		  		}
-		  		return true;
+		  		ret = true;
+		  		break;
 
 		  	case R.id.addLocation:
 		  		if (!hasLocationConstraint)
 		  		{
 		  			TaskConstraintLocation tc2 = new TaskConstraintLocation(new Place(0,0));
-		  			main.addView(getLocationConstraintLayout(tc2));
+		  			t.addConstraint(tc2);
 		  		}
 		  		else
 		  		{
-			    	toast = Toast.makeText(this,
-	  					       "Constraint exists already.",
-		  				       Toast.LENGTH_SHORT);
-			    	toast.show();
+			    	List<TaskConstraintInterface> l =  t.getConstraintsOfType("location");
+			    	for (TaskConstraintInterface tci : l)
+			    	{
+			    		t.removeConstraint(tci);
+			    	}
+			    	hasLocationConstraint = false;
 		  		}
-		  		return true;
+		  		ret = true;
+		  		break;
 
 		  	case R.id.addDaytime:
 		  		if (!hasDayTimeConstraint)
 		  		{
 			  		TaskConstraintDayTime tc3 = new TaskConstraintDayTime(new Date(), new Date());
-			  		for (LinearLayout ll : getDayTimeConstraintLayout(tc3))
-			  		{
-			  			main.addView(ll);
-			  		}
+			  		t.addConstraint(tc3);
 		  		}
 		  		else
 		  		{
-			    	toast = Toast.makeText(this,
-	  					       "Constraint exists already.",
-		  				       Toast.LENGTH_SHORT);
-			    	toast.show();
+			    	List<TaskConstraintInterface> l =  t.getConstraintsOfType("daytime");
+			    	for (TaskConstraintInterface tci : l)
+			    	{
+			    		t.removeConstraint(tci);
+			    	}
+			    	hasDayTimeConstraint = false;
 		  		}
-		  		return true;
+		  		ret = true;
+		  		break;
 
 		  	case R.id.addDate:
 		  		if (!hasDateConstraint)
 		  		{
 			  		TaskConstraintDate tc4 = new TaskConstraintDate(new Date(), new Date());
-			  		for (LinearLayout ll : getDateConstraintLayout(tc4))
-			  		{
-			  			main.addView(ll);
-			  		}
+			  		t.addConstraint(tc4);
 		  		}
 		  		else
 		  		{
-			    	toast = Toast.makeText(this,
-	  					       "Constraint exists already.",
-		  				       Toast.LENGTH_SHORT);
-			    	toast.show();
+			    	List<TaskConstraintInterface> l =  t.getConstraintsOfType("date");
+			    	for (TaskConstraintInterface tci : l)
+			    	{
+			    		t.removeConstraint(tci);
+			    	}
+			    	hasDateConstraint = false;
 		  		}
-		  		return true;
+		  		ret = true;
+		  		break;
 
 		  	case R.id.addDuration:
 		  		if (!hasDurationConstraint)
 		  		{
 		  			TaskConstraintDuration tc5 = new TaskConstraintDuration(0);
-		  			main.addView(getDurationConstraintLayout(tc5));
+		  			t.addConstraint(tc5);
 		  		}
 		  		else
 		  		{
-			    	toast = Toast.makeText(this,
-	  					       "Constraint exists already.",
-		  				       Toast.LENGTH_SHORT);
-			    	toast.show();
+			    	List<TaskConstraintInterface> l =  t.getConstraintsOfType("duration");
+			    	for (TaskConstraintInterface tci : l)
+			    	{
+			    		t.removeConstraint(tci);
+			    	}
+			    	hasDurationConstraint = false;
 		  		}
-		  		return true;
+		  		ret = true;
+		  		break;
 			default:
 				System.out.println("ItemId: "+item.getItemId());
-				return true;
+		  		ret = true;
+		  		break;
 
 		  }
+		  load();
+		  return ret;
 	}
 }
