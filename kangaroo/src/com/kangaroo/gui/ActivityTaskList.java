@@ -160,7 +160,7 @@ public class ActivityTaskList extends ExpandableListActivity {
 				 else if (type.equals("daytime"))
 				 {
 					 TaskConstraintDayTime ta = (TaskConstraintDayTime)tc;
-					 m.put("taskdaytime", pad2(ta.getStartTime().getHours()) + ":" + pad2(ta.getStartTime().getMinutes()) +
+					 m.put("taskdaytime", "Daytime: " + pad2(ta.getStartTime().getHours()) + ":" + pad2(ta.getStartTime().getMinutes()) +
 							 	   "->" + pad2(ta.getEndTime().getHours()) + ":" + pad2(ta.getEndTime().getMinutes()));
 				 }
 				 else if (type.equals("location"))
