@@ -210,6 +210,25 @@ public class ActivityEditTask extends Activity {
 					ll_duration.addView(ed_duration);
 					main.addView(ll_duration);
 				}
+				else if (type.equals("location"))
+				{
+					LinearLayout ll_location = new LinearLayout(this);
+					ll_location.setVisibility(1);
+					ll_location.setOrientation(0);
+					TextView tv_location = new TextView(this);
+					tv_location.setText("Location: ");
+					tv_location.setWidth(label_length);
+					ll_location.addView(tv_location);
+					TaskConstraintLocation tl = (TaskConstraintLocation)tc;
+					actual_location = tl;
+					EditText ed_location = new EditText(this);
+					ed_location.setWidth(content_length);
+					ed_location.setText(tl.getPlace().toString());
+					ed_location.setId(generator.nextInt(Integer.MAX_VALUE));
+					active_views.add(buildEventMap(String.valueOf(ed_location.getId()), "edittext", "location"));
+					ll_location.addView(ed_location);
+					main.addView(ll_location);
+				}
 		 }    
 	  }
 	  
