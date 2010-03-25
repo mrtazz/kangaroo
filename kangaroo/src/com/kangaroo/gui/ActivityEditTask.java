@@ -43,6 +43,7 @@ public class ActivityEditTask extends Activity {
 	  private Task t;
 	  private ArrayList<String[]> active_views;
 	  private Random generator;
+	  private LinearLayout main;
 	  @Override
 	  public void onCreate(Bundle savedInstanceState)
 	  {
@@ -52,6 +53,7 @@ public class ActivityEditTask extends Activity {
 	        t = Task.deserialize(s);
 	        active_views = new ArrayList<String[]>();
 	        generator = new Random();
+			main = (LinearLayout)findViewById(R.id.mainedittasklayout);
 	        
 	        updateResultData();
 	  
@@ -65,8 +67,6 @@ public class ActivityEditTask extends Activity {
 	        EditText edit_description = (EditText)findViewById(R.id.editdescription);
 	        edit_description.setText(t.getDescription());
 	        active_views.add(buildEventMap(String.valueOf(edit_description.getId()), "edittext", "description"));
-
-			LinearLayout main = (LinearLayout)findViewById(R.id.mainedittasklayout);
 			
 	        TaskConstraintInterface[] constraints = t.getConstraints();
 			for (TaskConstraintInterface tc : constraints)
