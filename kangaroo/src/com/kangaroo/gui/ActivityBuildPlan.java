@@ -112,9 +112,9 @@ public class ActivityBuildPlan extends Activity
 	    {
 	    	CalendarLibrary cl = new CalendarLibrary(ctx);
 			int calendarId = cl.getCalendar("kangaroo@lordofhosts.de").getId();
-			CalendarEvent ce = new CalendarEvent("", "Termin1", "", 47.9948308, 7.8497112, new Date(110,2,9,14,0), new Date(110,2,9,15,0), false, false, "Description1", calendarId, "GMT", (Place)null);	
+			CalendarEvent ce = new CalendarEvent("", "Termin1", "", 47.9948308, 7.8497112, new Date(110,2,9,14,0), new Date(110,2,9,15,0), false, false, "Description1", "GMT", (Place)null);	
 			cl.insertEventToBackend(ce);
-			ce = new CalendarEvent("", "Termin2", "", 47.9950469, 7.8326674, new Date(110,2,9,15,0), new Date(110,2,9,16,0), false, false, "Description2", calendarId, "GMT", (Place)null);	
+			ce = new CalendarEvent("", "Termin2", "", 47.9950469, 7.8326674, new Date(110,2,9,15,0), new Date(110,2,9,16,0), false, false, "Description2", "GMT", (Place)null);	
 			cl.insertEventToBackend(ce);
 	    }
 	    
