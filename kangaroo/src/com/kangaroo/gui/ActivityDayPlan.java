@@ -55,9 +55,7 @@ public class ActivityDayPlan extends ListActivity {
 	        tv = (TextView)findViewById(R.id.DayTitle);
 	        dp = new ActiveDayPlan();
 	        
-	        //TODO change back!
-	        //CalendarAccessAdapter caa = new CalendarAccessAdapterAndroid(this);
-	        CalendarAccessAdapter caa = new CalendarAccessAdapterMemory();
+	        CalendarAccessAdapter caa = new CalendarAccessAdapterAndroid(this);
 	        
 	        caa.setContext(getApplicationContext());
 		 	dp.setCalendarAccessAdapter(caa);
