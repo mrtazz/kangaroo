@@ -320,6 +320,10 @@ public class ActivityTaskList extends ExpandableListActivity {
 			return s;
 		}
 		
+		/**
+		 * @brief method to create a new task in the object
+		 * and then reload
+		 */
 		private void newTask()
 		{
 			Task t = new Task();
