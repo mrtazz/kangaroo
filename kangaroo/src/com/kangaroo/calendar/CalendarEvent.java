@@ -3,6 +3,7 @@
  */
 package com.kangaroo.calendar;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -40,8 +41,6 @@ public class CalendarEvent {
 	private Boolean allDay;
 	/** description */
 	private String description;
-	/** calendar */
-	private int calendar;
 	/** timezone */
 	private String timezone;
 	/** mobileTSM places */
@@ -61,11 +60,13 @@ public class CalendarEvent {
 	 * @param taskLink
 	 * @param allDay
 	 * @param description
+	 * @param timezone
+	 * @param place
 	 */
 	public CalendarEvent(String id, String title, String location,
 			Double locationLongitude, Double locationLatitude, Date startDate,
 			Date endDate, Boolean wasTask, Boolean allDay,
-			String description, int calendar, String timezone, Place place) {
+			String description, String timezone, Place place) {
 		this.id = id;
 		this.title = title;
 		this.location = location;
@@ -76,7 +77,6 @@ public class CalendarEvent {
 		this.wasTask = wasTask;
 		this.allDay = allDay;
 		this.description = description;
-		this.calendar = calendar;
 		this.timezone = timezone;
 		this.place = place;
 	}
@@ -92,7 +92,6 @@ public class CalendarEvent {
 		this.wasTask = null;
 		this.allDay = null;
 		this.description = null;
-		this.calendar = -1;
 		this.timezone = null;
 		this.place = null;
 	}
@@ -104,6 +103,10 @@ public class CalendarEvent {
 		TaskConstraintHelper helper = new TaskConstraintHelper(task);
 		Date endDate = new Date(now.getTime() + helper.getDuration() * 1000 * 60);
 		
+		// get calendar id
+	
+		
+		
 		this.id = null;
 		this.title = task.getName();
 		this.location = here.toString();
@@ -112,10 +115,9 @@ public class CalendarEvent {
 		this.startDate = now;
 		this.endDate = endDate;
 		this.wasTask = true;
-		this.allDay = null;
+		this.allDay = false;
 		this.description = task.getDescription()+"\n---\n"+task.serialize();
-		this.calendar = -1;
-		this.timezone = null;
+		this.timezone = "Europe/Berlin";
 		this.place = here;
 	}
 	
@@ -258,20 +260,6 @@ public class CalendarEvent {
 	 */
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	/**
-	 * @return the calendar
-	 */
-	public int getCalendar() {
-		return calendar;
-	}
-
-	/**
-	 * @param calendar the calendar to set
-	 */
-	public void setCalendar(int calendar) {
-		this.calendar = calendar;
 	}
 
 	/**

@@ -6,10 +6,12 @@ package com.kangaroo.calendar;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 
@@ -41,15 +43,35 @@ public class CalendarLibrary {
 									 "calendar_id", "eventTimezone"};
 	/** the dictionary containing calendar objects */
 	private HashMap<String, Calendar> dictCalendars;
+	
+	/** calendar id to use */
+	private int calendar_id;
+	/** context in use */
+	private Context ctx = null;
 
 	/** object constructor */
 	public CalendarLibrary(Context ctx)
 	{
+		this.ctx = ctx;
 		contentResolver = ctx.getContentResolver();
 		calendarCursor = contentResolver.query(calendarURI, calendarFields,
 											   null, null, null);
 		dictCalendars = new HashMap<String, Calendar>();
 		readCalendars();
+		updateCalendarID();
+	}
+	
+	/**
+	 * @brief update id of calendar to use
+	 */
+	public void updateCalendarID()
+	{
+		readCalendars();
+		SharedPreferences prefsPrivate = null;
+		String preferencesName = "kangaroo_config";
+		prefsPrivate = ctx.getSharedPreferences(preferencesName, Context.MODE_PRIVATE);
+		String cal = prefsPrivate.getString("calendar_in_use", "kangaroo@lordofhosts.de");
+		calendar_id = dictCalendars.get(cal).getId();
 	}
 
     /**
@@ -216,7 +238,7 @@ public class CalendarLibrary {
 	            CalendarEvent event = new CalendarEvent(eventid, title, eventLocation,
 	            										longitude, latitude, dtstart, dtend,
 	            										wasTask, allDay, description,
-	            										calendar,timezone, place);
+	            										timezone, place);
 	            events.add(event);
 	        }
 
@@ -233,7 +255,7 @@ public class CalendarLibrary {
     {
     	/** build event values */
     	ContentValues values = new ContentValues();
-    	values.put("calendar_id", event.getCalendar());
+    	values.put("calendar_id", Integer.toString(calendar_id));
     	values.put("eventTimezone", event.getTimezone());
     	values.put("title", event.getTitle());
     	values.put("allDay", event.getAllDay());
