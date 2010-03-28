@@ -146,7 +146,8 @@ public class ActivityDayPlan extends ListActivity {
 	private void reload()
 	  {
 			Date today = new Date();
-	        tv.setText(today.getDate() + "/" + today.getMonth() + "/" + (today.getYear()+1900));
+	        tv.setText(pad2(today.getDate()) + "/" + pad2(today.getMonth()) + "/" 
+	        			+ (pad2(today.getYear()+1900)));
 	        eventlist = (ArrayList<CalendarEvent>)dp.getEvents();
 		    // Bind the ListView to an ArrayList of strings.
 	        calendarAdapter = new ArrayAdapterCalendar(this, R.layout.row, eventlist);
@@ -190,4 +191,15 @@ public class ActivityDayPlan extends ListActivity {
 
 	}
 
+	/**
+	 * @brief method to pad time to a length of 2
+	 * @param i time as int
+	 * @return padded time as string
+	 */
+	private String pad2(int i)
+	{
+		String s = Integer.toString(i);
+		s= (s.length() < 2) ? ("0"+s) : (s);
+		return s;
+	}
 }
