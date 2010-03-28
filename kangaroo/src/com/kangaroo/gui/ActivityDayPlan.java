@@ -178,9 +178,10 @@ public class ActivityDayPlan extends ListActivity {
 		  		reload();
 		  		return true;
 
-		  	case R.id.exit:
-		  		Toast toast = Toast.makeText(this, "I dont't do this anymore!", Toast.LENGTH_SHORT);
-		  		toast.show();
+		  	case R.id.optimize:
+				Intent intent = new Intent(this, ActivityDayOptimizer.class);
+				intent.addCategory(Intent.CATEGORY_DEFAULT);
+				startActivityForResult(intent, 1);
 		  		return true;
 
 			default:
