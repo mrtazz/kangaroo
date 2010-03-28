@@ -312,7 +312,7 @@ public class CalendarLibrary {
     private String serializeKangarooEventData(CalendarEvent ce)
     {
     	String ret;
-    	ret  = "\n";
+    	ret  = " \n";
     	ret  += "---\n";
     	if (ce.getLocationLongitude() != null)
     	{
