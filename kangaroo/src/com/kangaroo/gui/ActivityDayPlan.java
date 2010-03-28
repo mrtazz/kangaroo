@@ -40,6 +40,7 @@ public class ActivityDayPlan extends ListActivity {
 	  private com.kangaroo.ActiveDayPlan dp;
 	  private CalendarEvent actual_calendar_event;
 	  private int actual_calendar = 1;
+	  private long actual_event;
 	  // menu item ids
 	  private final int MENU_DELETE = 0;
 	  private final int MENU_TO_TASK = 1;
@@ -78,6 +79,7 @@ public class ActivityDayPlan extends ListActivity {
 		      return;
 		  }
 		  actual_calendar_event = (CalendarEvent)info.targetView.getTag(R.id.row);
+		  actual_event = info.id;
 		  // add menu items
 		  menu.add(0, MENU_DELETE, 0, R.string.delete);
 		  menu.add(0, MENU_TO_TASK, 0, R.string.to_task);
@@ -127,12 +129,12 @@ public class ActivityDayPlan extends ListActivity {
 	  @Override
 	  public void onActivityResult(int requestCode, int resultCode, Intent data) {
 			if (data != null) {
-				eventlist.remove(actual_calendar_event);
+				eventlist.remove((int)actual_event);
 				double lat = data.getExtras().getDouble("latitude");
 				double lon = data.getExtras().getDouble("longitude");
 				actual_calendar_event.setLocationLatitude(lat);
 				actual_calendar_event.setLocationLongitude(lon);
-				eventlist.add(actual_calendar_event);
+				eventlist.add((int)actual_event,actual_calendar_event);
 				dp.setEvents(eventlist);
 			} else {
 				Toast.makeText(this, "no position set! resultCode = " + resultCode, Toast.LENGTH_SHORT).show();
