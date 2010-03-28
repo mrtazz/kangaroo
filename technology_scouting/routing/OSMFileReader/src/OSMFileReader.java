@@ -172,8 +172,8 @@ public class OSMFileReader {
         CalendarEvent event6 = new CalendarEvent();
         event6.setStartDate(new Date(2010 - 1900, 3, 10, 23, 0));
         event6.setEndDate(new Date(2010 - 1900, 3, 10, 23, 40));
-        event6.setLocationLatitude(48.983);
-        event6.setLocationLongitude(7.852);  
+        //event6.setLocationLatitude(48.983);
+        //event6.setLocationLongitude(7.852);  
         
         CalendarEvent event7 = new CalendarEvent();
         event7.setStartDate(new Date(2010 - 1900, 3, 10, 23, 45));

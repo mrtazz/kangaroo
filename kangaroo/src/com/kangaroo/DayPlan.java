@@ -256,10 +256,25 @@ public class DayPlan {
 			if (routingEngine == null || !routingEngine.initialized()) {
 				throw new RuntimeException("DayPlan.checkComplianceWith(): Routing engine not ready");
 			}
-		
+			
+			/* we need the current time */
+			if (now == null) {
+				throw new MissingParameterException("DayPlan.checkComplianceWith(): No current time given");
+			}
+			
+			/* we need the current position */
+			if (here == null) {
+				throw new MissingParameterException("DayPlan.checkComplianceWith(): No current position given");
+			}
+			
 			/* destinationEvent has to specify a start date */
 			if (destinationEvent.getStartDate() == null) {
 				throw new MissingParameterException("DayPlan.checkComplianceWith(): No start date given");
+			}
+			
+			/* destinationEvent has to specify a place */
+			if (destinationEvent.getPlace() == null) {
+				throw new MissingParameterException("DayPlan.checkComplianceWith(): No place given");
 			}
 			
 				System.out.println("DayPlan.checkComplianceWith(): route from " + here.toString() + 

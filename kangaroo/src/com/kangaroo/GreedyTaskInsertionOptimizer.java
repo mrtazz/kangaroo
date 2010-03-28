@@ -46,21 +46,32 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 			throw new RuntimeException("GreedyTaskInsertionOptimizer.optimize(): resources " +
 					"(day plan and/or routing engine) not ready");
 		}
+		
+		/* we need the current time */
+		if (now == null) {
+			throw new MissingParameterException("GreedyTaskInsertionOptimizer.optimize(): No current time given");
+		}
+		
+		/* we need the current position */
+		if (here == null) {
+			throw new MissingParameterException("GreedyTaskInsertionOptimizer.optimize(): No current position given");
+		}
 				
-		System.out.println("GreedyTaskInsertionOptimizer.optimize(): starting (now = " + 
-				now.toString() + ", here = " + here.toString() + ") ...");
+			System.out.println("GreedyTaskInsertionOptimizer.optimize(): starting (now = " + 
+					now.toString() + ", here = " + here.toString() + ") ...");
 		
 		/* initialize new day plan with events of original day plan */
 		DayPlan optimizedDayPlan = new DayPlan();
 		optimizedDayPlan.setEvents(originalDayPlan.getEvents());
 		optimizedDayPlan.setRoutingEngine(routingEngine);
 		optimizedDayPlan.setOptimizer(this);
-
 		
 		int timeLeftToWait = 0;
 		
 		CalendarEvent nextEvent = originalDayPlan.getNextEvent(now);
-			System.out.println("nextEvent = " + nextEvent);
+		
+			System.out.println("GreedyTaskInsertionOptimizer.optimize(): nextEvent = " + nextEvent);
+			
 		if (nextEvent != null) {
 			try {
 				timeLeftToWait = originalDayPlan.checkComplianceWith(now, here, nextEvent, vehicle);
