@@ -217,7 +217,7 @@ public abstract class RouteParameter {
 			}
 			
 			buf.append(": length = " + lengthToString(getLength()) + ", " +
-				"duration = " + durationToString(Math.rint(getDurationOfTravel())) + "}");				
+				"duration = " + durationToString(getDurationOfTravel()) + "}");				
 			
 			return buf.toString();
 //		}
@@ -256,6 +256,9 @@ public abstract class RouteParameter {
 	 * @return
 	 */
 	public static String durationToString(double duration) {
+		/* round up to next integer */
+		duration = Math.ceil(duration);
+		
 		if (duration == PARAMETER_UNDEFINED) {
 			return STRING_PARAMETER_UNDEFINIED; 
 		} else {

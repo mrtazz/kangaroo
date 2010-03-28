@@ -337,15 +337,13 @@ public class CalendarEvent {
 		if (getTitle() != null) {
 			title = getTitle();
 		}
-		if(getPlace() == null)
-		{
-			return "CalendarEvent: {" + title + ", " + startDate + "-" + endDate + ", " + "no Place" + "}";
-		}
-		else
-		{
-			return "CalendarEvent: {" + title + ", " + startDate + "-" + endDate + ", " + getPlace().toString() + "}";
+		
+		String place = "<no location>";
+		if(getPlace() != null) {
+			place = getPlace().toString();
 		}
 		
+		return "CalendarEvent: {" + title + ", " + startDate + "-" + endDate + ", " + place + "}";		
 	}
 
 

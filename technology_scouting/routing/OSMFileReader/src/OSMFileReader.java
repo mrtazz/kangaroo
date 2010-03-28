@@ -160,8 +160,8 @@ public class OSMFileReader {
         CalendarEvent event4 = new CalendarEvent();
         event4.setStartDate(new Date(2010 - 1900, 3, 10, 21, 45));
         event4.setEndDate(new Date(2010 - 1900, 3, 10, 21, 50));
-        event4.setLocationLatitude(47.987);
-        event4.setLocationLongitude(7.852);        
+//        event4.setLocationLatitude(47.987);
+//        event4.setLocationLongitude(7.852);        
 
         CalendarEvent event5 = new CalendarEvent();
         event5.setStartDate(new Date(2010 - 1900, 3, 10, 22, 0));
@@ -297,6 +297,7 @@ public class OSMFileReader {
 	 */
 	public static void main(String[] args) {	
 		
+			
 		testActiveDayPlan();
 		
 		//testTaskPriorityComparator();		
