@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 
 import com.kangaroo.task.Task;
@@ -76,6 +77,12 @@ public class CalendarAccessAdapterAndroid implements CalendarAccessAdapter
 		TaskLibrary tm = new TaskLibrary(context, calendarName);
 		ArrayList<Task> tasksToPut = new ArrayList<Task>();
 		tasksToPut.addAll(tasks);
+		ArrayList<Task> oldTasks = tm.getTasks();
+		Iterator<Task> i = oldTasks.iterator();
+		while(i.hasNext())
+		{
+			tm.deleteTask(i.next());
+		}
 		tm.putTasks(tasksToPut);
 	}
 }

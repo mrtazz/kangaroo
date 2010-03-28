@@ -20,6 +20,8 @@ import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
 
 import com.android.kangaroo.R;
 import com.kangaroo.ActiveDayPlan;
+import com.kangaroo.calendar.CalendarAccessAdapter;
+import com.kangaroo.calendar.CalendarAccessAdapterAndroid;
 import com.kangaroo.task.Task;
 import com.kangaroo.task.TaskConstraintDate;
 import com.kangaroo.task.TaskConstraintDayTime;
@@ -38,7 +40,7 @@ import com.mobiletsm.routing.Place;
 public class ActivityTaskList extends ExpandableListActivity {
 
 	private SimpleExpandableListAdapter la;
-	private com.kangaroo.DayPlan dp;
+	private com.kangaroo.ActiveDayPlan dp;
 	private ArrayList<Task> taskslist;
 	private String[] childitems = new String[]{"tasklocation", "taskdescription",
 												"taskdate", "taskdaytime", 
@@ -58,6 +60,11 @@ public class ActivityTaskList extends ExpandableListActivity {
 	        setContentView(R.layout.tasklist);
 	        registerForContextMenu(getExpandableListView());
 	        dp = new ActiveDayPlan();
+	        
+	        CalendarAccessAdapter caa = new CalendarAccessAdapterAndroid(this);
+		 	caa.setContext(getApplicationContext());
+		 	dp.setCalendarAccessAdapter(caa);
+	        
 	        //setUpTasks();
 	        reload();
 	        
@@ -65,6 +72,10 @@ public class ActivityTaskList extends ExpandableListActivity {
 	 
 	 private void reload()
 	 {
+		 	
+		 
+		 	taskslist = (ArrayList<Task>)dp.getTasks();
+		 	
 		 	
 	        la = new SimpleExpandableListAdapter(this,
 	        									buildGroupEntries(), 
@@ -237,6 +248,7 @@ public class ActivityTaskList extends ExpandableListActivity {
 			  Toast toast;
 			  switch (item.getItemId()) {
 			    case MENU_DELETE:
+			    	
 				  toast = Toast.makeText(this,
 				  					     "Menu item DELETE clicked",
 					  				     Toast.LENGTH_SHORT);
