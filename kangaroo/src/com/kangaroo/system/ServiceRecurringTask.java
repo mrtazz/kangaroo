@@ -2,6 +2,7 @@ package com.kangaroo.system;
 
 import java.util.Date;
 
+import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -21,7 +22,6 @@ import com.kangaroo.calendar.CalendarAccessAdapter;
 import com.kangaroo.calendar.CalendarAccessAdapterMemory;
 import com.kangaroo.calendar.CalendarEvent;
 import com.kangaroo.gui.ActivityBuildPlan;
-import com.kangaroo.gui.ActivityMainWindow;
 import com.kangaroo.gui.UserNotification;
 import com.kangaroo.task.Task;
 import com.kangaroo.task.TaskConstraintDate;
@@ -33,6 +33,7 @@ import com.mobiletsm.routing.AllStreetVehicle;
 import com.mobiletsm.routing.MobileTSMRoutingEngine;
 import com.mobiletsm.routing.NoRouteFoundException;
 import com.mobiletsm.routing.Place;
+import com.mobiletsm.routing.RouteParameter;
 import com.mobiletsm.routing.RoutingEngine;
 import com.mobiletsm.routing.Vehicle;
 
@@ -48,6 +49,9 @@ public class ServiceRecurringTask extends Service
 	private ActiveDayPlan currentDayPlan;
 	private Vehicle currentVehicle;
 	private UserNotification myUserNotification;
+	private Integer consistencyMessageId = -1;
+	private Integer complienceMessageId = -1;
+	private int messageLevel = -1;
 	
 	/**
 	 * Initialize the new Service-object here
@@ -66,7 +70,7 @@ public class ServiceRecurringTask extends Service
 		currentDayPlan = new ActiveDayPlan();
 		RoutingEngine re = new MobileTSMRoutingEngine();
 		re.enableRoutingCache();
-    	re.init("file:/sdcard/map-fr.db");
+    	re.init("/sdcard/map-fr.db");
     	currentDayPlan.setRoutingEngine(re);
     	
         //CalendarAccessAdapter caa = new CalendarAccessAdapterAndroid(this);
@@ -74,7 +78,7 @@ public class ServiceRecurringTask extends Service
     	caa.setContext(getApplicationContext());
 		currentDayPlan.setCalendarAccessAdapter(caa);
 		
-		currentVehicle = new AllStreetVehicle(50.0);
+		currentVehicle = new AllStreetVehicle(5.0);
 		
 		myUserNotification = new UserNotification(getApplicationContext());
 		
@@ -84,44 +88,45 @@ public class ServiceRecurringTask extends Service
 	private void fill_stuff()
 	{
         CalendarEvent event1 = new CalendarEvent();
-        event1.setStartDate(new Date(2010 - 1900, 3, 17, 19, 30));
-        event1.setEndDate(new Date(2010 - 1900, 3, 17, 20, 00));
+        event1.setStartDate(new Date(2010 - 1900, 2, 20, 19, 20));
+        event1.setEndDate(new Date(2010 - 1900, 2, 20, 19, 30));
         event1.setLocationLatitude(48.00);
         event1.setLocationLongitude(7.852);
+        event1.setTitle("BAM Title");
 
         CalendarEvent event2 = new CalendarEvent();
-        event2.setStartDate(new Date(2010 - 1900, 3, 17, 20, 45));
-        event2.setEndDate(new Date(2010 - 1900, 3, 17, 21, 00));
+        event2.setStartDate(new Date(2010 - 1900, 2, 20, 20, 45));
+        event2.setEndDate(new Date(2010 - 1900, 2, 20, 21, 00));
         event2.setLocationLatitude(48.000);
         event2.setLocationLongitude(7.852);
 
         CalendarEvent event3 = new CalendarEvent();
-        event3.setStartDate(new Date(2010 - 1900, 3, 17, 21, 20));
-        event3.setEndDate(new Date(2010 - 1900, 3, 17, 21, 40));
+        event3.setStartDate(new Date(2010 - 1900, 2, 20, 21, 20));
+        event3.setEndDate(new Date(2010 - 1900, 2, 20, 21, 40));
         event3.setLocationLatitude(47.987);
         event3.setLocationLongitude(7.852);
 
         CalendarEvent event4 = new CalendarEvent();
-        event4.setStartDate(new Date(2010 - 1900, 3, 17, 21, 45));
-        event4.setEndDate(new Date(2010 - 1900, 3, 17, 21, 50));
+        event4.setStartDate(new Date(2010 - 1900, 2, 20, 21, 45));
+        event4.setEndDate(new Date(2010 - 1900, 2, 20, 21, 50));
         event4.setLocationLatitude(47.987);
         event4.setLocationLongitude(7.852);        
 
         CalendarEvent event5 = new CalendarEvent();
-        event5.setStartDate(new Date(2010 - 1900, 3, 17, 22, 0));
-        event5.setEndDate(new Date(2010 - 1900, 3, 17, 22, 40));
+        event5.setStartDate(new Date(2010 - 1900, 2, 20, 22, 0));
+        event5.setEndDate(new Date(2010 - 1900, 2, 20, 22, 40));
         event5.setLocationLatitude(47.983);
         event5.setLocationLongitude(7.852);        
 
         CalendarEvent event6 = new CalendarEvent();
-        event6.setStartDate(new Date(2010 - 1900, 3, 17, 23, 0));
-        event6.setEndDate(new Date(2010 - 1900, 3, 17, 23, 40));
+        event6.setStartDate(new Date(2010 - 1900, 2, 20, 23, 0));
+        event6.setEndDate(new Date(2010 - 1900, 2, 20, 23, 40));
         event6.setLocationLatitude(48.983);
         event6.setLocationLongitude(7.852);  
         
         CalendarEvent event7 = new CalendarEvent();
-        event7.setStartDate(new Date(2010 - 1900, 3, 17, 23, 45));
-        event7.setEndDate(new Date(2010 - 1900, 3, 17, 23, 50));
+        event7.setStartDate(new Date(2010 - 1900, 2, 20, 23, 45));
+        event7.setEndDate(new Date(2010 - 1900, 2, 20, 23, 50));
         event7.setLocationLatitude(47.983);
         event7.setLocationLongitude(7.852); 
         
@@ -133,7 +138,6 @@ public class ServiceRecurringTask extends Service
         currentDayPlan.addEvent(event6);
         currentDayPlan.addEvent(event7);        
                 
-        
         /* add and create some tasks */
         
 		Task task1 = new Task();
@@ -204,8 +208,6 @@ public class ServiceRecurringTask extends Service
 	@Override
 	public void onStart(Intent intent, int startId)
 	{
-		 myWakeLock = myPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Kangaroo calculation lock");
-		 myWakeLock.acquire();
 		 
 		 //only one Thread that checks/optimizes the plan is allowed at any time!
 		 if(!semaphoreTaskAktive)
@@ -224,9 +226,13 @@ public class ServiceRecurringTask extends Service
     {
         public void run() 
         {
-        	Location currentLocation = null;
+   		 	//obtain CPU-Lock to prevent the device from going to sleep while we are still routing
+        	myWakeLock = myPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Kangaroo calculation lock");
+   		 	myWakeLock.acquire();
+        	
+   		 	Location currentLocation = null;
         	Place currentPlace = null;
-        	int minutes_left=-1;
+        	int minutes_left = -1;
     		if(currentIntent.getBooleanExtra("isLocation", false) == true)
     		{
     			System.out.println("ServiceRecurringTask: location");
@@ -241,19 +247,118 @@ public class ServiceRecurringTask extends Service
     			currentLocation = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
     		}
     		
-			currentPlace = new Place(currentLocation.getLatitude(), currentLocation.getLongitude());
-			DayPlanConsistency dpc = currentDayPlan.checkConsistency(currentVehicle, new Date());
-			try 
-			{
-				minutes_left = currentDayPlan.checkComplianceWith(new Date(), currentPlace, currentVehicle);
-			} catch (NoRouteFoundException e) 
-			{
-				e.printStackTrace();
-			}
-    		
-			myUserNotification.showNotification("Time till Event", minutes_left+" minutes left.", true, ActivityBuildPlan.class);
-    		
-    		//it is really important to release the WakeLock after we are done!
+    		if(!(currentLocation == null))
+    		{
+    			//check the dayplan here and deal with consistency and compliance problems
+    			currentPlace = new Place(currentLocation.getLatitude(), currentLocation.getLongitude());
+    			System.out.println("SRT: currentPlace: "+currentPlace.toString());
+    			System.out.println(currentDayPlan.toString());
+    			
+    			//check consistency of the dayplan
+    			DayPlanConsistency dpc = currentDayPlan.checkConsistency(currentVehicle, new Date());
+    			if(consistencyMessageId != -1 && !dpc.hasNoConflicts())
+    			{
+    				myUserNotification.killNotification(consistencyMessageId);
+    				consistencyMessageId = -1;
+    			}
+    			if(!dpc.hasNoConflicts())
+    			{
+    				consistencyMessageId = myUserNotification.showNotification("Inconsistent Events", dpc.toString(), false, ActivityBuildPlan.class);
+        			System.out.println(dpc.toString());
+    			}
+    			
+    			//check complience here
+    			try 
+    			{
+    				minutes_left = currentDayPlan.checkComplianceWith(new Date(), currentPlace, currentVehicle);
+    			} catch (NoRouteFoundException e) 
+    			{
+    				e.printStackTrace();
+    			}
+        		
+    			boolean message_show = false;
+    			boolean message_ping = false;
+    			String message_text = "";
+    			String message_title = "";
+    			if(minutes_left < 0)
+    			{
+    				//its too late. tell the user anyway
+    				message_show = true;
+    				message_title = "too late";
+    				message_text = RouteParameter.durationToString(minutes_left) + " too late for event " + currentDayPlan.getNextEvent(new Date()).getTitle();
+    				if(messageLevel != 4)
+    				{
+    					message_ping = true;
+    					messageLevel = 4;
+    				}
+    				
+    			}
+    			else if(minutes_left < 5)
+    			{
+    				//last warning
+    				message_show = true;
+    				message_title = "get going";
+    				message_text = RouteParameter.durationToString(minutes_left) + " remaining for event " + currentDayPlan.getNextEvent(new Date()).getTitle();
+    				if(messageLevel != 3)
+    				{
+    					message_ping = true;
+    					messageLevel = 3;
+    				}
+    			}
+    			else if(minutes_left < 15)
+    			{
+    				//second message
+    				message_show = true;
+    				message_title = "upcomming event";
+    				message_text = RouteParameter.durationToString(minutes_left) + " remaining for event " + currentDayPlan.getNextEvent(new Date()).getTitle();
+    				if(messageLevel != 2)
+    				{
+    					message_ping = true;
+    					messageLevel = 2;
+    				}
+    			}
+    			else if(minutes_left < 30)
+    			{
+    				//first message, <30
+    				message_show = true;
+    				message_title = "event reminder";
+    				message_text = RouteParameter.durationToString(minutes_left) + " remaining for event" + currentDayPlan.getNextEvent(new Date()).getTitle();
+    				if(messageLevel != 1)
+    				{
+    					message_ping = true;
+    					messageLevel = 1;
+    				}
+    			}
+    			
+    			if(message_show)
+    			{
+        			if(message_ping == true)
+        			{
+        				if(complienceMessageId != -1)
+            			{
+            				myUserNotification.killNotification(complienceMessageId);
+            				complienceMessageId = -1;
+            			}
+            			complienceMessageId = myUserNotification.showNotification(message_title, message_text, false, ActivityBuildPlan.class);    
+        			}
+        			else
+        			{
+        				if(complienceMessageId != -1)
+            			{
+            				myUserNotification.updateNotification(complienceMessageId, message_title, message_text, false, ActivityBuildPlan.class);
+            			}
+        				 
+        			}
+    								
+    			}
+
+    		}
+    		else
+    		{
+    			System.out.println("currentLocation is null");
+    		}
+        
+       		//it is really important to release the WakeLock after we are done!
     		semaphoreTaskAktive = false;
    		    myWakeLock.release();	
         }

@@ -25,12 +25,11 @@ import com.kangaroo.calendar.CalendarAccessAdapterAndroid;
 import com.kangaroo.task.Task;
 import com.kangaroo.task.TaskConstraintDate;
 import com.kangaroo.task.TaskConstraintDayTime;
+import com.kangaroo.task.TaskConstraintDuration;
 import com.kangaroo.task.TaskConstraintInterface;
 import com.kangaroo.task.TaskConstraintLocation;
 import com.kangaroo.task.TaskConstraintPOI;
 import com.kangaroo.task.TaskConstraintPendingTasks;
-import com.mobiletsm.osm.data.searching.POICode;
-import com.mobiletsm.routing.Place;
 
 /**
  * @author mrtazz
@@ -42,11 +41,12 @@ public class ActivityTaskList extends ExpandableListActivity {
 	private SimpleExpandableListAdapter la;
 	private com.kangaroo.ActiveDayPlan dp;
 	private ArrayList<Task> taskslist;
+	private long actual_task;
 	private String[] childitems = new String[]{"tasklocation", "taskdescription",
-												"taskdate", "taskdaytime", 
+											   "taskduration", "taskdate", "taskdaytime", 
 												"taskpending", "taskpoi"};
 	private int[] childlayout = new int[]{R.id.tasklocation, R.id.taskdescription,
-									      R.id.taskdate, R.id.taskdaytime,
+										  R.id.taskduration, R.id.taskdate, R.id.taskdaytime,
 									      R.id.taskpending, R.id.taskpoi};
 
 	  // menu item ids
@@ -64,8 +64,7 @@ public class ActivityTaskList extends ExpandableListActivity {
 	        CalendarAccessAdapter caa = new CalendarAccessAdapterAndroid(this);
 		 	caa.setContext(getApplicationContext());
 		 	dp.setCalendarAccessAdapter(caa);
-	        
-	        //setUpTasks();
+
 	        reload();
 	        
 	  }
@@ -150,18 +149,25 @@ public class ActivityTaskList extends ExpandableListActivity {
 					 }
 					 else if (start == null)
 					 {
-						 m.put("taskdate", "Enddate: " + end.toLocaleString());
+						 m.put("taskdate", "Enddate: " + pad2(end.getDay()) + "/"
+								 					   + pad2(end.getMonth()) + "/"
+								 					   + (end.getYear()+1900));
 					 }
 					 else
 					 {
-						 m.put("taskdate","Startdate: "+ start.toLocaleString() + 
-								 		  "Endate: " + end.toLocaleString());
+						 m.put("taskdate","Startdate: "+ pad2(start.getDay()) + "/"
+								 					   + pad2(start.getMonth()) + "/"
+								 					   + (start.getYear()+1900) + "\n" +
+								 		    "Endate: " + pad2(end.getDay()) + "/"
+								 		    		   + pad2(end.getMonth()) + "/"
+								 		    		   + (end.getYear()+1900));
 					 }
 				 }
 				 else if (type.equals("daytime"))
 				 {
 					 TaskConstraintDayTime ta = (TaskConstraintDayTime)tc;
-					 m.put("taskdaytime", ta.getStartTime().toLocaleString() + "->" + ta.getEndTime().toLocaleString());						
+					 m.put("taskdaytime", "Daytime: " + pad2(ta.getStartTime().getHours()) + ":" + pad2(ta.getStartTime().getMinutes()) +
+							 	   "->" + pad2(ta.getEndTime().getHours()) + ":" + pad2(ta.getEndTime().getMinutes()));
 				 }
 				 else if (type.equals("location"))
 				 {
@@ -172,6 +178,11 @@ public class ActivityTaskList extends ExpandableListActivity {
 				 {
 					 TaskConstraintPendingTasks ta = (TaskConstraintPendingTasks)tc;
 					 m.put("taskpoi",ta.getTaskName());
+				 }
+				 else if(type.equals("duration"))
+				 {
+					 TaskConstraintDuration td = (TaskConstraintDuration)tc;
+					 m.put("taskduration", "Duration: " + td.getDuration() + " min");
 				 }
 				 else
 				 {
@@ -186,33 +197,6 @@ public class ActivityTaskList extends ExpandableListActivity {
 		 return ret;
 	 }
 	 
-	 
-	 private void setUpTasks()
-	 {
-		 	taskslist = new ArrayList<Task>();
-		 	Task myTask1 = new Task();
-        	myTask1.setName("Essen kaufen");
-        	myTask1.setDescription("essen halt");
-        	myTask1.addConstraint(new TaskConstraintLocation(new Place(2,3)));
-        	myTask1.addConstraint(new TaskConstraintPOI(new POICode(POICode.AMENITY_ARCHITECT_OFFICE)));
-        	myTask1.addConstraint(new TaskConstraintDate(new Date(110,2,17)));
-        	Task myTask2 = new Task();
-        	myTask2.setName("Geld holen");
-        	myTask2.setDescription("fuer mehr essen");
-        	myTask2.addConstraint(new TaskConstraintLocation(new Place(3,4)));
-        	myTask2.addConstraint(new TaskConstraintPOI(new POICode(POICode.AMENITY_ARTS_CENTRE)));
-        	myTask2.addConstraint(new TaskConstraintDate(new Date(110,2,12)));
-        	Task myTask3 = new Task();
-        	myTask3.setName("Kleider kaufen");
-        	myTask3.setDescription("alte kleider zu klein");
-        	myTask3.addConstraint(new TaskConstraintLocation(new Place(4,5)));
-        	myTask3.addConstraint(new TaskConstraintPOI(new POICode(POICode.AMENITY_ATM)));
-        	myTask3.addConstraint(new TaskConstraintDate(new Date(110,2,23)));
-	        
-	        taskslist.add(myTask1);
-	        taskslist.add(myTask2);
-	        taskslist.add(myTask3);
-	 }
 	 
 	 // context menu methods
 	 /* (non-Javadoc)
@@ -230,6 +214,7 @@ public class ActivityTaskList extends ExpandableListActivity {
 		      return;
 		  }
 		  // add menu items
+		  actual_task = info.id;
 		  menu.add(0, MENU_DELETE, 0, R.string.delete);
 		  menu.add(0, MENU_EDIT, 0, R.string.edit_task);
 	  }
@@ -246,22 +231,58 @@ public class ActivityTaskList extends ExpandableListActivity {
 	   */
 		private boolean applyMenuChoice(MenuItem item) {
 			  Toast toast;
+			  Boolean ret = false;
 			  switch (item.getItemId()) {
 			    case MENU_DELETE:
+			    	Task t = taskslist.get((int)actual_task);
+			    	String s = t.getName();
+			    	taskslist.remove(t);
+			    	dp.setTasks(taskslist);
 			    	
-				  toast = Toast.makeText(this,
-				  					     "Menu item DELETE clicked",
-					  				     Toast.LENGTH_SHORT);
-			  	  toast.show();
-			      return true;
+			    	toast = Toast.makeText(this,
+				  					       "Task " + s + " deleted.",
+					  				       Toast.LENGTH_SHORT);
+			  	  	toast.show();
+			  	  	ret = true;
+			  	  	reload();
+			  	  	break;
 			    case MENU_EDIT:
 				  // show the map
+			      Task tt = taskslist.get((int)actual_task);
+			      String ss = tt.serialize();
 				  Intent intent = new Intent(this, ActivityEditTask.class);
+				  intent.putExtra("task", ss);
 				  intent.addCategory(Intent.CATEGORY_DEFAULT);
 				  startActivityForResult(intent, 1);
 				  
-			      return true;
+			      ret = true;
+			      break;
 			  }
-			  return false;
+			  return ret;
 			}
+		
+		@Override
+		  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+				if (data != null) {
+					Task t = Task.deserialize((String)data.getExtras().get("task"));
+					taskslist.remove((int)actual_task);
+					taskslist.add((int)actual_task, t);
+					dp.setTasks(taskslist);
+				} else {
+					Toast.makeText(this, "Did not get task back! resultCode = " + resultCode, Toast.LENGTH_SHORT).show();
+				}
+				reload();
+			}
+		
+		/**
+		 * @brief method to pad time to a length of 2
+		 * @param i time as int
+		 * @return padded time as string
+		 */
+		private String pad2(int i)
+		{
+			String s = Integer.toString(i);
+			s= (s.length() < 2) ? ("0"+s) : (s);
+			return s;
+		}
 }

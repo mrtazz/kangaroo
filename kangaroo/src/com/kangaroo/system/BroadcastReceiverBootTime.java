@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 /**
@@ -17,10 +18,11 @@ public class BroadcastReceiverBootTime extends BroadcastReceiver
 	 
 	 @Override
 	 public void onReceive(Context context, Intent intent) 
-	 {
+	 {		 
 		  // just make sure we are getting the right intent (better safe than sorry)
 		  if( "android.intent.action.BOOT_COMPLETED".equals(intent.getAction())) 
 		  {
+			  
 			  ComponentName comp = new ComponentName(context.getPackageName(), ServiceCallTick.class.getName());
 			  ComponentName service = context.startService(new Intent().setComponent(comp));
 			  ComponentName comp2 = new ComponentName(context.getPackageName(), ServiceCallLocation.class.getName());

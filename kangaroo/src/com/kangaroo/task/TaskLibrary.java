@@ -29,7 +29,7 @@ public class TaskLibrary
 	{
 		int calendarId = cl.getCalendar(calendarName).getId();
 		
-		ArrayList<CalendarEvent> myEventList = cl.getEventsByDate(String.valueOf(calendarId), new Date(0,0,1));
+		ArrayList<CalendarEvent> myEventList = cl.getEventsByDate(String.valueOf(calendarId), new Date(90,10,10));
 		
 		CalendarEvent myEvents[] = myEventList.toArray(new CalendarEvent[0]);
 		ArrayList<Task> myTasks = new ArrayList<Task>();
@@ -92,8 +92,8 @@ public class TaskLibrary
 			
 		CalendarEvent returnEvent = null;
 		String taskString = myTask.serialize();
-		Date startDate = new Date(0,0,1,1,0);
-		Date endDate = new Date(0,0,1,1,1);
+		Date startDate = new Date(90,10,10,10,10);
+		Date endDate = new Date(90,10,10,10,20);
 
 		returnEvent = new CalendarEvent(myTask.getId(), "task", "", 0.0, 0.0, startDate, endDate, false, false, taskString, calendarId, "GMT", (Place)null);	
 

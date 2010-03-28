@@ -41,9 +41,9 @@ public class ActivityMainWindow extends TabActivity {
 	    myTabHost.addTab(tabTasklist);
 	    // get debug tab
 	    // get tasklist tab
-	    TabSpec tabDebug = myTabHost.newTabSpec("Debug");
-	    tabDebug.setIndicator("Debug");
-	    Intent intentDebug = new Intent(ctx, ActivityBuildPlan.class);
+	    TabSpec tabDebug = myTabHost.newTabSpec("Configuration");
+	    tabDebug.setIndicator("Config");
+	    Intent intentDebug = new Intent(ctx, ActivityConfiguration.class);
 	    tabDebug.setContent(intentDebug);
 	    myTabHost.addTab(tabDebug);
 	    

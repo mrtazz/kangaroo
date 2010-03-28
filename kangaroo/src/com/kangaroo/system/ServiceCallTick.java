@@ -36,8 +36,11 @@ public class ServiceCallTick extends android.app.Service
     	System.out.println("ServiceCallTick onCreate called");	
     	prefsPrivate = getSharedPreferences(preferencesName, MODE_PRIVATE);
     	callIntervall = prefsPrivate.getInt("background_call_intervall", 60);
-    	mAlarmSender = PendingIntent.getService(ServiceCallTick.this, 0, new Intent(ServiceCallTick.this, ServiceCallTick.class), 0);
-    	startScheduled();
+    	if(prefsPrivate.getBoolean("background_call_enable" , true))
+    	{
+        	mAlarmSender = PendingIntent.getService(ServiceCallTick.this, 0, new Intent(ServiceCallTick.this, ServiceCallTick.class), 0);
+        	startScheduled();
+    	}    	
     }
 	  
     /**
