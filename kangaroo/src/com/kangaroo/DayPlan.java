@@ -269,12 +269,14 @@ public class DayPlan {
 			
 			/* destinationEvent has to specify a start date */
 			if (destinationEvent.getStartDate() == null) {
-				throw new MissingParameterException("DayPlan.checkComplianceWith(): No start date given");
+				throw new MissingParameterException("DayPlan.checkComplianceWith(): " +
+						"destinationEvent does not specify a start date");
 			}
 			
 			/* destinationEvent has to specify a place */
 			if (destinationEvent.getPlace() == null) {
-				throw new MissingParameterException("DayPlan.checkComplianceWith(): No place given");
+				throw new MissingParameterException("DayPlan.checkComplianceWith(): " +
+						"destinationEvent does not specify a location (Place)");
 			}
 			
 				System.out.println("DayPlan.checkComplianceWith(): route from " + here.toString() + 
