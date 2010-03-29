@@ -2,6 +2,10 @@ package com.mobiletsm.routing;
 
 import org.openstreetmap.travelingsalesman.routing.IRouter;
 import org.openstreetmap.travelingsalesman.routing.Route;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import com.mobiletsm.osm.data.MobileInterfaceDataSet;
 import com.mobiletsm.osm.data.adapters.RoutingAndroidSQLiteAdapter;
 import com.mobiletsm.osm.data.providers.DatabaseMDSProvider;
@@ -15,13 +19,26 @@ public class MobileTSMRoutingEngine implements RoutingEngine {
 	
 	
 	private boolean useRoutingCache = false;
-	
-	
 	private RoutingCache routingCache = null;
-	
-	
 	private MobileDataSetProvider provider = null;
-
+	
+	//instance for Singleton 
+	private static MobileTSMRoutingEngine currentInstance= null;
+	private static String preferencesName = "kangaroo_config";
+	
+	public static MobileTSMRoutingEngine getInstance(Context ctx)
+	{
+		if(currentInstance == null)
+		{
+			SharedPreferences prefsPrivate = ctx.getSharedPreferences(preferencesName, Context.MODE_PRIVATE);
+			
+			//generate new Instance, initialize it.
+			currentInstance = new MobileTSMRoutingEngine();
+			currentInstance.enableRoutingCache();
+			currentInstance.init(prefsPrivate.getString("tsm_file_path", "/sdcard/map-fr.db"));
+		}
+		return currentInstance;
+	}
 	
 	@Override
 	/**
