@@ -60,10 +60,7 @@ public class ActivityDayOptimizer extends ListActivity {
 		adp.setCalendarAccessAdapter(ca);
 		
 		// routing engine
-		RoutingEngine re = new MobileTSMRoutingEngine();
-		re.enableRoutingCache();
-    	re.init(prefsPrivate.getString("tsm_file_path", "/sdcard/map-fr.db"));
-    	adp.setRoutingEngine(re);
+    	adp.setRoutingEngine(MobileTSMRoutingEngine.getInstance(this));
 		
     	// get current location
 		LocationManager manager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
