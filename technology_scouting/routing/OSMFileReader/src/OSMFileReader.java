@@ -140,7 +140,7 @@ public class OSMFileReader {
         
         
         CalendarEvent event1 = new CalendarEvent();
-        event1.setStartDate(new Date(2010 - 1900, 3, 10, 19, 30));
+        event1.setStartDate(new Date(2010 - 1900, 3, 10, 18, 30));
         event1.setEndDate(new Date(2010 - 1900, 3, 10, 20, 00));
         event1.setLocationLatitude(48.00);
         event1.setLocationLongitude(7.852);
@@ -196,7 +196,7 @@ public class OSMFileReader {
 		task1.setName("Schnell was essen");
 		task1.addConstraint(new TaskConstraintDuration(5));
 		task1.addConstraint(new TaskConstraintPOI(new POICode(POICode.AMENITY_FAST_FOOD)));
-		task1.addConstraint(new TaskConstraintDayTime(new Date(0, 0, 0, 19, 00), new Date(0, 0, 0, 20, 01)));
+		task1.addConstraint(new TaskConstraintDayTime(new Date(0, 0, 0, 19, 00), new Date(0, 0, 0, 23, 01)));
 		
 		Task task2 = new Task();
 		task2.setName("Frisšr");
@@ -238,9 +238,10 @@ public class OSMFileReader {
         
         if (routingEngine.initialized()) {
 	        activeDayPlan.setRoutingEngine(routingEngine);
-
+	        /*
 			System.out.println("---> " + activeDayPlan.toString());
 			System.out.println("---> " + activeDayPlan.checkConsistency(vehicle, now).toString());
+	        */
 	        
 	        /* check consistency */
 	        /*
@@ -260,6 +261,9 @@ public class OSMFileReader {
 
 			System.out.println("---> " + optimizedDayPlan.toString());
 			System.out.println("---> " + optimizedDayPlan.checkConsistency(vehicle, now).toString());
+			
+			
+			System.out.println("activeDayPlan.getOngoingEvent(now) = " + activeDayPlan.getOngoingEvent(now));
 		}
         
         
