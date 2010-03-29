@@ -4,7 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 
 
-public class TaskPriorityComparator implements Comparator<Task> {
+public class SimpleTaskPriorityComparator implements Comparator<Task> {
 
 	@Override
 	public int compare(Task task1, Task task2) {
