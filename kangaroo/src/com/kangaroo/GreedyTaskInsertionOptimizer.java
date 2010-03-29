@@ -81,6 +81,16 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 		
 		int timeLeftToWait = 0;
 		
+		/* begin optimization after an ongoing event */
+		CalendarEvent ongoingEvent = originalDayPlan.getOngoingEvent(now);		
+		if (ongoingEvent != null) {
+			
+				System.out.println("GreedyTaskInsertionOptimizer.optimize(): ongoingEvent = " + ongoingEvent);
+				
+			optimizedDayPlan.setTasks(originalDayPlan.getTasks());
+			return optimizedDayPlan.optimize(ongoingEvent.getEndDate(), ongoingEvent.getPlace(), vehicle);
+		}
+		
 		CalendarEvent nextEvent = originalDayPlan.getNextEvent(now);
 		
 			System.out.println("GreedyTaskInsertionOptimizer.optimize(): nextEvent = " + nextEvent);
@@ -117,7 +127,7 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 				int taskDuration = constraintHelper.getDuration();
 				
 					System.out.println("GreedyTaskInsertionOptimizer.optimize(): INFO: " +
-							"timeLeftToWait = " +	timeLeftToWait + ", duration = " + taskDuration);
+							"timeLeftToWait = " + timeLeftToWait + ", duration = " + taskDuration);
 				
 				/* check if there is enough time to insert this task before
 				 * the next event (this is a heuristic approach)
@@ -155,11 +165,11 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 									if (!fromHereToTask.getNoRouteFound() && !fromTaskToNextEvent.getNoRouteFound()) {
 										/* calculate the time left until next event */
 										int timeLeftUntilNextEvent = 
-											(int)Math.ceil((nextEvent.getStartDate().getTime() - now.getTime()) / (1000 * 60));
+											(int)Math.floor((nextEvent.getStartDate().getTime() - now.getTime()) / (1000 * 60));
 											
 										/* calculate the time left if current task is executed before the next event */
-										int newTimeLeft = (int)(timeLeftUntilNextEvent - fromHereToTask.getDurationOfTravel() - 
-												fromTaskToNextEvent.getDurationOfTravel() - taskDuration);
+										int newTimeLeft = timeLeftUntilNextEvent - (int)Math.ceil(fromHereToTask.getDurationOfTravel()) - 
+											(int)Math.ceil(fromTaskToNextEvent.getDurationOfTravel()) - taskDuration;
 										
 										/* check if there is enough time to execute the task
 										 * TODO: allow time buffer */
