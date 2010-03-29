@@ -50,7 +50,7 @@ import com.kangaroo.task.TaskConstraintDuration;
 import com.kangaroo.task.TaskConstraintHelper;
 import com.kangaroo.task.TaskConstraintLocation;
 import com.kangaroo.task.TaskConstraintPOI;
-import com.kangaroo.task.TaskPriorityComparator;
+import com.kangaroo.task.SimpleTaskPriorityComparator;
 import com.kangaroo.tsm.osm.io.FileLoader;
 import com.mobiletsm.osm.MobileTSMDatabaseWriter;
 import com.mobiletsm.osm.OsmHelper;
@@ -101,7 +101,7 @@ public class OSMFileReader {
 		
 		List<Task> tasks = new ArrayList<Task>(dayPlan.getTasks());
 		
-		Collections.sort(tasks, new TaskPriorityComparator());
+		Collections.sort(tasks, new SimpleTaskPriorityComparator());
 		
 		Iterator<Task> task_itr = tasks.iterator();
 		int i = 0;
@@ -136,7 +136,7 @@ public class OSMFileReader {
         
         Date now = new Date(2010 - 1900, 3, 10, 19, 00);
         Place home = new Place(48.0064241, 7.8521991);
-        Vehicle vehicle = new AllStreetVehicle(50.0);
+        Vehicle vehicle = new AllStreetVehicle(5.0);
         
         
         CalendarEvent event1 = new CalendarEvent();
@@ -160,8 +160,8 @@ public class OSMFileReader {
         CalendarEvent event4 = new CalendarEvent();
         event4.setStartDate(new Date(2010 - 1900, 3, 10, 21, 45));
         event4.setEndDate(new Date(2010 - 1900, 3, 10, 21, 50));
-//        event4.setLocationLatitude(47.987);
-//        event4.setLocationLongitude(7.852);        
+        event4.setLocationLatitude(47.987);
+        event4.setLocationLongitude(7.852);        
 
         CalendarEvent event5 = new CalendarEvent();
         event5.setStartDate(new Date(2010 - 1900, 3, 10, 22, 0));

@@ -433,14 +433,28 @@ public class DayPlan {
 			Collections.sort(events, new CalendarEventComparator(CalendarEventComparator.START_DATE));
 			
 			Iterator<CalendarEvent> event_itr = events.iterator();
+			Iterator<Task> task_itr = tasks.iterator();
+			
 			while (event_itr.hasNext()) {
 				buf.append("    " + event_itr.next().toString());
-				if (event_itr.hasNext()) {
+				if (event_itr.hasNext() || task_itr.hasNext()) {
 					buf.append(",\n");
 				} else {
-					buf.append("\n}");
+					buf.append("\n");
 				}
 			}
+			
+			while (task_itr.hasNext()) {
+				buf.append("    " + task_itr.next().toString());
+				if (task_itr.hasNext()) {
+					buf.append(",\n");
+				} else {
+					buf.append("\n");
+				}
+			}
+			
+			buf.append("}");
+			
 			return buf.toString();			
 		} else {
 			return "DayPlan: {no tasks or events}";

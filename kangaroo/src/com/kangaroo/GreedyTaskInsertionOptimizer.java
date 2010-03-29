@@ -2,6 +2,7 @@ package com.kangaroo;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -11,8 +12,7 @@ import com.kangaroo.calendar.CalendarEvent;
 import com.kangaroo.task.NoLocationFoundException;
 import com.kangaroo.task.Task;
 import com.kangaroo.task.TaskConstraintHelper;
-import com.kangaroo.task.TaskConstraintInterface;
-import com.kangaroo.task.TaskPriorityComparator;
+import com.kangaroo.task.SimpleTaskPriorityComparator;
 import com.mobiletsm.routing.GeoConstraints;
 import com.mobiletsm.routing.NoRouteFoundException;
 import com.mobiletsm.routing.Place;
@@ -26,6 +26,19 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 	
 	
 	private RoutingEngine routingEngine = null;
+	
+	
+	private Comparator<Task> taskPriorityComparator = new SimpleTaskPriorityComparator();
+	
+	
+	public void setTaskPriorityComparator(Comparator<Task> comparator) {
+		if (comparator != null) {
+			this.taskPriorityComparator = comparator;
+		} else {
+			throw new RuntimeException("GreedyTaskInsertionOptimizer.setTaskPriorityComparator(): " +
+					"null given for taskPriorityComparator");
+		}
+	}
 	
 	
 	/**
@@ -84,7 +97,7 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 		
 		/* get, sort and iterate over all tasks in active day plan */
 		List<Task> tasksToHandle = new ArrayList<Task>(originalDayPlan.getTasks());
-		Collections.sort(tasksToHandle, new TaskPriorityComparator());
+		Collections.sort(tasksToHandle, taskPriorityComparator);
 		
 		boolean taskSet = false;
 		
