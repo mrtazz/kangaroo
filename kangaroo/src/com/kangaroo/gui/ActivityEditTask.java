@@ -226,13 +226,13 @@ public class ActivityEditTask extends Activity {
 		  			if (s[2].equals("startdate"))
 		  			{
 		  				start_date = new Date(((DatePicker)v).getYear() - 1900,
-		  									  ((DatePicker)v).getMonth(),
+		  									  ((DatePicker)v).getMonth() + 1,
 		  									  ((DatePicker)v).getDayOfMonth());
 		  			}
 		  			else if (s[2].equals("enddate"))
 		  			{
 		  				end_date = new Date(((DatePicker)v).getYear() - 1900,
-								  			((DatePicker)v).getMonth(),
+								  			((DatePicker)v).getMonth() + 1,
 								  			((DatePicker)v).getDayOfMonth());
 		  			}
 		  			
@@ -446,14 +446,14 @@ public class ActivityEditTask extends Activity {
 		if (startdate != null && enddate != null)
 		{
 			DatePicker dp_start = new DatePicker(this);
-			dp_start.updateDate(startdate.getYear() + 1900, startdate.getMonth(), startdate.getDay());
+			dp_start.updateDate(startdate.getYear() + 1900, startdate.getMonth() - 1, startdate.getDate());
 			dp_start.setId(generator.nextInt(Integer.MAX_VALUE));
 			active_views.add(buildEventMap(String.valueOf(dp_start.getId()), "datepicker", "startdate"));
 			ll_startdate.addView(dp_start);
 			ret[0] = ll_startdate;
 			
 			DatePicker dp_end = new DatePicker(this);
-			dp_end.updateDate(enddate.getYear() + 1900, enddate.getMonth(), enddate.getDay());
+			dp_end.updateDate(enddate.getYear() + 1900, enddate.getMonth() - 1, enddate.getDate());
 			dp_end.setId(generator.nextInt(Integer.MAX_VALUE));
 			active_views.add(buildEventMap(String.valueOf(dp_end.getId()), "datepicker", "enddate"));
 			ll_enddate.addView(dp_end);
@@ -463,7 +463,7 @@ public class ActivityEditTask extends Activity {
 		else if (startdate != null && enddate == null)
 		{
 			DatePicker dp_start = new DatePicker(this);
-			dp_start.updateDate(startdate.getYear() + 1900, startdate.getMonth(), startdate.getDay());
+			dp_start.updateDate(startdate.getYear() + 1900, startdate.getMonth() - 1, startdate.getDate());
 			dp_start.setId(generator.nextInt(Integer.MAX_VALUE));
 			active_views.add(buildEventMap(String.valueOf(dp_start.getId()), "datepicker", "startdate"));
 			ll_startdate.addView(dp_start);
@@ -472,7 +472,7 @@ public class ActivityEditTask extends Activity {
 		else if (startdate == null && enddate != null)
 		{						
 			DatePicker dp_end = new DatePicker(this);
-			dp_end.updateDate(enddate.getYear() + 1900, enddate.getMonth(), enddate.getDay());
+			dp_end.updateDate(enddate.getYear() + 1900, enddate.getMonth() - 1 , enddate.getDate());
 			dp_end.setId(generator.nextInt(Integer.MAX_VALUE));
 			active_views.add(buildEventMap(String.valueOf(dp_end.getId()), "datepicker", "enddate"));
 			ll_enddate.addView(dp_end);
