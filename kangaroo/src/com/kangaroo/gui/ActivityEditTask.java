@@ -604,6 +604,7 @@ public class ActivityEditTask extends Activity {
 			    	{
 			    		t.removeConstraint(tci);
 			    	}
+			    	p = null;
 			    	hasLocationConstraint = false;
 		  		}
 		  		ret = true;
