@@ -153,6 +153,9 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 							
 							/*  */
 							if (taskExecutionPlace != null) {
+								
+									System.out.println("GreedyTaskInsertionOptimizer.optimize(): INFO: " +
+											"taskExecutionPlace = " + taskExecutionPlace);
 
 								/*  */
 								RouteParameter fromHereToTask = routingEngine.routeFromTo(here, taskExecutionPlace, vehicle);
