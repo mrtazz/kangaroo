@@ -11,6 +11,9 @@ import com.mobiletsm.osm.data.adapters.RoutingAndroidSQLiteAdapter;
 import com.mobiletsm.osm.data.providers.DatabaseMDSProvider;
 import com.mobiletsm.osm.data.providers.MobileDataSetProvider;
 import com.mobiletsm.osm.data.searching.POINodeSelector;
+import com.mobiletsm.routing.MobileTSMRouteParameter;
+import com.mobiletsm.routing.RouteParameter;
+import com.mobiletsm.routing.Vehicle;
 import com.mobiletsm.routing.metrics.MobileRoutingMetric;
 import com.mobiletsm.routing.routers.MobileMultiTargetDijkstraRouter;
 
@@ -111,8 +114,8 @@ public class MobileTSMRoutingEngine implements RoutingEngine {
 			/* find the street nodes that are closest to start and 
 			 * destination places */
 			Place fromNode = provider.getNearestStreetNode(from, updatePlaces);
-			Place toNode = provider.getNearestStreetNode(to, updatePlaces);
-		
+			Place toNode = provider.getNearestStreetNode(to, updatePlaces);		
+
 			if (fromNode == null || toNode == null) {
 				/* return that no route could be found, because start and/or
 				 * destination places could not be resolved to street nodes */
@@ -122,24 +125,30 @@ public class MobileTSMRoutingEngine implements RoutingEngine {
 				long fromNodeId = fromNode.getOsmNodeId();
 				long toNodeId = toNode.getOsmNodeId();
 				
-				/* build routing data set */
-				MobileInterfaceDataSet routingDataSet = provider.getRoutingDataSet(fromNodeId, toNodeId, null);		
+				if (fromNodeId != toNodeId) {
 				
-				/* set up the router */
-				IRouter router = new MobileMultiTargetDijkstraRouter();
-				router.setMetric(new MobileRoutingMetric());
-				
-				/* calculate the route */
-				Route route = router.route(routingDataSet, routingDataSet.getNodeByID(toNodeId), 
-						routingDataSet.getNodeByID(fromNodeId), (Vehicle)vehicle);
-				
-				/* return the route parameter */
-				if (route != null) {
-					result = new MobileTSMRouteParameter(route, vehicle);
-				} else {
-					result = new MobileTSMRouteParameter(RouteParameter.ROUTE_PARAMETER_NO_ROUTE_FOUND, vehicle);
-				}
+					/* build routing data set */
+					MobileInterfaceDataSet routingDataSet = provider.getRoutingDataSet(fromNodeId, toNodeId, null);		
+					
+					/* set up the router */
+					IRouter router = new MobileMultiTargetDijkstraRouter();
+					router.setMetric(new MobileRoutingMetric());
+					
+					/* calculate the route */
+					Route route = router.route(routingDataSet, routingDataSet.getNodeByID(toNodeId), 
+							routingDataSet.getNodeByID(fromNodeId), (Vehicle)vehicle);
+					
+					/* return the route parameter */
+					if (route != null) {
+						result = new MobileTSMRouteParameter(route, vehicle);
+					} else {
+						result = new MobileTSMRouteParameter(RouteParameter.ROUTE_PARAMETER_NO_ROUTE_FOUND, vehicle);
+					}
 	
+				} else {
+					/* start and destination nodes are equal */
+					result = new MobileTSMRouteParameter(RouteParameter.ROUTE_PARAMETER_ONE_POINT_ROUTE, vehicle);
+				}
 			}
 		
 		}

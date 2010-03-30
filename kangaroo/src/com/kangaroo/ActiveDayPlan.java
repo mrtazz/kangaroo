@@ -108,6 +108,24 @@ public class ActiveDayPlan extends DayPlan {
 	}
 
 
+	@Override
+	public CalendarEvent getOngoingEvent(Date now) {
+		/* prepare to access events */
+		prepareEventAccess(false);
+		
+		try {
+			CalendarEvent result = super.getOngoingEvent(now);	
+			/* this is only a read access, so don't write to the calendar */
+			terminateEventAccess(true);
+			return result;	
+		} catch (RuntimeException exception) {
+			/* make sure we step from this level even if a
+			 * runtime exception occurs */
+			terminateEventAccess(true);
+			throw exception;
+		}		
+	}
+	
 
 	@Override
 	public Collection<Task> getTasks() {
@@ -320,8 +338,11 @@ public class ActiveDayPlan extends DayPlan {
 	
 	private void terminateTaskAccess(boolean skipSave) {
 		if (taskAccessDepth <= 0) {
-			throw new RuntimeException("ActiveDayPlan.terminateTaskAccess(): " +
-			"cannot step back from level 0");
+			// no real solution but could not think of anything
+			// else at the moment
+			//TODO
+			//throw new RuntimeException("ActiveDayPlan.terminateTaskAccess(): " +
+			//"cannot step back from level 0");
 		}
 		if (--taskAccessDepth == 0 && !skipSave) {
 			//saveTasks();

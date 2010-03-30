@@ -9,17 +9,17 @@
     	android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
-        android:layout_marginRight="6dip">
+        android:layout_marginRight="1px">
     	<TextView
             android:id="@+id/eventstarttime"
-            android:layout_width="50dip"
-            android:layout_height="0dip"
+            android:layout_width="50px"
+            android:layout_height="fill_parent"
             android:layout_weight="1"
             android:gravity="center_vertical"
         />
         <TextView
-            android:layout_width="50dip"
-            android:layout_height="0dip"
+            android:layout_width="50px"
+            android:layout_height="fill_parent"
             android:layout_weight="1" 
             android:id="@+id/eventendtime"
             android:singleLine="true"
@@ -28,20 +28,20 @@
     </LinearLayout>
     <LinearLayout
         android:orientation="vertical"
-        android:layout_width="0dip"
+        android:layout_width="fill_parent"
         android:layout_weight="1"
         android:layout_height="fill_parent"
-        android:layout_marginLeft="2dip">
+        android:layout_marginLeft="2px">
         <TextView
             android:id="@+id/eventtitle"
             android:layout_width="fill_parent"
-            android:layout_height="0dip"
+            android:layout_height="fill_parent"
             android:layout_weight="1"
             android:gravity="center_vertical"
         />
         <TextView
             android:layout_width="fill_parent"
-            android:layout_height="0dip"
+            android:layout_height="fill_parent"
             android:layout_weight="1" 
             android:id="@+id/eventlocation"
             android:singleLine="true"

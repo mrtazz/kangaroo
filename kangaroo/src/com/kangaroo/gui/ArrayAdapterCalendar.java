@@ -58,10 +58,10 @@ public class ArrayAdapterCalendar extends ArrayAdapter<CalendarEvent>{
 				String endtime = "Day";
 				if (ce.getAllDay() != true)
 				{
-					starttime = ce.getStartDate().getHours()+":"
-					  		  + ce.getStartDate().getMinutes();
-					endtime = ce.getEndDate().getHours()+":"
-							+ ce.getEndDate().getMinutes();
+					starttime = pad2(ce.getStartDate().getHours()) + ":"
+					  		  + pad2(ce.getStartDate().getMinutes());
+					endtime = pad2(ce.getEndDate().getHours()) + ":"
+							+ pad2(ce.getEndDate().getMinutes());
 				}
 				start.setText(starttime);
 				end.setText(endtime);
@@ -70,6 +70,18 @@ public class ArrayAdapterCalendar extends ArrayAdapter<CalendarEvent>{
 			}
 			/* return the view */
 			return v;
+		}
+		
+		/**
+		 * @brief method to pad time to a length of 2
+		 * @param i time as int
+		 * @return padded time as string
+		 */
+		private String pad2(int i)
+		{
+			String s = Integer.toString(i);
+			s= (s.length() < 2) ? ("0"+s) : (s);
+			return s;
 		}
 
 }

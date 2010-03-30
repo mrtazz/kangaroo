@@ -58,6 +58,13 @@ public class ActivityEditTask extends Activity {
 	  private Random generator;
 	  private TaskConstraintLocation actual_location = null;
 	  private LinearLayout main;
+	  // which constraints are already available
+	  private boolean hasAmenityConstraint = false;
+	  private boolean hasDayTimeConstraint = false;
+	  private boolean hasDateConstraint = false;
+	  private boolean hasDurationConstraint = false;
+	  private boolean hasLocationConstraint = false;
+	  
 	  
 	  private OnClickListener LocationClickListener = new OnClickListener()
 	  {
@@ -219,13 +226,13 @@ public class ActivityEditTask extends Activity {
 		  			if (s[2].equals("startdate"))
 		  			{
 		  				start_date = new Date(((DatePicker)v).getYear() - 1900,
-		  									  ((DatePicker)v).getMonth(),
+		  									  ((DatePicker)v).getMonth() + 1,
 		  									  ((DatePicker)v).getDayOfMonth());
 		  			}
 		  			else if (s[2].equals("enddate"))
 		  			{
 		  				end_date = new Date(((DatePicker)v).getYear() - 1900,
-								  			((DatePicker)v).getMonth(),
+								  			((DatePicker)v).getMonth() + 1,
 								  			((DatePicker)v).getDayOfMonth());
 		  			}
 		  			
@@ -361,6 +368,7 @@ public class ActivityEditTask extends Activity {
 		  amenity_spinner.setSelection(pos);
 		  ll_amenity.addView(amenity_spinner);
 		  active_views.add(buildEventMap(String.valueOf(amenity_spinner.getId()), "spinner", "amenity"));
+		  hasAmenityConstraint = true;
 		  return ll_amenity;
 	  }
 	  
@@ -407,6 +415,7 @@ public class ActivityEditTask extends Activity {
 			ret[0] = ll_start;
 			ret[1] = ll_end;
 		}
+		hasDayTimeConstraint = true;
 		return ret;
 	  }
 	  
@@ -437,14 +446,14 @@ public class ActivityEditTask extends Activity {
 		if (startdate != null && enddate != null)
 		{
 			DatePicker dp_start = new DatePicker(this);
-			dp_start.updateDate(startdate.getYear() + 1900, startdate.getMonth(), startdate.getDay());
+			dp_start.updateDate(startdate.getYear() + 1900, startdate.getMonth() - 1, startdate.getDate());
 			dp_start.setId(generator.nextInt(Integer.MAX_VALUE));
 			active_views.add(buildEventMap(String.valueOf(dp_start.getId()), "datepicker", "startdate"));
 			ll_startdate.addView(dp_start);
 			ret[0] = ll_startdate;
 			
 			DatePicker dp_end = new DatePicker(this);
-			dp_end.updateDate(enddate.getYear() + 1900, enddate.getMonth(), enddate.getDay());
+			dp_end.updateDate(enddate.getYear() + 1900, enddate.getMonth() - 1, enddate.getDate());
 			dp_end.setId(generator.nextInt(Integer.MAX_VALUE));
 			active_views.add(buildEventMap(String.valueOf(dp_end.getId()), "datepicker", "enddate"));
 			ll_enddate.addView(dp_end);
@@ -454,7 +463,7 @@ public class ActivityEditTask extends Activity {
 		else if (startdate != null && enddate == null)
 		{
 			DatePicker dp_start = new DatePicker(this);
-			dp_start.updateDate(startdate.getYear() + 1900, startdate.getMonth(), startdate.getDay());
+			dp_start.updateDate(startdate.getYear() + 1900, startdate.getMonth() - 1, startdate.getDate());
 			dp_start.setId(generator.nextInt(Integer.MAX_VALUE));
 			active_views.add(buildEventMap(String.valueOf(dp_start.getId()), "datepicker", "startdate"));
 			ll_startdate.addView(dp_start);
@@ -463,12 +472,13 @@ public class ActivityEditTask extends Activity {
 		else if (startdate == null && enddate != null)
 		{						
 			DatePicker dp_end = new DatePicker(this);
-			dp_end.updateDate(enddate.getYear() + 1900, enddate.getMonth(), enddate.getDay());
+			dp_end.updateDate(enddate.getYear() + 1900, enddate.getMonth() - 1 , enddate.getDate());
 			dp_end.setId(generator.nextInt(Integer.MAX_VALUE));
 			active_views.add(buildEventMap(String.valueOf(dp_end.getId()), "datepicker", "enddate"));
 			ll_enddate.addView(dp_end);
 			ret[0] = ll_enddate;
 		}
+		hasDateConstraint = true;
 		return ret;
 	  }
 	  
@@ -492,6 +502,7 @@ public class ActivityEditTask extends Activity {
 		ed_duration.setId(generator.nextInt(Integer.MAX_VALUE));
 		active_views.add(buildEventMap(String.valueOf(ed_duration.getId()), "edittext", "duration"));
 		ll_duration.addView(ed_duration);
+		hasDurationConstraint = true;
 		return ll_duration;  
 	  }
 	  
@@ -516,6 +527,7 @@ public class ActivityEditTask extends Activity {
 		ed_location.setId(generator.nextInt(Integer.MAX_VALUE));
 		ed_location.setOnClickListener(LocationClickListener);
 		ll_location.addView(ed_location);
+		hasLocationConstraint = true;
 		return ll_location;
 	  }	  
 	
@@ -529,48 +541,135 @@ public class ActivityEditTask extends Activity {
 		  inflater.inflate(R.menu.edittask_menu, menu);
 		  return true;
 	}
+	
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onPrepareOptionsMenu(android.view.Menu)
+	 */
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu)
+	{
+		menu.clear();
+		if (hasAmenityConstraint) menu.add(0, R.id.addAmenity, 0, "Remove Amenity"); 
+		else menu.add(0, R.id.addAmenity, 0, "Add Amenity");
+		if (hasDayTimeConstraint) menu.add(0, R.id.addDaytime, 0, "Remove Daytime"); 
+		else menu.add(0, R.id.addDaytime, 0, "Add Daytime");
+		if (hasDateConstraint) menu.add(0, R.id.addDate, 0, "Remove Date"); 
+		else menu.add(0, R.id.addDate, 0, "Add Date");
+		if (hasDurationConstraint) menu.add(0, R.id.addDuration, 0, "Remove Duration"); 
+		else menu.add(0, R.id.addDuration, 0, "Add Duration");
+		if (hasLocationConstraint) menu.add(0, R.id.addLocation, 0, "Remove Location"); 
+		else menu.add(0, R.id.addLocation, 0, "Add Location");
+		
+		return super.onPrepareOptionsMenu(menu);
+	}
+
 
 	  /* (non-Javadoc)
 	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
 	 */
 	public boolean onOptionsItemSelected (MenuItem item)
 	{
+		  updateResultData();
+		  boolean ret = false;
 		  switch (item.getItemId())
 		  {
 		  	case R.id.addAmenity:
-		  		TaskConstraintPOI tc1 = new TaskConstraintPOI(new POICode("shop#bakery"));
-		  		main.addView(getAmenityConstraintLayout(tc1));
-		  		return true;
+		  		if (!hasAmenityConstraint)
+		  		{
+		  			TaskConstraintPOI tc1 = new TaskConstraintPOI(new POICode("shop#bakery"));
+		  			t.addConstraint(tc1);
+		  		}
+		  		else
+		  		{
+			    	List<TaskConstraintInterface> l =  t.getConstraintsOfType("amenity");
+			    	for (TaskConstraintInterface tci : l)
+			    	{
+			    		t.removeConstraint(tci);
+			    	}
+			    	hasAmenityConstraint = false;
+		  		}
+		  		ret = true;
+		  		break;
 
 		  	case R.id.addLocation:
-		  		TaskConstraintLocation tc2 = new TaskConstraintLocation(new Place(0,0));
-		  		main.addView(getLocationConstraintLayout(tc2));
-		  		return true;
+		  		if (!hasLocationConstraint)
+		  		{
+		  			TaskConstraintLocation tc2 = new TaskConstraintLocation(new Place(0,0));
+		  			t.addConstraint(tc2);
+		  		}
+		  		else
+		  		{
+			    	List<TaskConstraintInterface> l =  t.getConstraintsOfType("location");
+			    	for (TaskConstraintInterface tci : l)
+			    	{
+			    		t.removeConstraint(tci);
+			    	}
+			    	p = null;
+			    	hasLocationConstraint = false;
+		  		}
+		  		ret = true;
+		  		break;
 
 		  	case R.id.addDaytime:
-		  		TaskConstraintDayTime tc3 = new TaskConstraintDayTime(new Date(), new Date());
-		  		for (LinearLayout ll : getDayTimeConstraintLayout(tc3))
+		  		if (!hasDayTimeConstraint)
 		  		{
-		  			main.addView(ll);
+			  		TaskConstraintDayTime tc3 = new TaskConstraintDayTime(new Date(), new Date());
+			  		t.addConstraint(tc3);
 		  		}
-		  		return true;
+		  		else
+		  		{
+			    	List<TaskConstraintInterface> l =  t.getConstraintsOfType("daytime");
+			    	for (TaskConstraintInterface tci : l)
+			    	{
+			    		t.removeConstraint(tci);
+			    	}
+			    	hasDayTimeConstraint = false;
+		  		}
+		  		ret = true;
+		  		break;
 
 		  	case R.id.addDate:
-		  		TaskConstraintDate tc4 = new TaskConstraintDate(new Date(), new Date());
-		  		for (LinearLayout ll : getDateConstraintLayout(tc4))
+		  		if (!hasDateConstraint)
 		  		{
-		  			main.addView(ll);
+			  		TaskConstraintDate tc4 = new TaskConstraintDate(new Date(), new Date());
+			  		t.addConstraint(tc4);
 		  		}
-		  		return true;
+		  		else
+		  		{
+			    	List<TaskConstraintInterface> l =  t.getConstraintsOfType("date");
+			    	for (TaskConstraintInterface tci : l)
+			    	{
+			    		t.removeConstraint(tci);
+			    	}
+			    	hasDateConstraint = false;
+		  		}
+		  		ret = true;
+		  		break;
 
 		  	case R.id.addDuration:
-		  		TaskConstraintDuration tc5 = new TaskConstraintDuration(0);
-		  		main.addView(getDurationConstraintLayout(tc5));
-		  		return true;
+		  		if (!hasDurationConstraint)
+		  		{
+		  			TaskConstraintDuration tc5 = new TaskConstraintDuration(0);
+		  			t.addConstraint(tc5);
+		  		}
+		  		else
+		  		{
+			    	List<TaskConstraintInterface> l =  t.getConstraintsOfType("duration");
+			    	for (TaskConstraintInterface tci : l)
+			    	{
+			    		t.removeConstraint(tci);
+			    	}
+			    	hasDurationConstraint = false;
+		  		}
+		  		ret = true;
+		  		break;
 			default:
 				System.out.println("ItemId: "+item.getItemId());
-				return true;
+		  		ret = true;
+		  		break;
 
 		  }
+		  load();
+		  return ret;
 	}
 }

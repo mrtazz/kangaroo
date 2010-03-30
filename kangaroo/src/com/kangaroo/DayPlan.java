@@ -136,6 +136,40 @@ public class DayPlan {
 	}
 	
 	
+	public CalendarEvent getOngoingEvent(Date now) {
+		/* make sure the events are in correct order */
+		Collections.sort(events, new CalendarEventComparator(CalendarEventComparator.START_DATE));
+		
+		CalendarEvent result = null;		
+
+		/* return the first event that has a start date after now */
+		Iterator<CalendarEvent> itr = events.iterator();
+		while (itr.hasNext()) {
+			CalendarEvent event = itr.next();
+			Date startDate = event.getStartDate();
+			/* ignore calendar event that do not specify a start date */
+			if (startDate != null && startDate.compareTo(now) <= 0) {				
+				Date endDate = event.getEndDate();				
+				if (endDate != null) {
+					if (endDate.compareTo(now) > 0) {
+						if (result == null) {
+							result = event;
+						} else {
+							throw new RuntimeException("DayPlan.getOngoingEvent(): " +
+								"There are at least two ongoing events");
+						}
+					}
+				} else {
+					throw new RuntimeException("DayPlan.getOngoingEvent(): " +
+							"Event does not specify an end date");
+				}				
+			}
+		}
+				
+		return result;
+	}
+	
+	
 	/**
 	 * return the event in the calendar that is chronologically
 	 * the next starting from given Date. If Date now is null, the
@@ -169,7 +203,7 @@ public class DayPlan {
 					/* there are at least two different events with equal start date
 					 * TODO: should better not be a RuntimeException */
 					throw new RuntimeException("DayPlan.getNextEvent(): " +
-							"There are two different events with equal start date"); 
+							"There are at least two different events with equal start date"); 
 				}
 			}
 		}
@@ -256,10 +290,27 @@ public class DayPlan {
 			if (routingEngine == null || !routingEngine.initialized()) {
 				throw new RuntimeException("DayPlan.checkComplianceWith(): Routing engine not ready");
 			}
-		
+			
+			/* we need the current time */
+			if (now == null) {
+				throw new MissingParameterException("DayPlan.checkComplianceWith(): No current time given");
+			}
+			
+			/* we need the current position */
+			if (here == null) {
+				throw new MissingParameterException("DayPlan.checkComplianceWith(): No current position given");
+			}
+			
 			/* destinationEvent has to specify a start date */
 			if (destinationEvent.getStartDate() == null) {
-				throw new MissingParameterException("DayPlan.checkComplianceWith(): No start date given");
+				throw new MissingParameterException("DayPlan.checkComplianceWith(): " +
+						"destinationEvent does not specify a start date");
+			}
+			
+			/* destinationEvent has to specify a place */
+			if (destinationEvent.getPlace() == null) {
+				throw new MissingParameterException("DayPlan.checkComplianceWith(): " +
+						"destinationEvent does not specify a location (Place)");
 			}
 			
 				System.out.println("DayPlan.checkComplianceWith(): route from " + here.toString() + 
@@ -276,7 +327,7 @@ public class DayPlan {
 			
 			/* Date.getTime() returns time in milliseconds, so 
 			 * we have to divide by 1000*60 to get minutes */
-			int timeLeft = (int)Math.ceil((destinationEvent.getStartDate().getTime() - now.getTime()) / (1000 * 60));
+			int timeLeft = (int)Math.floor((destinationEvent.getStartDate().getTime() - now.getTime()) / (1000 * 60));
 			
 				System.out.println("DayPlan.checkComplianceWith(): timeLeft (w/o route) = " + timeLeft);
 						
@@ -416,14 +467,28 @@ public class DayPlan {
 			Collections.sort(events, new CalendarEventComparator(CalendarEventComparator.START_DATE));
 			
 			Iterator<CalendarEvent> event_itr = events.iterator();
+			Iterator<Task> task_itr = tasks.iterator();
+			
 			while (event_itr.hasNext()) {
 				buf.append("    " + event_itr.next().toString());
-				if (event_itr.hasNext()) {
+				if (event_itr.hasNext() || task_itr.hasNext()) {
 					buf.append(",\n");
 				} else {
-					buf.append("\n}");
+					buf.append("\n");
 				}
 			}
+			
+			while (task_itr.hasNext()) {
+				buf.append("    " + task_itr.next().toString());
+				if (task_itr.hasNext()) {
+					buf.append(",\n");
+				} else {
+					buf.append("\n");
+				}
+			}
+			
+			buf.append("}");
+			
 			return buf.toString();			
 		} else {
 			return "DayPlan: {no tasks or events}";

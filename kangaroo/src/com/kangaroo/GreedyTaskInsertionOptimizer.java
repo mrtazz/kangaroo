@@ -2,6 +2,7 @@ package com.kangaroo;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -11,8 +12,7 @@ import com.kangaroo.calendar.CalendarEvent;
 import com.kangaroo.task.NoLocationFoundException;
 import com.kangaroo.task.Task;
 import com.kangaroo.task.TaskConstraintHelper;
-import com.kangaroo.task.TaskConstraintInterface;
-import com.kangaroo.task.TaskPriorityComparator;
+import com.kangaroo.task.SimpleTaskPriorityComparator;
 import com.mobiletsm.routing.GeoConstraints;
 import com.mobiletsm.routing.NoRouteFoundException;
 import com.mobiletsm.routing.Place;
@@ -26,6 +26,19 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 	
 	
 	private RoutingEngine routingEngine = null;
+	
+	
+	private Comparator<Task> taskPriorityComparator = new SimpleTaskPriorityComparator();
+	
+	
+	public void setTaskPriorityComparator(Comparator<Task> comparator) {
+		if (comparator != null) {
+			this.taskPriorityComparator = comparator;
+		} else {
+			throw new RuntimeException("GreedyTaskInsertionOptimizer.setTaskPriorityComparator(): " +
+					"null given for taskPriorityComparator");
+		}
+	}
 	
 	
 	/**
@@ -46,21 +59,42 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 			throw new RuntimeException("GreedyTaskInsertionOptimizer.optimize(): resources " +
 					"(day plan and/or routing engine) not ready");
 		}
+		
+		/* we need the current time */
+		if (now == null) {
+			throw new MissingParameterException("GreedyTaskInsertionOptimizer.optimize(): No current time given");
+		}
+		
+		/* we need the current position */
+		if (here == null) {
+			throw new MissingParameterException("GreedyTaskInsertionOptimizer.optimize(): No current position given");
+		}
 				
-		System.out.println("GreedyTaskInsertionOptimizer.optimize(): starting (now = " + 
-				now.toString() + ", here = " + here.toString() + ") ...");
+			System.out.println("GreedyTaskInsertionOptimizer.optimize(): starting (now = " + 
+					now.toString() + ", here = " + here.toString() + ") ...");
 		
 		/* initialize new day plan with events of original day plan */
 		DayPlan optimizedDayPlan = new DayPlan();
 		optimizedDayPlan.setEvents(originalDayPlan.getEvents());
 		optimizedDayPlan.setRoutingEngine(routingEngine);
 		optimizedDayPlan.setOptimizer(this);
-
 		
 		int timeLeftToWait = 0;
 		
+		/* begin optimization after an ongoing event */
+		CalendarEvent ongoingEvent = originalDayPlan.getOngoingEvent(now);		
+		if (ongoingEvent != null) {
+			
+				System.out.println("GreedyTaskInsertionOptimizer.optimize(): ongoingEvent = " + ongoingEvent);
+				
+			optimizedDayPlan.setTasks(originalDayPlan.getTasks());
+			return optimizedDayPlan.optimize(ongoingEvent.getEndDate(), ongoingEvent.getPlace(), vehicle);
+		}
+		
 		CalendarEvent nextEvent = originalDayPlan.getNextEvent(now);
-			System.out.println("nextEvent = " + nextEvent);
+		
+			System.out.println("GreedyTaskInsertionOptimizer.optimize(): nextEvent = " + nextEvent);
+			
 		if (nextEvent != null) {
 			try {
 				timeLeftToWait = originalDayPlan.checkComplianceWith(now, here, nextEvent, vehicle);
@@ -73,7 +107,7 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 		
 		/* get, sort and iterate over all tasks in active day plan */
 		List<Task> tasksToHandle = new ArrayList<Task>(originalDayPlan.getTasks());
-		Collections.sort(tasksToHandle, new TaskPriorityComparator());
+		Collections.sort(tasksToHandle, taskPriorityComparator);
 		
 		boolean taskSet = false;
 		
@@ -93,7 +127,7 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 				int taskDuration = constraintHelper.getDuration();
 				
 					System.out.println("GreedyTaskInsertionOptimizer.optimize(): INFO: " +
-							"timeLeftToWait = " +	timeLeftToWait + ", duration = " + taskDuration);
+							"timeLeftToWait = " + timeLeftToWait + ", duration = " + taskDuration);
 				
 				/* check if there is enough time to insert this task before
 				 * the next event (this is a heuristic approach)
@@ -119,6 +153,9 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 							
 							/*  */
 							if (taskExecutionPlace != null) {
+								
+									System.out.println("GreedyTaskInsertionOptimizer.optimize(): INFO: " +
+											"taskExecutionPlace = " + taskExecutionPlace);
 
 								/*  */
 								RouteParameter fromHereToTask = routingEngine.routeFromTo(here, taskExecutionPlace, vehicle);
@@ -131,11 +168,11 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 									if (!fromHereToTask.getNoRouteFound() && !fromTaskToNextEvent.getNoRouteFound()) {
 										/* calculate the time left until next event */
 										int timeLeftUntilNextEvent = 
-											(int)Math.ceil((nextEvent.getStartDate().getTime() - now.getTime()) / (1000 * 60));
+											(int)Math.floor((nextEvent.getStartDate().getTime() - now.getTime()) / (1000 * 60));
 											
 										/* calculate the time left if current task is executed before the next event */
-										int newTimeLeft = (int)(timeLeftUntilNextEvent - fromHereToTask.getDurationOfTravel() - 
-												fromTaskToNextEvent.getDurationOfTravel() - taskDuration);
+										int newTimeLeft = timeLeftUntilNextEvent - (int)Math.ceil(fromHereToTask.getDurationOfTravel()) - 
+											(int)Math.ceil(fromTaskToNextEvent.getDurationOfTravel()) - taskDuration;
 										
 										/* check if there is enough time to execute the task
 										 * TODO: allow time buffer */

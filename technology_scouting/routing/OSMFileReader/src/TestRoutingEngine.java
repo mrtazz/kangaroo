@@ -110,24 +110,30 @@ public class TestRoutingEngine implements RoutingEngine {
 				long fromNodeId = fromNode.getOsmNodeId();
 				long toNodeId = toNode.getOsmNodeId();
 				
-				/* build routing data set */
-				MobileInterfaceDataSet routingDataSet = provider.getRoutingDataSet(fromNodeId, toNodeId, null);		
+				if (fromNodeId != toNodeId) {
 				
-				/* set up the router */
-				IRouter router = new MobileMultiTargetDijkstraRouter();
-				router.setMetric(new MobileRoutingMetric());
-				
-				/* calculate the route */
-				Route route = router.route(routingDataSet, routingDataSet.getNodeByID(toNodeId), 
-						routingDataSet.getNodeByID(fromNodeId), (Vehicle)vehicle);
-				
-				/* return the route parameter */
-				if (route != null) {
-					result = new MobileTSMRouteParameter(route, vehicle);
-				} else {
-					result = new MobileTSMRouteParameter(RouteParameter.ROUTE_PARAMETER_NO_ROUTE_FOUND, vehicle);
-				}
+					/* build routing data set */
+					MobileInterfaceDataSet routingDataSet = provider.getRoutingDataSet(fromNodeId, toNodeId, null);		
+					
+					/* set up the router */
+					IRouter router = new MobileMultiTargetDijkstraRouter();
+					router.setMetric(new MobileRoutingMetric());
+					
+					/* calculate the route */
+					Route route = router.route(routingDataSet, routingDataSet.getNodeByID(toNodeId), 
+							routingDataSet.getNodeByID(fromNodeId), (Vehicle)vehicle);
+					
+					/* return the route parameter */
+					if (route != null) {
+						result = new MobileTSMRouteParameter(route, vehicle);
+					} else {
+						result = new MobileTSMRouteParameter(RouteParameter.ROUTE_PARAMETER_NO_ROUTE_FOUND, vehicle);
+					}
 	
+				} else {
+					/* start and destination nodes are equal */
+					result = new MobileTSMRouteParameter(RouteParameter.ROUTE_PARAMETER_ONE_POINT_ROUTE, vehicle);
+				}
 			}
 		
 		}

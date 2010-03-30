@@ -52,6 +52,13 @@ public class TaskConstraintHelper {
 	}
 	
 	
+	
+	public Date getEndDayTime() {
+		return null;
+	}
+	
+	
+	
 	/**
 	 * returns the duration of this task in minutes, 0 if not specified.
 	 * The task may specify more than one duration constraint, and if so
@@ -83,13 +90,8 @@ public class TaskConstraintHelper {
 	}
 	
 	
-	/**
-	 * returns true if Date now is consistent with task date and daytime constraints 
-	 * @param now
-	 * @return true if Date now is consistent with task date and daytime constraints
-	 */
-	public boolean isAllowed(Date now) {
-		
+	
+	public boolean isAllowedDate(Date now) {		
 		boolean isAllowedByDateConstraints = false;
 		boolean dateConstraintVeto = false;
 		int dateConstraintType = UNDEFINED;
@@ -151,7 +153,12 @@ public class TaskConstraintHelper {
 			isAllowedByDateConstraints = !dateConstraintVeto;
 		} 
 		
-					
+		return isAllowedByDateConstraints;
+	}
+	
+	
+	
+	public boolean isAllowedDaytime(Date now) {
 		boolean isAllowedByDaytimeConstraints = false;
 		boolean daytimeConstraintVeto = false;
 		int daytimeConstraintType = UNDEFINED;
@@ -200,8 +207,8 @@ public class TaskConstraintHelper {
 							"Task specifies daytime constraints of both daytime span and end daytime");
 				}
 				
-				/* this task has a date constraint black list */
-				dateConstraintType = BLACK_LIST;
+				/* this task has a daytime constraint black list */
+				daytimeConstraintType = BLACK_LIST;
 				if (compareDayTime(now, daytimeConstraint.getEndTime()) > 0) {
 					daytimeConstraintVeto = true;
 				}
@@ -215,8 +222,17 @@ public class TaskConstraintHelper {
 			isAllowedByDaytimeConstraints = !daytimeConstraintVeto;
 		} 
 		
-		
-		return isAllowedByDateConstraints && isAllowedByDaytimeConstraints;
+		return isAllowedByDaytimeConstraints;
+	}
+	
+	
+	/**
+	 * returns true if Date now is consistent with task date and daytime constraints 
+	 * @param now
+	 * @return true if Date now is consistent with task date and daytime constraints
+	 */
+	public boolean isAllowed(Date now) {		
+		return isAllowedDate(now) && isAllowedDaytime(now);
 	}
 	
 	

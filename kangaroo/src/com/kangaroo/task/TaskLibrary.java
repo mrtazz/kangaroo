@@ -95,7 +95,7 @@ public class TaskLibrary
 		Date startDate = new Date(90,10,10,10,10);
 		Date endDate = new Date(90,10,10,10,20);
 
-		returnEvent = new CalendarEvent(myTask.getId(), "task", "", 0.0, 0.0, startDate, endDate, false, false, taskString, calendarId, "GMT", (Place)null);	
+		returnEvent = new CalendarEvent(myTask.getId(), "task", "", 0.0, 0.0, startDate, endDate, false, false, taskString, "GMT", (Place)null);	
 
 		return returnEvent;
 	}
