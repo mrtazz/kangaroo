@@ -68,10 +68,7 @@ public class ServiceRecurringTask extends Service
 		
 		//initialize the Dayplan
 		currentDayPlan = new ActiveDayPlan();
-		RoutingEngine re = new MobileTSMRoutingEngine();
-		re.enableRoutingCache();
-    	re.init("/sdcard/map-fr.db");
-    	currentDayPlan.setRoutingEngine(re);
+    	currentDayPlan.setRoutingEngine(MobileTSMRoutingEngine.getInstance(this));
     	
         //CalendarAccessAdapter caa = new CalendarAccessAdapterAndroid(this);
     	CalendarAccessAdapter caa = new CalendarAccessAdapterMemory();
@@ -88,47 +85,53 @@ public class ServiceRecurringTask extends Service
 	private void fill_stuff()
 	{
         CalendarEvent event1 = new CalendarEvent();
-        event1.setStartDate(new Date(2010 - 1900, 2, 20, 19, 20));
-        event1.setEndDate(new Date(2010 - 1900, 2, 20, 19, 30));
+        event1.setStartDate(new Date(2010 - 1900, 2, 29, 19, 20));
+        event1.setEndDate(new Date(2010 - 1900, 2, 29, 19, 30));
         event1.setLocationLatitude(48.00);
         event1.setLocationLongitude(7.852);
-        event1.setTitle("BAM Title");
+        event1.setTitle("BAM Title1");
 
         CalendarEvent event2 = new CalendarEvent();
-        event2.setStartDate(new Date(2010 - 1900, 2, 20, 20, 45));
-        event2.setEndDate(new Date(2010 - 1900, 2, 20, 21, 00));
+        event2.setStartDate(new Date(2010 - 1900, 2, 29, 20, 45));
+        event2.setEndDate(new Date(2010 - 1900, 2, 29, 21, 00));
         event2.setLocationLatitude(48.000);
         event2.setLocationLongitude(7.852);
-
+        event2.setTitle("BAM Tit2le");
+        
         CalendarEvent event3 = new CalendarEvent();
-        event3.setStartDate(new Date(2010 - 1900, 2, 20, 21, 20));
-        event3.setEndDate(new Date(2010 - 1900, 2, 20, 21, 40));
+        event3.setStartDate(new Date(2010 - 1900, 2, 29, 21, 20));
+        event3.setEndDate(new Date(2010 - 1900, 2, 29, 21, 40));
         event3.setLocationLatitude(47.987);
         event3.setLocationLongitude(7.852);
-
+        event3.setTitle("BAM Title3");
+        
         CalendarEvent event4 = new CalendarEvent();
-        event4.setStartDate(new Date(2010 - 1900, 2, 20, 21, 45));
-        event4.setEndDate(new Date(2010 - 1900, 2, 20, 21, 50));
+        event4.setStartDate(new Date(2010 - 1900, 2, 29, 21, 45));
+        event4.setEndDate(new Date(2010 - 1900, 2, 29, 21, 50));
         event4.setLocationLatitude(47.987);
         event4.setLocationLongitude(7.852);        
-
+        event4.setTitle("BAM Title4");
+        
         CalendarEvent event5 = new CalendarEvent();
-        event5.setStartDate(new Date(2010 - 1900, 2, 20, 22, 0));
-        event5.setEndDate(new Date(2010 - 1900, 2, 20, 22, 40));
+        event5.setStartDate(new Date(2010 - 1900, 2, 29, 22, 0));
+        event5.setEndDate(new Date(2010 - 1900, 2, 29, 22, 40));
         event5.setLocationLatitude(47.983);
         event5.setLocationLongitude(7.852);        
-
+        event5.setTitle("BAM Title5");
+        
         CalendarEvent event6 = new CalendarEvent();
-        event6.setStartDate(new Date(2010 - 1900, 2, 20, 23, 0));
-        event6.setEndDate(new Date(2010 - 1900, 2, 20, 23, 40));
+        event6.setStartDate(new Date(2010 - 1900, 2, 29, 23, 0));
+        event6.setEndDate(new Date(2010 - 1900, 2, 29, 23, 40));
         event6.setLocationLatitude(48.983);
         event6.setLocationLongitude(7.852);  
+        event6.setTitle("BAM Title6");
         
         CalendarEvent event7 = new CalendarEvent();
-        event7.setStartDate(new Date(2010 - 1900, 2, 20, 23, 45));
-        event7.setEndDate(new Date(2010 - 1900, 2, 20, 23, 50));
+        event7.setStartDate(new Date(2010 - 1900, 2, 29, 23, 45));
+        event7.setEndDate(new Date(2010 - 1900, 2, 29, 23, 50));
         event7.setLocationLatitude(47.983);
         event7.setLocationLongitude(7.852); 
+        event7.setTitle("BAM Title7");
         
         currentDayPlan.addEvent(event1);
         currentDayPlan.addEvent(event2);
@@ -285,7 +288,7 @@ public class ServiceRecurringTask extends Service
     				//its too late. tell the user anyway
     				message_show = true;
     				message_title = "too late";
-    				message_text = RouteParameter.durationToString(minutes_left) + " too late for event " + currentDayPlan.getNextEvent(new Date()).getTitle();
+    				message_text = "too late for event " + currentDayPlan.getNextEvent(new Date()).getTitle() + ", " + RouteParameter.durationToString(minutes_left);
     				if(messageLevel != 4)
     				{
     					message_ping = true;

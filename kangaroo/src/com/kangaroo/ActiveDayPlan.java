@@ -16,58 +16,6 @@ public class ActiveDayPlan extends DayPlan {
 	
 	private CalendarAccessAdapter calendarAccessAdapter = null;
 
-	/*
-	private Context ctx;
-	
-	
-	private void loadTasks()
-	{
-		TaskManager tm = new TaskManager(ctx);
-		tasks = tm.getTasks();
-	}
-	
-	
-	private void saveTasks()
-	{
-		TaskManager tm = new TaskManager(ctx);
-		tm.putTasks((ArrayList<Task>)tasks);
-	}
-	
-	
-	private void loadEvents()
-	{
-		CalendarLibrary cl = new CalendarLibrary(ctx);
-		int calendarId = cl.getCalendar("kangaroo@lordofhosts.de").getId();
-		//if our calendar is not present, return null
-		
-		ArrayList<CalendarEvent> myMap = cl.getTodaysEvents(String.valueOf(calendarId));
-		events.addAll(myMap);
-
-	}
-	
-	
-	private void saveEvents()
-	{
-
-		CalendarLibrary cl = new CalendarLibrary(ctx);
-		int calendarId = cl.getCalendar("kangaroo@lordofhosts.de").getId();
-		
-		//get List with event currently in Calendar
-		ArrayList<CalendarEvent> calendarList = cl.getTodaysEvents(String.valueOf(calendarId));
-		Iterator<CalendarEvent> it = calendarList.iterator();
-		while(it.hasNext())
-		{
-			cl.deleteEventFromBackend(it.next());
-		}
-		
-		it = events.iterator();
-		while(it.hasNext())
-		{
-			cl.insertEventToBackend(it.next());
-		}
-	}
-	*/
-
 
 	public void setCalendarAccessAdapter(CalendarAccessAdapter adapter) {
 		this.calendarAccessAdapter = adapter;

@@ -34,7 +34,7 @@ public class ServiceCallLocation extends Service
 		 if(prefsPrivate.getBoolean("background_call_enable" , true))
 	     {
 			 minUpdateTime = prefsPrivate.getInt("background_call_time_difference", 60);
-			 minUpdateDistance = prefsPrivate.getFloat("background_call_position", 100);
+			 minUpdateDistance = (float)prefsPrivate.getInt("background_call_position", 100);
 		 
 			 mLocationIntent = PendingIntent.getService(ServiceCallLocation.this, 0, new Intent(ServiceCallLocation.this, ServiceCallLocation.class), 0);
 			 locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -50,7 +50,7 @@ public class ServiceCallLocation extends Service
 	{
 		Editor prefsPrivateEditor = prefsPrivate.edit();
 		prefsPrivateEditor.putInt("background_call_time_difference", minUpdateTime);
-		prefsPrivateEditor.putFloat("background_call_position", minUpdateDistance);
+		prefsPrivateEditor.putInt("background_call_position", (int)minUpdateDistance);
 		prefsPrivateEditor.commit();
 	}
 	
