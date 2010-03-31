@@ -40,6 +40,7 @@
  -->		
 		<activity android:name="com.kangaroo.gui.ActivityTask"></activity>
 		<activity android:name="com.kangaroo.gui.ActivityEditTask"></activity>
+		<activity android:name="com.kangaroo.gui.ActivityDayOptimizer"></activity>
 		
 
 		

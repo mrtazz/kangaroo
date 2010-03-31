@@ -11,6 +11,8 @@ import android.app.ExpandableListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -149,16 +151,16 @@ public class ActivityTaskList extends ExpandableListActivity {
 					 }
 					 else if (start == null)
 					 {
-						 m.put("taskdate", "Enddate: " + pad2(end.getDay()) + "/"
+						 m.put("taskdate", "Enddate: " + pad2(end.getDate()) + "/"
 								 					   + pad2(end.getMonth()) + "/"
 								 					   + (end.getYear()+1900));
 					 }
 					 else
 					 {
-						 m.put("taskdate","Startdate: "+ pad2(start.getDay()) + "/"
+						 m.put("taskdate","Startdate: "+ pad2(start.getDate()) + "/"
 								 					   + pad2(start.getMonth()) + "/"
 								 					   + (start.getYear()+1900) + "\n" +
-								 		    "Endate: " + pad2(end.getDay()) + "/"
+								 		    "Endate: " + pad2(end.getDate()) + "/"
 								 		    		   + pad2(end.getMonth()) + "/"
 								 		    		   + (end.getYear()+1900));
 					 }
@@ -274,6 +276,38 @@ public class ActivityTaskList extends ExpandableListActivity {
 				reload();
 			}
 		
+		  /** menu methods */
+	  /* (non-Javadoc)
+	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+	 */
+	public boolean onCreateOptionsMenu(Menu menu){
+
+		  MenuInflater inflater = getMenuInflater();
+		  inflater.inflate(R.menu.tasklist_menu, menu);
+		  return true;
+
+	  }
+
+	  /* (non-Javadoc)
+	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	 */
+	public boolean onOptionsItemSelected (MenuItem item){
+
+		  switch (item.getItemId()){
+
+		  	case R.id.addTask:
+		  		newTask();
+		  		return true;
+
+			default:
+				System.out.println("ItemId: "+item.getItemId());
+				return true;
+
+		  }
+
+	}
+		
+		
 		/**
 		 * @brief method to pad time to a length of 2
 		 * @param i time as int
@@ -284,5 +318,19 @@ public class ActivityTaskList extends ExpandableListActivity {
 			String s = Integer.toString(i);
 			s= (s.length() < 2) ? ("0"+s) : (s);
 			return s;
+		}
+		
+		/**
+		 * @brief method to create a new task in the object
+		 * and then reload
+		 */
+		private void newTask()
+		{
+			Task t = new Task();
+	  		t.setName("New Task");
+	  		t.setDescription("New Description");
+	  		taskslist.add(t);
+	  		dp.setTasks(taskslist);
+	  		reload();
 		}
 }
