@@ -257,7 +257,7 @@ public class CalendarLibrary {
     	values.put("calendar_id", Integer.toString(calendar_id));
     	values.put("eventTimezone", event.getTimezone());
     	values.put("title", event.getTitle());
-    	values.put("allDay", event.getAllDay());
+    	values.put("allDay", (event.getAllDay()?1:0));
     	values.put("dtstart", event.getStartDate().getTime());
     	values.put("dtend", event.getEndDate().getTime());
     	values.put("description", event.getDescription() + serializeKangarooEventData(event));
