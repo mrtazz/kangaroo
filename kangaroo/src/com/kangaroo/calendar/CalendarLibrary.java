@@ -222,7 +222,6 @@ public class CalendarLibrary {
 					System.out.println("Exception thrown: "+e);
 				}
 				final String eventLocation = eventsCursor.getString(6);
-				final int calendar = Integer.parseInt(eventsCursor.getString(7));
 				final String timezone = eventsCursor.getString(8);
 				HashMap<String, String> kd = deserializeKangarooEventData(eventsCursor.getString(5));
 				String description = kd.get("description");
