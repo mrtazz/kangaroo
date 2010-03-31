@@ -254,15 +254,21 @@ public class OSMFileReader {
 			
 			
 			/* optimize plan */
-			
+			/*
 			DayPlanOptimizer optimizer = new GreedyTaskInsertionOptimizer();
 			activeDayPlan.setOptimizer(optimizer);
 			DayPlan optimizedDayPlan = activeDayPlan.optimize(now, home, vehicle);
 
 			System.out.println("---> " + optimizedDayPlan.toString());
 			System.out.println("---> " + optimizedDayPlan.checkConsistency(vehicle, now).toString());
-			
-			
+			*/
+	        
+	        Place here = new Place(48.1210291, 7.8581375);
+	        Place task = new Place(48.0248564, 7.8479584);
+	        
+	        System.out.println("route = " + routingEngine.routeFromTo(here, task, vehicle));
+	        
+	        
 			System.out.println("activeDayPlan.getOngoingEvent(now) = " + activeDayPlan.getOngoingEvent(now));
 		}
         
