@@ -206,7 +206,7 @@ public class CalendarLibrary {
 		eventsCursor = contentResolver.query(eventsURI, eventsFields,
 										 	 selection, selection_args, null);
 
-		 while (eventsCursor.moveToNext())
+		 while (eventsCursor != null && eventsCursor.moveToNext())
 	        {
 				final String eventid = eventsCursor.getString(0);
 				final String title = eventsCursor.getString(1);
