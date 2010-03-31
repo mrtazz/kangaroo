@@ -19,6 +19,7 @@ import android.os.RemoteException;
 import com.kangaroo.ActiveDayPlan;
 import com.kangaroo.DayPlanConsistency;
 import com.kangaroo.calendar.CalendarAccessAdapter;
+import com.kangaroo.calendar.CalendarAccessAdapterAndroid;
 import com.kangaroo.calendar.CalendarAccessAdapterMemory;
 import com.kangaroo.calendar.CalendarEvent;
 import com.kangaroo.gui.ActivityBuildPlan;
@@ -70,16 +71,15 @@ public class ServiceRecurringTask extends Service
 		currentDayPlan = new ActiveDayPlan();
     	currentDayPlan.setRoutingEngine(MobileTSMRoutingEngine.getInstance(this));
     	
-        //CalendarAccessAdapter caa = new CalendarAccessAdapterAndroid(this);
-    	CalendarAccessAdapter caa = new CalendarAccessAdapterMemory();
-    	caa.setContext(getApplicationContext());
+        CalendarAccessAdapter caa = new CalendarAccessAdapterAndroid(this);
+    	//CalendarAccessAdapter caa = new CalendarAccessAdapterMemory();
 		currentDayPlan.setCalendarAccessAdapter(caa);
 		
 		currentVehicle = new AllStreetVehicle(5.0);
 		
 		myUserNotification = new UserNotification(getApplicationContext());
 		
-		fill_stuff();
+		//fill_stuff();
 	}
 	
 	private void fill_stuff()
@@ -235,7 +235,7 @@ public class ServiceRecurringTask extends Service
         	
    		 	Location currentLocation = null;
         	Place currentPlace = null;
-        	int minutes_left = -1;
+        	int minutes_left = Integer.MAX_VALUE;
     		if(currentIntent.getBooleanExtra("isLocation", false) == true)
     		{
     			System.out.println("ServiceRecurringTask: location");
@@ -274,7 +274,8 @@ public class ServiceRecurringTask extends Service
     			try 
     			{
     				minutes_left = currentDayPlan.checkComplianceWith(new Date(), currentPlace, currentVehicle);
-    			} catch (NoRouteFoundException e) 
+    			} 
+    			catch (Exception e) 
     			{
     				e.printStackTrace();
     			}
@@ -283,7 +284,12 @@ public class ServiceRecurringTask extends Service
     			boolean message_ping = false;
     			String message_text = "";
     			String message_title = "";
-    			if(minutes_left < 0)
+    			if(minutes_left == Integer.MAX_VALUE)
+    			{
+    				//some thing went wrong. we don't have a valid estimation
+    				System.out.println("SRT: minutes_left not set!");
+    			}
+    			else if(minutes_left < 0)
     			{
     				//its too late. tell the user anyway
     				message_show = true;
