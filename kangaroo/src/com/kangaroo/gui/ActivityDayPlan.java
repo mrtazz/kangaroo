@@ -39,7 +39,8 @@ public class ActivityDayPlan extends ListActivity {
 	  private TextView tv;
 	  private com.kangaroo.ActiveDayPlan dp;
 	  private CalendarEvent actual_calendar_event;
-	  private int actual_calendar = 1;
+	  private final int addLocationRequestCode = 1;
+	  private final int optimizeRequestCode = 2;
 	  private long actual_event;
 	  // menu item ids
 	  private final int MENU_DELETE = 0;
@@ -107,7 +108,7 @@ public class ActivityDayPlan extends ListActivity {
 			  // show the map
 			  Intent intent = new Intent("com.kangaroo.SELECTPLACE");
 			  intent.addCategory(Intent.CATEGORY_DEFAULT);
-			  startActivityForResult(intent, 1);
+			  startActivityForResult(intent, addLocationRequestCode);
 		      ret = true;
 		      break;
 		    case MENU_TO_TASK:
@@ -126,7 +127,8 @@ public class ActivityDayPlan extends ListActivity {
 	  // callback method for intent result
 	  @Override
 	  public void onActivityResult(int requestCode, int resultCode, Intent data) {
-			if (data != null) {
+			if (data != null)
+			{
 				eventlist.remove((int)actual_event);
 				double lat = data.getExtras().getDouble("latitude");
 				double lon = data.getExtras().getDouble("longitude");
@@ -134,8 +136,15 @@ public class ActivityDayPlan extends ListActivity {
 				actual_calendar_event.setLocationLongitude(lon);
 				eventlist.add((int)actual_event,actual_calendar_event);
 				dp.setEvents(eventlist);
-			} else {
-				Toast.makeText(this, "no position set! resultCode = " + resultCode, Toast.LENGTH_SHORT).show();
+			}
+			else
+			{
+				if (requestCode == addLocationRequestCode)
+				{
+					Toast.makeText(this,
+								   "no position set! resultCode = " + resultCode,
+								   Toast.LENGTH_SHORT).show();
+				}
 			}
 			reload();
 		}
@@ -181,7 +190,7 @@ public class ActivityDayPlan extends ListActivity {
 		  	case R.id.optimize:
 				Intent intent = new Intent(this, ActivityDayOptimizer.class);
 				intent.addCategory(Intent.CATEGORY_DEFAULT);
-				startActivityForResult(intent, 1);
+				startActivityForResult(intent, optimizeRequestCode);
 		  		return true;
 
 			default:
