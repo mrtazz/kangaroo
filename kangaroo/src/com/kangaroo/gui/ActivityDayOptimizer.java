@@ -111,12 +111,12 @@ public class ActivityDayOptimizer extends ListActivity {
 	 */
 	public boolean onOptionsItemSelected (MenuItem item)
 	{
-		Toast toast;
 		  switch (item.getItemId())
 		  {		  
 		  	case R.id.accept:
 		  		adp.setEvents(dp.getEvents());
 		  		adp.setTasks(dp.getTasks());
+		  		finish();
 		  		return true;
 
 		  	case R.id.next:
