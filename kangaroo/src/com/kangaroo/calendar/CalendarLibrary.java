@@ -378,15 +378,18 @@ public class CalendarLibrary {
     	else
     	{
 	    	String[] dataArray = data.split("\n---\n");
-	    	String[] yamlValues = dataArray[1].split("\n");
 	    	ret.put("description", dataArray[0]);
-	    	for (String s : yamlValues)
+	    	if (dataArray.length > 1)
 	    	{
-	    		String[] values = s.split(":");
-	    		if(values.length == 2)
-	    		{
-	    			ret.put(values[0].trim(), values[1].trim());
-	    		}
+		    	String[] yamlValues = dataArray[1].split("\n");
+		    	for (String s : yamlValues)
+		    	{
+		    		String[] values = s.split(":");
+		    		if(values.length == 2)
+		    		{
+		    			ret.put(values[0].trim(), values[1].trim());
+		    		}
+		    	}
 	    	}
 	    	return ret;
     	}
