@@ -308,13 +308,13 @@ public class OSMFileReader {
 	public static void main(String[] args) {	
 		
 			
-		testActiveDayPlan();
+		//testActiveDayPlan();
 		
 		//testTaskPriorityComparator();		
 		
-		//IDataSet map = loadMapFile("/Users/andreaswalz/Downloads/maps/in/map-fr.osm");
+		IDataSet map = loadMapFile("/Users/andreaswalz/Downloads/maps/in/map-em.osm");
 		
-		//writeDatabase(map, "jdbc:sqlite:/Users/andreaswalz/Downloads/maps/out/map-fr.db");
+		writeDatabase(map, "jdbc:sqlite:/Users/andreaswalz/Downloads/maps/out/map-em.db");
 		
 		//testTaskConstraintHelper();
 		
