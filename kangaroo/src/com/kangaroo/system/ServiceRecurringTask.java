@@ -1,5 +1,6 @@
 package com.kangaroo.system;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import android.app.Activity;
@@ -23,6 +24,7 @@ import com.kangaroo.calendar.CalendarAccessAdapterAndroid;
 import com.kangaroo.calendar.CalendarAccessAdapterMemory;
 import com.kangaroo.calendar.CalendarEvent;
 import com.kangaroo.gui.ActivityBuildPlan;
+import com.kangaroo.gui.ActivityMainWindow;
 import com.kangaroo.gui.UserNotification;
 import com.kangaroo.task.Task;
 import com.kangaroo.task.TaskConstraintDate;
@@ -53,6 +55,7 @@ public class ServiceRecurringTask extends Service
 	private Integer consistencyMessageId = -1;
 	private Integer complienceMessageId = -1;
 	private int messageLevel = -1;
+	private Context ctx;
 	
 	/**
 	 * Initialize the new Service-object here
@@ -78,10 +81,217 @@ public class ServiceRecurringTask extends Service
 		currentVehicle = new AllStreetVehicle(5.0);
 		
 		myUserNotification = new UserNotification(getApplicationContext());
-		
+		ctx = getApplicationContext();
 		//fill_stuff();
 	}
 	
+	
+	/**
+	 * Safe the state of this object here, because it will be destroyed soon
+	 */
+	@Override
+	public void onDestroy()
+	{
+		Editor prefsPrivateEditor = prefsPrivate.edit();
+		//prefsPrivateEditor.putInt("variable name", variable);
+		prefsPrivateEditor.commit();
+	}
+	
+	
+	/**
+	 * This is called when the service is started via Context.startService(). This is the way we
+	 * call it in this project. Do the recurring work here. This service is only then invoked, when the 
+	 * ServiceCallTick and ServiceCallLocation think it is necessary to execute recurring task now.
+	 * @param intent
+	 * @param flags
+	 * @param startId
+	 * @return
+	 */
+	@Override
+	public void onStart(Intent intent, int startId)
+	{
+		 
+		 //only one Thread that checks/optimizes the plan is allowed at any time!
+		 if(!semaphoreTaskAktive)
+		 {
+			semaphoreTaskAktive = true;
+			currentIntent = intent;
+			ctx = getApplicationContext();
+	    	Thread thr = new Thread(null, backgroundTask, "ServiceRecurringTask Worker Thread");
+	        thr.start();
+		 }
+	}
+	
+	/**
+	 * Thread, in which the main work for the background task is done.
+	 */
+	Runnable backgroundTask = new Runnable()
+    {
+        public void run() 
+        {
+   		 	//obtain CPU-Lock to prevent the device from going to sleep while we are still routing
+        	myWakeLock = myPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Kangaroo calculation lock");
+   		 	myWakeLock.acquire();
+   		 	prefsPrivate = getSharedPreferences(preferencesName, MODE_PRIVATE);
+   		 	currentDayPlan.setRoutingEngine(MobileTSMRoutingEngine.getInstance(ctx));
+   		 	
+   		 	Location currentLocation = null;
+        	Place currentPlace = null;
+        	int minutes_left = Integer.MAX_VALUE;
+    		if(currentIntent.getBooleanExtra("isLocation", false) == true)
+    		{
+    			System.out.println("ServiceRecurringTask: location");
+    			//call from ServiceCallLocation, get Location info
+    			currentLocation = (Location)currentIntent.getExtras().get("location");
+    			if(currentLocation == null)
+    			{
+        			LocationManager manager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        			currentLocation = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        			if((int)(System.currentTimeMillis() - currentLocation.getTime()) > prefsPrivate.getInt("background_call_time_difference", 60))
+        			{
+        				//Location is too old (older than last call)
+        				currentLocation = null;
+        			}
+        			
+    			}
+    		}
+    		else
+    		{
+    			//call from ServiceCallTick, no new Location provided
+    			System.out.println("ServiceRecurringTask: time");
+    			LocationManager manager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+    			currentLocation = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+    		}
+    		
+    		if(!(currentLocation == null))
+    		{
+    			//check the dayplan here and deal with consistency and compliance problems
+    			currentPlace = new Place(currentLocation.getLatitude(), currentLocation.getLongitude());
+    			System.out.println("SRT: currentPlace: "+currentPlace.toString());
+    			System.out.println(currentDayPlan.toString());
+    			
+    			//check consistency of the dayplan
+    			DayPlanConsistency dpc = currentDayPlan.checkConsistency(currentVehicle, new Date());
+    			if(consistencyMessageId != -1 && !dpc.hasNoConflicts())
+    			{
+    				myUserNotification.killNotification(consistencyMessageId);
+    				consistencyMessageId = -1;
+    			}
+    			if(!dpc.hasNoConflicts())
+    			{
+    				consistencyMessageId = myUserNotification.showNotification("Inconsistent Dayplan", dpc.toString(), false, ActivityMainWindow.class);
+        			System.out.println(dpc.toString());
+    			}
+    			
+    			//check complience here
+    			try 
+    			{
+    				minutes_left = currentDayPlan.checkComplianceWith(new Date(), currentPlace, currentVehicle);
+    			} 
+    			catch (Exception e) 
+    			{
+    				e.printStackTrace();
+    			}
+        		
+    			boolean message_show = false;
+    			boolean message_ping = false;
+    			String message_text = "";
+    			String message_title = "";
+    			if(minutes_left == Integer.MAX_VALUE)
+    			{
+    				//some thing went wrong. we don't have a valid estimation
+    				if(complienceMessageId != -1)
+        			{
+        				myUserNotification.killNotification(complienceMessageId);
+        				complienceMessageId = -1;
+        			}
+    				System.out.println("SRT: minutes_left not set!");
+    			}
+    			else if(minutes_left < 0)
+    			{
+    				//its too late. tell the user anyway
+    				message_show = true;
+    				message_title = "too late";
+    				message_text = "too late for event " + currentDayPlan.getNextEvent(new Date()).getTitle() + ", " + RouteParameter.durationToString(minutes_left);
+    				if(messageLevel != 4)
+    				{
+    					message_ping = true;
+    					messageLevel = 4;
+    				}
+    				
+    			}
+    			else if(minutes_left < 5)
+    			{
+    				//last warning
+    				message_show = true;
+    				message_title = "get going";
+    				message_text = RouteParameter.durationToString(minutes_left) + " remaining for event " + currentDayPlan.getNextEvent(new Date()).getTitle();
+    				if(messageLevel != 3)
+    				{
+    					message_ping = true;
+    					messageLevel = 3;
+    				}
+    			}
+    			else if(minutes_left < 15)
+    			{
+    				//second message
+    				message_show = true;
+    				message_title = "upcomming event";
+    				message_text = RouteParameter.durationToString(minutes_left) + " remaining for event " + currentDayPlan.getNextEvent(new Date()).getTitle();
+    				if(messageLevel != 2)
+    				{
+    					message_ping = true;
+    					messageLevel = 2;
+    				}
+    			}
+    			else if(minutes_left < 30)
+    			{
+    				//first message, <30
+    				message_show = true;
+    				message_title = "event reminder";
+    				message_text = RouteParameter.durationToString(minutes_left) + " remaining for event" + currentDayPlan.getNextEvent(new Date()).getTitle();
+    				if(messageLevel != 1)
+    				{
+    					message_ping = true;
+    					messageLevel = 1;
+    				}
+    			}
+    			
+    			if(message_show)
+    			{
+        			if(message_ping == true)
+        			{
+        				if(complienceMessageId != -1)
+            			{
+            				myUserNotification.killNotification(complienceMessageId);
+            				complienceMessageId = -1;
+            			}
+            			complienceMessageId = myUserNotification.showNotification(message_title, message_text, true, ActivityMainWindow.class);    
+        			}
+        			else
+        			{
+        				if(complienceMessageId != -1)
+            			{
+            				myUserNotification.updateNotification(complienceMessageId, message_title, message_text, false, ActivityMainWindow.class);
+            			}
+        				 
+        			}
+    								
+    			}
+
+    		}
+    		else
+    		{
+    			System.out.println("currentLocation is null");
+    		}
+        
+       		//it is really important to release the WakeLock after we are done!
+    		semaphoreTaskAktive = false;
+   		    myWakeLock.release();	
+        }
+    };	
+	
+
 	private void fill_stuff()
 	{
         CalendarEvent event1 = new CalendarEvent();
@@ -186,193 +396,7 @@ public class ServiceRecurringTask extends Service
 		currentDayPlan.addTask(task5);		
 		currentDayPlan.addTask(task6);	
 	}
-	
-	/**
-	 * Safe the state of this object here, because it will be destroyed soon
-	 */
-	@Override
-	public void onDestroy()
-	{
-		Editor prefsPrivateEditor = prefsPrivate.edit();
-		//prefsPrivateEditor.putInt("variable name", variable);
-		prefsPrivateEditor.commit();
-	}
-	
-	
-	/**
-	 * This is called when the service is started via Context.startService(). This is the way we
-	 * call it in this project. Do the recurring work here. This service is only then invoked, when the 
-	 * ServiceCallTick and ServiceCallLocation think it is necessary to execute recurring task now.
-	 * @param intent
-	 * @param flags
-	 * @param startId
-	 * @return
-	 */
-	@Override
-	public void onStart(Intent intent, int startId)
-	{
-		 
-		 //only one Thread that checks/optimizes the plan is allowed at any time!
-		 if(!semaphoreTaskAktive)
-		 {
-			semaphoreTaskAktive = true;
-			currentIntent = intent;
-	    	Thread thr = new Thread(null, backgroundTask, "ServiceRecurringTask Worker Thread");
-	        thr.start();
-		 }
-	}
-	
-	/**
-	 * Thread, in which the main work for the background task is done.
-	 */
-	Runnable backgroundTask = new Runnable()
-    {
-        public void run() 
-        {
-   		 	//obtain CPU-Lock to prevent the device from going to sleep while we are still routing
-        	myWakeLock = myPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Kangaroo calculation lock");
-   		 	myWakeLock.acquire();
-        	
-   		 	Location currentLocation = null;
-        	Place currentPlace = null;
-        	int minutes_left = Integer.MAX_VALUE;
-    		if(currentIntent.getBooleanExtra("isLocation", false) == true)
-    		{
-    			System.out.println("ServiceRecurringTask: location");
-    			//call from ServiceCallLocation, get Location info
-    			currentLocation = (Location)currentIntent.getExtras().get("location");    			
-    		}
-    		else
-    		{
-    			//call from ServiceCallTick, no new Location provided
-    			System.out.println("ServiceRecurringTask: time");
-    			LocationManager manager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-    			currentLocation = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-    		}
-    		
-    		if(!(currentLocation == null))
-    		{
-    			//check the dayplan here and deal with consistency and compliance problems
-    			currentPlace = new Place(currentLocation.getLatitude(), currentLocation.getLongitude());
-    			System.out.println("SRT: currentPlace: "+currentPlace.toString());
-    			System.out.println(currentDayPlan.toString());
-    			
-    			//check consistency of the dayplan
-    			DayPlanConsistency dpc = currentDayPlan.checkConsistency(currentVehicle, new Date());
-    			if(consistencyMessageId != -1 && !dpc.hasNoConflicts())
-    			{
-    				myUserNotification.killNotification(consistencyMessageId);
-    				consistencyMessageId = -1;
-    			}
-    			if(!dpc.hasNoConflicts())
-    			{
-    				consistencyMessageId = myUserNotification.showNotification("Inconsistent Events", dpc.toString(), false, ActivityBuildPlan.class);
-        			System.out.println(dpc.toString());
-    			}
-    			
-    			//check complience here
-    			try 
-    			{
-    				minutes_left = currentDayPlan.checkComplianceWith(new Date(), currentPlace, currentVehicle);
-    			} 
-    			catch (Exception e) 
-    			{
-    				e.printStackTrace();
-    			}
-        		
-    			boolean message_show = false;
-    			boolean message_ping = false;
-    			String message_text = "";
-    			String message_title = "";
-    			if(minutes_left == Integer.MAX_VALUE)
-    			{
-    				//some thing went wrong. we don't have a valid estimation
-    				System.out.println("SRT: minutes_left not set!");
-    			}
-    			else if(minutes_left < 0)
-    			{
-    				//its too late. tell the user anyway
-    				message_show = true;
-    				message_title = "too late";
-    				message_text = "too late for event " + currentDayPlan.getNextEvent(new Date()).getTitle() + ", " + RouteParameter.durationToString(minutes_left);
-    				if(messageLevel != 4)
-    				{
-    					message_ping = true;
-    					messageLevel = 4;
-    				}
-    				
-    			}
-    			else if(minutes_left < 5)
-    			{
-    				//last warning
-    				message_show = true;
-    				message_title = "get going";
-    				message_text = RouteParameter.durationToString(minutes_left) + " remaining for event " + currentDayPlan.getNextEvent(new Date()).getTitle();
-    				if(messageLevel != 3)
-    				{
-    					message_ping = true;
-    					messageLevel = 3;
-    				}
-    			}
-    			else if(minutes_left < 15)
-    			{
-    				//second message
-    				message_show = true;
-    				message_title = "upcomming event";
-    				message_text = RouteParameter.durationToString(minutes_left) + " remaining for event " + currentDayPlan.getNextEvent(new Date()).getTitle();
-    				if(messageLevel != 2)
-    				{
-    					message_ping = true;
-    					messageLevel = 2;
-    				}
-    			}
-    			else if(minutes_left < 30)
-    			{
-    				//first message, <30
-    				message_show = true;
-    				message_title = "event reminder";
-    				message_text = RouteParameter.durationToString(minutes_left) + " remaining for event" + currentDayPlan.getNextEvent(new Date()).getTitle();
-    				if(messageLevel != 1)
-    				{
-    					message_ping = true;
-    					messageLevel = 1;
-    				}
-    			}
-    			
-    			if(message_show)
-    			{
-        			if(message_ping == true)
-        			{
-        				if(complienceMessageId != -1)
-            			{
-            				myUserNotification.killNotification(complienceMessageId);
-            				complienceMessageId = -1;
-            			}
-            			complienceMessageId = myUserNotification.showNotification(message_title, message_text, false, ActivityBuildPlan.class);    
-        			}
-        			else
-        			{
-        				if(complienceMessageId != -1)
-            			{
-            				myUserNotification.updateNotification(complienceMessageId, message_title, message_text, false, ActivityBuildPlan.class);
-            			}
-        				 
-        			}
-    								
-    			}
-
-    		}
-    		else
-    		{
-    			System.out.println("currentLocation is null");
-    		}
-        
-       		//it is really important to release the WakeLock after we are done!
-    		semaphoreTaskAktive = false;
-   		    myWakeLock.release();	
-        }
-    };	
-	
+    
 	/**
 	 * Return this object to interact with the service.
 	 */

@@ -39,7 +39,23 @@ public class MobileTSMRoutingEngine implements RoutingEngine {
 			currentInstance = new MobileTSMRoutingEngine();
 			currentInstance.enableRoutingCache();
 			currentInstance.init(prefsPrivate.getString("tsm_file_path", "/sdcard/map-fr.db"));
+			System.out.println("MobileTSMRoutingEngine: Initializing Routing Engine with db-file " + prefsPrivate.getString("tsm_file_path", "/sdcard/map-fr.db") + " ; engine is initialized: " + currentInstance.initialized());
 		}
+		else
+		{
+			System.out.println("MobileTSMRoutingEngine: Returning existing Instance of routing-engine; initialized: "+ currentInstance.initialized());
+		}
+		
+		if(!currentInstance.initialized())
+		{
+			SharedPreferences prefsPrivate = ctx.getSharedPreferences(preferencesName, Context.MODE_PRIVATE);
+			
+			//generate new Instance, initialize it.
+			currentInstance.enableRoutingCache();
+			currentInstance.init(prefsPrivate.getString("tsm_file_path", "/sdcard/map-fr.db"));
+			System.out.println("MobileTSMRoutingEngine: RE-Initializing Routing Engine with db-file " + prefsPrivate.getString("tsm_file_path", "/sdcard/map-fr.db") + " ; engine is initialized: " + currentInstance.initialized());
+		}
+		
 		return currentInstance;
 	}
 	

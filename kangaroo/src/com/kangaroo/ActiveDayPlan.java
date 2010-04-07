@@ -317,8 +317,9 @@ public class ActiveDayPlan extends DayPlan {
 	
 	private void terminateEventAccess(boolean skipSave) {
 		if (eventAccessDepth <= 0) {
-			throw new RuntimeException("ActiveDayPlan.terminateEventAccess(): " +
-					"cannot step back from level 0");
+			//TODO fix this properly
+			//throw new RuntimeException("ActiveDayPlan.terminateEventAccess(): " +
+			//		"cannot step back from level 0");
 		}
 		if (--eventAccessDepth == 0 && !skipSave) {
 			//saveEvents();
