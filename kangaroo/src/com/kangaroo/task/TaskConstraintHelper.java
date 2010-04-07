@@ -53,8 +53,47 @@ public class TaskConstraintHelper {
 	
 	
 	
-	public Date getEndDayTime() {
-		return null;
+	public Date getEndDate() {
+		
+		Date result = null;
+		
+		List<TaskConstraintInterface> dateConstraints = 
+			task.getConstraintsOfType(TaskConstraintInterface.TYPE_DATE);
+		
+		/* TODO: allow more constraints of one type than one */
+		if (dateConstraints.size() > 1) {
+			throw new RuntimeException("TaskConstraintHelper.getEndDate(): " +
+					"Cannon handle more than one constraint of one type at this time");
+		}
+		
+		if (dateConstraints.size() == 1) {
+			TaskConstraintDate constraint = (TaskConstraintDate)dateConstraints.get(0);
+			result = constraint.getEnd();
+		}
+		
+		return result;
+	}
+	
+	
+	public Date getEndDaytime() {
+		
+		Date result = null;
+		
+		List<TaskConstraintInterface> daytimeConstraints = 
+			task.getConstraintsOfType(TaskConstraintInterface.TYPE_DAYTIME);	
+		
+		/* TODO: allow more constraints of one type than one */
+		if (daytimeConstraints.size() > 1) {
+			throw new RuntimeException("TaskConstraintHelper.getEndDate(): " +
+					"Cannon handle more than one constraint of one type at this time");
+		}
+		
+		if (daytimeConstraints.size() == 1) {
+			TaskConstraintDayTime constraint = (TaskConstraintDayTime)daytimeConstraints.get(0);
+			result = constraint.getEndTime();
+		}
+		
+		return result;
 	}
 	
 	
@@ -237,7 +276,7 @@ public class TaskConstraintHelper {
 	
 	
 	
-	public int compareDayTime(Date daytime1, Date daytime2) {		
+	public static int compareDayTime(Date daytime1, Date daytime2) {		
 		int hours = daytime1.getHours() - daytime2.getHours();		
 		if (hours != 0) {
 			return hours;

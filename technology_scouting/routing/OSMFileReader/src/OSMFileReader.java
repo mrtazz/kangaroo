@@ -51,6 +51,7 @@ import com.kangaroo.task.TaskConstraintHelper;
 import com.kangaroo.task.TaskConstraintLocation;
 import com.kangaroo.task.TaskConstraintPOI;
 import com.kangaroo.task.SimpleTaskPriorityComparator;
+import com.kangaroo.task.UrgencyTaskPriorityComparator;
 import com.kangaroo.tsm.osm.io.FileLoader;
 import com.mobiletsm.osm.MobileTSMDatabaseWriter;
 import com.mobiletsm.osm.OsmHelper;
@@ -136,7 +137,7 @@ public class OSMFileReader {
         
         Date now = new Date(2010 - 1900, 3, 10, 19, 00);
         Place home = new Place(48.0064241, 7.8521991);
-        Vehicle vehicle = new AllStreetVehicle(5.0);
+        Vehicle vehicle = new AllStreetVehicle(50.0);
         
         
         CalendarEvent event1 = new CalendarEvent();
@@ -200,7 +201,7 @@ public class OSMFileReader {
 		
 		Task task2 = new Task();
 		task2.setName("Frisšr");
-		task2.addConstraint(new TaskConstraintDuration(3));
+		task2.addConstraint(new TaskConstraintDuration(30));
 		task2.addConstraint(new TaskConstraintPOI(new POICode(POICode.SHOP_HAIRDRESSER)));
 		task2.addConstraint(new TaskConstraintDayTime(18, 00, 23, 00));
 		
@@ -217,7 +218,7 @@ public class OSMFileReader {
 		
 		Task task5 = new Task();
 		task5.setName("Blumen kaufen");
-		task5.addConstraint(new TaskConstraintDuration(30));
+		task5.addConstraint(new TaskConstraintDuration(3));
 		task5.addConstraint(new TaskConstraintPOI(new POICode(POICode.SHOP_FLORIST)));	
 		task5.addConstraint(new TaskConstraintDayTime(18, 00, 23, 00));
 
@@ -238,38 +239,40 @@ public class OSMFileReader {
         
         if (routingEngine.initialized()) {
 	        activeDayPlan.setRoutingEngine(routingEngine);
-	        /*
+	        
 			System.out.println("---> " + activeDayPlan.toString());
 			System.out.println("---> " + activeDayPlan.checkConsistency(vehicle, now).toString());
-	        */
+	        
 	        
 	        /* check consistency */
-	        /*
-			DayPlanConsistency consistency = 
+	        DayPlanConsistency consistency = 
 				activeDayPlan.checkConsistency(vehicle, now);
 			if (consistency != null) {
 				System.out.println("consistency = " + consistency.toString());		
 			}
-			*/
-			
+						
 			
 			/* optimize plan */
-			/*
-			DayPlanOptimizer optimizer = new GreedyTaskInsertionOptimizer();
+			GreedyTaskInsertionOptimizer optimizer = new GreedyTaskInsertionOptimizer();
 			activeDayPlan.setOptimizer(optimizer);
-			DayPlan optimizedDayPlan = activeDayPlan.optimize(now, home, vehicle);
 
-			System.out.println("---> " + optimizedDayPlan.toString());
-			System.out.println("---> " + optimizedDayPlan.checkConsistency(vehicle, now).toString());
-			*/
-	        
+			optimizer.setTaskPriorityComparator(new UrgencyTaskPriorityComparator());
+			DayPlan optimizedDayPlan1 = activeDayPlan.optimize(now, home, vehicle);
+
+			optimizer.setTaskPriorityComparator(new SimpleTaskPriorityComparator());
+			DayPlan optimizedDayPlan2 = activeDayPlan.optimize(now, home, vehicle);
+			
+			System.out.println("---> " + optimizedDayPlan1.toString());
+			System.out.println("---> " + optimizedDayPlan2.toString());
+			System.out.println("---> " + optimizedDayPlan1.checkConsistency(vehicle, now).toString());
+			System.out.println("---> " + optimizedDayPlan2.checkConsistency(vehicle, now).toString());
+
+	        /*
 	        Place here = new Place(48.1210291, 7.8581375);
-	        Place task = new Place(48.0248564, 7.8479584);
-	        
-	        System.out.println("route = " + routingEngine.routeFromTo(here, task, vehicle));
-	        
-	        
+	        Place task = new Place(48.0248564, 7.8479584);	        
+	        System.out.println("route = " + routingEngine.routeFromTo(here, task, vehicle));        
 			System.out.println("activeDayPlan.getOngoingEvent(now) = " + activeDayPlan.getOngoingEvent(now));
+			*/
 		}
         
         
@@ -308,13 +311,13 @@ public class OSMFileReader {
 	public static void main(String[] args) {	
 		
 			
-		//testActiveDayPlan();
+		testActiveDayPlan();
 		
 		//testTaskPriorityComparator();		
 		
-		IDataSet map = loadMapFile("/Users/andreaswalz/Downloads/maps/in/map-em.osm");
+		//IDataSet map = loadMapFile("/Users/andreaswalz/Downloads/maps/in/map-em.osm");
 		
-		writeDatabase(map, "jdbc:sqlite:/Users/andreaswalz/Downloads/maps/out/map-em.db");
+		//writeDatabase(map, "jdbc:sqlite:/Users/andreaswalz/Downloads/maps/out/map-em.db");
 		
 		//testTaskConstraintHelper();
 		
