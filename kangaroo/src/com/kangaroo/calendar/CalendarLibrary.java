@@ -206,7 +206,7 @@ public class CalendarLibrary {
 		eventsCursor = contentResolver.query(eventsURI, eventsFields,
 										 	 selection, selection_args, null);
 
-		 while (eventsCursor.moveToNext())
+		 while (eventsCursor != null && eventsCursor.moveToNext())
 	        {
 				final String eventid = eventsCursor.getString(0);
 				final String title = eventsCursor.getString(1);
@@ -222,7 +222,6 @@ public class CalendarLibrary {
 					System.out.println("Exception thrown: "+e);
 				}
 				final String eventLocation = eventsCursor.getString(6);
-				final int calendar = Integer.parseInt(eventsCursor.getString(7));
 				final String timezone = eventsCursor.getString(8);
 				HashMap<String, String> kd = deserializeKangarooEventData(eventsCursor.getString(5));
 				String description = kd.get("description");
@@ -258,7 +257,7 @@ public class CalendarLibrary {
     	values.put("calendar_id", Integer.toString(calendar_id));
     	values.put("eventTimezone", event.getTimezone());
     	values.put("title", event.getTitle());
-    	values.put("allDay", event.getAllDay());
+    	values.put("allDay", (event.getAllDay()?1:0));
     	values.put("dtstart", event.getStartDate().getTime());
     	values.put("dtend", event.getEndDate().getTime());
     	values.put("description", event.getDescription() + serializeKangarooEventData(event));
