@@ -275,8 +275,6 @@ public class OSMFileReader {
 			*/
 		}
         
-        
-        
         routingEngine.shutdown();
 		
 	}
@@ -311,13 +309,13 @@ public class OSMFileReader {
 	public static void main(String[] args) {	
 		
 			
-		testActiveDayPlan();
+		//testActiveDayPlan();
 		
 		//testTaskPriorityComparator();		
 		
-		//IDataSet map = loadMapFile("/Users/andreaswalz/Downloads/maps/in/map-em.osm");
+		IDataSet map = loadMapFile("/Users/andreaswalz/Downloads/maps/in/map-heit.osm");
 		
-		//writeDatabase(map, "jdbc:sqlite:/Users/andreaswalz/Downloads/maps/out/map-em.db");
+		writeDatabase(map, "jdbc:sqlite:/Users/andreaswalz/Downloads/maps/out/map-heit.db");
 		
 		//testTaskConstraintHelper();
 		
