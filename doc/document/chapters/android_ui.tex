@@ -8,3 +8,19 @@ The XML templates define a basic element of the according class also
 (``TabHost'', '``ListView'').
 
 % subsubsection Basic Interface Structure (end)
+
+\subsubsection{Main Window} % (fold)
+\label{ssub:MainWindow}
+
+The main window is just the skeleton with the tablist, which then
+contains the active window itself. The Activities are added
+via Intents into the tabbar. An important point, when entering the embedded
+Activities into the application's manifest file, is to add the intent filter
+\begin{verbatim}
+<category android:name="android.intent.category.EMBED"></category>
+\end{verbatim}
+also. This makes sure, that the Activity respects the boundaries of the
+main window when activated.
+
+% subsubsection Main Window (end)
+
