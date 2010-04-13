@@ -167,6 +167,25 @@
 	</Button>  
   </LinearLayout>
 
+  <LinearLayout
+  	xmlns:android="http://schemas.android.com/apk/res/android"
+  	android:layout_width="wrap_content"
+  	android:layout_height="wrap_content"
+  	android:orientation="horizontal">
+	<Button 
+		android:id="@+id/buttonEvent" 
+		android:layout_width="160px" 
+		android:layout_height="wrap_content" 
+		android:text="add events">
+	</Button>   
+    <Button 
+		android:id="@+id/buttonTask" 
+		android:layout_width="160px" 
+		android:layout_height="wrap_content" 
+		android:text="add tasks">
+	</Button>  
+  </LinearLayout>
+
   </LinearLayout>
  </ScrollView>
 </LinearLayout>

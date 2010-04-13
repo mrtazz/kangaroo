@@ -96,13 +96,14 @@ public class DayPlan {
 	
 	
 	/**
-	 * get the list of calendar events in this plan. This list
-	 * is not guaranteed to be in chronological order.
-	 * @return
+	 * get the list of calendar events in this plan.
+	 * @return ArrayList of sorted CalendarEvents
 	 */
 	public List<CalendarEvent> getEvents() {
 		/* do not return the list itself, but a copy of it */
-		return new ArrayList<CalendarEvent>(events);
+		ArrayList<CalendarEvent> ret = new ArrayList<CalendarEvent>(events);
+		Collections.sort(ret, new CalendarEventComparator(CalendarEventComparator.START_DATE));
+		return ret;
 	}
 
 	

@@ -224,6 +224,10 @@ public class CalendarEvent {
 	 * @return the wasTask
 	 */
 	public Boolean getWasTask() {
+		if(wasTask == null)
+		{
+			return false;
+		}
 		return wasTask;
 	}
 
@@ -238,6 +242,11 @@ public class CalendarEvent {
 	 * @return the allDay
 	 */
 	public Boolean getAllDay() {
+		if(allDay == null)
+		{
+			return false;
+		}
+		
 		return allDay;
 	}
 
