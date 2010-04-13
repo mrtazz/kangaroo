@@ -44,3 +44,24 @@ index to identify the correct object in the list.
 
 % subsubsection Dayplan (end)
 
+\subsubsection{Tasklist} % (fold)
+\label{ssub:Tasklist}
+The Tasklist Activity displays all the available tasks. It is a two level
+list view, which shows the task title in the first level and the task details
+on expansion of an entry. It also contains a context menu to manipulate single
+tasks and an application menu to add new tasks. The templating for this
+Activity is more advanced, as there has to be a template for the ListView
+itself, the first level and second level of rows.
+
+The TaskList was slightly more difficult to implement as it is a two-level
+ExpandableListView and therefore naturally more complicated. The most important
+part is building the entries, as the ListAdapter expects a List of Maps of
+Strings to Strings for the first level entries (the task titles) and a List
+of List of Maps of Strings to Strings for the second level entries. The
+constructor for the adapter (SimpleExpandableListAdapter) then takes these
+data structures along with String arrays matching the keys of the passed Maps
+and Int arrays containing the IDs of the elements in the respective XML
+template for the first or second rows.
+
+% subsubsection Tasklist (end)
+
