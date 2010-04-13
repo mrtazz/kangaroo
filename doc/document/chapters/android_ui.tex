@@ -99,3 +99,13 @@ inflated on menu creation. After that, a logic has to be added for every
 ID (button) of the menu in the method ``onOptionsItemSelected''.
 % subsubsection Activity Menus (end)
 
+\subsubsection{Context Menus} % (fold)
+\label{ssub:ContextMenus}
+Several context menus are implemented in the various Activities to edit or
+delete single objects or provide more information. Context Menus don't have
+an XML template for itself, since they are all based on the same layout. Only
+the special method ``OnCreateContextMenu'' is needed in the Activity as well
+as the registration of the Context Menu via ``registerForContextMenu''.
+
+% subsubsection Context Menus (end)
+
