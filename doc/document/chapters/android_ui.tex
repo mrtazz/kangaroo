@@ -24,3 +24,23 @@ main window when activated.
 
 % subsubsection Main Window (end)
 
+\subsubsection{Dayplan} % (fold)
+\label{ssub:Dayplan}
+The DayPlan Activity is the basic status interface which shows the current
+dayplan in a list. It also contains a context menu for manipulating events
+and an application menu to reload events and invoke the optimizer. The
+templating for this Activity consists of a template for the ListView and a
+separate template for the single rows.
+
+In order create the view, the list of events is fetched from the
+ActiveDayPlan. After that a custom ArrayAdapter is used to populate the
+single rows of the ListView.
+The only slight problem is to get the correct object from the ArrayList,
+when tapping a row in the Activity. Fortunately, when the onCreateContextMenu
+method is called, it is passed a ContextMenuInfo object as a parameter. This
+object contains an id, which is the same as the position in the original
+ArrayList from which the view was populated. Therefore it can be used as an
+index to identify the correct object in the list.
+
+% subsubsection Dayplan (end)
+
