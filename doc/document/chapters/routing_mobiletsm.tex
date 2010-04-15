@@ -1,6 +1,38 @@
+TODO: review and finalize this chapter
+
+TODO: Andi: check that I divided the routing chapters correctly (generic vs. android specific)
+
+The interface between the main software core and the routing engine has to be designed independently of any specific routing engine, maintaining an abstraction level that allows to exchange the routing backend easily without any impact on the main software part. We will give an overview of the routing interface, which was designed to be compliant with this requirements.
+
+\subsubsection{Classes and interfaces}
+
+There is one Java interface and three Java classes that can be considered as the main members of the Kangaroo routing framework.
+
+\begin{itemize}
+
+	\item Interface \texttt{RoutingEngine}
+	
+		The \texttt{RoutingEngine} interface is the main interface between the routing engine and the part that is using its routing service. It provides methods to find a route between locations and to find street nodes and Points Of Interest near a location.
+		
+	\item Class \texttt{RouteParameter}
+	
+		An object of this class is returned by the routing engine when having searched the map for a route between two locations. It has methods to return the length of the route and the time it will take to travel the route. Additionally, it may contain an object representing the route itself.
+	
+	\item Class \texttt{Place}
+	
+		This class is an abstract representation of a geographic location. It imperatively consists of a pair of geographical coordinates (latitude and longitude) and may in addition contain a name or a reference to Openstreetmap elements associated with it.
+	
+	\item Class \texttt{Limits}
+	
+		This class is used to define geographical constraints for searches on the map.
+
+\end{itemize}
+
+
+
 As we already showed, there was no way to get around at least adapting an existing routing engine. As Traveling Salesman is the one to use as a basis, our version of Traveling Salesman implementing the routing interface defined within the Kangaroo routing Framework is called \emph{MobileTSM}. The folling will summarize its structure, explain the most important changes in contrast to the original version of Traveling Salesman and give reasons for the adaptions.
 
-\subsection{What are the problems?}
+\subsubsection{What are the problems?}
 
 Coming up with the decision for using Traveling Salesman, there were several issues to work on:
 
@@ -33,7 +65,7 @@ Coming up with the decision for using Traveling Salesman, there were several iss
 \end{enumerate}
 
 
-\subsection{What is our solution?}
+\subsubsection{What is our solution?}
 
 As just explained in the previous section, three main issues have to be handled: reduce and individualize routing data while maintaining compatibility to Traveling Salesman, find an efficient data storage archtitecture and improve the search algorithm for nearest nodes. The next sections will outline ideas and implementations. \newline
 
@@ -59,7 +91,7 @@ As an abstraction of the data access to routing data sources, a Java interface (
 \subsubsection{Search algorithm for nearest nodes}
 
 
-\subsection{Routing engine of MobileTSM}
+\subsubsection{Routing engine of MobileTSM}
 
 \begin{itemize}
 		
