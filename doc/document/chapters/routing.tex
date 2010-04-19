@@ -1,6 +1,9 @@
+TODO: Andi, check that I divided general and android specific part of the routing text correctly.
+TODO: review and finish this chapter :) 
+
 One essential feature of our application is its capability to not only consider calendar items for itself but to put them in their geographical context and to account for local traffic facilities. This implies the need for a set of data representing these facilites and an engine to operate on the data.\newline
 
-\section{Routing data}
+\subsection{Routing data}
 
 From a very abstract and general perspective, this set of data can be divided into two categories, namely a dynamic and a static one. As static, in these terms, one should label all facilities which do not depend on any schedule and may in principle by used at any time (for example streets and highways). Dynamic facilities are the ones, that have a more or less fixed schedule constraining their usage (for example tramways and public bus service).\newline
 
@@ -22,7 +25,7 @@ As potential sources for static traffic facility data, one finds basically two o
 
 Besides the two options given above there are of course lots of other providers, but either not free of charge or not very popular. Consequently, Openstreetmap seems to be the one to choose for our project. The following will briefly outline its data scheme.\newline
 
-\subsection{Data scheme of Openstreetmap}
+\subsubsection{Data scheme of Openstreetmap}
 
 Openstreetmap uses three main entities to map traffic facilities and geographical characteristics:
 

@@ -8,3 +8,33 @@ working, but not specified in the official developers
 documentation. That means that the API could change at
 any time, which has to be considered at the application
 design.
+
+In order to not be too dependent on the changing API, a
+wrapper layer was built around it. Now there are only four
+methods which have to be adapted if the API changes.
+\begin{itemize}
+  \item queryEvents
+  \item insertEventToBackend
+  \item updateEventInBackend
+  \item deleteEventFromBackend
+\end{itemize}
+
+The ``queryEvents'' method can be given a SQL statement as a selection
+statement and a String array. Values in the array subsequently replace all
+the ``?'' in the statement. The method then returns an ArrayList of
+CalendarEvent objects, which suited the selection.
+
+The ``insertEventToBackend'' method is used to insert new events via the
+content provider. It takes a CalendarEvent object, builds an Android
+ContentValues object from it and inserts this into the backend.
+
+The ``updateEventInBackend'' method does practically the same, but updates
+the events in the backend, instead.
+
+At last the ``deleteEventFromBackend'' method removes the passed CalendarEvent
+completely from the backend.
+
+These four methods, described above, are the sole fundament of the calendar
+wrapper library. As they mostly consist of less than ten lines of code,
+the adaption to a new API can be done extremely easily.
+

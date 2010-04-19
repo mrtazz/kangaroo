@@ -19,7 +19,7 @@
 \pagestyle{headings}
 
 \begin{document}
-\title{kangaroo: \\ Mobile Task Planning and Routing}
+\title{Kangaroo \\ a mobile, location-aware task planer}
 \author{Alexander Gutjahr \and Andreas Walz \and
         Daniel Schauenberg}
 
@@ -27,97 +27,117 @@
 
 \tableofcontents
 
+%introduction
 \chapter{Introduction} % (fold)
 \label{chp:introduction}
 \input{chapters/introduction.tex}
 
-\chapter{Project Plan} % (fold)
+%definition of project scope
+\chapter{Definition of project scope} % (fold)
+	%external requirements
+	\section{External requirements} % (fold)
+	\label{chp:requirements}
+	\input{chapters/requirements.tex}
+	
+	%resulting dev. goals
+	\section{Resulting development goals} % (fold)
+	\label{chp:dev_goals}
+	\input{chapters/dev_goals.tex}
+	
+	%abstract system design
+	\section{Abstract System Structure} % (fold)
+	\label{chp:structure}
+	\input{chapters/structure.tex}
+	
+%project-plan and dev. process
+\chapter{Project plan and development process} % (fold)
 \label{chp:project_plan}
 \input{chapters/project_plan.tex}
 
-\chapter{Requirements} % (fold)
-\label{chp:requirements}
-\input{chapters/requirements.tex}
 
-\chapter{Abstract System Structure} % (fold)
-\label{chp:structure}
-\input{chapters/structure.tex}
+	\section{Development process} % (fold)
+	\label{chp:dev process}
+	\input{chapters/dev_process.tex}
+	
+%technological evaluation
+\chapter{Technology evaluation} % (fold)
 
-\chapter{Platform Choice} % (fold)
-\label{chp:platform_choice}
+	%choice of mobile platform
+	\section{Platform Choice} % (fold)
+	\label{chp:platform_choice}
 
-\section{Introduction} % (fold)
-\label{sec:platform_introduction}
-\input{chapters/platform_introduction.tex}
+	\subsection{Introduction} % (fold)
+	\label{sec:platform_introduction}
+	\input{chapters/platform_introduction.tex}
 
-\section{iPhone OS} % (fold)
-\label{sec:iphone}
-\input{chapters/iphone.tex}
+	\subsection{iPhone OS} % (fold)
+	\label{sec:iphone}
+	\input{chapters/iphone.tex}
 
-\section{Android} % (fold)
-\label{sec:android_plattform_choice}
-\input{chapters/android.tex}
+	\subsection{Android} % (fold)
+	\label{sec:android_plattform_choice}
+	\input{chapters/android.tex}
 
-\section{Windows Mobile} % (fold)
-\label{sec:win_mobile}
-\input{chapters/win_mobile.tex}
+	\subsection{Windows Mobile} % (fold)
+	\label{sec:win_mobile}
+	\input{chapters/win_mobile.tex}
 
-\section{Other OS} % (fold)
-\label{sec:other_os}
-\input{chapters/other_os.tex}
-
-
-% CHAPTER: Routing
-
-\chapter{Routing} % (fold)
-\label{sec:android_routing}
-\input{chapters/routing}
-
-\section{Routing engines}
-\label{sub:routing_engines}
-\input{chapters/routing_engines.tex}
-
-\section{MobileTSM} % (fold)
-\label{sub:routing_mobiletsm}
-\input{chapters/routing_mobiletsm.tex}
-
-\subsection{Tests and benchmarks for MobileTSM}
-\label{sub:routing_testcase}
-\input{chapters/routing_testcase.tex}
-
-% CHAPTER: DayPlan functionality (-> has to be moved)
-%\section{DayPlan}
-%\input{chapters/dayplan.tex}
-
-
-% CHAPTER: Development for Android
+	\subsection{Other OS} % (fold)
+	\label{sec:other_os}
+	\input{chapters/other_os.tex}
+	
+	%routing
+	\section{Routing} % (fold)
+	\label{sec:android_routing}
+	\input{chapters/routing}
+	
+	\subsection{Routing engines}
+	\label{sub:routing_engines}
+	\input{chapters/routing_engines.tex}
+	
+%kangaroo for android
 
 \chapter{Developement for Android} % (fold)
 \label{chp:android}
 %\input{chapters/introduction.tex}
 
-\section{Platform Specific System Design} % (fold)
-\label{sec:android_desing}
-\input{chapters/android_design.tex}
+	%system specific software design
+	\section{Platform Specific System Design} % (fold)
+	\label{sec:android_desing}
+	\input{chapters/android_design.tex}
+	
+	%description of system parts
+	\section{Description of system elements} % (fold)
+	
+	\subsection{User Interface} % (fold)
+	\label{sec:user_interface}
+	\input{chapters/android_ui.tex}
+	
+	\subsection{Background tasks} % (fold)
+	\label{sec:android_integration}
+	\input{chapters/android_integration.tex}
+	
+	\subsection{Calendar Integration} % (fold)
+	\label{sec:android_calendar}
+	\input{chapters/android_calendar.tex}
+	
+	\subsection{Introduction of Task management} % (fold)
+	\label{sec:android_task}
+	\input{chapters/android_task.tex}
+	
+	\subsection{Routing engine} % (fold)
+	\label{sub:routing_mobiletsm}
+	\input{chapters/routing_mobiletsm.tex}
 
-\section{Calendar Integration} % (fold)
-\label{sec:android_calendar}
-\input{chapters/android_calendar.tex}
+	\subsubsection{Tests and benchmarks for MobileTSM}
+	\label{sub:routing_testcase}
+	\input{chapters/routing_testcase.tex}
+	
+	\subsection{Persistent Storage} % (fold)
+	\label{sec:android_pers_storage}
+	\input{chapters/android_persistent_storage.tex}
 
-\section{Persistent Storage} % (fold)
-\label{sec:android_pers_storage}
-\input{chapters/android_persistent_storage.tex}
-
-
-
-\section{User Interface} % (fold)
-\label{sec:user_interface}
-\input{chapters/android_ui.tex}
-
-\section{OS Integragtion} % (fold)
-\label{sec:android_integration}
-\input{chapters/android_integration.tex}
-
+%conclusion and future work	
 \chapter{Conclusion and future Work} % (fold)
 \label{chp:platform_choice}
 \input{chapters/conclusion.tex}

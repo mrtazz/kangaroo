@@ -1,0 +1,11 @@
+doc/document/kangaroo.pdf
+*.aux
+*.bbl
+*.blg
+*.idx
+*.log
+*.out
+*.toc
+*.dvi
+*.lot
+*.DS_Store

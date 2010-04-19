@@ -39,7 +39,7 @@ When trying to assign priorities to these aspects just mentioned before, one wil
 
 Anyhow, as an integral part of the abstraction of the application's structure, the routing interface is designed in a way, that makes it independent of the decision for any routing engine, even if its design was influenced by it. This means, that although a final decision had to be made within the scope of our project, there is still the chance to choose another engine as part of future work.\newline
 
-\subsection{Technology scouting - general part}
+\subsubsection{Technology scouting - general part}
 
 This section will give an overview of the general Technology Scouting process.\newline
 
@@ -107,7 +107,7 @@ Eventually we decided to base the routing engine on the Traveling Salesman proje
 
 The following chapter will give a more detailed introduction in the structure of Traveling Salesman.
 
-\subsection{Traveling Salesman}
+\subsubsection{Traveling Salesman}
 
 As already mentioned, Traveling Salesman is designed following a modular architecture. Every essential or optional type of module is defined by a java interface with basic methods to provide its desired functionality. The most important ones in our project are
 
@@ -131,7 +131,7 @@ As already mentioned, Traveling Salesman is designed following a modular archite
 
 To represent Openstreetmap map elements (nodes, ways and relations), Traveling Salesman uses classes provided by Osmosis, which can be considered as a Java based framework for processing of Openstreetmap data. Osmosis employs classes named \texttt{Node}, \texttt{Way} and \texttt{Relation} to represent Openstreetmap map elements accordingly. 
 
-\subsection{Technology scouting - specific part}
+\subsubsection{Technology scouting - specific part}
 \label{sec:techscout_routing_specific}
 
 This section will give an overview over the Traveling Salesman specific Technology Scouting process.\newline
@@ -141,35 +141,3 @@ This section will give an overview over the Traveling Salesman specific Technolo
 - test system (mainly map file) used to make first progress with performance
 
 [...]
-
-
-\section{Kangaroo Routing Framework}
-
-The interface between the main software core and the routing engine has to be designed independently of any specific routing engine, maintaining an abstraction level that allows to exchange the routing backend easily without any impact on the main software part. We will give an overview of the routing interface, which was designed to be compliant with this requirements.
-
-\subsection{Classes and interfaces}
-
-There is one Java interface and three Java classes that can be considered as the main members of the Kangaroo routing framework.
-
-\begin{itemize}
-
-	\item Interface \texttt{RoutingEngine}
-	
-		The \texttt{RoutingEngine} interface is the main interface between the routing engine and the part that is using its routing service. It provides methods to find a route between locations and to find street nodes and Points Of Interest near a location.
-		
-	\item Class \texttt{RouteParameter}
-	
-		An object of this class is returned by the routing engine when having searched the map for a route between two locations. It has methods to return the length of the route and the time it will take to travel the route. Additionally, it may contain an object representing the route itself.
-	
-	\item Class \texttt{Place}
-	
-		This class is an abstract representation of a geographic location. It imperatively consists of a pair of geographical coordinates (latitude and longitude) and may in addition contain a name or a reference to Openstreetmap elements associated with it.
-	
-	\item Class \texttt{GeoConstraints}
-	
-		This class is used to define geographical constraints for searches on the map.
-
-\end{itemize}
-
-
-\subsection{Routing cache}
