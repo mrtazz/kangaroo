@@ -1,35 +1,28 @@
 \section{Initial project plan}
-
-TODO: write a few sentences to describe the GANTT diagram 
-
+Figure \ref{gantt1} shows a GANTT diagram that describes the progress  plan for this project, as it was defined at the beginning of the project. The analysis of requirements, abstract system design and a realization analysis are important parts of the project, as about half of the project time is dedicated to these tasks. The documentation of both the development process and the resulting software is an iterative process that is performed simultaneous to the other activities.
 \begin{figure}[h!]
 \centering
 \includegraphics[width=16cm]{pics/gantt2.png}
 \caption{Gantt diagram of the initial project plan (planing at project start)}
 \label{gantt1}
 \end{figure}
-
 \section{Refined project plan}
-
-TODO: insert second GANTT-diagram
-
-TODO: extend task-list, introduce the list as milestones for second GANTT-diagram
-
-
-
+During the development process it became obvious, that the initial project plan does not exactly reflect the amount of work necessary in the different work packages. Also milestones were introduced as a means to measure success in finer granularity than once at the end of every phase. Figure \ref{gantt2} shows the project plan as it was actually carried out. The key differences between the two plans are: 
 \begin{itemize}
-\item longer platform evaluation phase
-\item added technology scouting phase for selected platform
-\item add milestones in implementation phase
-\end{itemize}
-At the beginning of calendar week 7 it became obvious, that the number of open ToDos and the amount of time left until the project end after calendar week 13 required a more success-oriented development methodology.\\
-For this purpose the development block (red in GANTT diagram) needs to be divided into smaller tasks or milestones, both for already completed work and for future tasks.\\
-
-Up to this point, we were able to fulfill the following tasks:
+\item longer platform evaluation and realization evaluation phase
+\item additional platform specific realization evaluation phase
+\item longer overall development time, especially significantly longer implementation phase
+\item break with the continuous documentation paradigm
+\item introduction of milestones for the implementation phase
+\end{itemize} 
+\begin{figure}[h!]
+\centering
+\includegraphics[width=16cm]{pics/gantt3.png}
+\caption{Gantt diagram of the actually carried out project plan}
+\label{gantt2}
+\end{figure}
+The following Milestones were introduces for the development phase:
 \begin{itemize}
-\item gather system requirements
-\item define clean abstract system structur
-\item choose appropriate OS and platform for the project
 \item derive a OS specific system structure
 \item install and get used to Android SDK
 \item port Traveling Salesman routing engine to Android
@@ -39,14 +32,12 @@ Up to this point, we were able to fulfill the following tasks:
 \item finalize calendar API
 \item build system integration framework for Android OS, specifically  location and time triggered background tasks and user interaction
 \item merge system parts into one unified application
-\end{itemize}
-
- For the remaining 6 weeks of the project the following ToDos are left:
- \begin{itemize}
-\item Determine performance of routing engine, identify bottlenecks and problems for future fixing
+\item determine performance of routing engine, identify bottlenecks and problems for future fixing
+\item implement a structure to provide and manage dayplan information and checking/optimizing functionallity  
 \item implement GUI for the task ''Generate and Manage Tasks''
 \item implement GUI for the task ''Build and Manage day-plan''
 \item implement background task ''optimize day-plan''
 \item implement background task ''check day-plan for reachability of appointments''
 \item write test-cases for the most important system parts (specifically the parts that could be reused in future projects)
 \end{itemize}
+The milestones are here not fixed to specific dates in the gantt diagram due to poor readability of the diagram. The order of the milestones reflects the order in which they were carried out.
