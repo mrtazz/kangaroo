@@ -3,10 +3,47 @@ TODO: describe what was accomplished in the project
 - list reusable sytem parts
 - shortly describe functionality of the application
 
+\section{What to do differently} % (fold)
+\label{sec:Whattododifferently}
+\subsubsection{Bug tracker} % (fold)
+\label{ssub:Bugtracker}
+
+
+% subsubsection Bug tracker (end)
+\subsubsection{Milestones} % (fold)
+\label{ssub:Milestones}
+
+% subsubsection Milestones (end)
+\subsubsection{Unit tests} % (fold)
+\label{ssub:Unittests}
+Unfortunately we decided to neglect unit tests very early in the
+development process. At the time there were several reasons for that.
+As the routing engine and the calendar integration were the first
+things to be developed, they were crucial in the decision process.
+Unit testing on the Android platform seemed rather complicated,
+especially for code using the content provider backend. In a discussion
+with our advisor, we decided that it would be too time consuming,
+considering how much time already had passed for specification and
+platform choosing. Therefore we decided to concentrate the time left
+on actual development.
+
+Looking back, this was not a good idea as unit testing would have
+saved us a lot of time. Especially because of the work, that had to be
+done to integrate the work of three developers working rather
+independently from each other. We often introduced bugs again, which
+already had been fixed. Several cases weren't taken into consideration
+which then caused errors when using the merged code base.
+
+These problems could have been extremely minimized with even basic
+unit testing.
+
+% subsubsection Unit tests (end)
+
 TODO: describe what should be done differently next time
 - use bug-tracker from the start
 - shorter development intervals, more milestones
 - unit-tests to improve code quality
+% section What to do differently (end)
 
 TODO: describe possible followup projects:
 - use system parts to build other mobile routing related application
