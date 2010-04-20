@@ -11,8 +11,10 @@ As already mentioned, Traveling Salesman is designed following a modular archite
 	
 	\item Interface \texttt{IRouter}
 
-		\texttt{IRouter} is the interface which has to be implemented by any routing class. Its primary task is triggered by calling the \texttt{route(...)} method, which performs routing between a point to start from an one or more destination points. One has to pass an \texttt{IDataSet} object specifying routing resources, when calling \texttt{route(...)}. The router is to return a \texttt{Route} object containing detailed information about the path.
-	
+		\texttt{IRouter} is the interface which has to be implemented by any routing class. Its primary task is triggered by calling the \texttt{route(...)} method, which performs routing between a point to start from an one or more destination points. One has to pass an \texttt{IDataSet} object specifying routing resources, when calling \texttt{route(...)}. The router is to return a \texttt{Route} object containing detailed information about the path.\newline
+		
+		Traveling Salesman provides several implementations of the \texttt{IRouter} interface using different routing algorithms. The \texttt{MultiTargetDijkstraRouter} can be considered as the default implementation. As implied by its name, it is based on the Dijkstra algorithm which is extended to an A*-algorithm by using linear distances as a heuristic. Its implementation, however, seem to be faulty (chapter \ref{subsubsec:routing_mobiletsm_structure})\newline
+			
 	\item Interface \texttt{IRoutingMetric}
 	
 		As to give the router a  measure of routing costs, one has to define a class implementing the \texttt{IRoutingMetric} interface, which allows the router to query routing costs of particular routing steps.\newline

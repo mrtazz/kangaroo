@@ -2,7 +2,7 @@ TODO: review and finalize this chapter\newline
 
 As we already showed, there was no way to get around at least adapting an existing routing engine. As Traveling Salesman is the one to use as a basis, our version of Traveling Salesman implementing the routing interface defined within the Kangaroo routing Framework is called \emph{MobileTSM}. The folling will summarize its structure, explain the most important changes in contrast to the original version of Traveling Salesman and give reasons for the adaptions.
 
-\subsubsection{Main problems arising with decision for Traveling Salesman}
+\subsubsection{Major problems arising with decision for Traveling Salesman}
 
 Coming up with the decision for using Traveling Salesman, there were several issues to work on:
 
@@ -39,7 +39,7 @@ Coming up with the decision for using Traveling Salesman, there were several iss
 \end{enumerate}
 
 
-\subsubsection{Approaches for main problems arising with decision for Traveling Salesman}
+\subsubsection{Approaches for major problems arising with decision for Traveling Salesman}
 \label{sec:routing_mobiletsm_approaches}
 
 As just explained in the previous section, three main issues have to be handled: reduce and individualize routing data while maintaining compatibility to Traveling Salesman, find an efficient data storage architecture and improve the search algorithm for nearest nodes. The next sections will outline the abstract framework designed to approach these problems.\newline
@@ -84,6 +84,7 @@ Besides routing operations performed in advance\footnote{routing operations that
 \end{enumerate}
 
 \subsubsection{Structure of MobileTSM}
+\label{subsubsec:routing_mobiletsm_structure}
 
 \begin{itemize}
 		
