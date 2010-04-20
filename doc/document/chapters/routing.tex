@@ -1,15 +1,20 @@
-TODO: Andi, check that I divided general and android specific part of the routing text correctly.
-TODO: review and finish this chapter :) 
+One essential feature of our application is its capability to not only consider calendar items for itself but to put them in their geographical context. The geographical context in the scope of this project is defined in a way so that questions like "Where am I?", "Where is the next bakery?", "How can I get there?" bear a meaning.\newline
 
-One essential feature of our application is its capability to not only consider calendar items for itself but to put them in their geographical context and to account for local traffic facilities. This implies the need for a set of data representing these facilites and an engine to operate on the data.\newline
+This definition implies the need for a set of data including Points Of Interest ("Where is the next bakery?") and a representation of  local traffic facilities ( "How can I get there?") to account for and an engine to operate on this set of data. This set of data will be called \emph{routing data} from now on.\newline
 
 \subsection{Routing data}
 
-From a very abstract and general perspective, this set of data can be divided into two categories, namely a dynamic and a static one. As static, in these terms, one should label all facilities which do not depend on any schedule and may in principle by used at any time (for example streets and highways). Dynamic facilities are the ones, that have a more or less fixed schedule constraining their usage (for example tramways and public bus service).\newline
+From a very abstract and general perspective, this set of routing data can be divided into two categories, namely a dynamic and a static one. As static, in these terms, one should label all facilities which do not depend on any schedule and may in principle by used at any time (for example streets, highways, cash points). Dynamic facilities are the ones, that have a more or less fixed schedule constraining their usage (for example tramways, public bus service and shops).\newline
 
-In this project we will only consider static facilities, since also accounting for dynamic ones requires routing algorithms that go far beyond standard algorithms resulting in a more complex application structure and a much more complex routing engine. Besides this aspect, it is a big issue to gather scheduling data about dynamic traffic facilities as there would be a number of carriers with different interfaces to include. However, the user might notably benefit from the abolishment of this restriction. It might be part of future work to include this feature.\newline
+Note that Points Of Interest cannot be attributed to one of these two categories across-the-board. A cash point for example will probably be a static facility, since it can be used 24 hours a day (apart from little exceptions). A bakery in contrast will have business hours not covering 24 hours a day and thus will acutally be a dynamic facility.\newline
+
+In this project we will only consider static facilities, since also accounting for dynamic ones requires routing algorithms that go far beyond standard algorithms resulting in a more complex application structure and a much more complex routing engine. Besides this aspect, it is a big issue to gather scheduling data about dynamic facilities as there would be a number of carriers with different interfaces to include. This also applies to Points Of Interest, but which will \emph{all} be treated as static facilities. However, the user might notably benefit from the abolishment of this restriction. It might be part of future work to include this feature.\newline
+
+The following section will give some information about potential sources of static routing data and its properties. This section may be skipped if one is either not interested in details or even already familiar with it.
+
+\subsubsection{Sources of static routing data}
  
-As potential sources for static traffic facility data, one finds basically two options
+As potential sourcesof static routing data, one finds basically two options
 
 \begin{itemize}
  
@@ -23,11 +28,11 @@ As potential sources for static traffic facility data, one finds basically two o
   
 \end{itemize} 
 
-Besides the two options given above there are of course lots of other providers, but either not free of charge or not very popular. Consequently, Openstreetmap seems to be the one to choose for our project. The following will briefly outline its data scheme.\newline
+Besides the two options given above there are of course lots of other providers, but either not free of charge or not very popular. Consequently, Openstreetmap seems to be the one to choose for our project. The following will briefly outline its data scheme.
 
 \subsubsection{Data scheme of Openstreetmap}
 
-Openstreetmap uses three main entities to map traffic facilities and geographical characteristics:
+Openstreetmap uses three main entities to map traffic facilities, Points Of Interest and geographical characteristics:
 
 \begin{itemize}
 
