@@ -1,12 +1,10 @@
 TODO: review and finalize this chapter\newline
-TODO: Andi: check that I divided the routing chapters correctly (generic vs. android specific)\newline
 
 As we already showed, there was no way to get around at least adapting an existing routing engine. As Traveling Salesman is the one to use as a basis, our version of Traveling Salesman implementing the routing interface defined within the Kangaroo routing Framework is called \emph{MobileTSM}. The folling will summarize its structure, explain the most important changes in contrast to the original version of Traveling Salesman and give reasons for the adaptions.
 
-\subsubsection{Main problems arising with decision for TSM}
+\subsubsection{Main problems arising with decision for Traveling Salesman}
 
-
-Coming up with the decision for using Traveling Salesman, there were sseveral issues to work on:
+Coming up with the decision for using Traveling Salesman, there were several issues to work on:
 
 \begin{enumerate}
 	\item \textbf{Data storage}
@@ -37,47 +35,69 @@ Coming up with the decision for using Traveling Salesman, there were sseveral is
 \end{enumerate}
 
 
-\subsubsection{Approaches for main problems arising with decision for TSM}
+\subsubsection{Approaches for main problems arising with decision for Traveling Salesman}
+\label{sec:routing_mobiletsm_approaches}
 
 As just explained in the previous section, three main issues have to be handled: reduce and individualize routing data while maintaining compatibility to Traveling Salesman, find an efficient data storage architecture and improve the search algorithm for nearest nodes. The next sections will outline the abstract framework designed to approach these problems.\newline
 
 TODO: still to mention:
 \begin{itemize}
-	\item filtering intermediate way nodes implies need for an extra field holding distance between street nodes.
 	\item derivates of Traveling Salesman's classes \texttt{Node}, \texttt{Way} and \texttt{WayNode}.
 \end{itemize}
 
-\subsubsection{Reducing and individualizing of routing data}
+\begin{enumerate}
+	\item \textbf{Reducing and individualizing of routing data}
 
 The basic idea is to introduce a module, an abstract Java class named \texttt{MobileDataSetProvider}, that can be queried for a specialized set of routing data which is compatible with Traveling Salesman and optimized for an individual routing operation. Any Traveling Salesman router may then be called with a reference to this individual data set. Anyhow, a router can perform another routing operation with different parameters on the same data set, but since the majority of intermediate way nodes will not be included in the data set, it will probably not find the best route or might even fail.\newline
 
 One can also think of adding functionality to recycle an individualized data set. Instead of creating a new one for each routing operation, an old data set may be updated to be as qualified as if it was created specifically for the new parameters. One may be tempted to believe this is the only way to significantly gain time resources, but we will show that in fact our implementation exploits major improvements without this feature.\newline
 
-\subsubsection{Data storage architecture}
+When dropping intermediate way nodes one has to be aware that Traveling Salesman calculates the distance of a route by hopping from node to node summing up their linear distances. To revise the error induced by missing intermediate way nodes, an extra property has to be added to ways giving the real distance between two way nodes. That is the main reason for introducing a derivate of Osmosis' \texttt{Way} class, called \texttt{MobileWay} and  a derivate of Traveling Salesman's \texttt{WayNode} class, called \texttt{MobileWayNode}
 
-The data set provider itself reads data from a suitable data source (for example from database or a file stream). Since even individualized data sets will have a large intersection, data is cached in memory to a great extent.\newline
+	\item \textbf{Data storage architecture}
+
+The data set provider itself reads data from a suitable data source (for example from database or a file stream). Since even individualized data sets will have a large intersection, data is cached in memory to a great extent to avoid reloading of data already read due to a prior routing query.\newline
 
 As an abstraction of the data access to a routing data sources, a Java interface (called \texttt{RoutingDataAdapter}) is introduced. It provides methods to read map elements from a given data source.\newline
 
+To become more tangible, the abstract \texttt{RoutingDBAdapter} class as a derivation of the \texttt{RoutingDataAdapter} class will be used to access a database as source for routing data. A further derivation of the \texttt{RoutingDBAdapter} class, called \texttt{RoutingAndroidSQLiteAdapter}, finally implements the access to the Android specific SQLite database. For a describtion of this database structure and its creation, look at section \ref{sec:routing_database}\newline
 
-\subsubsection{Search algorithm for nearest nodes}
+
+	\item \textbf{Search algorithm for nearest nodes}
 
 As already demonstrated, the search for the nearest street node is an integral part of a routing operation. Without any assumption about the chronological and geographical pattern of routing operations that will be performed, one has to improve the data structure storing the nodes to be qualified for fast random access. Anyhow, one can think of another way to speed up the search when analyzing the average use.\newline
 
-Besides 
+Besides routing operations performed in advance\footnote{routing operations that are only based on calendar items and that are independent from current position}, the routing engine will also be triggered with routing operations using the current position. Since the current position is likely to change slowly in contrast to a random access, performance may be improved by caching street nodes inside a given radius around the last query.
 
 
-\subsubsection{Routing engine of MobileTSM}
+	\item \textbf{Caching of calculated routes}
+	
+		Routing operations may and will in principle have random parameters based on calendar items and the current position. Anyhow, it is highly probable that antecedent routing operations recur after a while. If one can make sure that the operation's parameter exactly match, there is no sense to recalculate the route\footnote{Note that this assumes restriction to static routing data}. It may rather reuse the result of the respecting routing operation.\newline
+		
+		\emph{MobileTSM} introduces a routing cache that efficiently stores results of antecedent routing operations by using a kind of double hashing. When triggering a new routing operation, the routing cache will be checked in advance and only if there is no matching result of a antecedent routing operation, the routing engine will actually perform the routing operation.
+
+
+\end{enumerate}
+
+\subsubsection{Structure of MobileTSM}
 
 \begin{itemize}
 		
 	\item Class \texttt{MobileTSMRoutingEngine}
 	
-		The class \texttt{MobileRoutingEngine} is the \emph{MobileTSM} implementation of a \texttt{RoutingEngine}.
+		The class \texttt{MobileRoutingEngine} is the \emph{MobileTSM} implementation of the \texttt{RoutingEngine} introduced with the Kangaroo routing framework. It provides the routing services used by the main application, including the previously explained routing cache.
 		
 	\item Class \texttt{Vehicle}
+	
+		The abstract class \text{Vehicle} implements Traveling Salesman's \texttt{IVehicle} interface which is thought to define and constrain the usage of streets and ways. These constraints will be considered by the routing engine when being passed as a parameter of a routing operation. It also adds the possibility to specify a maximum speed. The routing engine will account for this maximum speed when calculation the duration of travel of a route.\newline
 		
-	\item Class \texttt{Limits}
+		There a several derivates of this class defining different types of vehicles, including appropriate maximum speeds.
+	
+	\item Class \texttt{MobileTSMRouteParameter}
+	
+		This class is a direct derivate of the abstract \texttt{RouteParameter} class. It includes the algorithm to calculate the duration of travel of a Traveling Salesman route based upon the route and the used vehicle.
+
+	\item Class \texttt{POICode}
 
 \end{itemize}
 

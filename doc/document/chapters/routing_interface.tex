@@ -1,16 +1,18 @@
+TODO: reconsider position of this chapter in the document\newline
+
 The interface between the main software core and the routing engine has to be designed independently of any specific routing engine, maintaining an abstraction level that allows to exchange the routing backend easily without any impact on the main software part. We will give an overview of the routing interface, which was designed to be compliant with this requirements. The routing interface as a whole will be called \emph{Kangaroo routing framework}.\newline
 
 The Kangaroo routing framework is designed independently from Android and only uses Standard Java compliant classes. Thus it is qualified to be used outside of the Android system. This was introduced to enable easy debugging without being confined by the Android SDK.
 
 \subsubsection{Structure of the Kangaroo routing framework}
 
-There is one Java interface and three Java classes that can be considered as the main members of the Kangaroo routing framework.
+There is one Java interface and four Java classes that can be considered as the main members of the Kangaroo routing framework.
 
 \begin{itemize}
 
 	\item Interface \texttt{RoutingEngine}
 	
-		The \texttt{RoutingEngine} interface is the main interface between the routing engine and the module that is using its routing service. It provides methods to find a route between locations and to find street nodes and Points Of Interest near a location. It also provides methods to control the routing cache\footnote{the routing cache will be described in detail in chapter \ref{sec:routing_cache}} which is intended to be included in every routing engine compatible with the Kangaroo routing engine.
+		The \texttt{RoutingEngine} interface is the main interface between the routing engine and the module that is using its routing service. It provides methods to find a route between locations and to find street nodes and Points Of Interest near a location. It also provides methods to control the routing cache\footnote{the routing cache will be described in detail in chapter \ref{sec:routing_mobiletsm_approaches}} which is intended to be included in every routing engine compatible with the Kangaroo routing engine.
 		
 	\item Class \texttt{Place}
 	
