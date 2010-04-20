@@ -5,19 +5,14 @@ TODO: describe what was accomplished in the project
 
 \section{What to do differently} % (fold)
 \label{sec:Whattododifferently}
-\subsubsection{Bug tracker} % (fold)
-\label{ssub:Bugtracker}
-
-
-% subsubsection Bug tracker (end)
 \subsubsection{Milestones} % (fold)
 \label{ssub:Milestones}
 
 % subsubsection Milestones (end)
 \subsubsection{Unit tests} % (fold)
 \label{ssub:Unittests}
-Unfortunately we decided to neglect unit tests very early in the
-development process. At the time there were several reasons for that.
+Early in the development process we decided to not do unit tests.
+At the time there were several reasons for that.
 As the routing engine and the calendar integration were the first
 things to be developed, they were crucial in the decision process.
 Unit testing on the Android platform seemed rather complicated,
@@ -27,22 +22,34 @@ considering how much time already had passed for specification and
 platform choosing. Therefore we decided to concentrate the time left
 on actual development.
 
-Looking back, this was not a good idea as unit testing would have
-saved us a lot of time. Especially because of the work, that had to be
-done to integrate the work of three developers working rather
-independently from each other. We often introduced bugs again, which
-already had been fixed. Several cases weren't taken into consideration
-which then caused errors when using the merged code base.
-
-These problems could have been extremely minimized with even basic
+However, we had several situation in the development process, where
+unit testing would have been useful. Many problems only became
+apparent when certain elements were integrated together. Unit tests
+could have revealed these much earlier. Especially as we developed
+on our own much more often than anticipated. This accounted for more
+problems whilst integrating, which could also have been minimized by
 unit testing.
 
 % subsubsection Unit tests (end)
 
+\subsubsection{Bug tracker} % (fold)
+\label{ssub:Bugtracker}
+Although a good bug tracker is provided by github, we didn't use it
+until the very end of the project. In retrospect it would have been
+better to utilize the bug tracker right from the start. This would
+have forced us to look deeper into bugs and better document them, if
+similar bugs appeared later.
+
+Especially in combination with unit tests the bug tracker could have
+improved the development process significantly. A good approach, for
+example, would have been, to create a unit test for every occurring bug.
+This means that there is an immediate way to test if the bug was
+fixed and that it would not be introduced again later.
+
+% subsubsection Bug tracker (end)
+
 TODO: describe what should be done differently next time
-- use bug-tracker from the start
 - shorter development intervals, more milestones
-- unit-tests to improve code quality
 % section What to do differently (end)
 
 TODO: describe possible followup projects:
