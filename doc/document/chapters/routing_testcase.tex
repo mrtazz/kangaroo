@@ -1,4 +1,4 @@
-In order to test the performance and reliability of the routing engine that is working behind the routing interface, we definied a simple test case that tries to cover all routing tasks the routing engine may be faced with when being in "all-day" use.\newline
+In order to test the performance and reliability of the MobileTSM routing engine, we definied a simple test case that tries to cover all routing tasks the routing engine may be faced with when being in "all-day" use.\newline
 
 Consider the following calendar items
 \begin{enumerate}
@@ -17,13 +17,13 @@ Given this movement, the routing engine will be used to periodically perform a s
 	A variable task is selected. Starting from the current position in space, the map is searched for the nearest amenities needed to fullfil the selected task. Given this list of amenities, every\footnote{a more or less intelligent filter should be applied to reduce the list to a minimal number of amenities} single amenity is selected and the following calculations are performed: the fastest route from the current position in space to the selected amenity and the fastest route from this amenity to the next appointments position in space is calculated. Using the sum of the time needed to follow these consecutive routes with the given vehicle and the time needed to fullfil the task is compared to  the time that is left until the next appointments meeting time.
 \end{enumerate}
 
-In order to ensure a reproducible  test case, there are some parameters to be fixed. These are
+In order to ensure a reproducible  test case, there are some parameters to fix. These are
 \begin{itemize}
-	\item The map file that contains the geographical data.
-	\item The vehicle that is used and hence the infratructure that can be used to get to the destinations.
-	\item The position in space and time of the appointment in (1), namely time, latitude and longitude.
-	\item The number and type of variable tasks (including the type of amenity they are based on).
-	\item The parameters of the movement previous to the appointment in (1), particularly the starting point in time and space of the movement.
+	\item the map file that containing routing data
+	\item the vehicle that is used and hence the infratructure that can be used to get to the destinations
+	\item the position in space and time of the appointment in (1), namely time, latitude and longitude
+	\item the number and type of variable tasks (including the type of amenity they are based on)
+	\item the parameters of the movement previous to the appointment in (1), particularly the starting point in time and space of the movement
 \end{itemize}
 	
 	

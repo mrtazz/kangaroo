@@ -63,7 +63,7 @@ According to the structural demands the database basically consists of four tabl
 			 lon & real not null & longitude of node\\	
 			 tags & text not null & serialized OSM tags\\			 
 			 ways & text not null & serialized list of ways connected to this node\\	
-			 type & integer not null & type of street node\\				 
+			 type & integer not null & type of street node (intermediate/essential)\\				 
 			\hline
 		\end{tabular}\newline
 	
@@ -86,9 +86,25 @@ According to the structural demands the database basically consists of four tabl
 	
 	\item \texttt{index}
 	
-		At the current stage of the project, this table does not contain any crucial data. It is rather intended to be used in future when the map area is split into disjunctive tiles. It then may contain a kind of table of contents.
+		At the current stage of the project, this table does not contain any crucial data. It is rather intended to be used in future when the map area is split into disjunctive tiles. It then may contain a kind of table of contents stored as key-value-pairs.\newline
+		
+		\begin{tabular}[ht]{|p{2.5cm}|p{3.5cm}|p{8.5cm}|}
+			\hline
+			column & data type & description \\
+			\hline\hline
+			 id & integer primary key & unique id of key-value-pair\\	
+			 key & text not null & unique key\\			 
+			 value & text not null & value of key\\
+			\hline
+		\end{tabular}\newline
 		
 \end{itemize}
 
+Note: to be compliant with Android's SQLite database, the database has to contain a table \texttt{android\_metadata} with a specification of the used locale.
+
 
 \subsubsection{Creation of routing database}
+
+As Openstreetmap is the origin of the routing data to be used, one needs a converter reading the Openstreetmap XML file and writing an Android compliant SQLite .db database file. This conversion is done by a class called \texttt{MobileTSMDatabaseWriter}.\newline
+
+It automatically selects map elements of desired significance and outputs an reduced, coherent map stored in a database file of the previously explained format. This file can directly by copied to the mobile device to be used as a routing data source.
