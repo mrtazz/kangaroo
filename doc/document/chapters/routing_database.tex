@@ -29,10 +29,60 @@ Note that dropping map elements needs to be done with care to yield a coherent r
 According to the structural demands the database basically consists of four tables:
 
 \begin{itemize}
-		
+
+	\item \texttt{ways\_0}		
+						
+		Every row in this table represents a way.\newline
+
+		\begin{tabular}[ht]{|p{2.5cm}|p{3.5cm}|p{8.5cm}|}
+			\hline
+			column & data type & description \\
+			\hline\hline
+			 id & integer primary key & unique way id (= OSM id)\\
+			 name & text not null & name of this way (= OSM 'name' tag)\\	
+			 highway & text not null & = OSM 'highway' tag\\
+			 maxspeed & integer not null & maximum speed in km/h (= OSM 'maxspeed' tag)\\			 
+			 tags & text not null & serialized OSM tags\\
+			 flags & integer not null & \emph{unused up to now}\\				 
+			 waynodes & text not null & serialized list of way nodes\\
+			 waynodes\_red & text not null & serialized list of reduced way nodes\\
+			\hline
+		\end{tabular}\newline
+
+	
 	\item \texttt{street\_nodes\_0}
+
+		Every row in this table represents a street node independently of wether it is an intermediate or an essential way node.\newline
+
+		\begin{tabular}[ht]{|p{2.5cm}|p{3.5cm}|p{8.5cm}|}
+			\hline
+			column & data type & description \\
+			\hline\hline
+			 id & integer primary key & unique node id (= OSM id)\\	
+			 lat & real not null & latitude of node\\			 
+			 lon & real not null & longitude of node\\	
+			 tags & text not null & serialized OSM tags\\			 
+			 ways & text not null & serialized list of ways connected to this node\\	
+			 type & integer not null & type of street node\\				 
+			\hline
+		\end{tabular}\newline
+	
 	\item \texttt{poi\_nodes\_0}
-	\item \texttt{ways\_0}
+
+		Every row in this table represents a Point Of Interest.\newline
+		
+		\begin{tabular}[ht]{|p{2.5cm}|p{3.5cm}|p{8.5cm}|}
+			\hline
+			column & data type & description \\
+			\hline\hline
+			 id & integer primary key & unique node id (= OSM id)\\	
+			 lat & real not null & latitude of node\\			 
+			 lon & real not null & longitude of node\\
+			 poicode & integer not null & type code of Point Of Interest\\	
+			 tags & text not null & serialized OSM tags\\			 
+			 nst & integer not null & id of nearest street node\\			 
+			\hline
+		\end{tabular}\newline
 	
 	\item \texttt{index}
 	

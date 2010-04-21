@@ -68,7 +68,7 @@ Besides routing operations performed in advance\footnote{routing operations that
 	
 		Routing operations may and will in principle have random parameters based on calendar items and the current position. Anyhow, it is highly probable that antecedent routing operations recur after a while. If one can make sure that the operation's parameter exactly match, there is no sense to recalculate the route\footnote{Note that this assumes restriction to static routing data}. It may rather reuse the result of the respecting routing operation.\newline
 		
-		\emph{MobileTSM} introduces a routing cache that efficiently stores results of antecedent routing operations by using a kind of double hashing. When triggering a new routing operation, the routing cache will be checked in advance and only if there is no matching result of a antecedent routing operation, the routing engine will actually perform the routing operation.
+		\emph{MobileTSM} introduces a routing cache that efficiently stores results of antecedent routing operations by using a kind of double hashing. When triggering a new routing operation, the routing cache will be checked in advance and only if there is no matching result of an antecedent routing operation, the routing engine will actually perform the routing operation.
 
 
 \end{enumerate}
