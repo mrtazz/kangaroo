@@ -1,5 +1,3 @@
-TODO: review and finalize this chapter\newline
-
 As we already showed, there was no way to get around at least adapting an existing routing engine. As Traveling Salesman is the one to use as a basis, our version of Traveling Salesman implementing the routing interface defined within the Kangaroo routing Framework is called \emph{MobileTSM}. The folling will summarize its structure, explain the most important changes in contrast to the original version of Traveling Salesman and give reasons for the adaptions.
 
 \subsubsection{Major problems arising with decision for Traveling Salesman}
@@ -32,22 +30,13 @@ Coming up with the decision for using Traveling Salesman, there were several iss
 		
 		TODO: give values
 
-	\item \textbf{Implementation of \texttt{MultiTargetDijkstraRouter}}
-	
-		
-
 \end{enumerate}
 
 
 \subsubsection{Approaches for major problems arising with decision for Traveling Salesman}
 \label{sec:routing_mobiletsm_approaches}
 
-As just explained in the previous section, three main issues have to be handled: reduce and individualize routing data while maintaining compatibility to Traveling Salesman, find an efficient data storage architecture and improve the search algorithm for nearest nodes. The next sections will outline the abstract framework designed to approach these problems.\newline
-
-TODO: still to mention:
-\begin{itemize}
-	\item derivates of Traveling Salesman's classes \texttt{Node}, \texttt{Way} and \texttt{WayNode}.
-\end{itemize}
+As just explained in the previous section, three main issues have to be handled: reduce and individualize routing data while maintaining compatibility to Traveling Salesman, find an efficient data storage architecture and improve the search algorithm for nearest nodes. The next sections will outline the abstract framework designed to approach these problems.
 
 \begin{enumerate}
 	\item \textbf{Reducing and individualizing of routing data}
@@ -66,6 +55,7 @@ As an abstraction of the data access to a routing data sources, a Java interface
 
 To become more tangible, the abstract \texttt{RoutingDBAdapter} class as a derivation of the \texttt{RoutingDataAdapter} class will be used to access a database as source for routing data. A further derivation of the \texttt{RoutingDBAdapter} class, called \texttt{RoutingAndroidSQLiteAdapter}, finally implements the access to the Android specific SQLite database. For a describtion of this database structure and its creation, look at section \ref{sec:routing_database}\newline
 
+With this type of abstraction it is still possible to exchange the SQLite database by another type of database or even not to use any database system at all but for example a proprietary file format. Nevertheless the SQLite database of Android seemed to be the most promising one, since one can expect of it to be highly optimized while maintaining a great degree of flexibility. In deed, any of our tests gave reason to be in doubt about this expectation.
 
 	\item \textbf{Search algorithm for nearest nodes}
 
@@ -96,7 +86,7 @@ Besides routing operations performed in advance\footnote{routing operations that
 	
 		The abstract class \text{Vehicle} implements Traveling Salesman's \texttt{IVehicle} interface which is thought to define and constrain the usage of streets and ways. These constraints will be considered by the routing engine when being passed as a parameter of a routing operation. It also adds the possibility to specify a maximum speed. The routing engine will account for this maximum speed when calculation the duration of travel of a route.\newline
 		
-		There a several derivates of this class defining different types of vehicles, including appropriate maximum speeds.
+		There a several derivates of this class defining different types of vehicles, including appropriate maximum speeds (for example \texttt{AllStreetVehicle}).
 	
 	\item Class \texttt{MobileTSMRouteParameter}
 	
@@ -104,9 +94,21 @@ Besides routing operations performed in advance\footnote{routing operations that
 
 	\item Class \texttt{POICode}
 
+		This class is used to represent one type of a Point Of Interest. It also provides a mapping between possible tags of Openstreetmap and an unique integer value.
+	
+	\item Classes \texttt{MobileNode}, \texttt{MobileWay}, \texttt{MobileWayNode} 
+	
+		The need and sense of introducing the derivated classes \texttt{MobileWay} and \texttt{MobileWayNode} was already pointed out and won't be repeated. The derivated class \texttt{MobileNode} is introduced to be able to associate a reference to a nearest street node and a Point Of Interest (represented by an instance of \texttt{POICode}) to the node.
+
 	\item Class \texttt{MobileMultiTargetDijkstraRouter}
+
+		As already stated in chapter \ref{sub:routing_tsm}, Traveling Salesman's router class \texttt{MultiTargetDijkstraRouter} seems to be implemented incorrectly. It actually is supposed to be a Dijkstra algorithm extended to an A*-algorithm. This extension is characterized by the use of a heuristic for determining the next node to visit. In Traveling Salesman's original implementation, this heuristic and the data structure holding the nodes to visit is not realized correctly, often yielding not the shortest path as a result. These implementation errors are fixed in the \texttt{MobileMultiTargetDijkstraRouter} router class.
 	
 	\item Class \texttt{MobileRoutingMetric}
+	
+		As explained above, dropping intermediate way nodes results in the need for an adapted measure of distances on a way. Since the routing metric (\texttt{IRoutingMetric}) is a self-contained module, it can easily exchanged by a metric (\texttt{MobileRoutingMetric}) using the corrected distance measure.\newline
+		
+		Like Traveling Salesman's default implementation \texttt{ShortestRouteMetric} also the new implementation does not privilege any type of street. The undesirable effect of finding the shortest but not definitely the fastest route still persists and may be abolished as part of a future extension.
 
 \end{itemize}
 

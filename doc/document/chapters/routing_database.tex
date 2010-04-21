@@ -1,6 +1,44 @@
-TODO: finalize this chapter\newline
+
+Android comes with an ready-to-use implementation of a SQLite database system which is the one to use in our project to store routing data (cf. chapter \ref{sub:routing_mobiletsm}). It seems reasonable to include all routing data in one database file and to preprocess it in a way that keeps operation expense on the mobile device at a minimum. The follow sections will give details on the database structure and the tools used to convert an Openstreetmap XML to such a database file, including the just mentioned preprocessing.
+
+\subsubsection{Significant map elements for routing data}
+
+The Openstreetmap XML file consists of a set of node, a set of ways and a (for this project dispensable) set of relations. Although in principle every node and way has the same "weight", significance for our application may vary over a huge scale. This significance depends on the attributes of the according map element. Three types of map elements are of high significance:
+
+\begin{itemize}
+	\item selected ways
+	
+		As Openstreetmap also uses ways to map buildings or areas of a special type, public stairways or almost impassable trails, one is forced to drop every way that cannot be considered to be a "standard street"\footnote{we assume the user is not willing to travel such almost impassable trails as a pedestrian}. This selection is based on the tags associated with a way. 
+	
+	\item selected street nodes
+	
+		The nodes spanning up a way that wasn't dropped are considered to be significant to our application.\newline
+		
+		Furthermore, street nodes are (as already mentioned several times) split into two categories. \emph{Intermediate way nodes} may be dropped without any impact on a routing operation traversing the way, whereas \emph{essential street nodes} cannot (cf. chapter \ref{sub:routing_mobiletsm} for details).
+		
+	\item selected POI\footnote{Point Of Interest} nodes
+	
+		Nodes that are tagged as an "amenity" or a "shop" of any type are considered to be significant to our application.
+
+\end{itemize}
+
+Note that dropping map elements needs to be done with care to yield a coherent reduced map, since one has to be aware of reciprocal   dependencies between map elements.\newline
 
 \subsubsection{Structure of routing database}
+
+According to the structural demands the database basically consists of four tables:
+
+\begin{itemize}
+		
+	\item \texttt{street\_nodes\_0}
+	\item \texttt{poi\_nodes\_0}
+	\item \texttt{ways\_0}
+	
+	\item \texttt{index}
+	
+		At the current stage of the project, this table does not contain any crucial data. It is rather intended to be used in future when the map area is split into disjunctive tiles. It then may contain a kind of table of contents.
+		
+\end{itemize}
 
 
 \subsubsection{Creation of routing database}
