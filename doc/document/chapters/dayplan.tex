@@ -16,6 +16,8 @@ One question our application is expected to give answer to is \emph{"How much ti
 
 The answer is given by passing the current location (probably the last known GPS location) and the current time to the appropriate method of a \texttt{DayPlan} instance. By definition, the result is the answer to the question, with a negative value indicating an incompliance between the current position and the next event. Thus it can probably not be reached in time.
 
+TODO: (Alex) some words on notifications
+
 \subsubsection{Consistency check}
 
 As a day plan probably contains more than one event, it bears potential for inconsistencies in the sense that at least one event cannot be reached in time\footnote{using one single specified vehicle} assuming one adheres to the previous event as fixed in the day plan. The user probably longs to be informed about such inconsistencies.\newline

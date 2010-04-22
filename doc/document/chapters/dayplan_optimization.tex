@@ -1,7 +1,26 @@
 TODO: finalize this chapter\newline
 
-Tasks may in principle be considered as events with several parameters, including location and start times, not being fixed. The optimization process of a day plan is defined to try to fix the parameters of the given variable tasks in a desirable way maintaining the day plan's consistency. A task with successfully fixed parameters becomes an event and is thus deleted from the task list and the corresponding event is added to the event list.
+Tasks may in principle be considered as events with several parameters, including location and start times, not being fixed. The optimization process of a day plan is defined to try to fix the parameters of the given variable tasks in a desirable way maintaining the day plan's consistency. A task with successfully fixed parameters becomes an event and is thus deleted from the task list and the corresponding event is added to the event list. The task is said to be \emph{fixed as an event} or \emph{executed} within the scope the event.\newline
 
- \subsubsection{Approaches to an optimization as optimal as possible}
+A task not only has variable parameters to fix but can also have a set of constraints of different types. Task constraints are represented by classes implementing the \texttt{TaskConstraintInterface}. Possible constraints may apply to the date, the day time, the location or several other parameters (see table \ref{tab:dayplan_optimization_constraints} for a complete list task constraints) of the task. The parameters of a task to be fixed as an event have to obey every constraint in the task's constraint set.\newline
+
+The \texttt{DayPlan} class does not perform the optimization itself but allows to set an optimizer that will be used when an optimization process is triggered. An actual optimizer is an implementation of the \texttt{DayPlanOptimizer} interface.\newline
+
+TODO: table of task constraints
+
+
+\subsubsection{Approaches to optimization}
  
-  A task not only has variable parameters to fix but can also have a set of constraints of different types. 
+"Optimization" implies the need for a measure of some kind of quality. Optimization then is the process of finding the solution of highest quality. The most desirable way of optimizing a day plan is to input a day plan (consisting of events and tasks) and a measure of quality (metric) into a black box algorithm returning the best day plan possible maintaining day plan consistency. Since this is probably one of the most challanging problems in computer science, we are forced to make strong simplifications and accept the fact that the solution is likely to be not the optimal one.\newline
+
+Our basic approach to this problem is to use a greedy algorithm recursively trying to fix tasks between the events of a day plan, implemented in the class \texttt{GreedyTaskInsertionOptimizer}. The optimization is started specifying a location, a time and a vehicle where the location and the time are used as a starting point. The algorithm iterates over the list of tasks in the order given by a \texttt{TaskPriorityComparator}. For every task, it consecutively checks compatibility between the constraints associated with the task and the parameters it is potentially fixed with. These potential parameters are determined based on the specified starting point (location and time) and the task's constraints.\newline
+
+TODO: give a short explanation of parameter determination\newline
+
+The first task that fulfills every constraint is fixed as an event and the optimization process is started recursively with the recently fixed end time and location of the task.
+
+\subsubsection{Implementations of a \texttt{TaskPriorityComparator}}
+
+
+
+
