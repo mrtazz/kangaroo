@@ -10,13 +10,13 @@ Coming up with the decision for using Traveling Salesman, there were several iss
 		The data storage modules (data sets in Traveling Salesman's terminology) that come with the project can be considered unoptimized or even bad with respect to efficency and performance as needed for a mobile application. There are several different types of data set modules with different approaches of storing and organizing data.\newline
 		
 		Generally, but on Android's mobile platform in particular, there are two contradictory goals for the data storage architecture. Since Android restricts the heap space for an application to (at this time) 16 megabytes, the map area that can be cached in memory, is limited to several square kilometers, depending of course on data density. Thus one is forced to filter map elements before loading into memory.
-		As not only memory is expensive, but also data access to a flash card or a database, a compromise has to be found between loading the whole map into memory and accessing the persistent map database for every single element requested by the routing engine. \newline
-		
+		As not only memory is expensive, but also data access to a flash card or a database, a compromise has to be found between loading the whole map into memory and accessing the persistent map database for every single element requested by the routing engine.
+				
 	\item \textbf{Routing data}
 	
 		By default, Traveling Salesman performs every routing operation on the original set of data not dropping elements that do not affect the result of the operation. An example for elements of this type are nodes, that geographically shape the curvature of a street but do not introduce a junction. A node of this type will be called \emph{intermediate way node} and is dispensable for routing operations unless it is the nearest node to the starting or destination point of a route.\newline
 		
-		Both memory space occupied by the map and time consumption of a routing operation can be reduced by ignoring intermediate way nodes. Nethertheless one cannot dispense with intermediate way nodes close to starting and destination point. This implies an individual routing data set for every routing operation. At first sight this induviduality runs contrary to Traveling Salesman's architecture when aiming at keeping compatibility. We will show a way to individualize routing data while maintaining full compatibility.\newline
+		Both memory space occupied by the map and time consumption of a routing operation can be reduced by ignoring intermediate way nodes. Nethertheless one cannot dispense with intermediate way nodes close to starting and destination point. This implies an individual routing data set for every routing operation. At first sight this induviduality runs contrary to Traveling Salesman's architecture when aiming at keeping compatibility. We will show a way to individualize routing data while maintaining full compatibility.
 											
 	\item \textbf{Searching algorithm}
 	

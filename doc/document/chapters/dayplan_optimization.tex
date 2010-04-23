@@ -1,11 +1,11 @@
-TODO: finalize this chapter\newline
-
 Tasks may in principle be considered as events with several parameters, including location and start times, not being fixed. The optimization process of a day plan is defined to try to fix the parameters of the given variable tasks in a desirable way maintaining the day plan's consistency. A task with successfully fixed parameters becomes an event and is thus deleted from the task list and the corresponding event is added to the event list. The task is said to be \emph{fixed as an event} or \emph{executed} within the scope the event.\newline
 
 A task not only has variable parameters to fix but can also have a set of constraints of different types. Task constraints are represented by classes implementing the \texttt{TaskConstraintInterface}. Possible constraints may apply to the date, the day time, the location or several other parameters (see table \ref{tab:dayplan_optimization_constraints} for a complete list task constraints) of the task. The parameters of a task to be fixed as an event have to obey every constraint in the task's constraint set.\newline
 
 The \texttt{DayPlan} class does not perform the optimization itself but allows to set an optimizer that will be used when an optimization process is triggered. An actual optimizer is an implementation of the \texttt{DayPlanOptimizer} interface.\newline
 
+\begin{table}[h!]
+	\centering	
 	\begin{tabular}[ht]{|p{4.5cm}|p{8.5cm}|}
 		\hline
 		name & description \\
@@ -16,16 +16,48 @@ The \texttt{DayPlan} class does not perform the optimization itself but allows t
 		\texttt{TaskConstraintLocation} & specifies a location the task has to be executed at\\
 		\texttt{TaskConstraintPOI} & specifies a type of a Point Of Interest the task needs to be executed\\	
 		\hline
-	\end{tabular}\newline
+	\end{tabular}
+	\caption{List of currently implemented task constraints}
+	\label{tab:dayplan_optimization_constraints}
+\end{table}
 
 \subsubsection{Approaches to optimization}
  
 "Optimization" implies the need for a measure of some kind of quality. Optimization then is the process of finding the solution of highest quality. The most desirable way of optimizing a day plan is to input a day plan (consisting of events and tasks) and a measure of quality (metric) into a black box algorithm returning the best day plan possible maintaining day plan consistency. Since this is probably one of the most challanging problems in computer science, we are forced to make strong simplifications and accept the fact that the solution is likely to be not the optimal one.\newline
 
-Our basic approach to this problem is to use a greedy algorithm recursively trying to fix tasks between the events of a day plan, implemented in the class \texttt{GreedyTaskInsertionOptimizer}. The optimization is started specifying a location, a time and a vehicle where the location and the time are used as a starting point. The algorithm iterates over the list of tasks in the order given by a \texttt{TaskPriorityComparator}. For every task, it consecutively checks compatibility between the constraints associated with the task and the parameters it is potentially fixed with. These potential parameters are determined based on the specified starting point (location and time) and the task's constraints.\newline
+Our basic approach to this problem is to use a greedy algorithm recursively trying to fix tasks between the events of a day plan, implemented in the class \texttt{GreedyTaskInsertionOptimizer}. The optimization is started specifying a location, a time and a vehicle where the location and the time are used as a basis (intent of it to become cleare in the next clause). The algorithm iterates over the list of tasks in the order given by a \texttt{TaskPriorityComparator}. For every task, it consecutively checks compatibility between the constraints associated with the task and the parameters it is potentially fixed with. These potential parameters are determined based on the specified starting point (location and time) and the task's constraints.\newline
 
-TODO: give a short explanation of parameter determination\newline
+Given one task within the iteration over all tasks, parameter are tried to fixed by processing the folling sequence:
 
-The first task that fulfills every constraint is fixed as an event and the optimization process is started recursively with the recently fixed end time and location of the task.
+\begin{enumerate}
+
+	\item check wether the task's duration\footnote{specified by its constraints} is less than the time left until the next event starts.
+	\item If so, check whether the time given as a basis is compatible with the task's date and day time constraints. In other words, check whether a task can be executed at this point of time.
+	\item If so, find a location where the task can be executed. In dependence of its constraints, this may either be completely undefinite, or any Point Of Interest of a definite type or even a definite location. Select the location that is compatible with the task's constraints and that minimizes the sum of the linear distances from it to the basis location and the location of the next event\footnote{this effectively considers locations lying on an ellipse with the next event's location and the basis location as its focal  points to be equivalent}. Find a route from the basis location to the potential task execution location and a route from there to the next event's location. Check whether both routes exists and whether the time needed to travel both routes plus the duration of the task is less than the time left until the next event starts.
+	\item If so, fix the task.
+
+\end{enumerate}
+
+The first task that is fixed as an event forces the optimization process to restart recursively with the recently fixed end time and location of the task as its new basis.\newline
+
+Note: Since the task's date and day time constraints are only required to be compatible with the basis time, the task is neither guaranteed to be compatible with its actual start time nor with its duration.
 
 \subsubsection{Implementations of a \texttt{TaskPriorityComparator}}
+
+Although the greedy algorithm stays the same, the way to influence the optimization process is to modify the implementation of the \texttt{TaskPriorityComparator} which is therefore designed as an interface. By prefering one task to another one in this context, one can in principle force the algorithm to aim for different optimization goals.\newline
+
+Two implementations of a \texttt{TaskPriorityComparator} already exist:
+
+\begin{itemize}
+
+	\item \texttt{SimpleTaskPriorityComparator}
+	
+		The \texttt{SimpleTaskPriorityComparator} prefers tasks with more date or day time constraints. Only the number of constraints is considered, details of the constraints are disregarded. The idea is to fix demanding tasks prior to others.
+	
+	\item \texttt{UrgencyTaskPriorityComparator}
+	
+		The \texttt{UrgencyTaskPriorityComparator} prefers tasks of high urgency. High urgency is considered to be given by an early execution end date and/or time in turn given by the task's constraints. The idea is to fix as many tasks as possible.
+	
+\end{itemize}
+
+Other implementations may for example prefer tasks close to the current position to reduce the total distance that has to be traveled.
