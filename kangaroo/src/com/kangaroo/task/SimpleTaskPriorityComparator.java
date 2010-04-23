@@ -1,10 +1,13 @@
 package com.kangaroo.task;
 
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
+import com.mobiletsm.routing.Place;
 
-public class SimpleTaskPriorityComparator implements Comparator<Task> {
+
+public class SimpleTaskPriorityComparator implements TaskPriorityComparator {
 
 	@Override
 	public int compare(Task task1, Task task2) {
@@ -41,6 +44,18 @@ public class SimpleTaskPriorityComparator implements Comparator<Task> {
 		}		
 		
 		return result * (-1);
+	}
+
+	@Override
+	public void setHere(Place here) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setNow(Date now) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

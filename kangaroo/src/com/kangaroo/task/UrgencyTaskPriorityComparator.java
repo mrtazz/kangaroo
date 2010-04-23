@@ -3,7 +3,9 @@ package com.kangaroo.task;
 import java.util.Comparator;
 import java.util.Date;
 
-public class UrgencyTaskPriorityComparator implements Comparator<Task> {
+import com.mobiletsm.routing.Place;
+
+public class UrgencyTaskPriorityComparator implements TaskPriorityComparator {
 
 	@Override
 	public int compare(Task task1, Task task2) {
@@ -41,6 +43,18 @@ public class UrgencyTaskPriorityComparator implements Comparator<Task> {
 		}
 		
 		return 0;
+	}
+
+	@Override
+	public void setHere(Place here) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setNow(Date now) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

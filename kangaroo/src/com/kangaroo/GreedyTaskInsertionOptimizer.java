@@ -13,6 +13,7 @@ import com.kangaroo.task.NoLocationFoundException;
 import com.kangaroo.task.Task;
 import com.kangaroo.task.TaskConstraintHelper;
 import com.kangaroo.task.SimpleTaskPriorityComparator;
+import com.kangaroo.task.TaskPriorityComparator;
 import com.mobiletsm.routing.GeoConstraints;
 import com.mobiletsm.routing.NoRouteFoundException;
 import com.mobiletsm.routing.Place;
@@ -28,10 +29,10 @@ public class GreedyTaskInsertionOptimizer implements DayPlanOptimizer {
 	private RoutingEngine routingEngine = null;
 	
 	
-	private Comparator<Task> taskPriorityComparator = new SimpleTaskPriorityComparator();
+	private TaskPriorityComparator taskPriorityComparator = new SimpleTaskPriorityComparator();
 	
 	
-	public void setTaskPriorityComparator(Comparator<Task> comparator) {
+	public void setTaskPriorityComparator(TaskPriorityComparator comparator) {
 		if (comparator != null) {
 			this.taskPriorityComparator = comparator;
 		} else {
