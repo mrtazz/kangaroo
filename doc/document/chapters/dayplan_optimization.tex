@@ -6,8 +6,17 @@ A task not only has variable parameters to fix but can also have a set of constr
 
 The \texttt{DayPlan} class does not perform the optimization itself but allows to set an optimizer that will be used when an optimization process is triggered. An actual optimizer is an implementation of the \texttt{DayPlanOptimizer} interface.\newline
 
-TODO: table of task constraints
-
+	\begin{tabular}[ht]{|p{4.5cm}|p{8.5cm}|}
+		\hline
+		name & description \\
+		\hline\hline
+		\texttt{TaskConstraintDate} & specifies an end and/or a start date\\
+		\texttt{TaskConstraintDayTime} & specifies an end and/or a start day time\\
+		\texttt{TaskConstraintDuration} & specifies the time needed to execute the task\\
+		\texttt{TaskConstraintLocation} & specifies a location the task has to be executed at\\
+		\texttt{TaskConstraintPOI} & specifies a type of a Point Of Interest the task needs to be executed\\	
+		\hline
+	\end{tabular}\newline
 
 \subsubsection{Approaches to optimization}
  
@@ -20,7 +29,3 @@ TODO: give a short explanation of parameter determination\newline
 The first task that fulfills every constraint is fixed as an event and the optimization process is started recursively with the recently fixed end time and location of the task.
 
 \subsubsection{Implementations of a \texttt{TaskPriorityComparator}}
-
-
-
-
