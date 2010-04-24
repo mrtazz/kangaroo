@@ -114,4 +114,11 @@ as the registration of the Context Menu via ``registerForContextMenu''.
 % subsubsection Context Menus (end)
 
 \subsubsection{Notifications and alerts} % (fold)
-TODO: describe the notifications the user gets from the background task
+The class UserNotification provides an abstraction of the Android user notifications. The notifications are shown with Kangaroo logo and short message in the status-bar at the top of the screen. When the user pulls the notification bar down, a longer text is shown, as shown in figure TODO:INSERT-SCREENSHOT. Upon a click on the text the Kangaroo main GUI is started.
+\begin{figure}[h!]
+\centering
+\includegraphics[width=14cm]{pics/notifications.png}
+\caption{Class diagram of com.kangaroo.gui.UserNotification}
+\label{android_structure}
+\end{figure}
+The class provides a simple interface. Other parts of the software can initiate a new notification with the showNotification() method, and are returned an interger value that represents a unique identifier for this notification. The caller can decide wether the user should be alerted with a sound and vibrator alert. With the ID the notification can be deleted or updated with new content.
