@@ -47,7 +47,7 @@ The data set provider itself reads data from a suitable data source (for example
 
 As an abstraction of the data access to a routing data sources, a Java interface (called \texttt{RoutingDataAdapter}) is introduced. It provides methods to read map elements from a given data source.\newline
 
-To become more tangible, the abstract \texttt{RoutingDBAdapter} class as a derivation of the \texttt{RoutingDataAdapter} class will be used to access a database as source for routing data. A further derivation of the \texttt{RoutingDBAdapter} class, called \texttt{RoutingAndroidSQLiteAdapter}, finally implements the access to the Android specific SQLite database. For a describtion of this database structure and its creation, look at section \ref{sec:routing_database}\newline
+To become more tangible, the abstract \texttt{RoutingDBAdapter} class as a derivation of the \texttt{RoutingDataAdapter} class will be used to access a database as source for routing data. A further derivation of the \texttt{RoutingDBAdapter} class, called \texttt{RoutingAndroidSQLiteAdapter}, finally implements the access to the Android specific SQLite database. For a describtion of this database structure and its creation, look at section \ref{sub:routing_database}\newline
 
 With this type of abstraction it is still possible to exchange the SQLite database by another type of database or even not to use any database system at all but for example a proprietary file format. Nevertheless the SQLite database of Android seemed to be the most promising one, since one can expect of it to be highly optimized while maintaining a great degree of flexibility. In deed, any of our tests gave reason to be in doubt about this expectation.
 
