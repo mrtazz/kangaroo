@@ -3,16 +3,38 @@ so called ``content providers''. These providers are the
 only way to transfer data between applications, since there
 is no shared space which all applications could use.
 
-However the content provider for the calendar data is
-working, but not specified in the official developers
-documentation. That means that the API could change at
-any time, which has to be considered at the application
-design.
+Content providers provide a database like interface to the content to be
+accessed. This means for every access a query has to be created and executed.
+This query object, has to be compiled from several Android specific strings and
+content URIs and given an SQL like query to determine the content to be fetched
+from the provider.
 
-In order to not be too dependent on the changing API, a
-wrapper layer was built around it. Now there are only four
-methods which have to be adapted, making the application almost completely
-independent from any calendar API changes.
+\subsubsection{Calendar Content Provider API} % (fold)
+\label{ssub:Calendar Content Provider API}
+
+Unfortunately according to the Android development ressources, the content
+provider for calendar data is non-existent. However after thorough research, it
+became clear that the calendar data API exists, but is neither documented nor
+officially released. This means all the access specifics have to be reverse
+engineered and can also change at any time. Additionally there is no definite
+statement on when the API will be released or what it will look like.
+
+Since this
+is a serious problem for the stability and usability of the application, it has
+to be considered thoroughly in the design process.
+
+% subsubsection Calendar Content Provider API (end)
+
+\subsubsection{Calendar High Level Abstraction} % (fold)
+\label{ssub:Calendar High Level Abstraction}
+
+
+In order to not be too dependent on the changing API, an high level abstraction
+layer was built around the calendar access. This enabled the application to
+access calendar data as pure Java objects.
+Additionally there are now only four
+methods which have to be adapted on an API change, making the application
+virtually independent from the content provider backend
 
 \begin{itemize}
   \item queryEvents
@@ -39,3 +61,5 @@ completely from the backend.
 These four methods, described above, are the sole fundament of the calendar
 wrapper library. As they mostly consist of less than ten lines of code,
 the adaption to a new API can be done extremely easily.
+
+% subsubsection Calendar High Level Abstraction (end)
