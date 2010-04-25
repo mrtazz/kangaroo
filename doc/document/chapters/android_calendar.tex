@@ -11,7 +11,9 @@ design.
 
 In order to not be too dependent on the changing API, a
 wrapper layer was built around it. Now there are only four
-methods which have to be adapted if the API changes.
+methods which have to be adapted, making the application almost completely
+independent from any calendar API changes.
+
 \begin{itemize}
   \item queryEvents
   \item insertEventToBackend
@@ -37,4 +39,3 @@ completely from the backend.
 These four methods, described above, are the sole fundament of the calendar
 wrapper library. As they mostly consist of less than ten lines of code,
 the adaption to a new API can be done extremely easily.
-
