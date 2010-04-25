@@ -14,7 +14,7 @@ Coming up with the decision for using Traveling Salesman, there were several iss
 				
 	\item \textbf{Routing data}
 	
-		By default, Traveling Salesman performs every routing operation on the original set of data not dropping elements that do not affect the result of the operation. An example for elements of this type are nodes, that geographically shape the curvature of a street but do not introduce a junction. A node of this type will be called \emph{intermediate way node} and is dispensable for routing operations unless it is the nearest node to the starting or destination point of a route.\newline
+		By default, Traveling Salesman performs every routing operation on the original set of data not dropping elements that do not affect the result of the operation. An example for elements of this type are nodes, that geographically shape the curvature of a street but do not introduce a junction. A node of this type will be called \emph{intermediate way node} and is dispensable for routing operations unless it is the nearest node to the starting or destination point of a route. Any other way node will be called \emph{essential way node}.\newline
 		
 		Both memory space occupied by the map and time consumption of a routing operation can be reduced by ignoring intermediate way nodes. Nethertheless one cannot dispense with intermediate way nodes close to starting and destination point. This implies an individual routing data set for every routing operation. At first sight this induviduality runs contrary to Traveling Salesman's architecture when aiming at keeping compatibility. We will show a way to individualize routing data while maintaining full compatibility.
 											
@@ -35,7 +35,25 @@ As just explained in the previous section, three main issues have to be handled:
 \begin{enumerate}
 	\item \textbf{Reducing and individualizing of routing data}
 
-The basic idea is to introduce a module, an abstract Java class named \texttt{MobileDataSetProvider}, that can be queried for a specialized set of routing data which is compatible with Traveling Salesman and optimized for an individual routing operation. Any Traveling Salesman router may then be called with a reference to this individual data set. Anyhow, a router can perform another routing operation with different parameters on the same data set, but since the majority of intermediate way nodes will not be included in the data set, it will probably not find the best route or might even fail.\newline
+As routing data should be reduced and individualized before it is used by any Traveling Salesman module, a preprocessor has to be inserted. The basic idea to do this is to introduce a module, an abstract Java class named \texttt{MobileDataSetProvider}, that can be queried for a specialized set of routing data which is compatible with Traveling Salesman and optimized for an individual routing operation.\newline
+
+Basically an individual routing data set has to contain all essential way nodes and intermediate way nodes of the start and destination ways. If start and destination nodes are essential way nodes itself, it can completly abstain from intermediate way nodes.\newline
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=12cm]{pics/routing_data.png}
+	\caption{A route including intermediate way nodes: The blue markers define start and destination of the route, red points define essential street nodes and green points define intermediate way nodes. The corresponding routing graph constains much more elements than needed for the routing operation.}
+	\label{fig:routing_data}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=12cm]{pics/routing_data_2.png}
+	\caption{The same route like the one in \ref{fig:routing_data} but without intermediate way nodes. Routing on this individually reduced routing graph will yield the same shortest path (assuming revision of distance errors, cf. next clauses).}
+	\label{fig:routing_data_2}
+\end{figure}
+
+Internally, all essential street nodes and single intermediate way nodes requested by a routing operation are cached in memory. The individualized data set simply maps from queries performed on it to these caches. As it externally behaves like a Traveling Salesman data set, any Traveling Salesman router may then be called with a reference to this individual data set. Anyhow, a router can perform another routing operation with different parameters on the same data set, but since the majority of intermediate way nodes will not be included in the data set, it will probably not find the best route or might even fail.\newline
 
 One can also think of adding functionality to recycle an individualized data set. Instead of creating a new one for each routing operation, an old data set may be updated to be as qualified as if it was created specifically for the new parameters. One may be tempted to believe this is the only way to significantly gain time resources, but we will show that in fact our implementation exploits major improvements without this feature.\newline
 
@@ -55,7 +73,14 @@ With this type of abstraction it is still possible to exchange the SQLite databa
 
 As already demonstrated, the search for the nearest street node is an integral part of a routing operation. Without any assumption about the chronological and geographical pattern of routing operations that will be performed, one has to improve the data structure storing the nodes to be qualified for fast random access. Anyhow, one can think of another way to speed up the search when analyzing the average use.\newline
 
-Besides routing operations performed in advance\footnote{routing operations that are only based on calendar items and that are independent from current position}, the routing engine will also be triggered with routing operations using the current position. Since the current position is likely to change slowly in contrast to a random access, performance may be improved by caching street nodes inside a given radius around the last query.
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=12cm]{pics/nearest_node_cache.png}
+	\caption{Caching of nearest street nodes: The first query is used to cache street nodes within a specified radius of the query center. Under appropriate conditions the next query does not have to access the database but only the cache.}
+	\label{fig:nearest_node_cache}
+\end{figure}
+
+Besides routing operations performed in advance\footnote{routing operations that are only based on calendar items and that are independent from current position}, the routing engine will also be triggered with routing operations using the current position. Since the current position is likely to change slowly in contrast to a random access, performance may be improved by caching street nodes inside a given radius around the last query. Figure \ref{fig:nearest_node_cache} gives a graphical representation.
 
 
 	\item \textbf{Caching of calculated routes}
