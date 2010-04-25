@@ -42,7 +42,15 @@ when tapping a row in the Activity. Fortunately, when the onCreateContextMenu
 method is called, it is passed a ContextMenuInfo object as a parameter. This
 object contains an id, which is the same as the position in the original
 ArrayList from which the view was populated. Therefore it can be used as an
-index to identify the correct object in the list.
+index to identify the correct object in the list. Figure \ref{img:dayplan}
+shows an example screen.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=6cm]{pics/gui/main.png}
+    \caption{Basic DayPlan with calendar events only}
+    \label{img:dayplan}
+\end{figure}
 
 % subsubsection Dayplan (end)
 
@@ -65,33 +73,64 @@ data structures along with String arrays matching the keys of the passed Maps
 and Int arrays containing the IDs of the elements in the respective XML
 template for the first or second rows.
 
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=6cm]{pics/gui/task_main.png}
+    \caption{}
+    \label{}
+\end{figure}
+
 % subsubsection Tasklist (end)
 
 \subsubsection{Edit Task} % (fold)
 \label{ssub:EditTask}
-The EditTask Activity displays information (title, description, constraints)
+The EditTask Activity (figure \ref{img:taskedit}) displays information
+(title, description, constraints)
 of a task object in various edit fields. Here the data can be changed and
 is saved on every keystroke. Therefore the data is available when the
 Activity is left.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=6cm]{pics/gui/task_edit.png}
+    \caption{Basic interface for editing tasks}
+    \label{img:taskedit}
+\end{figure}
 
 % subsubsection Edit Task (end)
 
 \subsubsection{Configuration Editor} % (fold)
 \label{ssub:ConfigurationEditor}
-The Configuration Activity provides a way to preset several application
+The Configuration Activity (figure \ref{img:config}) provides a way to preset several
+application
 settings, such as calendar name to use and time interval for background
-services to do checking. The values are read from and saved to the key-value store 
-of the kangaroo application. When the application is initially opened, default values 
-are used. 
+services to do checking. The values are read from and saved to the key-value store
+of the kangaroo application. When the application is initially opened, default values
+are used.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=6cm]{pics/gui/config.png}
+    \caption{Configuration editor}
+    \label{img:config}
+\end{figure}
 
 % subsubsection Configuration Editor (end)
 
 \subsubsection{Day Optimizer} % (fold)
 \label{ssub:DayOptimizer}
-The DayOptimizer Activity displays a possible dayplan, optimized via various
+The DayOptimizer Activity (figure \ref{img:dayplanoptimize}) displays a possible
+dayplan, optimized via various
 characteristics. The user then has the choice whether to accept the new
 dayplan, generate a new one or abort. If the dayplan is accepted, it is set
 as the current dayplan for the application.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=6cm]{pics/gui/optimize_context.png}
+    \caption{DayPlan optimizer dialog}
+    \label{img:dayplanoptimize}
+\end{figure}
 
 % subsubsection Day Optimizer (end)
 
@@ -114,11 +153,34 @@ as the registration of the Context Menu via ``registerForContextMenu''.
 % subsubsection Context Menus (end)
 
 \subsubsection{Notifications and alerts} % (fold)
-The class UserNotification provides an abstraction of the Android user notifications. The notifications are shown with Kangaroo logo and short message in the status-bar at the top of the screen. When the user pulls the notification bar down, a longer text is shown, as shown in figure TODO:INSERT-SCREENSHOT. Upon a click on the text the Kangaroo main GUI is started.
+The class UserNotification provides an abstraction of the Android user
+notifications. The notifications are shown with Kangaroo logo and short message
+in the status-bar at the top of the screen (see figure
+\ref{img:menubar_notification}). When the user pulls the notification
+bar down, a longer text is shown, as shown in figure \ref{img:notifications}.
+Upon a click on the text the Kangaroo main GUI is started.
 \begin{figure}[h!]
 \centering
 \includegraphics[width=14cm]{pics/notifications.png}
 \caption{Class diagram of com.kangaroo.gui.UserNotification}
 \label{android_structure}
 \end{figure}
-The class provides a simple interface. Other parts of the software can initiate a new notification with the showNotification() method, and are returned an interger value that represents a unique identifier for this notification. The caller can decide wether the user should be alerted with a sound and vibrator alert. With the ID the notification can be deleted or updated with new content.
+The class provides a simple interface. Other parts of the software can initiate
+a new notification with the showNotification() method, and are returned an
+interger value that represents a unique identifier for this notification. The
+caller can decide wether the user should be alerted with a sound and vibrator
+alert. With the ID the notification can be deleted or updated with new content.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=6cm]{pics/gui/notifications_min_late.png}
+    \caption{Notifications with longer text}
+    \label{img:notifications}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=6cm]{pics/gui/menubar_notification.png}
+    \caption{Menubar notifications}
+    \label{img:menubar_notifications}
+\end{figure}
