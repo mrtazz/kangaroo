@@ -1,15 +1,21 @@
 For persistent database storage, the Android API contains
 support for SQLite databases. Any application can create
 an SQLite object, which is stored on the device under
-``/data/data/package\_name/databases''
-
+``/data/data/package\_name/databases''\\\\
 Unfortunately, up to Android version 2.1, the installed
 support for SQLite is 3.5.9. This means that it is not
 possible to benefit from the support for $R^*$-Trees,
 which was included in SQLite 3.6. This would have meant
 a very comfortable way of storing location data and
-retrieving positions in vicinity of a given point.
+retrieving positions in vicinity of a given point.\\\\
+For simple data Android OS also provides an easier means of data storage:\\
+A configuration-store can hold key-value pairs. Each application can only read and 
+write its own stores, also it can have an arbitrary number of them.
+\begin{verbatim}
+prefsPrivate = getSharedPreferences(preferencesName, MODE_PRIVATE);
+variable = prefsPrivate.getInt("variable name", defaultValue);
 
-TODO: shortly describe the key-value store and how to use it
-
-TODO: mention that there is also the possibility to store data directly on the SD-Card
+Editor prefsPrivateEditor = prefsPrivate.edit();
+prefsPrivateEditor.putInt("variable name", variable);
+prefsPrivateEditor.commit();
+\end{verbatim}
