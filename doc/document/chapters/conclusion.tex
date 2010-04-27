@@ -1,8 +1,65 @@
 \section{Accomplishments}
-TODO: describe what was accomplished in the project\\
-- gained knowledge for the devs\\
-- list reusable sytem parts\\
-- shortly describe functionality of the application\\
+\label{sec:accomplishments}
+\subsubsection{Application for optimized dayplans} % (fold)
+\label{ssub:Application for optimized dayplans}
+Several goals were accomplished while working on this teamproject. First of all
+an application was created which supports a users day planning with the
+following implemented functionalities:
+\begin{itemize}
+  \item Generate a dayplan, which is heavily optimized on completing as many
+    tasks as possible
+  \item Simple, yet powerful task management system
+  \item Enter location data for any event in the calendar
+  \item Full integration with Android calendar infrastructure
+  \item Routing between events supporting a variety of time and space
+    constraints
+  \item Continous checking of the dayplan's consistency and compliance
+  \item Notification of the user for every event and deadline according to the
+    dayplan
+\end{itemize}
+
+
+\subsubsection{Easily reusable Open Source packages} % (fold)
+\label{ssub:Easily reusable Open Source packages}
+Additionally to the functionality, many parts of the application's structure can
+be easily reused in other projects.
+
+\paragraph{Calendar Library}
+The calendar library provides an easy interface to query calendar data from the
+Android platform. The queried data is then easily accessible via Java objects
+and can be used in any Java application for Android. It can even be adapted to
+other platforms with very small amount of adaptions to the library.
+
+\paragraph{Routing Engine}
+The routing engine underlying the kangaroo application is a fully self-contained
+java package. It can be easily reused for routing purposes in any Java
+application which needs to access Open Streetmap data.
+
+\paragraph{Task Manager}
+The task management functionality of kangaroo is also strongly encapsulated and
+can therefore be reused easily in any Java project. The storage mechanism of
+converting tasks into events and storing them at a specific date can also be
+adapted easily to an SQLite database or any other preferred storage solution
+
+\paragraph{Dayplan}
+The Dayplan class as the centre of the whole application is also only loosely
+coupled with the rest of the application. This means as it is also a pure Java
+package, it can be reused easily and any other routing engine, calendar library,
+task manager and user interface can be simply connected to the dayplan. Thus
+providing the kangaroo functionality in a whole different environment and not
+only on the android platform.
+
+\subsubsection{Personal Experience} % (fold)
+\label{ssub:Personal Experience}
+Last but not least, a whole lot of knowledge was gained during the development
+of kangaroo. At the beginning none of the developers was familiar with
+developing applications for the Android platform. During the last months however
+a huge knowledge was accumulated, including structure, optimization and
+architecture of simple up to advanced applications for one of the big rising
+mobile platforms.
+
+% subsubsection Personal Experience (end)
+
 \section{What to do differently} % (fold)
 \label{sec:Whattododifferently}
 \subsubsection{Milestones} % (fold)
@@ -49,7 +106,16 @@ fixed and that it would not be introduced again later.
 % subsubsection Bug tracker (end)
 % section What to do differently (end)
 \section{Future work}
-TODO: describe possible followup projects:\\
-- use system parts to build other mobile routing related application\\
-- refine this application, make it market-ready\\
-- improve system parts (especially routing / routing-performance)\\
+As future projects, one can imagine many fields, not only directly concerning
+the kangaroo application. Of course, some minor adjustments have to be done to
+kangaroo, if it should be ready to be deployed via the Android market. The UI
+could be polished a bit to match the design of modern mobile applications.
+Additionally some system parts can be improved, mainly in the area of routing
+performance, to guarantee a smother and faster experience for the end user.
+
+Nevertheless one of the big strengths of the kangaroo project are definitely the
+amount of easily, reusable Java packages. As the whole code is open sourced, all
+parts can be used to build other routing related applications. But also
+integrate with calendar data, build an improved task management application or
+port the Dayplan optimizing functionality to another routing engine like Google
+Maps for example.
