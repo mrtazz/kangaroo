@@ -1,6 +1,7 @@
-TODO: describe why android is the most suitable paltform:
-
-- inexpensive devices
-- open architecture: (background-tasks)
-- big momentum: large dev. community, adapted by nearly every phone manufacturer
-- high level language development, infrastructure for app distribution
+Android OS is a operation system for smartphones  developed by Google. It is based on the Linux kernel, subsequently most of the source code is available. The google specific parts of the OS are only loosely coupled to the core OS. Usage of these components is not mandatory and can be avoided quite easily. Android was chosen as the most suitable platform for this project for different reasons.
+\begin{itemize}
+\item The Android Software architecture is versatile and open enough to allow an implementation of all the functionality needed for Kangaroo without any changes to the OS itself. Most significantly, no root-access to the OS is necessary to enable background tasks or file-system access. This means the Kangaroo application can be distributed via the available Android market pace, without requiring any further special installation or configuration.
+\item Software for Android can be developed in Java. Two of the developers in this project were already familiar with that language and powerful development and refactoring tools are readily available for it. This reduces the development time in the initial project phase compared to Objective-C or the .NET-Framework.   
+\item There is a big momentum in the development community. While in absolute numbers the number of application available is much smaller than for example the number of applications for the iPhone, the relative increase in application count is way higher. (Q1 2010) 
+\item There is a big number of rather inexpensive devices from several vendors available with Android OS. Almost every mayor manufacturer in the smartphone market is producing Android devices. This situation and the highly paced OS development by google lead to the assumption, that Android will increase its market share significantly in the next months and years.
+\end{itemize}
