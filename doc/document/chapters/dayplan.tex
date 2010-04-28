@@ -6,7 +6,7 @@ The \texttt{DayPlan} class is a container for events and tasks in the previously
 
 A compliance check actually tries to find a route starting from the given location to the location of the considered event and returns the time left between the specified time and the start time of the considered event substracted by the estimated time needed to travers the calculated route. Since location and time to start and the event to consider as a target event are free parameters, this algorithm can be used in many ways to be the basis of every use-case.\newline
 
-TODO: where do events and tasks come from?
+In fact our application uses an derivate of the \texttt{DayPlan} class, the \texttt{ActiveDayPlan} class, which differ only in the source of tasks and events. While the \texttt{DayPlan} class contains both itself, the \texttt{ActiveDayPlan} will actually access an external calendar via an \texttt{CalendarAccessAdapter}.
 
 \subsubsection{Compliance with current position and time}
  
@@ -16,18 +16,23 @@ The answer is given by passing the current location (probably the last known GPS
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=15cm]{pics/compliance_check.png}
-	\caption{A conflict revealed by a compliance check: The current position (marked with a stickman) is incompatible with the next event ("meeting 1") since the time neede to get there exceeds the time left. Space is reduced to one dimension for simplicity.}
+	\includegraphics[width=15cm]{pics/compliance_check_lack.png}
+	\caption{A conflict revealed by a compliance check: The current position (marked with a stickman) is incompatible with the next event ("meeting 1") since the time needed to get there exceeds the time left. Space is reduced to one dimension for simplicity.}
 	\label{fig:compliance_check}
 \end{figure}
 
 \subsubsection{Consistency check}
 
-As a day plan probably contains more than one event, it bears potential for inconsistencies in the sense that at least one event cannot be reached in time\footnote{using one single specified vehicle} assuming one adheres to the previous event as fixed in the day plan. The user probably longs to be informed about such inconsistencies.\newline
+As a day plan probably contains more than one event, it bears potential for inconsistencies in the sense that at least one event cannot be reached in time\footnote{using one single specified vehicle} assuming one adheres to the previous event as fixed in the day plan. The user probably longs to be informed about such inconsistencies. Figure \ref{fig:consistency_check} gives a simplified graphical representation.\newline
 
 A consistency check of a day plan is performed by iteratively checking compliance between one event and its preceeding event and returning a list of conflicts. A conflict can either simply be an incompliance between two subsequent events or any other conflict, including an incapability of finding a route or a temporal overlap between two events.
 
-
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=15cm]{pics/consistency_check.png}
+	\caption{A conflict revealed by a consistency check: The events "meeting 2" and "meeting 3" are incompatible in the sense that the time needed to from "meeting 2" to "meeting 3" exceeds the time left. Space is reduced to one dimension for simplicity.}
+	\label{fig:consistency_check}
+\end{figure}
 
 
 
