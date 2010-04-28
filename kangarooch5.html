@@ -1,0 +1,1569 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  
+  "http://www.w3.org/TR/html4/loose.dtd">  
+<html > 
+<head><title>5 Developement for Android</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"> 
+<meta name="generator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
+<meta name="originator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
+<!-- html,info,2 --> 
+<meta name="src" content="kangaroo.tex"> 
+<meta name="date" content="2010-04-28 16:13:00"> 
+<link rel="stylesheet" type="text/css" href="kangaroo.css"> 
+</head><body 
+>
+  <!--l. 104--><div class="crosslinks"><p class="noindent">[<a 
+href="kangarooch4.html" >prev</a>] [<a 
+href="kangarooch4.html#tailkangarooch4.html" >prev-tail</a>] [<a 
+href="#tailkangarooch5.html">tail</a>] [<a 
+href="kangaroo.html# " >up</a>] </p></div>
+  <h2 class="chapterHead"><span class="titlemark">5</span>&#x00A0;&#x00A0;<a 
+ id="x15-260005"></a>Developement for Android</h2>
+  <div class="sectionTOCS">5.1&#x00A0;<a 
+href="#x15-270005.1">Platform Specific System Design</a><br 
+class="newline" />5.2&#x00A0;<a 
+href="#x15-280005.2">User Interface</a><br 
+class="newline" />5.3&#x00A0;<a 
+href="#x15-390005.3">Background tasks</a><br 
+class="newline" />5.4&#x00A0;<a 
+href="#x15-400005.4">Calendar Integration</a><br 
+class="newline" />5.5&#x00A0;<a 
+href="#x15-430005.5">Introduction of Task management</a><br 
+class="newline" />5.6&#x00A0;<a 
+href="#x15-440005.6">Routing</a><br 
+class="newline" />5.6.1&#x00A0;<a 
+href="#x15-450005.6.1">Routing interface (Kangaroo routing framework)</a><br 
+class="newline" />5.6.2&#x00A0;<a 
+href="#x15-470005.6.2">Routing engine (MobileTSM)</a><br 
+class="newline" />5.6.3&#x00A0;<a 
+href="#x15-520005.6.3">Routing database</a><br 
+class="newline" />5.7&#x00A0;<a 
+href="#x15-560005.7">Dayplan</a><br 
+class="newline" />5.7.1&#x00A0;<a 
+href="#x15-570005.7.1">Consistency and compliance checks of a day plan</a><br 
+class="newline" />5.7.2&#x00A0;<a 
+href="#x15-610005.7.2">Optimization of a day plan</a><br 
+class="newline" />5.8&#x00A0;<a 
+href="#x15-640005.8">Persistent Storage</a><br 
+class="newline" />
+  </div>
+  <h3 class="sectionHead"><span class="titlemark">5.1</span>&#x00A0;&#x00A0;<a 
+ id="x15-270005.1"></a>Platform Specific System Design</h3>
+<!--l. 1--><p class="noindent" >Based on the abstract system structure as presented in chapter <a 
+href="kangarooch2.html#x4-60002.3">2.3<!--tex4ht:ref: chp:structure --></a> a platform specific software
+structure needs to be defined for the Android OS platform.This structure is shown in figure <a 
+href="#x15-380017">5.7<!--tex4ht:ref: android_structure --></a>.
+It respects Android specific constructs, patterns and object-types.<br 
+class="newline" /><br 
+class="newline" /><hr class="figure"><div class="figure" 
+>
+
+<a 
+ id="x15-270011"></a>
+
+
+<!--l. 4--><p class="noindent" ><img 
+src="pics/android_structure.png" alt="PIC"  
+>
+<br /> <div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id">Figure&#x00A0;5.1: </td><td  
+class="content">Platform specific software structure for Android OS</td></tr></table></div><!--tex4ht:label?: x15-270011 -->
+
+<!--l. 7--><p class="indent" >  </div><hr class="endfigure">
+<!--l. 8--><p class="indent" >  The classes marked in orange extend the platform specific Activity-class. In Android OS,
+Activities are used to build the graphical user interface (GUI). The class ActivityMainWindow
+contains a tabbing element, the other Activities from the com.kangaroo.gui package are wrapped
+in the individual tabs. A detailed description of the Kangaroo GUI can be found in chapter
+<a 
+href="#x15-280005.2">5.2<!--tex4ht:ref: sec:user_interface --></a><br 
+class="newline" /><br 
+class="newline" />The blue classes extend the Service-class. In Android OS Services are used to execute
+computations that are independent of the user interface. The ServiceRecurringTask class in
+com.kangaroo.system implements a background task that is executed over and over
+independently of user interaction. The other Services shown here are helper classes that
+make sure the background task is called when the location of the device in time or
+space has changed. These system integration classes are explained in the chapter <a 
+href="#x15-390005.3">5.3<!--tex4ht:ref: sec:android_integration --></a>
+<br 
+class="newline" /><br 
+class="newline" />All classes kept in grey are generic java classes. These system elements do not directly extend
+the Android platform, although some of them might use platform specific data types and
+methods. The classes can be divided into the following groups:
+     <ul class="itemize1">
+     <li class="itemize">TaskLibrary:   The   TaskLibrary   and   other   related   classes   in   the   package
+     com.kangaroo.task provide the functionality to store and manage tasks. These classes
+     are described in chapter <a 
+href="#x15-430005.5">5.5<!--tex4ht:ref: sec:android_task --></a>
+     </li>
+     <li class="itemize">CalendarLibrary:  The  classes  in  com.kangaroo.calendar  provide  a  wrapper  for
+     the  non  public  Android  calendar  API.  A  description  of  the  classes  and  the
+     reverse-engineering process can be found in chapter <a 
+href="#x15-400005.4">5.4<!--tex4ht:ref: sec:android_calendar --></a>.
+     </li>
+     <li class="itemize">MobileTSMRoutingEngine and the other classes in the com.mobiletsm.* package
+     provide routing functionality for Kangaroo. The routing is described in chapter <a 
+href="#x15-440005.6">5.6<!--tex4ht:ref: sub:routing --></a>
+     </li>
+     <li class="itemize">DayPlan:  The  DayPlan  and  related  classes  in  com.kanaroo  implement  temporal
+     storage of events and tasks. Also these classes provide the functionality for checking
+     and optimizing of the day plans. These classes can be found in chapter <a 
+href="#x15-570005.7.1">5.7.1<!--tex4ht:ref: sub:dayplan --></a></li></ul>
+  <h3 class="sectionHead"><span class="titlemark">5.2</span>&#x00A0;&#x00A0;<a 
+ id="x15-280005.2"></a>User Interface</h3>
+<!--l. 1--><p class="noindent" >
+  <h5 class="subsubsectionHead"><a 
+ id="x15-290005.2"></a>Basic Interface Structure</h5>
+<!--l. 3--><p class="noindent" >The Android user interface is built upon an XML templating engine. The basic interface is
+designed via XML templates and later on adapted and filled with content via Java methods.
+Every Activity class inherits from a basic activity class like &#8220;TabActivity&#8221; or &#8220;ListActivity&#8221;.
+The XML templates define a basic element of the according class also (&#8220;TabHost&#8221;,
+&#8220;ListView&#8221;).
+
+<!--l. 12--><p class="noindent" >
+  <h5 class="subsubsectionHead"><a 
+ id="x15-300005.2"></a>Main Window</h5>
+<!--l. 15--><p class="noindent" >The main window is just the skeleton with the tablist, which then contains the active window
+itself. The Activities are added via Intents into the tabbar. An important point, when
+entering the embedded Activities into the application&#8217;s manifest file, is to add the intent
+filter
+
+  <div class="verbatim" id="verbatim-1">
+&#x003C;category&#x00A0;android:name="android.intent.category.EMBED"&#x003E;&#x003C;/category&#x003E;
+</div>
+<!--l. 21--><p class="nopar" >also. This makes sure, that the Activity respects the boundaries of the main window when
+activated.
+<!--l. 27--><p class="noindent" >
+  <h5 class="subsubsectionHead"><a 
+ id="x15-310005.2"></a>Dayplan</h5>
+<!--l. 29--><p class="noindent" >The DayPlan Activity is the basic status interface which shows the current dayplan in a list. It
+also contains a context menu for manipulating events and an application menu to reload events
+and invoke the optimizer. The templating for this Activity consists of a template for the
+ListView and a separate template for the single rows.
+<!--l. 35--><p class="indent" >  In order create the view, the list of events is fetched from the ActiveDayPlan. After that a
+custom ArrayAdapter is used to populate the single rows of the ListView. The only slight
+problem is to get the correct object from the ArrayList, when tapping a row in the Activity.
+Fortunately, when the onCreateContextMenu method is called, it is passed a ContextMenuInfo
+object as a parameter. This object contains an id, which is the same as the position in
+the original ArrayList from which the view was populated. Therefore it can be used
+as an index to identify the correct object in the list. Figure <a 
+href="#x15-310012">5.2<!--tex4ht:ref: img:dayplan --></a> shows an example
+screen.
+<!--l. 46--><p class="indent" >  <hr class="figure"><div class="figure" 
+>
+
+<a 
+ id="x15-310012"></a>
+
+
+<!--l. 48--><p class="noindent" ><img 
+src="pics/gui/main.png" alt="PIC"  
+>
+<br /> <div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id">Figure&#x00A0;5.2: </td><td  
+class="content">Basic DayPlan with calendar events only</td></tr></table></div><!--tex4ht:label?: x15-310012 -->
+
+<!--l. 51--><p class="indent" >  </div><hr class="endfigure">
+  <h5 class="subsubsectionHead"><a 
+ id="x15-320005.2"></a>Tasklist</h5>
+<!--l. 57--><p class="noindent" >The Tasklist Activity displays all the available tasks. It is a two level list view, which shows the
+task title in the first level and the task details on expansion of an entry. It also contains a
+context menu to manipulate single tasks and an application menu to add new tasks. The
+templating for this Activity is more advanced, as there has to be a template for the ListView
+itself, the first level and second level of rows.
+<!--l. 64--><p class="indent" >  The TaskList was slightly more difficult to implement as it is a two-level ExpandableListView
+and therefore naturally more complicated. The most important part is building the entries, as
+the ListAdapter expects a List of Maps of Strings to Strings for the first level entries (the task
+titles) and a List of List of Maps of Strings to Strings for the second level entries. The
+constructor for the adapter (SimpleExpandableListAdapter) then takes these data
+structures along with String arrays matching the keys of the passed Maps and Int arrays
+containing the IDs of the elements in the respective XML template for the first or second
+rows.
+<!--l. 74--><p class="indent" >  <hr class="figure"><div class="figure" 
+>
+
+<a 
+ id="x15-320013"></a>
+
+
+<!--l. 76--><p class="noindent" ><img 
+src="pics/gui/task_main.png" alt="PIC"  
+>
+<br /> <div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id">Figure&#x00A0;5.3: </td><td  
+class="content"></td></tr></table></div><!--tex4ht:label?: x15-320013 -->
+
+<!--l. 79--><p class="indent" >  </div><hr class="endfigure">
+  <h5 class="subsubsectionHead"><a 
+ id="x15-330005.2"></a>Edit Task</h5>
+<!--l. 85--><p class="noindent" >The EditTask Activity (figure <a 
+href="#x15-330014">5.4<!--tex4ht:ref: img:taskedit --></a>) displays information (title, description, constraints) of a task
+object in various edit fields. Here the data can be changed and is saved on every keystroke.
+Therefore the data is available when the Activity is left.
+<!--l. 91--><p class="indent" >  <hr class="figure"><div class="figure" 
+>
+
+<a 
+ id="x15-330014"></a>
+
+
+<!--l. 93--><p class="noindent" ><img 
+src="pics/gui/task_edit.png" alt="PIC"  
+>
+<br /> <div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id">Figure&#x00A0;5.4: </td><td  
+class="content">Basic interface for editing tasks</td></tr></table></div><!--tex4ht:label?: x15-330014 -->
+
+<!--l. 96--><p class="indent" >  </div><hr class="endfigure">
+  <h5 class="subsubsectionHead"><a 
+ id="x15-340005.2"></a>Configuration Editor</h5>
+<!--l. 102--><p class="noindent" >The Configuration Activity (figure <a 
+href="#x15-340015">5.5<!--tex4ht:ref: img:config --></a>) provides a way to preset several application settings,
+such as calendar name to use and time interval for background services to do checking. The
+values are read from and saved to the key-value store of the kangaroo application. When the
+application is initially opened, default values are used.
+<!--l. 109--><p class="indent" >  <hr class="figure"><div class="figure" 
+>
+
+<a 
+ id="x15-340015"></a>
+
+
+<!--l. 111--><p class="noindent" ><img 
+src="pics/gui/config.png" alt="PIC"  
+>
+<br /> <div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id">Figure&#x00A0;5.5: </td><td  
+class="content">Configuration editor</td></tr></table></div><!--tex4ht:label?: x15-340015 -->
+
+<!--l. 114--><p class="indent" >  </div><hr class="endfigure">
+  <h5 class="subsubsectionHead"><a 
+ id="x15-350005.2"></a>Day Optimizer</h5>
+<!--l. 120--><p class="noindent" >The DayOptimizer Activity (figure <a 
+href="#x15-350016">5.6<!--tex4ht:ref: img:dayplanoptimize --></a>) displays a possible dayplan, optimized via various
+characteristics. The user then has the choice whether to accept the new dayplan, generate a
+new one or abort. If the dayplan is accepted, it is set as the current dayplan for the
+application.
+<!--l. 126--><p class="indent" >  <hr class="figure"><div class="figure" 
+>
+
+<a 
+ id="x15-350016"></a>
+
+
+<!--l. 128--><p class="noindent" ><img 
+src="pics/gui/optimize_context.png" alt="PIC"  
+>
+<br /> <div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id">Figure&#x00A0;5.6: </td><td  
+class="content">DayPlan optimizer dialog</td></tr></table></div><!--tex4ht:label?: x15-350016 -->
+
+<!--l. 131--><p class="indent" >  </div><hr class="endfigure">
+  <h5 class="subsubsectionHead"><a 
+ id="x15-360005.2"></a>Activity Options Menus</h5>
+<!--l. 137--><p class="noindent" >Activity Options Menus are often used to be able to reload an Activity or add a new element to
+it. The menu also needs an own XML template, which is inflated on menu creation.
+After that, a logic has to be added for every ID (button) of the menu in the method
+&#8220;onOptionsItemSelected&#8221;.
+<!--l. 143--><p class="noindent" >
+  <h5 class="subsubsectionHead"><a 
+ id="x15-370005.2"></a>Context Menus</h5>
+<!--l. 145--><p class="noindent" >Several context menus are implemented in the various Activities to edit or delete single objects
+or provide more information. Context Menus don&#8217;t have an XML template for itself, since they
+are all based on the same layout. Only the special method &#8220;OnCreateContextMenu&#8221; is needed in
+the Activity as well as the registration of the Context Menu via &#8220;registerForContextMenu&#8221;.
+<!--l. 153--><p class="noindent" >
+  <h5 class="subsubsectionHead"><a 
+ id="x15-380005.2"></a>Notifications and alerts</h5>
+<!--l. 154--><p class="noindent" >The class UserNotification provides an abstraction of the Android user notifications. The
+notifications are shown with Kangaroo logo and short message in the status-bar at the top of the
+screen (see figure <a 
+href="#x15-380039">5.9<!--tex4ht:ref: img:menubar_notification --></a>). When the user pulls the notification bar down, a longer text is shown, as
+shown in figure <a 
+href="#x15-380028">5.8<!--tex4ht:ref: img:notifications --></a>. Upon a click on the text the Kangaroo main GUI is started.
+<hr class="figure"><div class="figure" 
+>
+
+<a 
+ id="x15-380017"></a>
+
+
+<!--l. 162--><p class="noindent" ><img 
+src="pics/notifications.png" alt="PIC"  
+>
+<br /> <div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id">Figure&#x00A0;5.7: </td><td  
+class="content">Class diagram of com.kangaroo.gui.UserNotification</td></tr></table></div><!--tex4ht:label?: x15-380017 -->
+
+<!--l. 165--><p class="indent" >  </div><hr class="endfigure">
+<!--l. 166--><p class="indent" >  The class provides a simple interface. Other parts of the software can initiate a new
+notification with the showNotification() method, and are returned an interger value that
+represents a unique identifier for this notification. The caller can decide wether the user should
+be alerted with a sound and vibrator alert. With the ID the notification can be deleted or
+updated with new content.
+<!--l. 172--><p class="indent" >  <hr class="figure"><div class="figure" 
+>
+
+<a 
+ id="x15-380028"></a>
+
+
+<!--l. 174--><p class="noindent" ><img 
+src="pics/gui/notifications_min_late.png" alt="PIC"  
+>
+<br /> <div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id">Figure&#x00A0;5.8: </td><td  
+class="content">Notifications with longer text</td></tr></table></div><!--tex4ht:label?: x15-380028 -->
+
+<!--l. 177--><p class="indent" >  </div><hr class="endfigure">
+<!--l. 179--><p class="indent" >  <hr class="figure"><div class="figure" 
+>
+
+<a 
+ id="x15-380039"></a>
+
+
+<!--l. 181--><p class="noindent" ><img 
+src="pics/gui/menubar_notification.png" alt="PIC"  
+>
+<br /> <div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id">Figure&#x00A0;5.9: </td><td  
+class="content">Menubar notifications</td></tr></table></div><!--tex4ht:label?: x15-380039 -->
+
+<!--l. 184--><p class="indent" >  </div><hr class="endfigure">
+  <h3 class="sectionHead"><span class="titlemark">5.3</span>&#x00A0;&#x00A0;<a 
+ id="x15-390005.3"></a>Background tasks</h3>
+<!--l. 1--><p class="noindent" >In Kangaroo certain computations need to be performed in the background periodically.
+Android OS provides a nice solution for this requirement with the Service class. Each class that
+extends Service can perform computations without the need of a foreground user interface. The
+only mandatory element that needs to be overwritten is the onCreate() method. This method is
+called when a new instance of the class is created. Once the service sleeps in memory until it is
+called, unless the phone runs out of RAM. in that case the object is terminated, so has no
+control over its lifecycle. When a service is called with the corresponding intent its onStart()
+method is called.<br 
+class="newline" /><br 
+class="newline" /><hr class="figure"><div class="figure" 
+>
+
+<a 
+ id="x15-3900110"></a>
+
+
+<!--l. 4--><p class="noindent" ><img 
+src="pics/background1.png" alt="PIC"  
+>
+<br /> <div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id">Figure&#x00A0;5.10: </td><td  
+class="content">Interaction of the background task classes</td></tr></table></div><!--tex4ht:label?: x15-3900110 -->
+
+<!--l. 7--><p class="indent" >  </div><hr class="endfigure">
+<!--l. 8--><p class="indent" >  The services implemented in Kangaroo are located in the com.kangaroo.system package and
+shown in figure <a 
+href="#x15-3900110">5.10<!--tex4ht:ref: background1 --></a>. The BroadcastReceiverBootTime implements a BroadcastReceiver that
+listens to the boot-time broadcast from the OS. The receiver can be registered for a certain
+broadcast in the AndroidManifest.xml.
+
+  <div class="verbatim" id="verbatim-2">
+&#x00A0;&#x00A0;&#x003C;intent-filter&#x003E;
+&#x00A0;<br />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x003C;action&#x00A0;android:name=&#8217;&#8217;android.intent.action.BOOT_COMPLETED&#8217;&#8217;&#x00A0;/&#x003E;
+&#x00A0;<br />&#x00A0;&#x00A0;&#x003C;/intent-filter&#x003E;
+</div>
+<!--l. 13--><p class="nopar" >Once the phone has started correctly the code in the onReceive() method is executed. Here the
+services ServiceCallLocation and ServiceCallTick are started. ServiceCallLocation registers itself
+with the Android LocationManager. The service is then called every time the location of the
+phone has changed more than x meters. ServiceCallTick registers with the AlarmManager. It is
+called every time a certain amount of time has passed. Both of the services execute one task in
+their onStart() method: they call the ServiceRecurringTask with a corresponding
+intent:
+
+  <div class="verbatim" id="verbatim-3">
+Intent&#x00A0;callIntent&#x00A0;=&#x00A0;new&#x00A0;Intent(ServiceCallTick.this,&#x00A0;ServiceRecurringTask.class);
+&#x00A0;<br />callIntent.putExtra("isLocation",&#x00A0;false);
+&#x00A0;<br />startService(callIntent);
+</div>
+<!--l. 21--><p class="nopar" >In the ServiceRecurringTask the commands shown in figure <a 
+href="#x15-3900211">5.11<!--tex4ht:ref: background2 --></a> are executed.
+     <ul class="itemize1">
+     <li class="itemize">First the semaphore is checked. Since location and time updates occur independently
+     of each other, the semaphore prevents the ServiceRecurringTask from being called
+     multiple times simultaneously.
+     </li>
+     <li class="itemize">Then a new thread is created. Since the service is executed in the main tread of the
+     application, performing extensive calculations without a separate thread could cause
+     the GUI to lag.
+     </li>
+     <li class="itemize">Next a wake-lock on the CPU is obtained to prevent Android from putting the
+     process to sleep. It is very important to release the wake-lock as soon as possible,
+     since the inability of the CPU to go to a low power state drains the phone battery
+     quickly.
+     </li>
+     <li class="itemize">After  that  an  instance  of  the  com.kangaroo.ActiveDayPlan  is  acquired  and  the
+     methods to check consistency and reachability of the day plan are called. If the plan
+     is not consistent or a event can not be reached in time, a notification to the user is
+     generated. (see chapter <a 
+href="#x15-280005.2">5.2<!--tex4ht:ref: sec:user_interface --></a>)
+     </li>
+     <li class="itemize">Then the semaphore and the wake-lock are released and the thread terminates.</li></ul>
+<!--l. 30--><p class="noindent" ><hr class="figure"><div class="figure" 
+><a 
+ id="x15-3900211"></a><img 
+src="pics/background2.png" alt="PIC"  
+>
+<br /> <div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id">Figure&#x00A0;5.11: </td><td  
+class="content">Sequence diagram of the background task</td></tr></table></div><!--tex4ht:label?: x15-3900211 -->
+<!--l. 35--><p class="indent" >  </div><hr class="endfigure">
+  <h3 class="sectionHead"><span class="titlemark">5.4</span>&#x00A0;&#x00A0;<a 
+ id="x15-400005.4"></a>Calendar Integration</h3>
+<!--l. 1--><p class="noindent" >All data integration on the Android plattform is done via so called &#8220;content providers&#8221;. These
+providers are the only way to transfer data between applications, since there is no shared space
+which all applications could use.
+<!--l. 6--><p class="indent" >  Content providers provide a database like interface to the content to be accessed. This means
+for every access a query has to be created and executed. This query object, has to be compiled
+from several Android specific strings and content URIs and given an SQL like query to
+determine the content to be fetched from the provider.
+
+<!--l. 12--><p class="noindent" >
+  <h5 class="subsubsectionHead"><a 
+ id="x15-410005.4"></a>Calendar Content Provider API</h5>
+<!--l. 15--><p class="noindent" >Unfortunately according to the Android development ressources, the content provider for
+calendar data is non-existent. However after thorough research, it became clear that the
+calendar data API exists, but is neither documented nor officially released. This means all the
+access specifics have to be reverse engineered and can also change at any time. Additionally
+there is no definite statement on when the API will be released or what it will look
+like.
+<!--l. 22--><p class="indent" >  Since this is a serious problem for the stability and usability of the application, it has to be
+considered thoroughly in the design process.
+<!--l. 28--><p class="noindent" >
+  <h5 class="subsubsectionHead"><a 
+ id="x15-420005.4"></a>Calendar High Level Abstraction</h5>
+<!--l. 32--><p class="noindent" >In order to not be too dependent on the changing API, an high level abstraction layer was built
+around the calendar access. This enabled the application to access calendar data as pure Java
+objects. Additionally there are now only four methods which have to be adapted on an
+API change, making the application virtually independent from the content provider
+backend
+     <ul class="itemize1">
+     <li class="itemize">queryEvents
+     </li>
+     <li class="itemize">insertEventToBackend
+     </li>
+     <li class="itemize">updateEventInBackend
+     </li>
+     <li class="itemize">deleteEventFromBackend</li></ul>
+<!--l. 46--><p class="indent" >  The &#8220;queryEvents&#8221; method can be given a SQL statement as a selection statement and a
+String array. Values in the array subsequently replace all the &#8220;?&#8221; in the statement.
+The method then returns an ArrayList of CalendarEvent objects, which suited the
+selection.
+<!--l. 51--><p class="indent" >  The &#8220;insertEventToBackend&#8221; method is used to insert new events via the content provider. It
+takes a CalendarEvent object, builds an Android ContentValues object from it and inserts this
+into the backend.
+<!--l. 55--><p class="indent" >  The &#8220;updateEventInBackend&#8221; method does practically the same, but updates the events in
+the backend, instead.
+<!--l. 58--><p class="indent" >  At last the &#8220;deleteEventFromBackend&#8221; method removes the passed CalendarEvent completely
+from the backend.
+<!--l. 61--><p class="indent" >  These four methods, described above, are the sole fundament of the calendar wrapper library.
+As they mostly consist of less than ten lines of code, the adaption to a new API can be done
+extremely easily.
+
+<!--l. 127--><p class="noindent" >
+  <h3 class="sectionHead"><span class="titlemark">5.5</span>&#x00A0;&#x00A0;<a 
+ id="x15-430005.5"></a>Introduction of Task management</h3>
+<!--l. 1--><p class="noindent" >Android OS does not provide any functionality to store or manage tasks. There are several
+applications available in the market place to fill that void, but unfortunately non of these is
+suitable for the intended use-case in this project. The existing solutions do not provide
+Android Content Providers and the data models used do not provide the functionality
+needed here. Therefor it was necessary to implement a solution for this problem from
+scratch.<br 
+class="newline" /><br 
+class="newline" />In Kangaroo each task is represented by an instance of the class com.kangaroo.task.Task. Each
+instance has a task name, a description and a unique ID. Also each task keeps a list of
+constraints. Each task has an arbitrary number of constraint and each constraint limits its
+execution in a certain way. The following constraints are available, each implements the
+TaskConstraintInterface:
+     <ul class="itemize1">
+     <li class="itemize">TaskConstraintDate: The task can only be executed between two predefined dates.
+     </li>
+     <li class="itemize">TaskConstraintDayTime: A task with this constraint can only be executed at a
+     certain time of day.
+     </li>
+     <li class="itemize">TaskConstraintDuration: The task takes n minutes to perform.
+     </li>
+     <li class="itemize">TaskConstraintLocation: The task needs to be executed at certain coordinates.
+     </li>
+     <li class="itemize">TaskConstraintPOI: The task can be executed at points of interest of a certain type,
+     e.g. an ATB or a Bakery.</li></ul>
+<!--l. 10--><p class="noindent" >With this functionality a big number of possible tasks can be represented. Additional
+Constraints can be added at any time, as long as they implement the
+TaskConstraintInterface.<br 
+class="newline" /><hr class="figure"><div class="figure" 
+><a 
+ id="x15-4300112"></a> <img 
+src="pics/task_class.png" alt="PIC"  
+>
+<br /> <div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id">Figure&#x00A0;5.12: </td><td  
+class="content">Diagram of the task-related classes</td></tr></table></div><!--tex4ht:label?: x15-4300112 -->
+<!--l. 16--><p class="indent" >  </div><hr class="endfigure">
+<!--l. 17--><p class="indent" >  Obviously the list of tasks needs to be persistent, even when the application or the phone is
+shutdown or restarted. For that purpose each task has methods to serialize the complete content
+of the object into a string representation using a JSON serializer. With this string a new object
+with the same content can be deserialized at any time, so the tasks can be stored in any
+data-store that can handle string. The com.kangaroo.task.TaskLibrary class is one possible
+implementation that takes care of this. The TaskLibrary stores all serialized tasks in the
+calendar. For each task a event is created on the 10.11.1990 with the title task. The serialized
+task is then stored in the description field of the event. This is no clean or elegant
+solution for the task storage, but it provides certain advantages: The calendar events
+and tasks are stored in the same place and can be shared between different devices
+via online replication. A desktop application or another instance of Kangaroo on a
+different phone can operate on the exact same data-basis as the primary instance.
+
+<br 
+class="newline" />Of cause the serialized tasks could also be stored in sqlite database or the configuration-store of
+the Android OS. Only minor changes to the TaskLibrary are necessary.
+<!--l. 131--><p class="noindent" >
+  <h3 class="sectionHead"><span class="titlemark">5.6</span>&#x00A0;&#x00A0;<a 
+ id="x15-440005.6"></a>Routing</h3>
+<!--l. 134--><p class="noindent" >
+  <h4 class="subsectionHead"><span class="titlemark">5.6.1</span>&#x00A0;&#x00A0;<a 
+ id="x15-450005.6.1"></a>Routing interface (Kangaroo routing framework)</h4>
+<!--l. 1--><p class="noindent" >The interface between the main software core and the routing engine has to be designed
+independently of any specific routing engine, maintaining an abstraction level that allows to
+exchange the routing backend easily without any impact on the main software part. We will
+give an overview of the routing interface, which was designed to be compliant with
+this requirements. The routing interface as a whole will be called <span 
+class="cmti-10x-x-109">Kangaroo routing</span>
+<span 
+class="cmti-10x-x-109">framework</span>.<br 
+class="newline" />
+<!--l. 3--><p class="indent" >  The Kangaroo routing framework is designed independently from Android and only uses
+Standard Java compliant classes. Thus it is qualified to be used outside of the Android system.
+This was introduced to enable easy debugging without being confined by the Android
+SDK.
+<!--l. 5--><p class="noindent" >
+  <h5 class="subsubsectionHead"><a 
+ id="x15-460005.6.1"></a>Structure of the Kangaroo routing framework</h5>
+<!--l. 7--><p class="noindent" >There is one Java interface and three Java classes that can be considered as the main members
+of the Kangaroo routing framework.
+     <ul class="itemize1">
+     <li class="itemize">Interface <span 
+class="cmtt-10x-x-109">RoutingEngine</span>
+     <!--l. 13--><p class="noindent" >The <span 
+class="cmtt-10x-x-109">RoutingEngine </span>interface is the main interface between the routing engine and
+     the module that is using its routing service. It provides methods to find a route
+     between locations and to find street nodes and Points Of Interest near a location. It
+     also provides methods to control the routing cache<span class="footnote-mark"><a 
+href="kangaroo16.html#fn1x6"><sup class="textsuperscript">1</sup></a></span><a 
+ id="x15-46001f1"></a>
+     which is intended to be included in every routing engine compatible with the Kangaroo
+     routing engine.
+     </li>
+     <li class="itemize">Class <span 
+class="cmtt-10x-x-109">Place</span>
+     <!--l. 17--><p class="noindent" >This class is an abstract representation of a geographic location. It imperatively
+     consists of a pair of geographical coordinates (latitude and longitude) and may in
+
+     addition contain a name or a reference to Openstreetmap elements associated with
+     it.
+     </li>
+     <li class="itemize">Class <span 
+class="cmtt-10x-x-109">RouteParameter</span>
+     <!--l. 21--><p class="noindent" >An object of this class is returned by the routing engine when having searched the
+     map for a route between two locations. It has methods to return the length of the
+     route and the time it will take to travel the route. Additionally, it may contain an
+     object representing the route itself.
+     </li>
+     <li class="itemize">Class <span 
+class="cmtt-10x-x-109">GeoConstraints</span>
+     <!--l. 25--><p class="noindent" >This class is used to define geographical constraints for searches on the map. This
+     provides an interesting feature if for example one is looking for the nearest Point
+     Of Interest of a special type not simply measured from any given location but also
+     accounting for a location that has to be visited after this Point Of Interest.
+     </li></ul>
+<!--l. 138--><p class="noindent" >
+  <h4 class="subsectionHead"><span class="titlemark">5.6.2</span>&#x00A0;&#x00A0;<a 
+ id="x15-470005.6.2"></a>Routing engine (MobileTSM)</h4>
+<!--l. 1--><p class="noindent" >As we already showed, there was no way to get around at least adapting an existing routing
+engine. As Traveling Salesman is the one to use as a basis, our version of Traveling Salesman
+implementing the routing interface defined within the Kangaroo routing Framework is called
+<span 
+class="cmti-10x-x-109">MobileTSM</span>. The folling will summarize its structure, explain the most important changes
+in contrast to the original version of Traveling Salesman and give reasons for the
+adaptions.
+<!--l. 3--><p class="noindent" >
+  <h5 class="subsubsectionHead"><a 
+ id="x15-480005.6.2"></a>Major problems arising with decision for Traveling Salesman</h5>
+<!--l. 5--><p class="noindent" >Coming up with the decision for using Traveling Salesman, there were several issues to work
+on:
+<!--l. 8--><p class="indent" >
+     <dl class="enumerate"><dt class="enumerate">
+   1. </dt><dd 
+class="enumerate"><span 
+class="cmbx-10x-x-109">Data storage</span>
+     <!--l. 10--><p class="noindent" >The data storage modules (data sets in Traveling Salesman&#8217;s terminology) that come
+     with the project can be considered unoptimized or even bad with respect to efficency
+     and performance as needed for a mobile application. There are several different types
+     of data set modules with different approaches of storing and organizing data.<br 
+class="newline" />
+     <!--l. 12--><p class="noindent" >Generally,  but  on  Android&#8217;s  mobile  platform  in  particular,  there  are  two
+     contradictory goals for the data storage architecture. Since Android restricts the
+     heap space for an application to (at this time) 16 megabytes, the map area that can
+     be cached in memory, is limited to several square kilometers, depending of course on
+
+     data density. Thus one is forced to filter map elements before loading into memory.
+     As not only memory is expensive, but also data access to a flash card or a database,
+     a compromise has to be found between loading the whole map into memory and
+     accessing the persistent map database for every single element requested by the
+     routing engine.
+     </dd><dt class="enumerate">
+   2. </dt><dd 
+class="enumerate"><span 
+class="cmbx-10x-x-109">Routing data</span>
+     <!--l. 17--><p class="noindent" >By default, Traveling Salesman performs every routing operation on the original set
+     of data not dropping elements that do not affect the result of the operation. An
+     example for elements of this type are nodes, that geographically shape the curvature
+     of a street but do not introduce a junction. A node of this type will be called
+     <span 
+class="cmti-10x-x-109">intermediate way node  </span>and is dispensable for routing operations unless it is the
+     nearest node to the starting or destination point of a route. Any other way node will
+     be called <span 
+class="cmti-10x-x-109">essential way node</span>.<br 
+class="newline" />
+     <!--l. 19--><p class="noindent" >Both  memory  space  occupied  by  the  map  and  time  consumption  of  a  routing
+     operation can be reduced by ignoring intermediate way nodes. Nethertheless one
+     cannot dispense with intermediate way nodes close to starting and destination point.
+     This implies an individual routing data set for every routing operation. At first sight
+     this induviduality runs contrary to Traveling Salesman&#8217;s architecture when aiming
+     at keeping compatibility. We will show a way to individualize routing data while
+     maintaining full compatibility.
+     </dd><dt class="enumerate">
+   3. </dt><dd 
+class="enumerate"><span 
+class="cmbx-10x-x-109">Searching algorithm</span>
+     <!--l. 23--><p class="noindent" >When given two pairs of geographical coordinates and an order to find a route
+     between these two, one has to find the nearest street nodes to starting and destination
+     locations prior to the actual routing operation. This is because non-trivial routing
+     operations can only be performed on a routing graph between vertices. Thus one has
+     to translate from a geographical location to the vertex (node) that best matches it.
+     This can be considered the street node with minimal distance to the given location.<br 
+class="newline" />
+     <!--l. 25--><p class="noindent" >A naive ansatz to finding the nearest street node to a geoprahical location would
+     be to iterate over all street nodes, calculate the distance between the location and
+     each street node and select the one with minimal distance. Exactly this is done by
+     Traveling Salesman resulting in an extremly time consuming routing process.<br 
+class="newline" />
+     </dd></dl>
+<!--l. 30--><p class="noindent" >
+  <h5 class="subsubsectionHead"><a 
+ id="x15-490005.6.2"></a>Approaches for major problems arising with decision for Traveling Salesman</h5>
+<!--l. 33--><p class="noindent" >As just explained in the previous section, three main issues have to be handled: reduce and
+individualize routing data while maintaining compatibility to Traveling Salesman, find an
+efficient data storage architecture and improve the search algorithm for nearest nodes.
+The next sections will outline the abstract framework designed to approach these
+
+problems.
+<!--l. 36--><p class="indent" >
+     <dl class="enumerate"><dt class="enumerate">
+   1. </dt><dd 
+class="enumerate"><span 
+class="cmbx-10x-x-109">Reducing and individualizing of routing data</span>
+     <!--l. 38--><p class="noindent" >As  routing  data  should  be  reduced  and  individualized  before  it  is  used  by
+     any  Traveling  Salesman  module,  a  preprocessor  has  to  be  inserted.  The  basic
+     idea  to  do  this  is  to  introduce  a  module,  an  abstract  Java  class  named
+     <span 
+class="cmtt-10x-x-109">MobileDataSetProvider</span>, that can be queried for a specialized set of routing data
+     which is compatible with Traveling Salesman and optimized for an individual routing
+     operation.<br 
+class="newline" />
+     <!--l. 40--><p class="noindent" >Basically an individual routing data set has to contain all essential way nodes and
+     intermediate way nodes of the start and destination ways. If start and destination
+     nodes are essential way nodes itself, it can completly abstain from intermediate way
+     nodes.<br 
+class="newline" />
+     <!--l. 42--><p class="noindent" ><hr class="figure"><div class="figure" 
+><a 
+ id="x15-4900213"></a> <img 
+src="pics/routing_data.png" alt="PIC"  
+>
+<br /> <div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id">Figure&#x00A0;5.13: </td><td  
+class="content">A route including intermediate way nodes: The blue markers define start and
+destination of the route, red points define essential street nodes and green points define
+intermediate way nodes. The corresponding routing graph constains much more elements
+than needed for the routing operation.</td></tr></table></div><!--tex4ht:label?: x15-4900213 -->
+     <!--l. 47--><p class="noindent" ></div><hr class="endfigure">
+     <!--l. 49--><p class="noindent" ><hr class="figure"><div class="figure" 
+><a 
+ id="x15-4900314"></a> <img 
+src="pics/routing_data_2.png" alt="PIC"  
+>
+<br /> <div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id">Figure&#x00A0;5.14: </td><td  
+class="content">The same route like the one in <a 
+href="#x15-4900213">5.13<!--tex4ht:ref: fig:routing_data --></a> but without intermediate way nodes.
+Routing on this individually reduced routing graph will yield the same shortest path
+(assuming revision of distance errors, cf. next clauses).</td></tr></table></div><!--tex4ht:label?: x15-4900314 -->
+     <!--l. 54--><p class="noindent" ></div><hr class="endfigure">
+     <!--l. 56--><p class="noindent" >Internally, all essential street nodes and single intermediate way nodes requested by a
+     routing operation are cached in memory. The individualized data set simply maps from
+     queries performed on it to these caches. As it externally behaves like a Traveling Salesman
+     data set, any Traveling Salesman router may then be called with a reference to this
+     individual data set. Anyhow, a router can perform another routing operation with different
+     parameters on the same data set, but since the majority of intermediate way nodes will
+     not be included in the data set, it will probably not find the best route or might even
+     fail.<br 
+class="newline" />
+     <!--l. 58--><p class="noindent" >One can also think of adding functionality to recycle an individualized data set. Instead of
+     creating a new one for each routing operation, an old data set may be updated to be as
+     qualified as if it was created specifically for the new parameters. One may be tempted to
+     believe this is the only way to significantly gain time resources, but we will
+     show that in fact our implementation exploits major improvements without this
+     feature.<br 
+class="newline" />
+     <!--l. 60--><p class="noindent" >When dropping intermediate way nodes one has to be aware that Traveling Salesman
+     calculates the distance of a route by hopping from node to node summing up their linear
+     distances. To revise the error induced by missing intermediate way nodes, an extra
+
+     property has to be added to ways giving the real distance between two way
+     nodes. That is the main reason for introducing a derivate of Osmosis&#8217; <span 
+class="cmtt-10x-x-109">Way </span>class,
+     called <span 
+class="cmtt-10x-x-109">MobileWay </span>and a derivate of Traveling Salesman&#8217;s <span 
+class="cmtt-10x-x-109">WayNode </span>class, called
+     <span 
+class="cmtt-10x-x-109">MobileWayNode</span>
+     </dd><dt class="enumerate">
+   2. </dt><dd 
+class="enumerate"><span 
+class="cmbx-10x-x-109">Data storage architecture</span>
+     <!--l. 64--><p class="noindent" >The data set provider itself reads data from a suitable data source (for example from
+     database or a file stream). Since even individualized data sets will have a large
+     intersection, data is cached in memory to a great extent to avoid reloading of data already
+     read due to a prior routing query.<br 
+class="newline" />
+     <!--l. 66--><p class="noindent" >As an abstraction of the data access to a routing data sources, a Java interface (called
+     <span 
+class="cmtt-10x-x-109">RoutingDataAdapter</span>) is introduced. It provides methods to read map elements from a
+     given data source.<br 
+class="newline" />
+     <!--l. 68--><p class="noindent" >To become more tangible, the abstract <span 
+class="cmtt-10x-x-109">RoutingDBAdapter </span>class as a derivation
+     of the <span 
+class="cmtt-10x-x-109">RoutingDataAdapter </span>class will be used to access a database as source
+     for routing data. A further derivation of the <span 
+class="cmtt-10x-x-109">RoutingDBAdapter </span>class, called
+     <span 
+class="cmtt-10x-x-109">RoutingAndroidSQLiteAdapter</span>, finally implements the access to the Android specific
+     SQLite database. For a describtion of this database structure and its creation, look at
+     section <a 
+href="#x15-520005.6.3">5.6.3<!--tex4ht:ref: sub:routing_database --></a><br 
+class="newline" />
+     <!--l. 70--><p class="noindent" >With this type of abstraction it is still possible to exchange the SQLite database by
+     another type of database or even not to use any database system at all but for example a
+     proprietary file format. Nevertheless the SQLite database of Android seemed to be the
+     most promising one, since one can expect of it to be highly optimized while maintaining a
+     great degree of flexibility. In deed, any of our tests gave reason to be in doubt about this
+     expectation.
+     </dd><dt class="enumerate">
+   3. </dt><dd 
+class="enumerate"><span 
+class="cmbx-10x-x-109">Search algorithm for nearest nodes</span>
+     <!--l. 74--><p class="noindent" >As already demonstrated, the search for the nearest street node is an integral part of a
+     routing operation. Without any assumption about the chronological and geographical
+     pattern of routing operations that will be performed, one has to improve the data
+     structure storing the nodes to be qualified for fast random access. Anyhow, one
+     can think of another way to speed up the search when analyzing the average
+     use.<br 
+class="newline" />
+     <!--l. 76--><p class="noindent" ><hr class="figure"><div class="figure" 
+><a 
+ id="x15-4900615"></a> <img 
+src="pics/nearest_node_cache.png" alt="PIC"  
+>
+<br /> <div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id">Figure&#x00A0;5.15: </td><td  
+class="content">Caching of nearest street nodes: The first query is used to cache street nodes
+within a specified radius of the query center. Under appropriate conditions the next query
+does not have to access the database but only the cache.</td></tr></table></div><!--tex4ht:label?: x15-4900615 -->
+     <!--l. 81--><p class="noindent" ></div><hr class="endfigure">
+     <!--l. 83--><p class="noindent" >Besides routing operations performed in
+
+     advance<span class="footnote-mark"><a 
+href="kangaroo17.html#fn2x6"><sup class="textsuperscript">2</sup></a></span><a 
+ id="x15-49007f2"></a>,
+     the routing engine will also be triggered with routing operations using the current position.
+     Since the current position is likely to change slowly in contrast to a random access,
+     performance may be improved by caching street nodes inside a given radius around the
+     last query. Figure <a 
+href="#x15-4900615">5.15<!--tex4ht:ref: fig:nearest_node_cache --></a> gives a graphical representation.
+     </dd><dt class="enumerate">
+   4. </dt><dd 
+class="enumerate"><span 
+class="cmbx-10x-x-109">Caching of calculated routes</span>
+     <!--l. 88--><p class="noindent" >Routing operations may and will in principle have random parameters based on
+     calendar items and the current position. Anyhow, it is highly probable that
+     antecedent routing operations recur after a while. If one can make sure that
+     the operation&#8217;s parameter exactly match, there is no sense to recalculate the
+     route<span class="footnote-mark"><a 
+href="kangaroo18.html#fn3x6"><sup class="textsuperscript">3</sup></a></span><a 
+ id="x15-49009f3"></a>.
+     It may rather reuse the result of the respecting routing operation.<br 
+class="newline" />
+     <!--l. 90--><p class="noindent" ><span 
+class="cmti-10x-x-109">MobileTSM </span>introduces a routing cache that efficiently stores results of antecedent routing
+     operations by using a kind of double hashing. When triggering a new routing operation,
+     the routing cache will be checked in advance and only if there is no matching result of an
+     antecedent routing operation, the routing engine will actually perform the routing
+     operation.
+     </dd></dl>
+<!--l. 95--><p class="noindent" >
+  <h5 class="subsubsectionHead"><a 
+ id="x15-500005.6.2"></a>Structure of MobileTSM</h5>
+     <ul class="itemize1">
+     <li class="itemize">Class <span 
+class="cmtt-10x-x-109">MobileTSMRoutingEngine</span>
+     <!--l. 102--><p class="noindent" >The  class  <span 
+class="cmtt-10x-x-109">MobileRoutingEngine  </span>is  the  <span 
+class="cmti-10x-x-109">MobileTSM   </span>implementation  of  the
+     <span 
+class="cmtt-10x-x-109">RoutingEngine </span>introduced with the Kangaroo routing framework. It provides the
+     routing services used by the main application, including the previously explained
+     routing cache.
+     </li>
+     <li class="itemize">Class <span 
+class="cmtt-10x-x-109">Vehicle</span>
+     <!--l. 106--><p class="noindent" >The  abstract  class  Vehicle  implements  Traveling  Salesman&#8217;s  <span 
+class="cmtt-10x-x-109">IVehicle </span>interface
+     which  is  thought  to  define  and  constrain  the  usage  of  streets  and  ways.  These
+     constraints  will  be  considered  by  the  routing  engine  when  being  passed  as  a
+     parameter of a routing operation. It also adds the possibility to specify a maximum
+     speed. The routing engine will account for this maximum speed when calculation
+
+     the duration of travel of a route.<br 
+class="newline" />
+     <!--l. 108--><p class="noindent" >There a several derivates of this class defining different types of vehicles, including
+     appropriate maximum speeds (for example <span 
+class="cmtt-10x-x-109">AllStreetVehicle</span>).
+     </li>
+     <li class="itemize">Class <span 
+class="cmtt-10x-x-109">MobileTSMRouteParameter</span>
+     <!--l. 112--><p class="noindent" >This class is a direct derivate of the abstract <span 
+class="cmtt-10x-x-109">RouteParameter </span>class. It includes the
+     algorithm to calculate the duration of travel of a Traveling Salesman route based
+     upon the route and the used vehicle.
+     </li>
+     <li class="itemize">Class <span 
+class="cmtt-10x-x-109">POICode</span>
+     <!--l. 116--><p class="noindent" >This class is used to represent one type of a Point Of Interest. It also provides a
+     mapping between possible tags of Openstreetmap and an unique integer value.
+     </li>
+     <li class="itemize">Classes <span 
+class="cmtt-10x-x-109">MobileNode</span>, <span 
+class="cmtt-10x-x-109">MobileWay</span>, <span 
+class="cmtt-10x-x-109">MobileWayNode</span>
+     <!--l. 120--><p class="noindent" >The   need   and   sense   of   introducing   the   derivated   classes   <span 
+class="cmtt-10x-x-109">MobileWay  </span>and
+     <span 
+class="cmtt-10x-x-109">MobileWayNode </span>was already pointed out and won&#8217;t be repeated. The derivated class
+     <span 
+class="cmtt-10x-x-109">MobileNode </span>is introduced to be able to associate a reference to a nearest street node
+     and a Point Of Interest (represented by an instance of <span 
+class="cmtt-10x-x-109">POICode</span>) to the node.
+     </li>
+     <li class="itemize">Class <span 
+class="cmtt-10x-x-109">MobileMultiTargetDijkstraRouter</span>
+     <!--l. 124--><p class="noindent" >As      already      stated      in      chapter      <a 
+href="kangarooch4.html#x6-250004.2.3">4.2.3<!--tex4ht:ref: sub:routing_tsm --></a>,      Traveling      Salesman&#8217;s
+     router class <span 
+class="cmtt-10x-x-109">MultiTargetDijkstraRouter </span>seems to be implemented incorrectly. It
+     actually is supposed to be a Dijkstra algorithm extended to an A*-algorithm. This
+     extension is characterized by the use of a heuristic for determining the next node
+     to  visit.  In  Traveling  Salesman&#8217;s  original  implementation,  this  heuristic  and  the
+     data structure holding the nodes to visit is not realized correctly, often yielding
+     not  the  shortest  path  as  a  result.  These  implementation  errors  are  fixed  in  the
+     <span 
+class="cmtt-10x-x-109">MobileMultiTargetDijkstraRouter </span>router class.
+     </li>
+     <li class="itemize">Class <span 
+class="cmtt-10x-x-109">MobileRoutingMetric</span>
+     <!--l. 128--><p class="noindent" >As explained above, dropping intermediate way nodes results in the need for an
+     adapted measure of distances on a way. Since the routing metric (<span 
+class="cmtt-10x-x-109">IRoutingMetric</span>) is
+     a self-contained module, it can easily exchanged by a metric (<span 
+class="cmtt-10x-x-109">MobileRoutingMetric</span>)
+     using the corrected distance measure.<br 
+class="newline" />
+     <!--l. 130--><p class="noindent" >Like Traveling Salesman&#8217;s default implementation <span 
+class="cmtt-10x-x-109">ShortestRouteMetric </span>also the
+     new implementation does not privilege any type of street. The undesirable effect
+     of finding the shortest but not definitely the fastest route still persists and may be
+     abolished as part of a future extension.
+     </li></ul>
+
+<!--l. 142--><p class="noindent" >
+  <h5 class="subsubsectionHead"><a 
+ id="x15-510005.6.2"></a>Tests and benchmarks for MobileTSM</h5>
+<!--l. 1--><p class="noindent" >In order to test the performance and reliability of the MobileTSM routing engine, we definied a
+simple test case that tries to cover all routing tasks the routing engine may be faced with when
+being in &#8221;all-day&#8221; use.<br 
+class="newline" />
+<!--l. 3--><p class="indent" >  Consider the following calendar items
+     <dl class="enumerate"><dt class="enumerate">
+   1. </dt><dd 
+class="enumerate">an appointment fixed at a specific position in time and space (latitude/longitude)
+     </dd><dt class="enumerate">
+   2. </dt><dd 
+class="enumerate">a number of variable tasks each based on a special type of amenity (e.g. post box,
+     cash point)</dd></dl>
+<!--l. 9--><p class="indent" >  Starting at a point that is in time and space far from the appointment in (1), we make some
+movements in space which are not necessarily straight into the appointments direction, while
+time is increasing linearly. At a certain point, the movement turns into a straight movement
+towards the appointments meeting point. Note that for the movement a single type of vehicle is
+assumed and it is restricted to an area in space, that is completely covered by the given map
+file.<br 
+class="newline" />
+<!--l. 11--><p class="indent" >  Given this movement, the routing engine will be used to periodically perform a set of tasks to
+give answers to the following questions
+     <dl class="enumerate"><dt class="enumerate">
+   1. </dt><dd 
+class="enumerate">Is there any need to start moving straight to the next appointment? Is there even
+     no way to get there in time anymore?<br 
+class="newline" />Starting from the current position in space, the fastest route to the next<span class="footnote-mark"><a 
+href="kangaroo19.html#fn4x6"><sup class="textsuperscript">4</sup></a></span><a 
+ id="x15-51004f4"></a>
+     appointments position in space is calculated. The routing engine will account for
+     the restrictions that are given by the specified vehicle. The time needed to follow
+     this route with the given vehicle is compared to the time that is left until the next
+     appointments meeting time.
+     </dd><dt class="enumerate">
+   2. </dt><dd 
+class="enumerate">Is there any way to handle one or more variable task between the current position
+     in time and space and the one given by the appointment in (1) without running the
+     risk of missing this appointment?<br 
+class="newline" />A variable task is selected. Starting from the current position in space, the map is
+     searched for the nearest amenities needed to fullfil the selected task. Given this list of
+     amenities, every<span class="footnote-mark"><a 
+href="kangaroo20.html#fn5x6"><sup class="textsuperscript">5</sup></a></span><a 
+ id="x15-51006f5"></a>
+     single amenity is selected and the following calculations are performed: the fastest
+     route from the current position in space to the selected amenity and the fastest route
+     from this amenity to the next appointments position in space is calculated. Using
+
+     the sum of the time needed to follow these consecutive routes with the given vehicle
+     and the time needed to fullfil the task is compared to the time that is left until the
+     next appointments meeting time.</dd></dl>
+<!--l. 20--><p class="indent" >  In order to ensure a reproducible test case, there are some parameters to fix. These
+are
+     <ul class="itemize1">
+     <li class="itemize">the map file that containing routing data
+     </li>
+     <li class="itemize">the vehicle that is used and hence the infratructure that can be used to get to the
+     destinations
+     </li>
+     <li class="itemize">the position in space and time of the appointment in (1), namely time, latitude and
+     longitude
+     </li>
+     <li class="itemize">the number and type of variable tasks (including the type of amenity they are based
+     on)
+     </li>
+     <li class="itemize">the parameters of the movement previous to the appointment in (1), particularly the
+     starting point in time and space of the movement</li></ul>
+<!--l. 146--><p class="noindent" >
+  <h4 class="subsectionHead"><span class="titlemark">5.6.3</span>&#x00A0;&#x00A0;<a 
+ id="x15-520005.6.3"></a>Routing database</h4>
+<!--l. 2--><p class="noindent" >Android comes with an ready-to-use implementation of a SQLite database system which is the
+one to use in our project to store routing data (cf. chapter <a 
+href="#x15-470005.6.2">5.6.2<!--tex4ht:ref: sub:routing_mobiletsm --></a>). It seems reasonable to include
+all routing data in one database file and to preprocess it in a way that keeps operation expense
+on the mobile device at a minimum. The follow sections will give details on the database
+structure and the tools used to convert an Openstreetmap XML to such a database file,
+including the just mentioned preprocessing.
+<!--l. 4--><p class="noindent" >
+  <h5 class="subsubsectionHead"><a 
+ id="x15-530005.6.3"></a>Significant map elements for routing data</h5>
+<!--l. 6--><p class="noindent" >The Openstreetmap XML file consists of a set of node, a set of ways and a (for this project
+dispensable) set of relations. Although in principle every node and way has the same &#8221;weight&#8221;,
+significance for our application may vary over a huge scale. This significance depends on the
+attributes of the according map element. Three types of map elements are of high
+significance:
+     <ul class="itemize1">
+     <li class="itemize">selected ways
+
+     <!--l. 11--><p class="noindent" >As Openstreetmap also uses ways to map buildings or areas of a special type, public
+     stairways or almost impassable trails, one is forced to drop every way that cannot be
+     considered to be a &#8221;standard street&#8221;<span class="footnote-mark"><a 
+href="kangaroo21.html#fn6x6"><sup class="textsuperscript">6</sup></a></span><a 
+ id="x15-53001f6"></a>.
+     This selection is based on the tags associated with a way.
+     </li>
+     <li class="itemize">selected street nodes
+     <!--l. 15--><p class="noindent" >The nodes spanning up a way that wasn&#8217;t dropped are considered to be significant
+     to our application.<br 
+class="newline" />
+     <!--l. 17--><p class="noindent" >Furthermore, street nodes are (as already mentioned several times) split into two
+     categories. <span 
+class="cmti-10x-x-109">Intermediate way nodes </span>may be dropped without any impact on a routing
+     operation traversing the way, whereas <span 
+class="cmti-10x-x-109">essential street nodes </span>cannot (cf. chapter <a 
+href="#x15-470005.6.2">5.6.2<!--tex4ht:ref: sub:routing_mobiletsm --></a>
+     for details).
+     </li>
+     <li class="itemize">selected POI<span class="footnote-mark"><a 
+href="kangaroo22.html#fn7x6"><sup class="textsuperscript">7</sup></a></span><a 
+ id="x15-53002f7"></a>
+     nodes
+     <!--l. 21--><p class="noindent" >Nodes that are tagged as an &#8221;amenity&#8221; or a &#8221;shop&#8221; of any type are considered to be
+     significant to our application.
+     </li></ul>
+<!--l. 25--><p class="indent" >  Note that dropping map elements needs to be done with care to yield a coherent reduced map,
+since one has to be aware of reciprocal dependencies between map elements.
+<!--l. 27--><p class="noindent" >
+  <h5 class="subsubsectionHead"><a 
+ id="x15-540005.6.3"></a>Structure of routing database</h5>
+<!--l. 29--><p class="noindent" >According to the structural demands the database basically consists of four tables:
+     <ul class="itemize1">
+     <li class="itemize"><span 
+class="cmtt-10x-x-109">ways</span><span 
+class="cmtt-10x-x-109">_0</span>
+     <!--l. 35--><p class="noindent" >Every row in this table represents a way.<br 
+class="newline" />
+     <div class="tabular"> <table id="TBL-2" class="tabular" 
+cellspacing="0" cellpadding="0" rules="groups" 
+><colgroup id="TBL-2-1g"><col 
+id="TBL-2-1"></colgroup><colgroup id="TBL-2-2g"><col 
+id="TBL-2-2"></colgroup><colgroup id="TBL-2-3g"><col 
+id="TBL-2-3"></colgroup><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-1-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-1-1"  
+class="td11"><!--l. 39--><p class="noindent" >column          </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-1-2"  
+class="td11"><!--l. 39--><p class="noindent" >data type               </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-1-3"  
+class="td11"><!--l. 39--><p class="noindent" >description                                                    </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-2-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-2-1"  
+class="td11"><!--l. 41--><p class="noindent" >id                  </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-2-2"  
+class="td11"><!--l. 41--><p class="noindent" >integer primary key  </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-2-3"  
+class="td11"><!--l. 41--><p class="noindent" >unique way id (= OSM id)                               </td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-3-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-3-1"  
+class="td11"><!--l. 42--><p class="noindent" >name             </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-3-2"  
+class="td11"><!--l. 42--><p class="noindent" >text not null           </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-3-3"  
+class="td11"><!--l. 42--><p class="noindent" >name of this way (= OSM &#8217;name&#8217; tag)                </td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-4-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-4-1"  
+class="td11"><!--l. 43--><p class="noindent" >highway          </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-4-2"  
+class="td11"><!--l. 43--><p class="noindent" >text not null           </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-4-3"  
+class="td11"><!--l. 43--><p class="noindent" >= OSM &#8217;highway&#8217; tag                                      </td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-5-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-5-1"  
+class="td11"><!--l. 44--><p class="noindent" >maxspeed        </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-5-2"  
+class="td11"><!--l. 44--><p class="noindent" >integer not null       </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-5-3"  
+class="td11"><!--l. 44--><p class="noindent" >maximum speed in km/h (= OSM &#8217;maxspeed&#8217; tag)</td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-6-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-6-1"  
+class="td11"><!--l. 45--><p class="noindent" >tags               </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-6-2"  
+class="td11"><!--l. 45--><p class="noindent" >text not null           </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-6-3"  
+class="td11"><!--l. 45--><p class="noindent" >serialized OSM tags                                        </td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-7-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-7-1"  
+class="td11"><!--l. 46--><p class="noindent" >flags               </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-7-2"  
+class="td11"><!--l. 46--><p class="noindent" >integer not null       </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-7-3"  
+class="td11"><!--l. 46--><p class="noindent" ><span 
+class="cmti-10x-x-109">unused up to now</span>                                        </td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-8-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-8-1"  
+class="td11"><!--l. 47--><p class="noindent" >waynodes        </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-8-2"  
+class="td11"><!--l. 47--><p class="noindent" >text not null           </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-8-3"  
+class="td11"><!--l. 47--><p class="noindent" >serialized list of way nodes                               </td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-9-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-9-1"  
+class="td11"><!--l. 48--><p class="noindent" >waynodes_red  </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-9-2"  
+class="td11"><!--l. 48--><p class="noindent" >text not null           </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-9-3"  
+class="td11"><!--l. 48--><p class="noindent" >serialized list of reduced way nodes                    </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-10-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-10-1"  
+class="td11">             </td></tr></table>
+     </div><br 
+class="newline" />
+
+     </li>
+     <li class="itemize"><span 
+class="cmtt-10x-x-109">street</span><span 
+class="cmtt-10x-x-109">_nodes</span><span 
+class="cmtt-10x-x-109">_0</span>
+     <!--l. 55--><p class="noindent" >Every row in this table represents a street node independently of wether it is an
+     intermediate or an essential way node.<br 
+class="newline" />
+     <div class="tabular"> <table id="TBL-3" class="tabular" 
+cellspacing="0" cellpadding="0" rules="groups" 
+><colgroup id="TBL-3-1g"><col 
+id="TBL-3-1"></colgroup><colgroup id="TBL-3-2g"><col 
+id="TBL-3-2"></colgroup><colgroup id="TBL-3-3g"><col 
+id="TBL-3-3"></colgroup><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-3-1-"><td  style="white-space:wrap; text-align:left;" id="TBL-3-1-1"  
+class="td11"><!--l. 59--><p class="noindent" >column          </td><td  style="white-space:wrap; text-align:left;" id="TBL-3-1-2"  
+class="td11"><!--l. 59--><p class="noindent" >data type               </td><td  style="white-space:wrap; text-align:left;" id="TBL-3-1-3"  
+class="td11"><!--l. 59--><p class="noindent" >description                                                    </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-3-2-"><td  style="white-space:wrap; text-align:left;" id="TBL-3-2-1"  
+class="td11"><!--l. 61--><p class="noindent" >id                  </td><td  style="white-space:wrap; text-align:left;" id="TBL-3-2-2"  
+class="td11"><!--l. 61--><p class="noindent" >integer primary key  </td><td  style="white-space:wrap; text-align:left;" id="TBL-3-2-3"  
+class="td11"><!--l. 61--><p class="noindent" >unique node id (= OSM id)                              </td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-3-3-"><td  style="white-space:wrap; text-align:left;" id="TBL-3-3-1"  
+class="td11"><!--l. 62--><p class="noindent" >lat                 </td><td  style="white-space:wrap; text-align:left;" id="TBL-3-3-2"  
+class="td11"><!--l. 62--><p class="noindent" >real not null           </td><td  style="white-space:wrap; text-align:left;" id="TBL-3-3-3"  
+class="td11"><!--l. 62--><p class="noindent" >latitude of node                                             </td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-3-4-"><td  style="white-space:wrap; text-align:left;" id="TBL-3-4-1"  
+class="td11"><!--l. 63--><p class="noindent" >lon </td> <td  style="white-space:wrap; text-align:left;" id="TBL-3-4-2"  
+class="td11"><!--l. 63--><p class="noindent" >real not null </td> <td  style="white-space:wrap; text-align:left;" id="TBL-3-4-3"  
+class="td11"><!--l. 63--><p class="noindent" >longitude of node</td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-3-5-"><td  style="white-space:wrap; text-align:left;" id="TBL-3-5-1"  
+class="td11"><!--l. 64--><p class="noindent" >tags               </td><td  style="white-space:wrap; text-align:left;" id="TBL-3-5-2"  
+class="td11"><!--l. 64--><p class="noindent" >text not null           </td><td  style="white-space:wrap; text-align:left;" id="TBL-3-5-3"  
+class="td11"><!--l. 64--><p class="noindent" >serialized OSM tags                                        </td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-3-6-"><td  style="white-space:wrap; text-align:left;" id="TBL-3-6-1"  
+class="td11"><!--l. 65--><p class="noindent" >ways              </td><td  style="white-space:wrap; text-align:left;" id="TBL-3-6-2"  
+class="td11"><!--l. 65--><p class="noindent" >text not null           </td><td  style="white-space:wrap; text-align:left;" id="TBL-3-6-3"  
+class="td11"><!--l. 65--><p class="noindent" >serialized list of ways connected to this node        </td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-3-7-"><td  style="white-space:wrap; text-align:left;" id="TBL-3-7-1"  
+class="td11"><!--l. 66--><p class="noindent" >type               </td><td  style="white-space:wrap; text-align:left;" id="TBL-3-7-2"  
+class="td11"><!--l. 66--><p class="noindent" >integer not null       </td><td  style="white-space:wrap; text-align:left;" id="TBL-3-7-3"  
+class="td11"><!--l. 66--><p class="noindent" >type of street node (intermediate/essential)         </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-3-8-"><td  style="white-space:wrap; text-align:left;" id="TBL-3-8-1"  
+class="td11">             </td></tr></table>
+     </div><br 
+class="newline" />
+     </li>
+     <li class="itemize"><span 
+class="cmtt-10x-x-109">poi</span><span 
+class="cmtt-10x-x-109">_nodes</span><span 
+class="cmtt-10x-x-109">_0</span>
+     <!--l. 72--><p class="noindent" >Every row in this table represents a Point Of Interest.<br 
+class="newline" />
+     <div class="tabular"> <table id="TBL-4" class="tabular" 
+cellspacing="0" cellpadding="0" rules="groups" 
+><colgroup id="TBL-4-1g"><col 
+id="TBL-4-1"></colgroup><colgroup id="TBL-4-2g"><col 
+id="TBL-4-2"></colgroup><colgroup id="TBL-4-3g"><col 
+id="TBL-4-3"></colgroup><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-4-1-"><td  style="white-space:wrap; text-align:left;" id="TBL-4-1-1"  
+class="td11"><!--l. 76--><p class="noindent" >column          </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-1-2"  
+class="td11"><!--l. 76--><p class="noindent" >data type               </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-1-3"  
+class="td11"><!--l. 76--><p class="noindent" >description                                                    </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-4-2-"><td  style="white-space:wrap; text-align:left;" id="TBL-4-2-1"  
+class="td11"><!--l. 78--><p class="noindent" >id                  </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-2-2"  
+class="td11"><!--l. 78--><p class="noindent" >integer primary key  </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-2-3"  
+class="td11"><!--l. 78--><p class="noindent" >unique node id (= OSM id)                              </td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-4-3-"><td  style="white-space:wrap; text-align:left;" id="TBL-4-3-1"  
+class="td11"><!--l. 79--><p class="noindent" >lat                 </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-3-2"  
+class="td11"><!--l. 79--><p class="noindent" >real not null           </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-3-3"  
+class="td11"><!--l. 79--><p class="noindent" >latitude of node                                             </td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-4-4-"><td  style="white-space:wrap; text-align:left;" id="TBL-4-4-1"  
+class="td11"><!--l. 80--><p class="noindent" >lon </td> <td  style="white-space:wrap; text-align:left;" id="TBL-4-4-2"  
+class="td11"><!--l. 80--><p class="noindent" >real not null </td> <td  style="white-space:wrap; text-align:left;" id="TBL-4-4-3"  
+class="td11"><!--l. 80--><p class="noindent" >longitude of node</td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-4-5-"><td  style="white-space:wrap; text-align:left;" id="TBL-4-5-1"  
+class="td11"><!--l. 81--><p class="noindent" >poicode          </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-5-2"  
+class="td11"><!--l. 81--><p class="noindent" >integer not null       </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-5-3"  
+class="td11"><!--l. 81--><p class="noindent" >type code of Point Of Interest                           </td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-4-6-"><td  style="white-space:wrap; text-align:left;" id="TBL-4-6-1"  
+class="td11"><!--l. 82--><p class="noindent" >tags               </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-6-2"  
+class="td11"><!--l. 82--><p class="noindent" >text not null           </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-6-3"  
+class="td11"><!--l. 82--><p class="noindent" >serialized OSM tags                                        </td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-4-7-"><td  style="white-space:wrap; text-align:left;" id="TBL-4-7-1"  
+class="td11"><!--l. 83--><p class="noindent" >nst                </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-7-2"  
+class="td11"><!--l. 83--><p class="noindent" >integer not null       </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-7-3"  
+class="td11"><!--l. 83--><p class="noindent" >id of nearest street node                                  </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-4-8-"><td  style="white-space:wrap; text-align:left;" id="TBL-4-8-1"  
+class="td11">             </td></tr></table>
+     </div><br 
+class="newline" />
+     </li>
+     <li class="itemize"><span 
+class="cmtt-10x-x-109">index</span>
+     <!--l. 89--><p class="noindent" >At the current stage of the project, this table does not contain any crucial data. It is
+     rather intended to be used in future when the map area is split into disjunctive tiles. It
+     then may contain a kind of table of contents stored as key-value-pairs.<br 
+class="newline" />
+     <div class="tabular"> <table id="TBL-5" class="tabular" 
+cellspacing="0" cellpadding="0" rules="groups" 
+><colgroup id="TBL-5-1g"><col 
+id="TBL-5-1"></colgroup><colgroup id="TBL-5-2g"><col 
+id="TBL-5-2"></colgroup><colgroup id="TBL-5-3g"><col 
+id="TBL-5-3"></colgroup><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-5-1-"><td  style="white-space:wrap; text-align:left;" id="TBL-5-1-1"  
+class="td11"><!--l. 93--><p class="noindent" >column          </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-1-2"  
+class="td11"><!--l. 93--><p class="noindent" >data type               </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-1-3"  
+class="td11"><!--l. 93--><p class="noindent" >description                                                    </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-5-2-"><td  style="white-space:wrap; text-align:left;" id="TBL-5-2-1"  
+class="td11"><!--l. 95--><p class="noindent" >id                  </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-2-2"  
+class="td11"><!--l. 95--><p class="noindent" >integer primary key  </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-2-3"  
+class="td11"><!--l. 95--><p class="noindent" >unique id of key-value-pair                               </td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-5-3-"><td  style="white-space:wrap; text-align:left;" id="TBL-5-3-1"  
+class="td11"><!--l. 96--><p class="noindent" >key                </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-3-2"  
+class="td11"><!--l. 96--><p class="noindent" >text not null           </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-3-3"  
+class="td11"><!--l. 96--><p class="noindent" >unique key                                                    </td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-5-4-"><td  style="white-space:wrap; text-align:left;" id="TBL-5-4-1"  
+class="td11"><!--l. 97--><p class="noindent" >value              </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-4-2"  
+class="td11"><!--l. 97--><p class="noindent" >text not null           </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-4-3"  
+class="td11"><!--l. 97--><p class="noindent" >value of key                                                   </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-5-5-"><td  style="white-space:wrap; text-align:left;" id="TBL-5-5-1"  
+class="td11">             </td></tr></table>
+     </div><br 
+class="newline" />
+     </li></ul>
+<!--l. 103--><p class="indent" >  Note: to be compliant with Android&#8217;s SQLite database, the database has to contain a table
+named <span 
+class="cmtt-10x-x-109">android</span><span 
+class="cmtt-10x-x-109">_metadata </span>with a specification of the used locale.
+<!--l. 106--><p class="noindent" >
+  <h5 class="subsubsectionHead"><a 
+ id="x15-550005.6.3"></a>Creation of routing database</h5>
+<!--l. 108--><p class="noindent" >As Openstreetmap is the origin of the routing data to be used, one needs a converter reading the
+Openstreetmap XML file and writing an Android compliant SQLite .db database file. This
+conversion is done by a class called <span 
+class="cmtt-10x-x-109">MobileTSMDatabaseWriter</span>.<br 
+class="newline" />
+
+<!--l. 110--><p class="indent" >  It automatically selects map elements of desired significance and outputs an reduced, coherent
+map stored in a database file of the previously explained format. This file can directly by copied
+to the mobile device to be used as a routing data source.
+<!--l. 150--><p class="noindent" >
+  <h3 class="sectionHead"><span class="titlemark">5.7</span>&#x00A0;&#x00A0;<a 
+ id="x15-560005.7"></a>Dayplan</h3>
+<!--l. 153--><p class="noindent" >
+  <h4 class="subsectionHead"><span class="titlemark">5.7.1</span>&#x00A0;&#x00A0;<a 
+ id="x15-570005.7.1"></a>Consistency and compliance checks of a day plan</h4>
+<!--l. 1--><p class="noindent" >Having set up the basic routing toolkit needed to construct a calendar being more intelligent
+than a standard one, this chapter wants to give details on this additional &#8221;intelligence&#8221;. A
+calendar in this context is defined to be a list of events and tasks. A calendar is broken into
+pieces by default covering one day. Although it may in principle cover any period of time, it will
+be called <span 
+class="cmti-10x-x-109">day plan</span>.
+<!--l. 3--><p class="noindent" >
+  <h5 class="subsubsectionHead"><a 
+ id="x15-580005.7.1"></a>Representation of a day plan (<span 
+class="cmtt-10x-x-109">DayPlan </span>class)</h5>
+<!--l. 5--><p class="noindent" >The <span 
+class="cmtt-10x-x-109">DayPlan </span>class is a container for events and tasks in the previously explained
+sense including functionality to operate on its content. Its core component is an
+algorithm to check whether any arbitrary event in the day plan is compliant with the
+assumption of &#8221;standing&#8221; at a fixed but arbitrary location at a fixed but arbitrary
+time<span class="footnote-mark"><a 
+href="kangaroo23.html#fn8x6"><sup class="textsuperscript">8</sup></a></span><a 
+ id="x15-58001f8"></a>.
+This compliance furthermore depends on the (estimated) existence of the possibility to use a
+given vehicle to reach the considered event in time.<br 
+class="newline" />
+<!--l. 7--><p class="indent" >  A compliance check actually tries to find a route starting from the given location to the
+location of the considered event and returns the time left between the specified time and the
+start time of the considered event substracted by the estimated time needed to travers the
+calculated route. Since location and time to start and the event to consider as a target event are
+free parameters, this algorithm can be used in many ways to be the basis of every
+use-case.<br 
+class="newline" />
+<!--l. 9--><p class="indent" >  In fact our application uses an derivate of the <span 
+class="cmtt-10x-x-109">DayPlan </span>class, the <span 
+class="cmtt-10x-x-109">ActiveDayPlan</span>
+class, which differ only in the source of tasks and events. While the <span 
+class="cmtt-10x-x-109">DayPlan </span>class
+contains both itself, the <span 
+class="cmtt-10x-x-109">ActiveDayPlan </span>will actually access an external calendar via an
+<span 
+class="cmtt-10x-x-109">CalendarAccessAdapter</span>.
+<!--l. 11--><p class="noindent" >
+
+  <h5 class="subsubsectionHead"><a 
+ id="x15-590005.7.1"></a>Compliance with current position and time</h5>
+<!--l. 13--><p class="noindent" >One question our application is expected to give answer to is <span 
+class="cmti-10x-x-109">&#8221;How much time is left until I have</span>
+<span 
+class="cmti-10x-x-109">to get going towards my next event to be there in time?&#8221;</span>.<br 
+class="newline" />
+<!--l. 15--><p class="indent" >  The answer is given by passing the current location (probably the last known GPS location)
+and the current time to the appropriate method of a <span 
+class="cmtt-10x-x-109">DayPlan </span>instance. By definition, the result
+is the answer to the question, with a negative value indicating an incompliance between the
+current position and the next event. Thus it can probably not be reached in time. Figure <a 
+href="#x15-5900116">5.16<!--tex4ht:ref: fig:compliance_check --></a>
+gives a simplified graphical representation.
+<!--l. 17--><p class="indent" >  <hr class="figure"><div class="figure" 
+>
+
+<a 
+ id="x15-5900116"></a>
+
+
+<!--l. 19--><p class="noindent" ><img 
+src="pics/compliance_check_lack.png" alt="PIC"  
+>
+<br /> <div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id">Figure&#x00A0;5.16: </td><td  
+class="content">A conflict revealed by a compliance check: The current position (marked
+with a stickman) is incompatible with the next event (&#8221;meeting 1&#8221;) since the time needed
+to get there exceeds the time left. Space is reduced to one dimension for simplicity.</td></tr></table></div><!--tex4ht:label?: x15-5900116 -->
+
+<!--l. 22--><p class="indent" >  </div><hr class="endfigure">
+  <h5 class="subsubsectionHead"><a 
+ id="x15-600005.7.1"></a>Consistency check</h5>
+<!--l. 26--><p class="noindent" >As a day plan probably contains more than one event, it bears potential for
+inconsistencies in the sense that at least one event cannot be reached in
+time<span class="footnote-mark"><a 
+href="kangaroo24.html#fn9x6"><sup class="textsuperscript">9</sup></a></span><a 
+ id="x15-60001f9"></a>
+assuming one adheres to the previous event as fixed in the day plan. The user probably longs
+to be informed about such inconsistencies. Figure <a 
+href="#x15-6000217">5.17<!--tex4ht:ref: fig:consistency_check --></a> gives a simplified graphical
+representation.<br 
+class="newline" />
+<!--l. 28--><p class="indent" >  A consistency check of a day plan is performed by iteratively checking compliance
+between one event and its preceeding event and returning a list of conflicts. A conflict
+can either simply be an incompliance between two subsequent events or any other
+conflict, including an incapability of finding a route or a temporal overlap between two
+events.
+<!--l. 30--><p class="indent" >  <hr class="figure"><div class="figure" 
+>
+
+<a 
+ id="x15-6000217"></a>
+
+
+<!--l. 32--><p class="noindent" ><img 
+src="pics/consistency_check.png" alt="PIC"  
+>
+<br /> <div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id">Figure&#x00A0;5.17: </td><td  
+class="content">A conflict revealed by a consistency check: The events &#8221;meeting 2&#8221; and
+&#8221;meeting 3&#8221; are incompatible in the sense that the time needed to from &#8221;meeting 2&#8221; to
+&#8221;meeting 3&#8221; exceeds the time left. Space is reduced to one dimension for simplicity.</td></tr></table></div><!--tex4ht:label?: x15-6000217 -->
+
+<!--l. 35--><p class="indent" >  </div><hr class="endfigure">
+  <h4 class="subsectionHead"><span class="titlemark">5.7.2</span>&#x00A0;&#x00A0;<a 
+ id="x15-610005.7.2"></a>Optimization of a day plan</h4>
+<!--l. 1--><p class="noindent" >Tasks may in principle be considered as events with several parameters, including location and
+start times, not being fixed. The optimization process of a day plan is defined to try
+to fix the parameters of the given variable tasks in a desirable way maintaining the
+day plan&#8217;s consistency. A task with successfully fixed parameters becomes an event
+and is thus deleted from the task list and the corresponding event is added to the
+event list. The task is said to be <span 
+class="cmti-10x-x-109">fixed as an event </span>or <span 
+class="cmti-10x-x-109">executed </span>within the scope the
+event.<br 
+class="newline" />
+<!--l. 3--><p class="indent" >  A task not only has variable parameters to fix but can also have a set of constraints of different
+types. Task constraints are represented by classes implementing the <span 
+class="cmtt-10x-x-109">TaskConstraintInterface</span>.
+Possible constraints may apply to the date, the day time, the location or several other
+parameters (see table <a 
+href="#x15-610011">5.1<!--tex4ht:ref: tab:dayplan_optimization_constraints --></a> for a complete list task constraints) of the task. The parameters of a
+task to be fixed as an event have to obey every constraint in the task&#8217;s constraint
+set.<br 
+class="newline" />
+<!--l. 5--><p class="indent" >  The <span 
+class="cmtt-10x-x-109">DayPlan </span>class does not perform the optimization itself but allows to set an optimizer that
+will be used when an optimization process is triggered. An actual optimizer is an
+implementation of the <span 
+class="cmtt-10x-x-109">DayPlanOptimizer </span>interface.<br 
+class="newline" />
+
+<!--l. 7--><p class="indent" >  <a 
+ id="x15-610011"></a><hr class="float"><div class="float" 
+>
+
+<div class="tabular"> <table id="TBL-6" class="tabular" 
+cellspacing="0" cellpadding="0" rules="groups" 
+><colgroup id="TBL-6-1g"><col 
+id="TBL-6-1"></colgroup><colgroup id="TBL-6-2g"><col 
+id="TBL-6-2"></colgroup><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-6-1-"><td  style="white-space:wrap; text-align:left;" id="TBL-6-1-1"  
+class="td11"><!--l. 11--><p class="noindent" >name                            </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-1-2"  
+class="td11"><!--l. 11--><p class="noindent" >description                                                    </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-6-2-"><td  style="white-space:wrap; text-align:left;" id="TBL-6-2-1"  
+class="td11"><!--l. 13--><p class="noindent" ><span 
+class="cmtt-10x-x-109">TaskConstraintDate</span>     </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-2-2"  
+class="td11"><!--l. 13--><p class="noindent" >specifies an end and/or a start date                   </td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-6-3-"><td  style="white-space:wrap; text-align:left;" id="TBL-6-3-1"  
+class="td11"><!--l. 14--><p class="noindent" ><span 
+class="cmtt-10x-x-109">TaskConstraintDayTime</span>  </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-3-2"  
+class="td11"><!--l. 14--><p class="noindent" >specifies an end and/or a start day time              </td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-6-4-"><td  style="white-space:wrap; text-align:left;" id="TBL-6-4-1"  
+class="td11"><!--l. 15--><p class="noindent" ><span 
+class="cmtt-10x-x-109">TaskConstraintDuration</span> </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-4-2"  
+class="td11"><!--l. 15--><p class="noindent" >specifies the time needed to execute the task        </td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-6-5-"><td  style="white-space:wrap; text-align:left;" id="TBL-6-5-1"  
+class="td11"><!--l. 16--><p class="noindent" ><span 
+class="cmtt-10x-x-109">TaskConstraintLocation</span> </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-5-2"  
+class="td11"><!--l. 16--><p class="noindent" >specifies a location the task has to be executed at </td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-6-6-"><td  style="white-space:wrap; text-align:left;" id="TBL-6-6-1"  
+class="td11"><!--l. 17--><p class="noindent" ><span 
+class="cmtt-10x-x-109">TaskConstraintPOI</span>      </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-6-2"  
+class="td11"><!--l. 17--><p class="noindent" >specifies a type of a Point Of Interest the task needs
+to be executed                                               </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-6-7-"><td  style="white-space:wrap; text-align:left;" id="TBL-6-7-1"  
+class="td11">                       </td></tr></table></div>
+<br /> <div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id">Table&#x00A0;5.1: </td><td  
+class="content">List of currently implemented task constraints</td></tr></table></div><!--tex4ht:label?: x15-610011 -->
+
+  </div><hr class="endfloat" />
+  <h5 class="subsubsectionHead"><a 
+ id="x15-620005.7.2"></a>Approaches to optimization</h5>
+<!--l. 26--><p class="noindent" >&#8221;Optimization&#8221; implies the need for a measure of some kind of quality. Optimization then is the
+process of finding the solution of highest quality. The most desirable way of optimizing a day
+plan is to input a day plan (consisting of events and tasks) and a measure of quality (metric)
+into a black box algorithm returning the best day plan possible maintaining day plan
+consistency. Since this is probably one of the most challanging problems in computer science, we
+are forced to make strong simplifications and accept the fact that the solution is likely to be not
+the optimal one.<br 
+class="newline" />
+<!--l. 28--><p class="indent" >  Our basic approach to this problem is to use a greedy algorithm recursively trying to fix tasks
+between the events of a day plan, implemented in the class <span 
+class="cmtt-10x-x-109">GreedyTaskInsertionOptimizer</span>.
+The optimization is started specifying a location, a time and a vehicle where the location and
+the time are used as a basis (intent of it to become clear in the next clause). The algorithm
+iterates over the list of tasks in the order given by a <span 
+class="cmtt-10x-x-109">TaskPriorityComparator</span>. For every task,
+it consecutively checks compatibility between the constraints associated with the task and the
+parameters it is potentially fixed with. These potential parameters are determined based on the
+basis location, time and the task&#8217;s constraints.<br 
+class="newline" />
+<!--l. 30--><p class="indent" >  Given one task within the iteration over all tasks, parameters are tried to be fixed by
+processing the folling sequence:
+<!--l. 33--><p class="indent" >
+     <dl class="enumerate"><dt class="enumerate">
+   1. </dt><dd 
+class="enumerate">check wether the task&#8217;s duration<span class="footnote-mark"><a 
+href="kangaroo25.html#fn10x6"><sup class="textsuperscript">10</sup></a></span><a 
+ id="x15-62002f10"></a>
+     is less than the time left until the next event starts.
+     </dd><dt class="enumerate">
+   2. </dt><dd 
+class="enumerate">If so, check whether the time given as a basis is compatible with the task&#8217;s date and
+     day time constraints. In other words, check whether a task can be executed at this
+     point of time.
+     </dd><dt class="enumerate">
+   3. </dt><dd 
+class="enumerate">If so, find a location where the task can be executed. In dependence of its constraints,
+     this may either be completely undefinite, or any Point Of Interest of a definite type
+     or even a definite location. Select the location that is compatible with the task&#8217;s
+     constraints and that minimizes the sum of the linear distances from it to the basis
+     location and the location of the next event<span class="footnote-mark"><a 
+href="kangaroo26.html#fn11x6"><sup class="textsuperscript">11</sup></a></span><a 
+ id="x15-62005f11"></a>.
+     Find a route from the basis location to the potential task execution location and a
+     route from there to the next event&#8217;s location. Check whether both routes exists and
+     whether the time needed to travel both routes plus the duration of the task is less
+     than the time left until the next event starts.
+
+     </dd><dt class="enumerate">
+   4. </dt><dd 
+class="enumerate">If so, fix the task.
+     </dd></dl>
+<!--l. 41--><p class="indent" >  The first task that is fixed as an event forces the optimization process to restart recursively
+with the recently fixed end time and location of the task as its new basis.<br 
+class="newline" />
+<!--l. 43--><p class="indent" >  Note: Since the task&#8217;s date and day time constraints are only required to be compatible with
+the basis time, the task is neither guaranteed to be compatible with its actual start time nor
+with its duration.
+<!--l. 45--><p class="noindent" >
+  <h5 class="subsubsectionHead"><a 
+ id="x15-630005.7.2"></a>Implementations of a <span 
+class="cmtt-10x-x-109">TaskPriorityComparator</span></h5>
+<!--l. 47--><p class="noindent" >Although the greedy algorithm stays the same, the way to influence the optimization process is
+to modify the implementation of the <span 
+class="cmtt-10x-x-109">TaskPriorityComparator </span>which is therefore designed as
+an interface. By prefering one task to another one in this context, one can in principle force the
+algorithm to aim for different optimization goals.<br 
+class="newline" />
+<!--l. 49--><p class="indent" >  Two implementations of a <span 
+class="cmtt-10x-x-109">TaskPriorityComparator </span>already exist:
+     <ul class="itemize1">
+     <li class="itemize"><span 
+class="cmtt-10x-x-109">SimpleTaskPriorityComparator</span>
+     <!--l. 55--><p class="noindent" >The  <span 
+class="cmtt-10x-x-109">SimpleTaskPriorityComparator </span>prefers  tasks  with  more  date  or  day  time
+     constraints. Only the number of constraints is considered, details of the constraints
+     are disregarded. The idea is to fix demanding tasks prior to others.
+     </li>
+     <li class="itemize"><span 
+class="cmtt-10x-x-109">UrgencyTaskPriorityComparator</span>
+     <!--l. 59--><p class="noindent" >The <span 
+class="cmtt-10x-x-109">UrgencyTaskPriorityComparator </span>prefers tasks of high urgency. High urgency
+     is considered to be given by an early execution end date and/or time in turn given
+     by the task&#8217;s constraints. The idea is to fix as many tasks as possible.
+     </li></ul>
+<!--l. 63--><p class="indent" >  Other implementations may for example prefer tasks close to the current position to reduce
+the total distance that has to be traveled.
+<!--l. 161--><p class="noindent" >
+  <h3 class="sectionHead"><span class="titlemark">5.8</span>&#x00A0;&#x00A0;<a 
+ id="x15-640005.8"></a>Persistent Storage</h3>
+<!--l. 1--><p class="noindent" >For persistent database storage, the Android API contains support for SQLite databases.
+Any application can create an SQLite object, which is stored on the device under
+&#8220;/data/data/package_name/databases&#8221;<br 
+class="newline" /><br 
+class="newline" />Unfortunately, up to Android version 2.1, the installed support for SQLite is 3.5.9. This means
+that it is not possible to benefit from the support for <span 
+class="cmmi-10x-x-109">R</span><sup><span 
+class="cmsy-8">*</span></sup>-Trees, which was included in SQLite
+
+3.6. This would have meant a very comfortable way of storing location data and retrieving
+positions in vicinity of a given point.<br 
+class="newline" /><br 
+class="newline" />For simple data Android OS also provides an easier means of data storage:<br 
+class="newline" />A configuration-store can hold key-value pairs. Each application can only read and write its own
+stores, also it can have an arbitrary number of them.
+
+  <div class="verbatim" id="verbatim-4">
+prefsPrivate&#x00A0;=&#x00A0;getSharedPreferences(preferencesName,&#x00A0;MODE_PRIVATE);
+&#x00A0;<br />variable&#x00A0;=&#x00A0;prefsPrivate.getInt("variable&#x00A0;name",&#x00A0;defaultValue);
+&#x00A0;<br />
+&#x00A0;<br />Editor&#x00A0;prefsPrivateEditor&#x00A0;=&#x00A0;prefsPrivate.edit();
+&#x00A0;<br />prefsPrivateEditor.putInt("variable&#x00A0;name",&#x00A0;variable);
+&#x00A0;<br />prefsPrivateEditor.commit();
+</div>
+<!--l. 21--><p class="nopar" >
+
+  <!--l. 166--><div class="crosslinks"><p class="noindent">[<a 
+href="kangarooch4.html" >prev</a>] [<a 
+href="kangarooch4.html#tailkangarooch4.html" >prev-tail</a>] [<a 
+href="kangarooch5.html" >front</a>] [<a 
+href="kangaroo.html# " >up</a>] </p></div>
+<!--l. 166--><p class="indent" >  <a 
+ id="tailkangarooch5.html"></a>   
+</body></html> 

@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  
+  "http://www.w3.org/TR/html4/loose.dtd">  
+<html > 
+<head><title>6 Conclusion and future Work</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"> 
+<meta name="generator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
+<meta name="originator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
+<!-- html,info,2 --> 
+<meta name="src" content="kangaroo.tex"> 
+<meta name="date" content="2010-04-28 16:13:00"> 
+<link rel="stylesheet" type="text/css" href="kangaroo.css"> 
+</head><body 
+>
+  <!--l. 166--><div class="crosslinks"><p class="noindent">[<a 
+href="kangarooch5.html" >prev</a>] [<a 
+href="kangarooch5.html#tailkangarooch5.html" >prev-tail</a>] [<a 
+href="#tailkangarooch6.html">tail</a>] [<a 
+href="kangaroo.html# " >up</a>] </p></div>
+  <h2 class="chapterHead"><span class="titlemark">6</span>&#x00A0;&#x00A0;<a 
+ id="x27-650006"></a>Conclusion and future Work</h2>
+  <div class="sectionTOCS">6.1&#x00A0;<a 
+href="#x27-660006.1">Accomplishments</a><br 
+class="newline" />6.2&#x00A0;<a 
+href="#x27-740006.2">What to do differently</a><br 
+class="newline" />6.3&#x00A0;<a 
+href="#x27-780006.3">Future work</a><br 
+class="newline" />
+  </div>
+  <h3 class="sectionHead"><span class="titlemark">6.1</span>&#x00A0;&#x00A0;<a 
+ id="x27-660006.1"></a>Accomplishments</h3>
+<!--l. 3--><p class="noindent" >
+  <h5 class="subsubsectionHead"><a 
+ id="x27-670006.1"></a>Application for optimized dayplans</h5>
+<!--l. 5--><p class="noindent" >Several goals were accomplished while working on this teamproject. First of all an application
+was created which supports a users day planning with the following implemented
+functionalities:
+     <ul class="itemize1">
+     <li class="itemize">Generate a dayplan, which is heavily optimized on completing as many tasks as
+     possible
+     </li>
+     <li class="itemize">Simple, yet powerful task management system
+     </li>
+     <li class="itemize">Enter location data for any event in the calendar
+     </li>
+     <li class="itemize">Full integration with Android calendar infrastructure
+     </li>
+     <li class="itemize">Routing between events supporting a variety of time and space constraints
+     </li>
+     <li class="itemize">Continous checking of the dayplan&#8217;s consistency and compliance
+     </li>
+     <li class="itemize">Notification of the user for every event and deadline according to the dayplan</li></ul>
+<!--l. 22--><p class="noindent" >
+  <h5 class="subsubsectionHead"><a 
+ id="x27-680006.1"></a>Easily reusable Open Source packages</h5>
+<!--l. 24--><p class="noindent" >Additionally to the functionality, many parts of the application&#8217;s structure can be easily reused
+in other projects.
+
+<!--l. 27--><p class="noindent" ><span class="paragraphHead"><a 
+ id="x27-690006.1"></a><span 
+class="cmbx-10x-x-109">Calendar Library</span></span> The calendar library provides an easy interface to query calendar data from
+the Android platform. The queried data is then easily accessible via Java objects and can be
+used in any Java application for Android. It can even be adapted to other platforms with very
+small amount of adaptions to the library.
+<!--l. 33--><p class="noindent" ><span class="paragraphHead"><a 
+ id="x27-700006.1"></a><span 
+class="cmbx-10x-x-109">Routing Engine</span></span> The routing engine underlying the kangaroo application is a fully
+self-contained java package. It can be easily reused for routing purposes in any Java application
+which needs to access Open Streetmap data.
+<!--l. 38--><p class="noindent" ><span class="paragraphHead"><a 
+ id="x27-710006.1"></a><span 
+class="cmbx-10x-x-109">Task Manager</span></span> The task management functionality of kangaroo is also strongly encapsulated
+and can therefore be reused easily in any Java project. The storage mechanism of converting
+tasks into events and storing them at a specific date can also be adapted easily to an SQLite
+database or any other preferred storage solution
+<!--l. 44--><p class="noindent" ><span class="paragraphHead"><a 
+ id="x27-720006.1"></a><span 
+class="cmbx-10x-x-109">Dayplan</span></span> The Dayplan class as the centre of the whole application is also only loosely coupled
+with the rest of the application. This means as it is also a pure Java package, it can be reused
+easily and any other routing engine, calendar library, task manager and user interface can be
+simply connected to the dayplan. Thus providing the kangaroo functionality in a whole different
+environment and not only on the android platform.
+<!--l. 52--><p class="noindent" >
+  <h5 class="subsubsectionHead"><a 
+ id="x27-730006.1"></a>Personal Experience</h5>
+<!--l. 54--><p class="noindent" >Last but not least, a whole lot of knowledge was gained during the development of kangaroo. At
+the beginning none of the developers was familiar with developing applications for the Android
+platform. During the last months however a huge knowledge was accumulated, including
+structure, optimization and architecture of simple up to advanced applications for one of the big
+rising mobile platforms.
+<!--l. 63--><p class="noindent" >
+  <h3 class="sectionHead"><span class="titlemark">6.2</span>&#x00A0;&#x00A0;<a 
+ id="x27-740006.2"></a>What to do differently</h3>
+<!--l. 65--><p class="noindent" >
+  <h5 class="subsubsectionHead"><a 
+ id="x27-750006.2"></a>Milestones</h5>
+<!--l. 67--><p class="noindent" >An important project management method we only utilized scarcely is setting milestones. We
+defined some milestones for the most important parts of the projects. However these were too
+few. The more precise definition of milestones would have allowed us to wage the remaining and
+passed time in the project in a more efficient manner and to assign tasks better. Therefore a
+better process of creating and assigning milestones is one of the important things to do
+differently next time.
+
+<!--l. 76--><p class="noindent" >
+  <h5 class="subsubsectionHead"><a 
+ id="x27-760006.2"></a>Unit tests</h5>
+<!--l. 78--><p class="noindent" >Early in the development process we decided to not do unit tests. At the time there were
+several reasons for that. As the routing engine and the calendar integration were the
+first things to be developed, they were crucial in the decision process. Unit testing
+on the Android platform seemed rather complicated, especially for code using the
+content provider backend. In a discussion with our advisor, we decided that it would be
+too time consuming, considering how much time already had passed for specification
+and platform choosing. Therefore we decided to concentrate the time left on actual
+development.
+<!--l. 89--><p class="indent" >  However, we had several situation in the development process, where unit testing would have
+been useful. Many problems only became apparent when certain elements were integrated
+together. Unit tests could have revealed these much earlier. Especially as we developed on our
+own much more often than anticipated. This accounted for more problems whilst integrating,
+which could also have been minimized by unit testing.
+<!--l. 99--><p class="noindent" >
+  <h5 class="subsubsectionHead"><a 
+ id="x27-770006.2"></a>Bug tracker</h5>
+<!--l. 101--><p class="noindent" >Although a bug tracker is provided by github, we didn&#8217;t use it until the very end of the project.
+In retrospect it would have been better to utilize the bug tracker right from the start. This
+would have forced us to look deeper into bugs and better document them, if similar bugs
+appeared later.
+<!--l. 107--><p class="indent" >  Especially in combination with unit tests the bug tracker could have improved the
+development process significantly. A good approach, for example, would have been, to create a
+unit test for every occurring bug. This means that there is an immediate way to test if the bug
+was fixed and that it would not be introduced again later.
+<!--l. 115--><p class="noindent" >
+  <h3 class="sectionHead"><span class="titlemark">6.3</span>&#x00A0;&#x00A0;<a 
+ id="x27-780006.3"></a>Future work</h3>
+<!--l. 116--><p class="noindent" >As future projects, one can imagine many fields, not only directly concerning the kangaroo
+application. Of course, some minor adjustments have to be done to kangaroo, if it should be
+ready to be deployed via the Android market. The UI could be polished a bit to match the
+design of modern mobile applications. Additionally some system parts can be improved, mainly
+in the area of routing performance, to guarantee a smother and faster experience for the end
+user.
+<!--l. 123--><p class="indent" >  Nevertheless one of the big strengths of the kangaroo project are definitely the amount of
+easily, reusable Java packages. As the whole code is open sourced, all parts can be used to build
+other routing related applications. But also integrate with calendar data, build an improved task
+management application or port the Dayplan optimizing functionality to another routing engine
+like Google Maps for example.
+
+  <!--l. 173--><div class="crosslinks"><p class="noindent">[<a 
+href="kangarooch5.html" >prev</a>] [<a 
+href="kangarooch5.html#tailkangarooch5.html" >prev-tail</a>] [<a 
+href="kangarooch6.html" >front</a>] [<a 
+href="kangaroo.html# " >up</a>] </p></div>
+<!--l. 173--><p class="indent" >  <a 
+ id="tailkangarooch6.html"></a>   
+</body></html> 

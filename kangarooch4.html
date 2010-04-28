@@ -1,0 +1,566 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  
+  "http://www.w3.org/TR/html4/loose.dtd">  
+<html > 
+<head><title>4 Technology evaluation</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"> 
+<meta name="generator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
+<meta name="originator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
+<!-- html,info,2 --> 
+<meta name="src" content="kangaroo.tex"> 
+<meta name="date" content="2010-04-28 16:13:00"> 
+<link rel="stylesheet" type="text/css" href="kangaroo.css"> 
+</head><body 
+>
+  <!--l. 63--><div class="crosslinks"><p class="noindent">[<a 
+href="kangarooch3.html" >prev</a>] [<a 
+href="kangarooch3.html#tailkangarooch3.html" >prev-tail</a>] [<a 
+href="#tailkangarooch4.html">tail</a>] [<a 
+href="kangaroo.html#kangarooch4.html" >up</a>] </p></div>
+  <h2 class="chapterHead"><span class="titlemark">4</span>&#x00A0;&#x00A0;<a 
+ id="x6-110004"></a>Technology evaluation</h2>
+  <div class="sectionTOCS">4.1&#x00A0;<a 
+href="#x6-120004.1">Platform Choice</a><br 
+class="newline" />4.1.1&#x00A0;<a 
+href="#x6-130004.1.1">Introduction</a><br 
+class="newline" />4.1.2&#x00A0;<a 
+href="#x6-140004.1.2">iPhone OS</a><br 
+class="newline" />4.1.3&#x00A0;<a 
+href="#x6-150004.1.3">Android</a><br 
+class="newline" />4.1.4&#x00A0;<a 
+href="#x6-160004.1.4">Windows Mobile</a><br 
+class="newline" />4.1.5&#x00A0;<a 
+href="#x6-170004.1.5">Other OS</a><br 
+class="newline" />4.2&#x00A0;<a 
+href="#x6-180004.2">Routing</a><br 
+class="newline" />4.2.1&#x00A0;<a 
+href="#x6-190004.2.1">Routing data</a><br 
+class="newline" />4.2.2&#x00A0;<a 
+href="#x6-220004.2.2">Routing engines</a><br 
+class="newline" />4.2.3&#x00A0;<a 
+href="#x6-250004.2.3">Traveling Salesman</a><br 
+class="newline" />
+  </div>
+  <h3 class="sectionHead"><span class="titlemark">4.1</span>&#x00A0;&#x00A0;<a 
+ id="x6-120004.1"></a>Platform Choice</h3>
+<!--l. 69--><p class="noindent" >
+  <h4 class="subsectionHead"><span class="titlemark">4.1.1</span>&#x00A0;&#x00A0;<a 
+ id="x6-130004.1.1"></a>Introduction</h4>
+<!--l. 1--><p class="noindent" >The usage of a mobile device is implied by the nature of the planed software project. Also the
+wide availability of smart phones that come with all the hardware components we need makes it
+obvious that mobile phones are clearly the platform of choice. At the moment (Jan.
+2010) there are three dominant operating systems for mobile phones that have to
+be considered for the present use case: Windows Mobile, iPhoneOS and Android.
+These platforms have to be evaluated in order to choose the one best suitable for our
+purpose.
+<!--l. 73--><p class="noindent" >
+  <h4 class="subsectionHead"><span class="titlemark">4.1.2</span>&#x00A0;&#x00A0;<a 
+ id="x6-140004.1.2"></a>iPhone OS</h4>
+<!--l. 1--><p class="noindent" >The iPhone is a very interesting device for mobile applications, since it has a very modern and
+intuitive interface. However due to some limitations in the iPhone OS, it is not suitable for
+mobile task routing and planning.
+<!--l. 6--><p class="indent" >  The main limitation of the iPhone OS is the fact that it does not allow applications to run
+in the background. This was a design decision to increase battery life. This is a big
+problem, since the main functionalities of the application rely on the fact that it is
+always running. For example, if the application isn&#8217;t running all the time, it is not
+possible to warn the user about several situations in which he needs to act to fulfill his
+schedule.
+<!--l. 14--><p class="indent" >  In the iPhone OS there are two solutions possible to circumvent this limitation. The first one
+would be to have the application running all the time, which is both impracticle and would
+mean that nothing else can be done with the device during that. The second solution, which was
+integrated in the newest major release of the iPhone OS, is a notification system, which makes it
+possible to push messages, notification sounds and application badges onto the device. This
+however would mean, that the routing engine needs to be implemented on a server or other
+
+external device. Then we could get position updates from the iPhone, calculate if there
+was anything to be done and notify the user accordingly. However such a scenario
+would impose more threats and problems on personal privacy and is therefore not
+wanted. Additionally it is not completely sure, that the position data of the device,
+used for the &#8220;Find my iPhone&#8221; functionality, for example, is publicly available for
+developers.
+<!--l. 30--><p class="indent" >  That is why the iPhone is not suitable as a platform.
+<!--l. 77--><p class="noindent" >
+  <h4 class="subsectionHead"><span class="titlemark">4.1.3</span>&#x00A0;&#x00A0;<a 
+ id="x6-150004.1.3"></a>Android</h4>
+<!--l. 1--><p class="noindent" >Android OS is a operation system for smartphones developed by Google. It is based on the
+Linux kernel, subsequently most of the source code is available. The google specific parts of the
+OS are only loosely coupled to the core OS. Usage of these components is not mandatory and
+can be avoided quite easily. Android was chosen as the most suitable platform for this project
+for different reasons.
+     <ul class="itemize1">
+     <li class="itemize">The  Android  Software  architecture  is  versatile  and  open  enough  to  allow  an
+     implementation of all the functionality needed for Kangaroo without any changes
+     to the OS itself. Most significantly, no root-access to the OS is necessary to enable
+     background tasks or file-system access. This means the Kangaroo application can
+     be distributed via the available Android market pace, without requiring any further
+     special installation or configuration.
+     </li>
+     <li class="itemize">Software for Android can be developed in Java. Two of the developers in this project
+     were already familiar with that language and powerful development and refactoring
+     tools are readily available for it. This reduces the development time in the initial
+     project phase compared to Objective-C or the .NET-Framework.
+     </li>
+     <li class="itemize">There is a big momentum in the development community. While in absolute numbers
+     the number of application available is much smaller than for example the number of
+     applications for the iPhone, the relative increase in application count is way higher.
+     (Q1 2010)
+     </li>
+     <li class="itemize">There is a big number of rather inexpensive devices from several vendors available
+     with Android OS. Almost every mayor manufacturer in the smartphone market is
+     producing Android devices. This situation and the highly paced OS development
+     by  google  lead  to  the  assumption,  that  Android  will  increase  its  market  share
+     significantly in the next months and years.</li></ul>
+<!--l. 81--><p class="noindent" >
+  <h4 class="subsectionHead"><span class="titlemark">4.1.4</span>&#x00A0;&#x00A0;<a 
+ id="x6-160004.1.4"></a>Windows Mobile</h4>
+
+<!--l. 1--><p class="noindent" >Although Windows mobile is widely used in current smart-phones, it is not the right choice for
+this project. For an application like Kangaroo to be accepted by potential users, it has to be
+easy and fun to use. With the rather clunky UI of Windows mobile (prior to version 7) a big
+number of custom UI elements would have been necessary to create an easily usable and &#8221;cool&#8221;
+application. The fact that none of the developers has any recent .NET experience further
+increases the expected time of development. Furthermore the market-share of Windows mobile is
+constantly shrinking, and at the time of the decision (January 2010) it remains to be seen how it
+can compete.
+<!--l. 85--><p class="noindent" >
+  <h4 class="subsectionHead"><span class="titlemark">4.1.5</span>&#x00A0;&#x00A0;<a 
+ id="x6-170004.1.5"></a>Other OS</h4>
+<!--l. 1--><p class="noindent" >There are a number of other mobile operating systems, which were not investigated further as a
+development platform, namely WebOS, Blackberry OS, SymbianOS and Maemo. The Main
+reasons for this are:
+     <ul class="itemize1">
+     <li class="itemize">A small significance for the mobile market
+     </li>
+     <li class="itemize">A complicated or not yet matured development process
+     </li>
+     <li class="itemize">UI- or system- limitations that prevent a proper implementation of Kangaroo</li></ul>
+<!--l. 90--><p class="noindent" >
+  <h3 class="sectionHead"><span class="titlemark">4.2</span>&#x00A0;&#x00A0;<a 
+ id="x6-180004.2"></a>Routing</h3>
+<!--l. 1--><p class="noindent" >One essential feature of our application is its capability to not only consider calendar items for
+itself but to put them in their geographical context. The geographical context in the scope of
+this project is defined in a way so that questions like &#8221;Where am I?&#8221;, &#8221;Where is the next
+bakery?&#8221;, &#8221;How can I get there?&#8221; bear a meaning.<br 
+class="newline" />
+<!--l. 3--><p class="indent" >  This definition implies the need for a set of data including Points Of Interest (&#8221;Where is the
+next bakery?&#8221;) and a representation of local traffic facilities (&#8221;How can I get there?&#8221;) to account
+for and an engine to operate on this set of data. This set of data will be called <span 
+class="cmti-10x-x-109">routing data </span>from
+now on.
+<!--l. 5--><p class="noindent" >
+  <h4 class="subsectionHead"><span class="titlemark">4.2.1</span>&#x00A0;&#x00A0;<a 
+ id="x6-190004.2.1"></a>Routing data</h4>
+<!--l. 7--><p class="noindent" >From a very abstract and general perspective, this set of routing data can be divided into two
+categories, namely a dynamic and a static one. As static, in these terms, one should label all
+facilities which do not depend on any schedule and may in principle by used at any time (for
+example streets, highways, cash points). Dynamic facilities are the ones, that have a more or less
+fixed schedule constraining their usage (for example tramways, public bus service and
+
+shops).<br 
+class="newline" />
+<!--l. 9--><p class="indent" >  Note that Points Of Interest cannot be attributed to one of these two categories
+across-the-board. A cash point for example will probably be a static facility, since it
+can be used 24 hours a day (apart from little exceptions). A bakery in contrast will
+have business hours not covering 24 hours a day and thus will acutally be a dynamic
+facility.<br 
+class="newline" />
+<!--l. 11--><p class="indent" >  In this project we will only consider static facilities, since also accounting for dynamic ones
+requires routing algorithms that go far beyond standard algorithms resulting in a more complex
+application structure and a much more complex routing engine. Besides this aspect, it is a big
+issue to gather scheduling data about dynamic facilities as there would be a number of carriers
+with different interfaces to include. This also applies to Points Of Interest, but which
+will <span 
+class="cmti-10x-x-109">all </span>be treated as static facilities. However, the user might notably benefit from
+the abolishment of this restriction. It might be part of future work to include this
+feature.<br 
+class="newline" />
+<!--l. 13--><p class="indent" >  The following section will give some information about potential sources of static routing data
+and its properties. This section may be skipped if one is either not interested in details or even
+already familiar with it.
+<!--l. 15--><p class="noindent" >
+  <h5 class="subsubsectionHead"><a 
+ id="x6-200004.2.1"></a>Sources of static routing data</h5>
+<!--l. 17--><p class="noindent" >As potential sources of static routing data, one finds basically two options
+     <ul class="itemize1">
+     <li class="itemize"><span 
+class="cmbx-10x-x-109">Google Maps</span>
+     <!--l. 23--><p class="noindent" >Google Maps is an online navigation and routing service. Its map material has high
+     quality but in some areas lacks actuality. Its main drawback may anyway be found
+     in the absence of a free simple-to-use offline interface.
+     </li>
+     <li class="itemize"><span 
+class="cmbx-10x-x-109">Openstreetmap</span>
+     <!--l. 27--><p class="noindent" >Openstreetmap is a free and open database for a world wide map. Everyone is free
+     to add, change and remove map items. Consequently its map material varies over
+     a hugh scale in quality, density and actuality. It can be used online and offline
+     by downloading an Openstreetmap XML file of a rectangular map area. This file
+     contains every map item of this area.
+     </li></ul>
+<!--l. 31--><p class="indent" >  Besides the two options given above there are of course lots of other providers, but
+either not free of charge or not very popular. Consequently, Openstreetmap seems
+to be the one to choose for our project. The following will briefly outline its data
+scheme.
+
+<!--l. 33--><p class="noindent" >
+  <h5 class="subsubsectionHead"><a 
+ id="x6-210004.2.1"></a>Data scheme of Openstreetmap</h5>
+<!--l. 35--><p class="noindent" >Openstreetmap uses three main entities to map traffic facilities, Points Of Interest and
+geographical characteristics:
+     <ul class="itemize1">
+     <li class="itemize"><span 
+class="cmbx-10x-x-109">Nodes</span>
+     <!--l. 41--><p class="noindent" >Nodes are the fundamental elements setting up model points for direct use or as a
+     basis for superior map elements. A node imperatively has a unique ID and values
+     for latitude and longitude, but can have optional parameters provided as tags with
+     key-value-pairs. Adding tags to a node is the way to define, for example, Points Of
+     Interest (POI).
+     </li>
+     <li class="itemize"><span 
+class="cmbx-10x-x-109">Ways</span>
+     <!--l. 45--><p class="noindent" >Ways are made up of an ordered list of nodes which span the way in the given order.
+     Just like a node, a way must have a unique<span class="footnote-mark"><a 
+href="kangaroo7.html#fn1x5"><sup class="textsuperscript">1</sup></a></span><a 
+ id="x6-21001f1"></a>
+     ID and may have optional tags.<br 
+class="newline" />As a way can either be closed<span class="footnote-mark"><a 
+href="kangaroo8.html#fn2x5"><sup class="textsuperscript">2</sup></a></span><a 
+ id="x6-21002f2"></a>
+     or open and can have tags to specifiy parameters, it can be used to map streets,
+     highways, roundabouts, buildings or even administrative areas.
+     </li>
+     <li class="itemize"><span 
+class="cmbx-10x-x-109">Relations</span>
+     <!--l. 50--><p class="noindent" >Realtions provide a simple way to group other map elements. This feature will not
+     be used in our project.
+     </li></ul>
+<!--l. 94--><p class="noindent" >
+  <h4 class="subsectionHead"><span class="titlemark">4.2.2</span>&#x00A0;&#x00A0;<a 
+ id="x6-220004.2.2"></a>Routing engines</h4>
+<!--l. 1--><p class="noindent" >In our project&#8217;s scope, the routing engine is ought to be used and thus its output is required to
+give answer to the following two questions:
+<!--l. 4--><p class="indent" >
+     <dl class="enumerate"><dt class="enumerate">
+   1. </dt><dd 
+class="enumerate">Where,  looking  from  a  specfic  location,  is  (are)  the  next  Point(s)  Of  Interest
+     providing a specific type of service?
+     <!--l. 7--><p class="noindent" >Finding a statisfying answer to that question is in principle very easy. One has to
+     scan the local area around the given center for facilities that match the criteria and
+     give a list of the nearest ones.
+
+     </dd><dt class="enumerate">
+   2. </dt><dd 
+class="enumerate">How long does it (approximately) take to follow the shortest path between two
+     locations?
+     <!--l. 11--><p class="noindent" >To give a good answer to this question, one has not only to specify two locations as
+     starting point and destination of the route, but also a vehicle that will be used to
+     travel this route, since its choice might influence<span class="footnote-mark"><a 
+href="kangaroo9.html#fn3x5"><sup class="textsuperscript">3</sup></a></span><a 
+ id="x6-22003f3"></a>
+     the route. In addition to this, remember we are mainly interested in the <span 
+class="cmti-10x-x-109">time </span>needed
+     to travel the route, not its <span 
+class="cmti-10x-x-109">distance</span>. For this, in a first step we have to combine the
+     maximum speed of the vehicle with the distance of the route. As a secound step, one
+     should also consider local speed limitations, which effectively influence the vehicle&#8217;s
+     maximum speed on a certain part of the route.
+     </dd></dl>
+<!--l. 15--><p class="indent" >  Having defined the information we are aiming for when triggering an operation of the routing
+engine, the following gives a brief overview of already existing open source routing engines that
+may be used in our project:
+<!--l. 18--><p class="indent" >
+     <dl class="enumerate"><dt class="enumerate">
+   1. </dt><dd 
+class="enumerate"><span 
+class="cmbx-10x-x-109">Gosmore</span>
+     <!--l. 21--><p class="noindent" >Gosmore is a routing and navigation software for mobile devices. It consequently
+     also consists of a very efficient routing engine to operate on data coming originally
+     from Openstreetmap, but which is reorganized and compressed in a very smart way
+     in advance. For this, data is ordered in a way that tries to minimize the probablity of
+     a cache-miss and the number of comparisons needed when searching the local map
+     for special map elements. Gosmore is based on C/C++, very compact and makes
+     extensive use of pointers and indirect memory access. Documentation of its source
+     code is poor and thus it is not easy to comprehend and retrace its code.
+     </dd><dt class="enumerate">
+   2. </dt><dd 
+class="enumerate"><span 
+class="cmbx-10x-x-109">OSMAndroid</span>
+     <!--l. 26--><p class="noindent" >OSMAndroid is a map viewer and routing engine for Android using precompiled
+     Openstreetmap data. It uses a special OSMAndroidConverter to parse the bulky
+     Openstreetmap XML file and to compress it to an extremely small proprietary data
+     structure, maintaining only map elements needed for routing. Its very slight data
+     model results in little and fast data access operations and very efficient routing
+     operations. OSMAndroid&#8217;s source code has rare comments and follows a sometimes
+     confusing design pattern, but is because of its compactness understandable with not
+     to much effort.
+     </dd><dt class="enumerate">
+   3. </dt><dd 
+class="enumerate"><span 
+class="cmbx-10x-x-109">Traveling Salesman (TSM)</span>
+     <!--l. 31--><p class="noindent" >Traveling Salesman is a Java based open source navigation and routing framework
+
+     using Openstreetmap data as its input<span class="footnote-mark"><a 
+href="kangaroo10.html#fn4x5"><sup class="textsuperscript">4</sup></a></span><a 
+ id="x6-22007f4"></a>.
+     It has a consistent modular architecture and allows to assemble a specific navigation
+     software nearly &#8221;just-as-you-like&#8221;. Traveling Salesman comes with ready-to-use implementations
+     for every module. These modules are by default designed to keep every map element
+     and not to filter irrelevant<span class="footnote-mark"><a 
+href="kangaroo11.html#fn5x5"><sup class="textsuperscript">5</sup></a></span><a 
+ id="x6-22008f5"></a>
+     ones. This results in a maximum generality at the cost of performance and memory
+     space.<br 
+class="newline" />
+     <!--l. 33--><p class="noindent" >One thing to note is that Traveling Salesman is up to now still in beta stage.
+     </dd></dl>
+<!--l. 37--><p class="indent" >  Since the target platform is a mobile one and resources will be limited, handling of available
+device resources is a crucial issue in the decision for a routing engine. Nevertheless it is not the
+only thing to think of in this context. In addition to the output requirements mentioned at the
+beginning of this chapter, there are other issues to account for. Some of them are for example
+the portability to our target platform and the flexibility for future adaptions and
+extensions.<br 
+class="newline" />
+<!--l. 39--><p class="indent" >  When trying to assign priorities to these aspects just mentioned before, one will be faced
+with the question whether to aim for a maximum of flexibility or for a maximum of
+performance, since these two features are contradictory in many ways. Traveling Salesman is
+situated near the end of the scale where focus is set on a maximum of flexibility,
+while Gosmore and OSMAndroid can be found near the other end. Balancing these
+priorities was dynamically done during technology evaluation and therefore the next
+chapter (chapter <a 
+href="#x6-250004.2.3">4.2.3<!--tex4ht:ref: sub:routing_tsm --></a>) will give considerations and results on this aspect in greater
+detail.<br 
+class="newline" />
+<!--l. 41--><p class="indent" >  Anyhow, as an integral part of the abstraction of the application&#8217;s structure, the routing
+interface is designed in a way, that makes it independent of the decision for any routing engine,
+even if its design was influenced by it. This means, that although a final decision had to be made
+within the scope of our project, there is still the chance to choose another engine as part of
+future work.
+<!--l. 43--><p class="noindent" >
+  <h5 class="subsubsectionHead"><a 
+ id="x6-230004.2.2"></a>Evaluation of routing engines</h5>
+<!--l. 45--><p class="noindent" >This section will give an overview of the general technology evaluation process aiming at the
+decision for a routing engine to be used in our project.<br 
+class="newline" />
+<!--l. 47--><p class="indent" >  Before focusing on a single routing engine, we analyzed the given options of routing engines
+with respect to our definitions. Unfortunately when doing the technology evaluation, we did not
+
+know about the OSMAndroid routing engine and thus had no chance to consider
+it in the decision for a routing engine. Although its analysis has been done when a
+final decision already had been made and the technology evaluation phase had been
+finished, the reasons for us not to change this decision afterwards will be given in this
+chapter.<br 
+class="newline" />
+<!--l. 49--><p class="indent" >  With the two options given at the beginning of the technology evaluation phase, Gosmore and
+Traveling Salesman, the Traveling Salesman project had the considerable advantage of being
+based on Java, in contrast to Gosmore, which is effectively a C/C++ library. This
+fact gave rise to put first focus on Traveling Salesman to identify its drawbacks and
+opportunities.<br 
+class="newline" />
+<!--l. 51--><p class="indent" >  As our analysis revealed that Traveling Salesman is the most promising
+option<span class="footnote-mark"><a 
+href="kangaroo12.html#fn6x5"><sup class="textsuperscript">6</sup></a></span><a 
+ id="x6-23001f6"></a>, a
+discussion of this analysis will be given in a later chapter in greater detail. At this point, we will
+give an overview of the analysis of Gosmore, Traveling Salesman and OSMAndroid. In Addition
+to these three we will give a summary of considerations towards a proprietary development at
+the best combining advantages and opportunities of existing projects and excluding performance
+bottlenecks.
+     <ul class="itemize1">
+     <li class="itemize"><span 
+class="cmbx-10x-x-109">Gosmore</span>
+     <!--l. 57--><p class="noindent" >Experiments with Gosmore on a PC showed that besides a simple interface this
+     software also has the advantage of superior performance over Traveling Salesman.
+     Unfortunately the Android NDK (Native development kit) that would have allowed
+     a compilation of C code for the Android platform was not available yet. Under these
+     circumstances the only way to port Gosmore to the mobile platform of our choice
+     would have been an direct integration into the underlying linux operating-system.
+     That would have required root access, which poses a serious security risk and is
+     not possible with off the shelf Android devices. In order to preserve the end user
+     compatibility of the application, Gosmore can not be used.
+     </li>
+     <li class="itemize"><span 
+class="cmbx-10x-x-109">Traveling Salesman (TSM)</span>
+     <!--l. 61--><p class="noindent" >First integration of Traveling Salesman&#8217;s library into an Android project was rather
+     simple, just as one would expect. It was integrated into a first application which was
+     designed to use Traveling Salesman to read an Openstreetmap XML file stored on the
+     SD card of the mobile device, output the file&#8217;s summarized content and to perform
+     simple  operations  on  the  routing  data.  Compiling  and  running  this  application
+     was possible without any errors but revealed three initial problems, which will be
+     described below.
+          <ul class="itemize2">
+          <li class="itemize">Traveling Salesman uses a proprietary <span 
+class="cmtt-10x-x-109">FileLoader </span>class to read the Openstreetmap
+          XML file and to initialize a <span 
+class="cmtt-10x-x-109">MemoryDataSet </span>object holding all data from the
+
+          XML file. This <span 
+class="cmtt-10x-x-109">FileLoader </span>in turn uses the java built-in <span 
+class="cmtt-10x-x-109">SAXParser</span><span class="footnote-mark"><a 
+href="kangaroo13.html#fn7x5"><sup class="textsuperscript">7</sup></a></span><a 
+ id="x6-23002f7"></a>
+          class and an extension of the <span 
+class="cmtt-10x-x-109">DefaultHandler</span><span class="footnote-mark"><a 
+href="kangaroo14.html#fn8x5"><sup class="textsuperscript">8</sup></a></span><a 
+ id="x6-23003f8"></a>
+          class which seem to be implemented slightly different in Android&#8217;s java library.
+          A permutation in the parameters of the method <span 
+class="cmtt-10x-x-109">startElement(...) </span>yielded
+          a complete discapability of reading the XML file, but could be overcome by
+          re-permutating its parameters.
+          </li>
+          <li class="itemize">After having fixed the problem given in the previous clause, Traveling Salesman
+          did its first job on both the emulator and a physical mobile device. With minor
+          additions to our application, we were able to perfom a <span 
+class="cmtt-10x-x-109">getNearestNode(...)</span>
+          query on a tiny data set, showing that we will get into big trouble concerning
+          performance, if no adaptions were applied. However, we were able to show
+          that  improving  Traveling  Salesman&#8217;s  performance  in  a  way  satisfying  our
+          requirements is in principle possible and an issue one will be able to deal with
+          (chapter <a 
+href="kangarooch5.html#x15-470005.6.2">5.6.2<!--tex4ht:ref: sub:routing_mobiletsm --></a> will give details).
+          </li>
+          <li class="itemize">As already mentioned, Traveling Salesman by default reads the complete map
+          file into memory. As Android&#8217;s heap size is strictly limited, this resulted in the
+          necessity of using a very small map file. It also bared the strong need for a
+          circumvention of this restriction.
+          </li></ul>
+     </li>
+     <li class="itemize"><span 
+class="cmbx-10x-x-109">proprietary development</span>
+     <!--l. 75--><p class="noindent" >The possibility to use the given routing engines only as a source of inspiration and to
+     start a proprietary development began to cross our minds, when ideas of how to
+     design a routing engine became clear. Deliberation of combining a slight and
+     efficient data storage system (like Gosmore is using), a reduced routing graph to
+     operate on and java based source code (like Traveling Salesman has) occupied
+     our minds. This thoughts were triggered by becoming aware of the fact that
+     Traveling Salesman is in principle much more than we need and Gosmore in
+     turn would need too much manipulations to be compatible with the Android
+     system.
+     </li>
+     <li class="itemize"><span 
+class="cmbx-10x-x-109">OSMAndroid</span>
+     <!--l. 79--><p class="noindent" >We became aware of the existence of OSMAndroid when we already had made a decision
+     for a routing engine. Nethertheless it would be unjustifiable not to dare a look at its
+     features and chances.<br 
+class="newline" />
+     <!--l. 81--><p class="noindent" >OSMAndroid turned out to have nearly exactly the features we planned to include in a
+     proprietary development. However there are some issues breaking the deal. OSMAndroid
+     for example does not include all map elements or every property of map elements which
+
+     are needed by our application. This for example applies to the maximum speed on a
+     street or Points Of Interest at a whole. As it uses a highly proprietary data
+     structure, it seemed to be impractical to adapt and use this routing engine in our
+     project.
+     </li></ul>
+<!--l. 85--><p class="noindent" >
+  <h5 class="subsubsectionHead"><a 
+ id="x6-240004.2.2"></a>Decision for Traveling Salesman</h5>
+<!--l. 87--><p class="noindent" >Eventually we decided to base the routing engine on the Traveling Salesman project,
+maintaining compatibility to its modular architecture. This decision was forced by the following
+reasons
+     <ul class="itemize1">
+     <li class="itemize">Java based source code
+     <!--l. 92--><p class="noindent" >Traveling  Salesman  is  completely  based  on  Java  and  does  not  use  any  external
+     libraries. Its precompiled project library can easily be integrated in the Android
+     environment and Android projects following the standard design approach and thus
+     requiring zero investment in any abnormality with respect to this standard.
+     </li>
+     <li class="itemize">adaptions and extensions may be implemented without touching its inner structure
+     <!--l. 96--><p class="noindent" >Traveling  Salesman&#8217;s  modular  architecture  supports  easy  exchange  of  any  of  its
+     components. Given the imperative need of an adapted data storage management
+     system to improve utilization of resources, we could easily come up with a re-design
+     of this component without the need of adapting other components. The same applies
+     to modifications of both the routing algorithm and its routing metric which can each
+     be modified independently of the other.
+     </li>
+     <li class="itemize">maximum generality and flexibilty, exchangeable components
+     <!--l. 100--><p class="noindent" >Keeping compatibility to Traveling Salesman&#8217;s modular architecture will offer the
+     chance for easy maintenance or even upgrades. One may consequently benefit from
+     future modifications made to the original Traveling Salesman project.
+     </li>
+     <li class="itemize">performance improvements
+     <!--l. 104--><p class="noindent" >Early progress made with improving its performance gave rise to the assumption,
+     that the advantages given in the clauses before will doubtlessly outweight the loss
+     of performance and advantages provided by other solutions.
+     </li>
+     <li class="itemize">&#8221;flexibility before performance&#8221;
+     <!--l. 108--><p class="noindent" >Last but not least, our project is thought to be the basis of more extensive projects.
+     In order to prevent future developers from failing because of prematurely introduced
+     constraints, we will assign a higher priority to flexibility than to performance.
+     </li></ul>
+
+<!--l. 98--><p class="noindent" >
+  <h4 class="subsectionHead"><span class="titlemark">4.2.3</span>&#x00A0;&#x00A0;<a 
+ id="x6-250004.2.3"></a>Traveling Salesman</h4>
+<!--l. 1--><p class="noindent" >The following chapter will give a more detailed introduction in the structure of Traveling
+Salesman.<br 
+class="newline" />
+<!--l. 3--><p class="indent" >  As already mentioned, Traveling Salesman is designed following a modular architecture.
+Every essential or optional type of module is defined by a java interface with basic
+methods to provide its desired functionality. The most important ones in our project
+are
+     <ul class="itemize1">
+     <li class="itemize">Interface <span 
+class="cmtt-10x-x-109">IDataSet</span>
+     <!--l. 9--><p class="noindent" ><span 
+class="cmtt-10x-x-109">IDataSet </span>provides  methods  to  store  and  receive  Openstreetmap  map  elements.
+     Identification of elements to receive can either be done by unique Openstreetmap ID
+     or by parameters to search for. This, for example, may be the name of the element
+     or simply its distance to a specific point, that has to fall below a cetain value.<br 
+class="newline" />
+     <!--l. 11--><p class="noindent" >In   dependence   of   its   implementation,   data   storage   is   done   in   memory
+     (<span 
+class="cmtt-10x-x-109">MemoryDataSet</span>), on disc or in a database.
+     </li>
+     <li class="itemize">Interface <span 
+class="cmtt-10x-x-109">IRouter</span>
+     <!--l. 15--><p class="noindent" ><span 
+class="cmtt-10x-x-109">IRouter </span>is the interface which has to be implemented by any routing class. Its
+     primary task is triggered by calling the <span 
+class="cmtt-10x-x-109">route(...) </span>method, which performs routing
+     between a point to start from an one or more destination points. One has to pass an
+     <span 
+class="cmtt-10x-x-109">IDataSet </span>object specifying routing resources, when calling <span 
+class="cmtt-10x-x-109">route(...)</span>. The router
+     is to return a <span 
+class="cmtt-10x-x-109">Route </span>object containing detailed information about the path.<br 
+class="newline" />
+     <!--l. 17--><p class="noindent" >Traveling Salesman provides several implementations of the <span 
+class="cmtt-10x-x-109">IRouter </span>interface using
+     different routing algorithms. The <span 
+class="cmtt-10x-x-109">MultiTargetDijkstraRouter </span>can be considered
+     as the default implementation. As implied by its name, it is based on the Dijkstra
+     algorithm which is extended to an A*-algorithm by using the linear distance to
+     the target node as a heuristic. Its implementation, however, seem to be faulty (see
+     chapter <a 
+href="kangarooch5.html#x15-500005.6.2">5.6.2<!--tex4ht:ref: subsubsec:routing_mobiletsm_structure --></a> for details).
+     </li>
+     <li class="itemize">Interface <span 
+class="cmtt-10x-x-109">IRoutingMetric</span>
+     <!--l. 21--><p class="noindent" >As  to  give  the  router  a  measure  of  routing  costs,  one  has  to  define  a  class
+     implementing  the  <span 
+class="cmtt-10x-x-109">IRoutingMetric </span>interface,  which  allows  the  router  to  query
+     routing costs of particular routing steps.<br 
+class="newline" />
+     <!--l. 23--><p class="noindent" >The  default  implementation  (<span 
+class="cmtt-10x-x-109">ShortestRouteMetric</span>)  simply  measures  distance
+     between start and end of a routing step by summing up the linear distances between
+     nodes on the way. One might feel uncomfortable with this, because it does not
+
+     privilege any type of street and hence the shortest route is probably not the fastest
+     one. However, this can be overcome with a re-implementation of a routing metric.
+     </li></ul>
+<!--l. 27--><p class="indent" >  To represent Openstreetmap map elements (nodes, ways and relations), Traveling Salesman
+uses classes provided by Osmosis, which can be considered as a Java based framework for
+processing of Openstreetmap data. Osmosis employs classes named <span 
+class="cmtt-10x-x-109">Node</span>, <span 
+class="cmtt-10x-x-109">Way </span>and <span 
+class="cmtt-10x-x-109">Relation </span>to
+represent Openstreetmap map elements accordingly.
+
+  <!--l. 104--><div class="crosslinks"><p class="noindent">[<a 
+href="kangarooch3.html" >prev</a>] [<a 
+href="kangarooch3.html#tailkangarooch3.html" >prev-tail</a>] [<a 
+href="kangarooch4.html" >front</a>] [<a 
+href="kangaroo.html#kangarooch4.html" >up</a>] </p></div>
+<!--l. 104--><p class="indent" >  <a 
+ id="tailkangarooch4.html"></a>    
+</body></html> 

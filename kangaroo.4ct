@@ -1,0 +1,105 @@
+\expandafter\ifx\csname doTocEntry\endcsname\relax \expandafter\endinput\fi 
+\doTocEntry\toclikechapter{}{\csname a:TocLink\endcsname{2}{x2-1000}{QQ2-2-1}{Contents}}{3}\relax 
+\doTocEntry\tocchapter{1}{\csname a:TocLink\endcsname{3}{x3-20001}{QQ2-3-2}{Introduction}}{6}\relax 
+\doTocEntry\tocchapter{2}{\csname a:TocLink\endcsname{4}{x4-30002}{QQ2-4-3}{Definition of project scope}}{8}\relax 
+\doTocEntry\tocsection{2.1}{\csname a:TocLink\endcsname{4}{x4-40002.1}{QQ2-4-4}{External requirements}}{8}\relax 
+\doTocEntry\tocsection{2.2}{\csname a:TocLink\endcsname{4}{x4-50002.2}{QQ2-4-5}{Resulting development goals}}{8}\relax 
+\doTocEntry\toclof{2.1}{\csname a:TocLink\endcsname{4}{x4-50011}{}{\ignorespaces Mindmap with project goals, requirements and elements}}{figure}\relax 
+\doTocEntry\tocsection{2.3}{\csname a:TocLink\endcsname{4}{x4-60002.3}{QQ2-4-7}{Abstract System Structure}}{12}\relax 
+\doTocEntry\toclof{2.2}{\csname a:TocLink\endcsname{4}{x4-60012}{}{\ignorespaces High level design of the system components}}{figure}\relax 
+\doTocEntry\toclof{2.3}{\csname a:TocLink\endcsname{4}{x4-60023}{}{\ignorespaces Representation of the logical system elements}}{figure}\relax 
+\doTocEntry\toclof{2.4}{\csname a:TocLink\endcsname{4}{x4-60034}{}{\ignorespaces Components of the Appointment/Task optimization and verification engine}}{figure}\relax 
+\doTocEntry\tocchapter{3}{\csname a:TocLink\endcsname{5}{x5-70003}{QQ2-5-11}{Project plan and development process}}{18}\relax 
+\doTocEntry\tocsection{3.1}{\csname a:TocLink\endcsname{5}{x5-80003.1}{QQ2-5-12}{Initial project plan}}{18}\relax 
+\doTocEntry\toclof{3.1}{\csname a:TocLink\endcsname{5}{x5-80011}{}{\ignorespaces Gantt diagram of the initial project plan (planing at project start)}}{figure}\relax 
+\doTocEntry\tocsection{3.2}{\csname a:TocLink\endcsname{5}{x5-90003.2}{QQ2-5-14}{Refined project plan}}{21}\relax 
+\doTocEntry\toclof{3.2}{\csname a:TocLink\endcsname{5}{x5-90012}{}{\ignorespaces Gantt diagram of the actually carried out project plan}}{figure}\relax 
+\doTocEntry\tocsection{3.3}{\csname a:TocLink\endcsname{5}{x5-100003.3}{QQ2-5-16}{Development process}}{22}\relax 
+\doTocEntry\toclof{3.3}{\csname a:TocLink\endcsname{5}{x5-100013}{}{\ignorespaces The waterfall model (one iteration)}}{figure}\relax 
+\doTocEntry\tocchapter{4}{\csname a:TocLink\endcsname{6}{x6-110004}{QQ2-6-18}{Technology evaluation}}{27}\relax 
+\doTocEntry\tocsection{4.1}{\csname a:TocLink\endcsname{6}{x6-120004.1}{QQ2-6-19}{Platform Choice}}{27}\relax 
+\doTocEntry\tocsubsection{4.1.1}{\csname a:TocLink\endcsname{6}{x6-130004.1.1}{QQ2-6-20}{Introduction}}{27}\relax 
+\doTocEntry\tocsubsection{4.1.2}{\csname a:TocLink\endcsname{6}{x6-140004.1.2}{QQ2-6-21}{iPhone OS}}{27}\relax 
+\doTocEntry\tocsubsection{4.1.3}{\csname a:TocLink\endcsname{6}{x6-150004.1.3}{QQ2-6-22}{Android}}{28}\relax 
+\doTocEntry\tocsubsection{4.1.4}{\csname a:TocLink\endcsname{6}{x6-160004.1.4}{QQ2-6-23}{Windows Mobile}}{28}\relax 
+\doTocEntry\tocsubsection{4.1.5}{\csname a:TocLink\endcsname{6}{x6-170004.1.5}{QQ2-6-24}{Other OS}}{29}\relax 
+\doTocEntry\tocsection{4.2}{\csname a:TocLink\endcsname{6}{x6-180004.2}{QQ2-6-25}{Routing}}{29}\relax 
+\doTocEntry\tocsubsection{4.2.1}{\csname a:TocLink\endcsname{6}{x6-190004.2.1}{QQ2-6-26}{Routing data}}{29}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{6}{x6-200004.2.1}{QQ2-6-27}{Sources of static routing data}}{30}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{6}{x6-210004.2.1}{QQ2-6-28}{Data scheme of Openstreetmap}}{31}\relax 
+\doTocEntry\tocsubsection{4.2.2}{\csname a:TocLink\endcsname{6}{x6-220004.2.2}{QQ2-6-29}{Routing engines}}{31}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{6}{x6-230004.2.2}{QQ2-6-30}{Evaluation of routing engines}}{33}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{6}{x6-240004.2.2}{QQ2-6-31}{Decision for Traveling Salesman}}{36}\relax 
+\doTocEntry\tocsubsection{4.2.3}{\csname a:TocLink\endcsname{6}{x6-250004.2.3}{QQ2-6-32}{Traveling Salesman}}{37}\relax 
+\doTocEntry\tocchapter{5}{\csname a:TocLink\endcsname{15}{x15-260005}{QQ2-15-33}{Developement for Android}}{40}\relax 
+\doTocEntry\tocsection{5.1}{\csname a:TocLink\endcsname{15}{x15-270005.1}{QQ2-15-34}{Platform Specific System Design}}{40}\relax 
+\doTocEntry\toclof{5.1}{\csname a:TocLink\endcsname{15}{x15-270011}{}{\ignorespaces Platform specific software structure for Android OS}}{figure}\relax 
+\doTocEntry\tocsection{5.2}{\csname a:TocLink\endcsname{15}{x15-280005.2}{QQ2-15-36}{User Interface}}{43}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{15}{x15-290005.2}{QQ2-15-37}{Basic Interface Structure}}{43}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{15}{x15-300005.2}{QQ2-15-38}{Main Window}}{44}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{15}{x15-310005.2}{QQ2-15-39}{Dayplan}}{45}\relax 
+\doTocEntry\toclof{5.2}{\csname a:TocLink\endcsname{15}{x15-310012}{}{\ignorespaces Basic DayPlan with calendar events only}}{figure}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{15}{x15-320005.2}{QQ2-15-41}{Tasklist}}{48}\relax 
+\doTocEntry\toclof{5.3}{\csname a:TocLink\endcsname{15}{x15-320013}{}{}}{figure}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{15}{x15-330005.2}{QQ2-15-43}{Edit Task}}{51}\relax 
+\doTocEntry\toclof{5.4}{\csname a:TocLink\endcsname{15}{x15-330014}{}{\ignorespaces Basic interface for editing tasks}}{figure}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{15}{x15-340005.2}{QQ2-15-45}{Configuration Editor}}{54}\relax 
+\doTocEntry\toclof{5.5}{\csname a:TocLink\endcsname{15}{x15-340015}{}{\ignorespaces Configuration editor}}{figure}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{15}{x15-350005.2}{QQ2-15-47}{Day Optimizer}}{57}\relax 
+\doTocEntry\toclof{5.6}{\csname a:TocLink\endcsname{15}{x15-350016}{}{\ignorespaces DayPlan optimizer dialog}}{figure}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{15}{x15-360005.2}{QQ2-15-49}{Activity Options Menus}}{60}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{15}{x15-370005.2}{QQ2-15-50}{Context Menus}}{60}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{15}{x15-380005.2}{QQ2-15-51}{Notifications and alerts}}{60}\relax 
+\doTocEntry\toclof{5.7}{\csname a:TocLink\endcsname{15}{x15-380017}{}{\ignorespaces Class diagram of com.kangaroo.gui.UserNotification}}{figure}\relax 
+\doTocEntry\toclof{5.8}{\csname a:TocLink\endcsname{15}{x15-380028}{}{\ignorespaces Notifications with longer text}}{figure}\relax 
+\doTocEntry\toclof{5.9}{\csname a:TocLink\endcsname{15}{x15-380039}{}{\ignorespaces Menubar notifications}}{figure}\relax 
+\doTocEntry\tocsection{5.3}{\csname a:TocLink\endcsname{15}{x15-390005.3}{QQ2-15-55}{Background tasks}}{69}\relax 
+\doTocEntry\toclof{5.10}{\csname a:TocLink\endcsname{15}{x15-3900110}{}{\ignorespaces Interaction of the background task classes}}{figure}\relax 
+\doTocEntry\toclof{5.11}{\csname a:TocLink\endcsname{15}{x15-3900211}{}{\ignorespaces Sequence diagram of the background task}}{figure}\relax 
+\doTocEntry\tocsection{5.4}{\csname a:TocLink\endcsname{15}{x15-400005.4}{QQ2-15-58}{Calendar Integration}}{74}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{15}{x15-410005.4}{QQ2-15-59}{Calendar Content Provider API}}{75}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{15}{x15-420005.4}{QQ2-15-60}{Calendar High Level Abstraction}}{75}\relax 
+\doTocEntry\tocsection{5.5}{\csname a:TocLink\endcsname{15}{x15-430005.5}{QQ2-15-61}{Introduction of Task management}}{76}\relax 
+\doTocEntry\toclof{5.12}{\csname a:TocLink\endcsname{15}{x15-4300112}{}{\ignorespaces Diagram of the task-related classes}}{figure}\relax 
+\doTocEntry\tocsection{5.6}{\csname a:TocLink\endcsname{15}{x15-440005.6}{QQ2-15-63}{Routing}}{77}\relax 
+\doTocEntry\tocsubsection{5.6.1}{\csname a:TocLink\endcsname{15}{x15-450005.6.1}{QQ2-15-64}{Routing interface (Kangaroo routing framework)}}{77}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{15}{x15-460005.6.1}{QQ2-15-65}{Structure of the Kangaroo routing framework}}{77}\relax 
+\doTocEntry\tocsubsection{5.6.2}{\csname a:TocLink\endcsname{15}{x15-470005.6.2}{QQ2-15-66}{Routing engine (MobileTSM)}}{78}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{15}{x15-480005.6.2}{QQ2-15-67}{Major problems arising with decision for Traveling Salesman}}{78}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{15}{x15-490005.6.2}{QQ2-15-68}{Approaches for major problems arising with decision for Traveling Salesman}}{79}\relax 
+\doTocEntry\toclof{5.13}{\csname a:TocLink\endcsname{15}{x15-4900213}{}{\ignorespaces A route including intermediate way nodes: The blue markers define start and destination of the route, red points define essential street nodes and green points define intermediate way nodes. The corresponding routing graph constains much more elements than needed for the routing operation.}}{figure}\relax 
+\doTocEntry\toclof{5.14}{\csname a:TocLink\endcsname{15}{x15-4900314}{}{\ignorespaces The same route like the one in 5.13\hbox {} but without intermediate way nodes. Routing on this individually reduced routing graph will yield the same shortest path (assuming revision of distance errors, cf. next clauses).}}{figure}\relax 
+\doTocEntry\toclof{5.15}{\csname a:TocLink\endcsname{15}{x15-4900615}{}{\ignorespaces Caching of nearest street nodes: The first query is used to cache street nodes within a specified radius of the query center. Under appropriate conditions the next query does not have to access the database but only the cache.}}{figure}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{15}{x15-500005.6.2}{QQ2-15-72}{Structure of MobileTSM}}{82}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{15}{x15-510005.6.2}{QQ2-15-73}{Tests and benchmarks for MobileTSM}}{84}\relax 
+\doTocEntry\tocsubsection{5.6.3}{\csname a:TocLink\endcsname{15}{x15-520005.6.3}{QQ2-15-74}{Routing database}}{85}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{15}{x15-530005.6.3}{QQ2-15-75}{Significant map elements for routing data}}{85}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{15}{x15-540005.6.3}{QQ2-15-76}{Structure of routing database}}{86}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{15}{x15-550005.6.3}{QQ2-15-77}{Creation of routing database}}{87}\relax 
+\doTocEntry\tocsection{5.7}{\csname a:TocLink\endcsname{15}{x15-560005.7}{QQ2-15-78}{Dayplan}}{88}\relax 
+\doTocEntry\tocsubsection{5.7.1}{\csname a:TocLink\endcsname{15}{x15-570005.7.1}{QQ2-15-79}{Consistency and compliance checks of a day plan}}{88}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{15}{x15-580005.7.1}{QQ2-15-80}{Representation of a day plan (\texttt  {DayPlan} class)}}{88}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{15}{x15-590005.7.1}{QQ2-15-81}{Compliance with current position and time}}{89}\relax 
+\doTocEntry\toclof{5.16}{\csname a:TocLink\endcsname{15}{x15-5900116}{}{\ignorespaces A conflict revealed by a compliance check: The current position (marked with a stickman) is incompatible with the next event ("meeting 1") since the time needed to get there exceeds the time left. Space is reduced to one dimension for simplicity.}}{figure}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{15}{x15-600005.7.1}{QQ2-15-83}{Consistency check}}{92}\relax 
+\doTocEntry\toclof{5.17}{\csname a:TocLink\endcsname{15}{x15-6000217}{}{\ignorespaces A conflict revealed by a consistency check: The events "meeting 2" and "meeting 3" are incompatible in the sense that the time needed to from "meeting 2" to "meeting 3" exceeds the time left. Space is reduced to one dimension for simplicity.}}{figure}\relax 
+\doTocEntry\tocsubsection{5.7.2}{\csname a:TocLink\endcsname{15}{x15-610005.7.2}{QQ2-15-85}{Optimization of a day plan}}{95}\relax 
+\doTocEntry\toclot{5.1}{\csname a:TocLink\endcsname{15}{x15-610011}{}{\ignorespaces List of currently implemented task constraints}}{table}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{15}{x15-620005.7.2}{QQ2-15-87}{Approaches to optimization}}{98}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{15}{x15-630005.7.2}{QQ2-15-88}{Implementations of a \texttt  {TaskPriorityComparator}}}{99}\relax 
+\doTocEntry\tocsection{5.8}{\csname a:TocLink\endcsname{15}{x15-640005.8}{QQ2-15-89}{Persistent Storage}}{99}\relax 
+\doTocEntry\tocchapter{6}{\csname a:TocLink\endcsname{27}{x27-650006}{QQ2-27-90}{Conclusion and future Work}}{103}\relax 
+\doTocEntry\tocsection{6.1}{\csname a:TocLink\endcsname{27}{x27-660006.1}{QQ2-27-91}{Accomplishments}}{103}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{27}{x27-670006.1}{QQ2-27-92}{Application for optimized dayplans}}{103}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{27}{x27-680006.1}{QQ2-27-93}{Easily reusable Open Source packages}}{103}\relax 
+\doTocEntry\tocparagraph{}{\csname a:TocLink\endcsname{27}{x27-690006.1}{QQ2-27-94}{Calendar Library}}{104}\relax 
+\doTocEntry\tocparagraph{}{\csname a:TocLink\endcsname{27}{x27-700006.1}{QQ2-27-95}{Routing Engine}}{104}\relax 
+\doTocEntry\tocparagraph{}{\csname a:TocLink\endcsname{27}{x27-710006.1}{QQ2-27-96}{Task Manager}}{104}\relax 
+\doTocEntry\tocparagraph{}{\csname a:TocLink\endcsname{27}{x27-720006.1}{QQ2-27-97}{Dayplan}}{104}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{27}{x27-730006.1}{QQ2-27-98}{Personal Experience}}{104}\relax 
+\doTocEntry\tocsection{6.2}{\csname a:TocLink\endcsname{27}{x27-740006.2}{QQ2-27-99}{What to do differently}}{104}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{27}{x27-750006.2}{QQ2-27-100}{Milestones}}{104}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{27}{x27-760006.2}{QQ2-27-101}{Unit tests}}{105}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{27}{x27-770006.2}{QQ2-27-102}{Bug tracker}}{105}\relax 
+\doTocEntry\tocsection{6.3}{\csname a:TocLink\endcsname{27}{x27-780006.3}{QQ2-27-103}{Future work}}{105}\relax 
+\par 

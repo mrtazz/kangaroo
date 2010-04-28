@@ -1,0 +1,173 @@
+\documentclass[11pt,a4paper]{scrreprt}
+\usepackage[latin1]{inputenc}
+\usepackage{enumerate}
+\usepackage{verbatim}
+\usepackage{moreverb}
+\usepackage{subfigure}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\newcommand{\field}[1]{\mathbb{#1}}
+\usepackage{amssymb}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{listings}
+%\usepackage{ngerman}
+\usepackage{geometry}
+\geometry{a4paper,left=30mm,right=30mm,top=35mm,bottom=25mm}
+
+\pagestyle{headings}
+
+\begin{document}
+\title{Kangaroo \\ a mobile, location-aware task planer}
+\author{Alexander Gutjahr \and Andreas Walz \and
+        Daniel Schauenberg}
+
+\maketitle
+
+\tableofcontents
+
+%introduction
+\chapter{Introduction} % (fold)
+\label{chp:introduction}
+\input{chapters/introduction.tex}
+
+%definition of project scope
+\chapter{Definition of project scope} % (fold)
+	%external requirements
+	\section{External requirements} % (fold)
+	\label{chp:requirements}
+	\input{chapters/requirements.tex}
+	
+	%resulting dev. goals
+	\section{Resulting development goals} % (fold)
+	\label{chp:dev_goals}
+	\input{chapters/dev_goals.tex}
+	
+	%abstract system design
+	\section{Abstract System Structure} % (fold)
+	\label{chp:structure}
+	\input{chapters/structure.tex}
+	
+%project-plan and dev. process
+\chapter{Project plan and development process} % (fold)
+\label{chp:project_plan}
+\input{chapters/project_plan.tex}
+
+
+	\section{Development process} % (fold)
+	\label{chp:dev process}
+	\input{chapters/dev_process.tex}
+	
+%technological evaluation
+\chapter{Technology evaluation} % (fold)
+
+	%choice of mobile platform
+	\section{Platform Choice} % (fold)
+	\label{chp:platform_choice}
+
+	\subsection{Introduction} % (fold)
+	\label{sec:platform_introduction}
+	\input{chapters/platform_introduction.tex}
+
+	\subsection{iPhone OS} % (fold)
+	\label{sec:iphone}
+	\input{chapters/iphone.tex}
+
+	\subsection{Android} % (fold)
+	\label{sec:android_plattform_choice}
+	\input{chapters/android.tex}
+
+	\subsection{Windows Mobile} % (fold)
+	\label{sec:win_mobile}
+	\input{chapters/win_mobile.tex}
+
+	\subsection{Other OS} % (fold)
+	\label{sec:other_os}
+	\input{chapters/other_os.tex}
+	
+	%routing
+	\section{Routing} % (fold)
+	\label{sec:android_routing}
+	\input{chapters/routing}
+	
+	\subsection{Routing engines}
+	\label{sub:routing_engines}
+	\input{chapters/routing_engines.tex}
+
+	\subsection{Traveling Salesman}
+	\label{sub:routing_tsm}
+	\input{chapters/routing_tsm.tex}
+	
+%kangaroo for android
+
+\chapter{Developement for Android} % (fold)
+\label{chp:android}
+%\input{chapters/introduction.tex}
+
+	%system specific software design
+	\section{Platform Specific System Design} % (fold)
+	\label{sec:android_desing}
+	\input{chapters/android_design.tex}
+	
+	%description of system parts
+	
+	\section{User Interface} % (fold)
+	\label{sec:user_interface}
+	\input{chapters/android_ui.tex}
+	
+	\section{Background tasks} % (fold)
+	\label{sec:android_integration}
+	\input{chapters/android_integration.tex}
+	
+	\section{Calendar Integration} % (fold)
+	\label{sec:android_calendar}
+	\input{chapters/android_calendar.tex}
+	
+	\section{Introduction of Task management} % (fold)
+	\label{sec:android_task}
+	\input{chapters/android_task.tex}
+		
+	\section{Routing}
+	\label{sub:routing}
+	
+	\subsection{Routing interface (Kangaroo routing framework)} % (fold)
+	\label{sub:routing_interface}
+	\input{chapters/routing_interface.tex}
+	
+	\subsection{Routing engine (MobileTSM)} % (fold)
+	\label{sub:routing_mobiletsm}
+	\input{chapters/routing_mobiletsm.tex}
+
+	\subsubsection{Tests and benchmarks for MobileTSM}
+	\label{sub:routing_testcase}
+	\input{chapters/routing_testcase.tex}	
+		
+	\subsection{Routing database} % (fold)
+	\label{sub:routing_database}
+	\input{chapters/routing_database.tex}
+			
+	\section{Dayplan}
+	\label{sub:dayplan}
+	
+	\subsection{Consistency and compliance checks of a day plan} % (fold)
+	\label{sub:dayplan}
+	\input{chapters/dayplan.tex}	
+			
+	\subsection{Optimization of a day plan} % (fold)
+	\label{sub:dayplan_optimization}
+	\input{chapters/dayplan_optimization.tex}
+			
+	\section{Persistent Storage} % (fold)
+	\label{sec:android_pers_storage}
+	\input{chapters/android_persistent_storage.tex}
+
+%conclusion and future work	
+\chapter{Conclusion and future Work} % (fold)
+\label{chp:platform_choice}
+\input{chapters/conclusion.tex}
+
+%\bibliographystyle{include/splncs}
+%\bibliography{include/literatur}
+
+\end{document}
