@@ -1,4 +1,4 @@
- 
+
 /* start css.sty */
 .cmr-10{font-size:90%;}
 .cmr-10x-x-109{}
@@ -86,7 +86,7 @@ div.figure img {text-align:center;}
 .marginpar p{margin-top:0.4em; margin-bottom:0.4em;}
 table.equation {width:100%;}
 .equation td{text-align:center; }
-td.equation { margin-top:1em; margin-bottom:1em; } 
+td.equation { margin-top:1em; margin-bottom:1em; }
 td.equation-label { width:5%; text-align:center; }
 td.eqnarray4 { width:5%; white-space: normal; }
 td.eqnarray2 { width:5%; }
@@ -126,7 +126,7 @@ dd.enumerate {margin-left: 2em;}
 dt.enumerate {float:left; clear:left; margin-right:0.5em; margin-left:0.5em; text-align:right; }
 div.verbatiminput {font-family: monospace; white-space: nowrap; }
 table.boxedverbatim {width:100%;}
- pre.boxedverbatim{border:solid 1px; padding-right:1em;} 
+ pre.boxedverbatim{border:solid 1px; padding-right:1em;}
 table.boxedverbatim {text-align:center;}
 .listinginput p{ margin-bottom:0em; margin-top:0em; }
 .subfigcaption {margin-top:1em; margin-left:1em; text-align:center;}
@@ -149,5 +149,6 @@ div.gather-star {text-align:center;}
 div.lstlisting{font-family: monospace; white-space: nowrap; margin-top:0.5em; margin-bottom:0.5em; }
 div.lstinputlisting{ font-family: monospace; white-space: nowrap; }
 .lstinputlisting .label{margin-right:0.5em;}
+img {width: 70%; height: auto;}
 /* end css.sty */
 
